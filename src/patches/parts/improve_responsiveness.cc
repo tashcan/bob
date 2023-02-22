@@ -1,0 +1,40 @@
+#include "config.h"
+#include "prime_types.h"
+
+#include <spud/detour.h>
+
+#include "prime/TransitionManager.h"
+
+#include "utils.h"
+
+#include <il2cpp/il2cpp_helper.h>
+
+#include <algorithm>
+#include <chrono>
+#include <iostream>
+
+#include "spdlog/spdlog.h"
+
+int64_t TransitionManager_Awake(auto original, TransitionManager* a1)
+{
+  spdlog::debug("Adjusting screen transitions to {}", Config::Get().transition_time);
+  auto r                         = original(a1);
+  a1->SBlurController->_blurTime = std::clamp(Config::Get().transition_time, 0.02f, 1.0f);
+  return r;
+}
+
+int64_t TransitionManager_OnEnable(auto original, TransitionManager* a1)
+{
+  return 0;
+}
+
+void InstallImproveResponsivenessHooks()
+{
+  auto transition_manager_helper =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.LoadingScreen", "TransitionManager");
+  auto awake = transition_manager_helper.GetMethodXor("Awake");
+  if (!awake) {
+    return;
+  }
+  SPUD_STATIC_DETOUR(awake, TransitionManager_Awake);
+}
