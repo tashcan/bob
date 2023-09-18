@@ -7,6 +7,9 @@
    A community patch that adds a couple of tweaks to the mobile game <b>Star Trek Fleet Command&#8482;</b>
 </p>
 
+> [!NOTE]
+> The code here is a bit of a mess right now, I will be gradually going through and cleaning it up over the next couple of weeks.
+
 ## Features
 
 - One day there will be something here, gotta find the time to list them all out
