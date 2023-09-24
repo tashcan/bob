@@ -3,10 +3,18 @@
 #include <il2cpp/il2cpp_helper.h>
 
 #include "NavigationManager.h"
+#include "Hub.h"
+
+#include <cstdint>
 
 struct NavigationSectionManager {
 public:
   __declspec(property(get = __get_NavigationManager)) NavigationManager* SNavigationManager;
+
+  static void ChangeNavigationSection(SectionID sectionId, int64_t systemId = -1) {
+    auto ChangeNavigationSection = get_class_helper().GetMethod<void(SectionID, int64_t)>("ChangeNavigationSection", 2);
+    ChangeNavigationSection(sectionId, systemId);
+  }
 
   static NavigationSectionManager* Instance()
   {

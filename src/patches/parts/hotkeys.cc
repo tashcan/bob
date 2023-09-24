@@ -172,9 +172,21 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         }
       }
     } else if (GetKeyDownInt(KeyCode::G) && !is_input_focused()) {
-      Hub::get_SectionManager()->TriggerSectionChange(SectionID::Navigation_Galaxy, nullptr);
+      const auto galaxy_section_data =
+          Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Navigation_Galaxy);
+      if (galaxy_section_data) {
+        Hub::get_SectionManager()->TriggerSectionChange(SectionID::Navigation_Galaxy, galaxy_section_data);
+      } else {
+        NavigationSectionManager::ChangeNavigationSection(SectionID::Navigation_Galaxy);
+      }
     } else if (GetKeyDownInt(KeyCode::H) && !is_input_focused()) {
-      Hub::get_SectionManager()->TriggerSectionChange(SectionID::Navigation_System, nullptr);
+      const auto system_section_data =
+          Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Navigation_System);
+      if (system_section_data) {
+        Hub::get_SectionManager()->TriggerSectionChange(SectionID::Navigation_System, system_section_data);
+      } else {
+        NavigationSectionManager::ChangeNavigationSection(SectionID::Navigation_System);
+      }
     } else if (GetKeyDownInt(KeyCode::T) && !is_input_focused()) {
       Hub::get_SectionManager()->TriggerSectionChange(SectionID::Tournament_Group_Selection, nullptr);
     }
