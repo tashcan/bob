@@ -1,5 +1,7 @@
 #pragma once
 
+#include <il2cpp/il2cpp_helper.h>
+
 enum class SectionID {
   ArtifactHall_Inventory                   = -2058246328,
   Alliance_Contribution                    = -2035860712,
@@ -140,9 +142,26 @@ enum class SectionID {
   Tournament_Group_Selection               = 2138751318,
 };
 
+struct SectionStorage {
+public:
+  void* GetState(SectionID section)
+  {
+    static auto GetState = get_class_helper().GetMethod<void*(SectionStorage*, SectionID)>("GetState");
+    return GetState(this, section);
+  }
+
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Sections", "SectionStorage");
+    return class_helper;
+  }
+};
+
 struct SectionManager {
 public:
   __declspec(property(get = __get_CurrentSection)) SectionID CurrentSection;
+  __declspec(property(get = __get__sectionStorage)) SectionStorage* _sectionStorage;
 
   void TriggerSectionChange(SectionID nextSectionID, void* args, bool forcedSectionChange = false,
                             bool isGoBackStep = false, bool allowSameSection = false)
@@ -165,6 +184,12 @@ public:
   {
     static auto field = get_class_helper().GetProperty("CurrentSection");
     return *field.Get<SectionID>(this);
+  }
+
+  SectionStorage* __get__sectionStorage()
+  {
+    static auto field = get_class_helper().GetField("_sectionStorage");
+    return *(SectionStorage**)((ptrdiff_t)this + field.offset());
   }
 };
 

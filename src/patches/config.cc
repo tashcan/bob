@@ -75,6 +75,9 @@ void Config::Load()
   this->show_hostile_cargo     = config["ui"]["show_hostile_cargo"].value_or(true);
   this->show_armada_cargo      = config["ui"]["show_armada_cargo"].value_or(true);
 
+  this->always_skip_reveal_sequence  = config["ui"]["always_skip_reveal_sequence"].value_or(false);
+  this->stay_in_bundle_after_summary = config["ui"]["stay_in_bundle_after_summary"].value_or(true);
+
   std::string disabled_banner_types_str = config["ui"]["disabled_banner_types"].value_or("");
 
   std::vector<std::string> types = absl::StrSplit(disabled_banner_types_str, ",", absl::SkipWhitespace());

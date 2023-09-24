@@ -124,5 +124,4 @@ void InstallTestPatches()
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimePlatform.Services", "ChatService");
   auto ptr = chat_service.GetMethod("HandleMessageReceived");
   // oChatMessage = SPUD_STATIC_DETOUR(ptr, Chat_handleNewMessage);
-  return;
 }

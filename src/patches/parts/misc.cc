@@ -7,8 +7,10 @@
 
 #include "prime/BundleDataWidget.h"
 #include "prime/ClientModifierType.h"
+#include "prime/Hub.h"
 #include "prime/IList.h"
 #include "prime/InventoryForPopup.h"
+#include "prime/ShopSummaryDirector.h"
 
 #include <il2cpp/il2cpp_helper.h>
 
@@ -130,6 +132,34 @@ IList* ExtractBuffsOfType_Hook(auto original, ClientModifierType modifier, IList
   return original(modifier, list);
 }
 
+bool ShouldShowRevealHook(auto original, void* _this, bool ignore)
+{
+  if (Config::Get().always_skip_reveal_sequence) {
+    return false;
+  }
+  return original(_this, ignore);
+}
+
+void ShopSummaryDirectorCtr(auto original, ShopSummaryDirector* _this)
+{
+  original(_this);
+
+  if (Config::Get().stay_in_bundle_after_summary == false) {
+    return;
+  }
+
+  if (strcmp(((Il2CppObject*)(_this))->klass->name, "ShopSummaryDirector") == 0) {
+    auto id_array = _this->_backLogicSkipSectionIds;
+    auto ids      = (SectionID*)id_array->vector;
+    for (int i = 0; i < id_array->max_length; ++i) {
+      auto id = ids[i];
+      if (id == SectionID::Shop_Showcase) {
+        ids[i] = SectionID::Navigation_Combat_Debug;
+      }
+    }
+  }
+}
+
 void InstallTempCrashFixes()
 {
   auto BuffService_helper =
@@ -137,4 +167,13 @@ void InstallTempCrashFixes()
 
   auto ptr_extract_buffs_of_type = BuffService_helper.GetMethod(xorstr_("ExtractBuffsOfType"));
   SPUD_STATIC_DETOUR(ptr_extract_buffs_of_type, ExtractBuffsOfType_Hook);
+
+  auto shop_scene_manager = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Shop", "ShopSceneManager");
+
+  auto reveal_show = shop_scene_manager.GetMethod("ShouldShowRevealSequence");
+  SPUD_STATIC_DETOUR(reveal_show, ShouldShowRevealHook);
+
+  auto shop_summary_director = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Shop", "ShopSummaryDirector");
+  reveal_show                = shop_summary_director.GetMethod("Start");
+  SPUD_STATIC_DETOUR(reveal_show, ShopSummaryDirectorCtr);
 }

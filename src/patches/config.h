@@ -52,4 +52,7 @@ public:
   bool show_station_cargo;
   bool show_hostile_cargo;
   bool show_armada_cargo;
+
+  bool always_skip_reveal_sequence;
+  bool stay_in_bundle_after_summary;
 };

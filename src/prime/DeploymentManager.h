@@ -7,7 +7,7 @@
 #include <il2cpp/il2cpp_helper.h>
 
 class FleetPlayerData;
-class FleetDeployedData;
+struct FleetDeployedData;
 class DeploymentService
 {
 public:
@@ -23,7 +23,7 @@ public:
   private:
     static IL2CppClassHelper& get_class_helper()
     {
-      auto class_helper = DeploymentService::get_class_helper().GetNestedType("<PlanCourse>d__134");
+      static auto class_helper = DeploymentService::get_class_helper().GetNestedType("<PlanCourse>d__134");
       return class_helper;
     }
   };

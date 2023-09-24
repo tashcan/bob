@@ -21,15 +21,12 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(tomlplusplus)
 
-include(FetchContent)
-
-# FetchContent_Declare(
-#       spud
-#       GIT_REPOSITORY "https://github.com/tashcan/spud.git"
-#       GIT_TAG origin/main
-# )
-
-# FetchContent_MakeAvailable(spud)
+FetchContent_Declare(
+      spud
+      GIT_REPOSITORY "https://github.com/tashcan/spud.git"
+      GIT_TAG origin/main
+)
+FetchContent_MakeAvailable(spud)
 
 SET(TARGET_H
     Header.h
@@ -52,18 +49,18 @@ SET(TARGET_SRC
 SET(ABSL_PROPAGATE_CXX_STD TRUE)
 
 SET(PATCHES
-src/patches/parts/buff_fixes.cc
-src/patches/parts/chat.cc
-src/patches/parts/disable_banners.cc
-src/patches/parts/fix_pan.cc
-src/patches/parts/fix_unity_web_request.cc
-src/patches/parts/free_resize.cc
-src/patches/parts/hotkeys.cc
-src/patches/parts/improve_responsiveness.cc
-src/patches/parts/ui_scale.cc
-src/patches/parts/misc.cc
-src/patches/parts/testing.cc
-src/patches/parts/zoom.cc
+    src/patches/parts/buff_fixes.cc
+    src/patches/parts/chat.cc
+    src/patches/parts/disable_banners.cc
+    src/patches/parts/fix_pan.cc
+    src/patches/parts/fix_unity_web_request.cc
+    src/patches/parts/free_resize.cc
+    src/patches/parts/hotkeys.cc
+    src/patches/parts/improve_responsiveness.cc
+    src/patches/parts/ui_scale.cc
+    src/patches/parts/misc.cc
+    src/patches/parts/testing.cc
+    src/patches/parts/zoom.cc
 )
 
 SET(PRIME
@@ -113,7 +110,23 @@ SET(PRIME
     "src/prime/CallbackContainer.h"
 )
 
-add_library(stfc-communty-patch SHARED ${TARGET_SRC} ${PATCHES} ${PRIME} src/version.def "src/il2cpp/il2cpp_helper.h" "src/prime/TabBarViewController.h" "src/prime/IList.h" "src/prime/GenericButtonContext.h" "src/prime/ChatPreviewController.h" "src/prime/NavigationInteractionUIContext.h" "src/prime/ViewController.h" "src/prime/PreScanTargetWidget.h" "src/prime/VisibilityController.h" "src/prime/ObjectViewerBaseWidget.h" "src/prime/AspectRatioConstraintHandler.h" "src/prime/RewardsButtonWidget.h" "src/prime/IEnumerator.h")
+add_library(stfc-communty-patch SHARED ${TARGET_SRC} ${PATCHES} ${PRIME} 
+    src/version.def
+    "src/il2cpp/il2cpp_helper.h"
+    "src/prime/TabBarViewController.h"
+    "src/prime/IList.h"
+    "src/prime/GenericButtonContext.h"
+    "src/prime/ChatPreviewController.h"
+    "src/prime/NavigationInteractionUIContext.h"
+    "src/prime/ViewController.h"
+    "src/prime/PreScanTargetWidget.h"
+    "src/prime/VisibilityController.h"
+    "src/prime/ObjectViewerBaseWidget.h"
+    "src/prime/AspectRatioConstraintHandler.h"
+    "src/prime/RewardsButtonWidget.h"
+    "src/prime/IEnumerator.h"
+)
+
 set_property(TARGET stfc-communty-patch PROPERTY CXX_STANDARD 20)
 set_property(TARGET stfc-communty-patch PROPERTY CXX_STANDARD_REQUIRED ON)
 
