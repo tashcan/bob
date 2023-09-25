@@ -2,6 +2,7 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
+#include <cstdio>
 #include <prime/EntityGroup.h>
 #include <prime/HttpResponse.h>
 #include <prime/ServiceResponse.h>
@@ -241,7 +242,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
           }
         }
         PostSyncData(resource_array.dump());
-      } else if (result.contains("starbase_modules")) {
+      } if (result.contains("starbase_modules")) {
         auto starbase_array = json::array();
         for (const auto& resource : result["starbase_modules"].get<json::object_t>()) {
           auto id    = resource.second["id"].get<uint64_t>();
@@ -252,7 +253,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
           }
         }
         PostSyncData(starbase_array.dump());
-      } else if (result.contains("ships")) {
+      } if (result.contains("ships")) {
         auto ship_array = json::array();
         for (const auto& resource : result["ships"].get<json::object_t>()) {
           ship_array.push_back({{"type", "ship"},
@@ -263,6 +264,8 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                 {"components", resource.second["components"]}});
         }
         PostSyncData(ship_array.dump());
+        std::string ship_array_dump = ship_array.dump();
+        printf("%s\n", ship_array_dump.c_str());
       }
     } catch (json::exception e) {
       //
