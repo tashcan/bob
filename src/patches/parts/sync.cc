@@ -169,7 +169,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
         auto starbase_array = json::array();
         for (const auto& resource : result["starbase_modules"].get<json::object_t>()) {
           starbase_array.push_back(
-              {{"type", "resource"}, {"bid", resource.second["id"]}, {"level", resource.second["level"]}});
+              {{"type", "module"}, {"bid", resource.second["id"]}, {"level", resource.second["level"]}});
         }
         PostSyncData(starbase_array.dump());
       } else if (result.contains("ships")) {
