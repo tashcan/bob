@@ -2,7 +2,6 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
-#include <cstdio>
 #include <prime/EntityGroup.h>
 #include <prime/HttpResponse.h>
 #include <prime/ServiceResponse.h>
@@ -80,9 +79,12 @@ static void PostSyncData(std::string post_data)
 
       HINTERNET hRequest = ::HttpOpenRequestA(hConnect, "POST", "/sync/", 0, 0, 0, flags, 0);
       if (hRequest != nullptr) {
-        const char szHeaders[] = "Content-Type:application/json\nAccept:*";
-        const auto was_sent =
-            ::HttpSendRequestA(hRequest, szHeaders, sizeof(szHeaders) - 1, post_data.data(), post_data.size());
+        const char* scToken = Config::Get().sync_token.c_str();
+        char        szHeaders[1024];
+        sprintf(szHeaders,
+                "Content-Type: application/json\nAccept: *\nSC-Sync-Token: %s\n",scToken);
+            const auto was_sent =
+                ::HttpSendRequestA(hRequest, szHeaders, strlen(szHeaders), post_data.data(), post_data.size());
 
         if (!was_sent) {
           DWORD dwErr = GetLastError();
@@ -264,8 +266,6 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                 {"components", resource.second["components"]}});
         }
         PostSyncData(ship_array.dump());
-        std::string ship_array_dump = ship_array.dump();
-        printf("%s\n", ship_array_dump.c_str());
       }
     } catch (json::exception e) {
       //

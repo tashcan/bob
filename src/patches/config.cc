@@ -80,6 +80,7 @@ void Config::Load()
 
   this->sync_host = config["sync"]["host"].value_or("");
   this->sync_port = config["sync"]["port"].value_or(80);
+  this->sync_token = config["sync"]["token"].value_or("");
 
   std::string disabled_banner_types_str = config["ui"]["disabled_banner_types"].value_or("");
 

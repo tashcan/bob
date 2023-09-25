@@ -58,4 +58,5 @@ public:
 
   std::string sync_host;
   int         sync_port;
+  std::string sync_token;
 };
