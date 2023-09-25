@@ -165,7 +165,7 @@ void InstallTempCrashFixes()
   auto BuffService_helper =
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Services", "BuffService");
 
-  auto ptr_extract_buffs_of_type = BuffService_helper.GetMethod(xorstr_("ExtractBuffsOfType"));
+  auto ptr_extract_buffs_of_type = BuffService_helper.GetMethod("ExtractBuffsOfType");
   SPUD_STATIC_DETOUR(ptr_extract_buffs_of_type, ExtractBuffsOfType_Hook);
 
   auto shop_scene_manager = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Shop", "ShopSceneManager");
