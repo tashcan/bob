@@ -54,11 +54,14 @@ void GameServerModelRegistry_HandleBinaryObjects(auto original, void* _this, Ser
 
 static void PostSyncData(std::string post_data)
 {
+  if (post_data == "[]") {
+    return;
+  }
+
   if (Config::Get().sync_host.empty()) {
     return;
   }
 
-  // initialize WinInet
   HINTERNET hInternet = ::InternetOpen(L"stfc community patch", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
   if (hInternet != nullptr) {
     DWORD timeout = 1 * 1000;
@@ -76,7 +79,15 @@ static void PostSyncData(std::string post_data)
 
       HINTERNET hRequest = ::HttpOpenRequestA(hConnect, "POST", "/sync/", 0, 0, 0, flags, 0);
       if (hRequest != nullptr) {
-        const auto was_sent = ::HttpSendRequest(hRequest, nullptr, 0, post_data.data(), post_data.size());
+        const char szHeaders[] = "Content-Type:application/json\nAccept:*";
+        const auto was_sent =
+            ::HttpSendRequestA(hRequest, szHeaders, sizeof(szHeaders) - 1, post_data.data(), post_data.size());
+
+        if (!was_sent) {
+          DWORD dwErr = GetLastError();
+          dwErr       = dwErr;
+        }
+
         ::InternetCloseHandle(hRequest);
       }
       ::InternetCloseHandle(hConnect);
@@ -84,6 +95,53 @@ static void PostSyncData(std::string post_data)
     ::InternetCloseHandle(hInternet);
   }
 }
+
+struct ResourceState {
+  ResourceState(int64_t amount = -1)
+      : amount(amount)
+  {
+  }
+
+  inline operator int64_t() const
+  {
+    return amount;
+  }
+
+private:
+  int64_t amount = -1;
+};
+
+struct RankLevelState {
+  RankLevelState(int64_t a = -1, int64_t b = -1)
+      : a(a)
+      , b(b)
+  {
+  }
+
+  bool operator==(const RankLevelState& other) const
+  {
+    return this->a == other.a && this->b == other.b;
+  }
+
+private:
+  int64_t a = -1;
+  int64_t b = -1;
+};
+
+struct pairhash {
+public:
+  template <typename T, typename U> std::size_t operator()(const std::pair<T, U>& x) const
+  {
+    return std::hash<T>()(x.first) ^ std::hash<U>()(x.second);
+  }
+};
+
+static std::unordered_map<uint64_t, ResourceState>                               resource_states;
+static std::unordered_map<uint64_t, ResourceState>                               module_states;
+static std::unordered_map<uint64_t, RankLevelState>                              officer_states;
+static std::unordered_map<uint64_t, RankLevelState>                              ft_states;
+static std::unordered_map<std::pair<int64_t, int64_t>, RankLevelState, pairhash> trait_states;
+static std::unordered_set<int64_t>                                               mission_states;
 
 void HandleEntityGroup(EntityGroup* entity_group)
 {
@@ -96,14 +154,16 @@ void HandleEntityGroup(EntityGroup* entity_group)
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto mission_array = json::array();
       for (const auto& mission : response.completedmissions()) {
-        mission_array.push_back({{"type", "mission"}, {"mid", mission}});
+        if (!mission_states.contains(mission)) {
+          mission_states.insert(mission);
+          mission_array.push_back({{"type", "mission"}, {"mid", mission}});
+        }
       }
       PostSyncData(mission_array.dump());
     }
   } else if (type == EntityGroup::Type::PlayerInventories) {
     auto response = Digit::PrimeServer::Models::InventoryResponse();
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
-
       auto inventory_object = json();
       for (const auto& inventory : response.inventories()) {
         for (const auto& item : inventory.second.items()) {
@@ -127,8 +187,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto officers_array = json::array();
       for (const auto& officer : response.officers()) {
-        officers_array.push_back(
-            {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}});
+        if (officer_states[officer.id()] != RankLevelState{officer.rankindex(), officer.level()}) {
+          officer_states[officer.id()] = RankLevelState{officer.rankindex(), officer.level()};
+          officers_array.push_back(
+              {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}});
+        }
       }
       PostSyncData(officers_array.dump());
     }
@@ -137,7 +200,10 @@ void HandleEntityGroup(EntityGroup* entity_group)
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto ft_array = json::array();
       for (const auto& ft : response.forbiddentechs()) {
-        ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}});
+        if (ft_states[ft.id()] != RankLevelState{ft.tier(), ft.level()}) {
+          ft_states[ft.id()] = RankLevelState{ft.tier(), ft.level()};
+          ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}});
+        }
       }
       PostSyncData(ft_array.dump());
     }
@@ -146,8 +212,14 @@ void HandleEntityGroup(EntityGroup* entity_group)
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto trait_array = json::array();
       for (const auto& trait : response.activetraits()) {
-        trait_array.push_back(
-            {{"type", "trait"}, {"oid", response.officerid()}, {"tid", trait.first}, {"level", trait.second.level()}});
+        const auto key = std::make_pair(response.officerid(), trait.first);
+        if (trait_states[key] != trait.second.level()) {
+          trait_states[key] = trait.second.level();
+          trait_array.push_back({{"type", "trait"},
+                                 {"oid", response.officerid()},
+                                 {"tid", trait.first},
+                                 {"level", trait.second.level()}});
+        }
       }
       PostSyncData(trait_array.dump());
     }
@@ -161,15 +233,23 @@ void HandleEntityGroup(EntityGroup* entity_group)
       if (result.contains("resources")) {
         auto resource_array = json::array();
         for (const auto& resource : result["resources"].get<json::object_t>()) {
-          resource_array.push_back(
-              {{"type", "resource"}, {"rid", resource.first}, {"amount", resource.second["current_amount"]}});
+          auto id     = std::stoll(resource.first);
+          auto amount = resource.second["current_amount"].get<int64_t>();
+          if (resource_states[id] != amount) {
+            resource_states[id] = amount;
+            resource_array.push_back({{"type", "resource"}, {"rid", id}, {"amount", amount}});
+          }
         }
         PostSyncData(resource_array.dump());
       } else if (result.contains("starbase_modules")) {
         auto starbase_array = json::array();
         for (const auto& resource : result["starbase_modules"].get<json::object_t>()) {
-          starbase_array.push_back(
-              {{"type", "module"}, {"bid", resource.second["id"]}, {"level", resource.second["level"]}});
+          auto id    = resource.second["id"].get<uint64_t>();
+          auto level = resource.second["level"].get<int64_t>();
+          if (module_states[id] != level) {
+            module_states[id] = level;
+            starbase_array.push_back({{"type", "module"}, {"bid", id}, {"level", level}});
+          }
         }
         PostSyncData(starbase_array.dump());
       } else if (result.contains("ships")) {
@@ -184,7 +264,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
         }
         PostSyncData(ship_array.dump());
       }
-    } catch (...) {
+    } catch (json::exception e) {
       //
     }
   }
