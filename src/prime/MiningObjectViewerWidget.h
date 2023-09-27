@@ -26,7 +26,7 @@ public:
     MineClicked(this);
   }
 
-private:
+public:
   friend class ObjectFinder<MiningObjectViewerWidget>;
   friend class ObjectViewerBaseWidget<MiningObjectViewerWidget>;
   static IL2CppClassHelper& get_class_helper()
