@@ -52,6 +52,9 @@ R | When clicking on mine/player/enemy, perform non-default action (eg, scan)
 V | When clicking on mine/player/enemy, toggle view of cargo or default screen
 C | Focus Chat (or Open Alliance Chat - Full Screen)
 Alt-C | Focus Chat (or Open Alliance Chat - Side of Screen)
+MINUS | Zoom (min)
+EQUAL | Zoom (default)
+BACKSPACE | Zoom (max)
 
 ## Building
 

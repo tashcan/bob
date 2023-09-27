@@ -6,6 +6,8 @@
 
 - add parsed toml config output to show what settings are in use
 
+- add zoom shortcuts (minus, equals, backspace) to provide max, default and minimum zoom
+
 ## 0.4.0
 
 - add better handling for Pike/Picard, those will no longer buff things that don't activate in combat
