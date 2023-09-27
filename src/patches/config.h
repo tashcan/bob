@@ -56,7 +56,6 @@ public:
   bool always_skip_reveal_sequence;
   bool stay_in_bundle_after_summary;
 
-  std::string sync_host;
-  int         sync_port;
+  std::string sync_url;
   std::string sync_token;
 };

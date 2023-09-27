@@ -11,8 +11,79 @@
 #include "config.h"
 
 #include <nlohmann/json.hpp>
+#include <spdlog/spdlog.h>
 
+#include <winrt/Windows.Foundation.h>
+#include <winrt/Windows.Web.Http.Headers.h>
+
+#include <condition_variable>
+#include <queue>
 #include <string>
+
+namespace http
+{
+using namespace winrt;
+using namespace Windows::Foundation;
+
+static auto get_client()
+{
+  Windows::Web::Http::HttpClient httpClient;
+  auto                           headers{httpClient.DefaultRequestHeaders()};
+  std::wstring                   header = L"stfc community patch";
+  if (!headers.UserAgent().TryParseAdd(header)) {
+    throw L"Invalid header value: " + header;
+  }
+  auto token = to_hstring(Config::Get().sync_token);
+  if (!token.empty()) {
+    headers.Append(L"stfc-sync-token", token);
+  }
+  return httpClient;
+}
+
+static void send_data(std::wstring post_data)
+{
+  if (Config::Get().sync_url.empty()) {
+    return;
+  }
+
+  using namespace Windows::Storage::Streams;
+  try {
+    Windows::Web::Http::HttpResponseMessage httpResponseMessage;
+    std::wstring                            httpResponseBody;
+
+    auto httpClient = get_client();
+    Uri  requestUri{winrt::to_hstring(Config::Get().sync_url)};
+
+    Windows::Web::Http::HttpStringContent jsonContent(post_data, UnicodeEncoding::Utf8, L"application/json");
+    httpResponseMessage = httpClient.PostAsync(requestUri, jsonContent).get();
+    httpResponseMessage.EnsureSuccessStatusCode();
+  } catch (winrt::hresult_error const& ex) {
+    spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+  }
+}
+
+static void send_data(std::string post_data)
+{
+  return send_data(std::wstring(winrt::to_hstring(post_data)));
+}
+
+} // namespace http
+
+std::mutex              m;
+std::condition_variable cv;
+std::queue<std::string> sync_data_queue;
+
+void queue_data(std::string data)
+{
+  if (data == "[]")
+    return;
+
+  {
+    std::lock_guard lk(m);
+    sync_data_queue.push(data);
+  }
+  cv.notify_all();
+}
 
 void HandleEntityGroup(EntityGroup* entity_group);
 
@@ -43,60 +114,6 @@ void GameServerModelRegistry_HandleBinaryObjects(auto original, void* _this, Ser
   }
 
   return original(_this, service_response);
-}
-
-#include <TlHelp32.h>
-#include <Windows.h>
-#include <shellapi.h>
-#include <wininet.h>
-
-#pragma comment(lib, "Wininet.lib")
-
-static void PostSyncData(std::string post_data)
-{
-  if (post_data == "[]") {
-    return;
-  }
-
-  if (Config::Get().sync_host.empty()) {
-    return;
-  }
-
-  HINTERNET hInternet = ::InternetOpen(L"stfc community patch", INTERNET_OPEN_TYPE_PRECONFIG, NULL, NULL, 0);
-  if (hInternet != nullptr) {
-    DWORD timeout = 1 * 1000;
-    auto  result  = InternetSetOption(hInternet, INTERNET_OPTION_RECEIVE_TIMEOUT, &timeout, sizeof(timeout));
-    InternetSetOption(hInternet, INTERNET_OPTION_SEND_TIMEOUT, &timeout, sizeof(timeout));
-    InternetSetOption(hInternet, INTERNET_OPTION_CONNECT_TIMEOUT, &timeout, sizeof(timeout));
-
-    HINTERNET hConnect = ::InternetConnectA(hInternet, Config::Get().sync_host.c_str(), Config::Get().sync_port, 0, 0,
-                                            INTERNET_SERVICE_HTTP, 0, 0);
-    if (hConnect != nullptr) {
-      auto flags = INTERNET_FLAG_PRAGMA_NOCACHE | INTERNET_FLAG_RELOAD;
-      if (Config::Get().sync_port == 443) {
-        flags |= INTERNET_FLAG_SECURE;
-      }
-
-      HINTERNET hRequest = ::HttpOpenRequestA(hConnect, "POST", "/sync/", 0, 0, 0, flags, 0);
-      if (hRequest != nullptr) {
-        const char* scToken = Config::Get().sync_token.c_str();
-        char        szHeaders[1024];
-        sprintf(szHeaders,
-                "Content-Type: application/json\nAccept: *\nSC-Sync-Token: %s\n",scToken);
-            const auto was_sent =
-                ::HttpSendRequestA(hRequest, szHeaders, strlen(szHeaders), post_data.data(), post_data.size());
-
-        if (!was_sent) {
-          DWORD dwErr = GetLastError();
-          dwErr       = dwErr;
-        }
-
-        ::InternetCloseHandle(hRequest);
-      }
-      ::InternetCloseHandle(hConnect);
-    }
-    ::InternetCloseHandle(hInternet);
-  }
 }
 
 struct ResourceState {
@@ -162,7 +179,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
           mission_array.push_back({{"type", "mission"}, {"mid", mission}});
         }
       }
-      PostSyncData(mission_array.dump());
+      queue_data(mission_array.dump());
     }
   } else if (type == EntityGroup::Type::PlayerInventories) {
     auto response = Digit::PrimeServer::Models::InventoryResponse();
@@ -183,20 +200,23 @@ void HandleEntityGroup(EntityGroup* entity_group)
       for (const auto& research : response.researchprojectlevels()) {
         research_array.push_back({{"type", "research"}, {"rid", research.first}, {"level", research.second}});
       }
-      PostSyncData(research_array.dump());
+      queue_data(research_array.dump());
     }
   } else if (type == EntityGroup::Type::Officers) {
     auto response = Digit::PrimeServer::Models::OfficersResponse();
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto officers_array = json::array();
       for (const auto& officer : response.officers()) {
+        if (officer.rankindex() == 0) {
+          continue;
+        }
         if (officer_states[officer.id()] != RankLevelState{officer.rankindex(), officer.level()}) {
           officer_states[officer.id()] = RankLevelState{officer.rankindex(), officer.level()};
           officers_array.push_back(
               {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}});
         }
       }
-      PostSyncData(officers_array.dump());
+      queue_data(officers_array.dump());
     }
   } else if (type == EntityGroup::Type::ForbiddenTechs) {
     auto response = Digit::PrimeServer::Models::ForbiddenTechsResponse();
@@ -208,7 +228,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
           ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}});
         }
       }
-      PostSyncData(ft_array.dump());
+      queue_data(ft_array.dump());
     }
   } else if (type == EntityGroup::Type::ActiveOfficerTraits) {
     auto response = Digit::PrimeServer::Models::ActiveOfficerTraits();
@@ -224,7 +244,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                  {"level", trait.second.level()}});
         }
       }
-      PostSyncData(trait_array.dump());
+      queue_data(trait_array.dump());
     }
   } else if (type == EntityGroup::Type::Json) {
     try {
@@ -238,13 +258,17 @@ void HandleEntityGroup(EntityGroup* entity_group)
         for (const auto& resource : result["resources"].get<json::object_t>()) {
           auto id     = std::stoll(resource.first);
           auto amount = resource.second["current_amount"].get<int64_t>();
+          if (amount == 0) {
+            continue;
+          }
           if (resource_states[id] != amount) {
             resource_states[id] = amount;
             resource_array.push_back({{"type", "resource"}, {"rid", id}, {"amount", amount}});
           }
         }
-        PostSyncData(resource_array.dump());
-      } if (result.contains("starbase_modules")) {
+        queue_data(resource_array.dump());
+      }
+      if (result.contains("starbase_modules")) {
         auto starbase_array = json::array();
         for (const auto& resource : result["starbase_modules"].get<json::object_t>()) {
           auto id    = resource.second["id"].get<uint64_t>();
@@ -254,8 +278,9 @@ void HandleEntityGroup(EntityGroup* entity_group)
             starbase_array.push_back({{"type", "module"}, {"bid", id}, {"level", level}});
           }
         }
-        PostSyncData(starbase_array.dump());
-      } if (result.contains("ships")) {
+        queue_data(starbase_array.dump());
+      }
+      if (result.contains("ships")) {
         auto ship_array = json::array();
         for (const auto& resource : result["ships"].get<json::object_t>()) {
           ship_array.push_back({{"type", "ship"},
@@ -265,10 +290,35 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                 {"hull_id", resource.second["hull_id"]},
                                 {"components", resource.second["components"]}});
         }
-        PostSyncData(ship_array.dump());
+        queue_data(ship_array.dump());
       }
     } catch (json::exception e) {
       //
+    }
+  }
+}
+
+void ship_sync_data()
+{
+  winrt::init_apartment();
+
+  for (;;) {
+    {
+      std::unique_lock lk(m);
+      cv.wait(lk, []() { return !sync_data_queue.empty(); });
+    }
+    const auto sync_data = ([&] {
+      std::lock_guard lk(m);
+      auto            data = sync_data_queue.front();
+      sync_data_queue.pop();
+      return data;
+    })();
+    try {
+      http::send_data(sync_data);
+    } catch (winrt::hresult_error const& ex) {
+      spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+    } catch (const std::wstring& sz) {
+      spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
     }
   }
 }
@@ -306,4 +356,6 @@ void InstallSyncPatches()
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimePlatform.Core", "PlatformModelRegistry");
   ptr = platform_model_registry.GetMethod("ProcessResultInternal");
   SPUD_STATIC_DETOUR(ptr, GameServerModelRegistry_ProcessResultInternal);
+
+  std::thread(ship_sync_data).detach();
 }
