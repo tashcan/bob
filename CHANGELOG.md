@@ -8,6 +8,8 @@
 
 - add zoom shortcuts (minus, equals, backspace) to provide max, default and minimum zoom
 
+- add more keyboard shortcuts for missions (daily, away, etc), station views, quick chat
+
 ## 0.4.0
 
 - add better handling for Pike/Picard, those will no longer buff things that don't activate in combat

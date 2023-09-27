@@ -30,6 +30,7 @@
   - station
   - hostile
   - armada
+- Press ESCAPE to remove pre-scan viewers
 - Skip reveal sections when opening chests
 - Exit section when collecting gifts
 - Create default toml file settings file if none exists
@@ -52,20 +53,28 @@ R | When clicking on mine/player/enemy, perform non-default action (eg, scan)
 V | When clicking on mine/player/enemy, toggle view of cargo or default screen
 C | Focus Chat (or Open Alliance Chat - Full Screen)
 Alt-C | Focus Chat (or Open Alliance Chat - Side of Screen)
+
+The following keybinds have recently been added:
+
+Key | Shortcut
+--: | ---
 MINUS | Zoom (min)
 EQUAL | Zoom (default)
 BACKSPACE | Zoom (max)
+B | Bookmarks
+F | Factions
+Shift-F | reFinery
+I | Inventory
+M | Active Missions
+O | Command Center
+Shift-O | Officers
+Shift-Q | Q-Trials
+Shift-T | Away Teams
+X | ExoComp
+Z | Daily Missions
+` | Open Alliance Chat - Side of Screen
 
 ## Building
-
-This project uses CMake, so the simplest way to build it on Windows:
-
-```ps1
-mkdir build
-cd build
-cmake ../
-cmake --build .
-```
 
 First clone and initialise the repository:
 
