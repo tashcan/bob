@@ -80,6 +80,16 @@ void Config::Load()
 
   this->sync_url   = config["sync"]["url"].value_or("");
   this->sync_token = config["sync"]["token"].value_or("");
+  this->sync_battlelogs        = config["sync"]["battlelogs"].value_or(false);
+  this->sync_resources         = config["sync"]["resources"].value_or(false);
+  this->sync_officer      = config["sync"]["officer"].value_or(false);
+  this->sync_missions     = config["sync"]["missions"].value_or(false);
+  this->sync_research     = config["sync"]["research"].value_or(false);
+  this->sync_tech           = config["sync"]["tech"].value_or(false);
+  this->sync_traits     = config["sync"]["traits"].value_or(false);
+  this->sync_buildings           = config["sync"]["buildings"].value_or(false);
+  this->sync_ships     = config["sync"]["ships"].value_or(false);
+
 
   std::string disabled_banner_types_str = config["ui"]["disabled_banner_types"].value_or("");
 
