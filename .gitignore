@@ -1,3 +1,5 @@
+.vscode/
 .vs/
 out/
 build/
+*.code-workspace

@@ -3,18 +3,25 @@
 
 #include <spud/detour.h>
 
+#include "prime/AllianceStarbaseObjectViewerWidget.h"
+#include "prime/AnimatedRewardsScreenViewController.h"
 #include "prime/ArmadaObjectViewerWidget.h"
+#include "prime/BookmarksManager.h"
+#include "prime/CelestialObjectViewerWidget.h"
 #include "prime/ChatManager.h"
 #include "prime/ChatMessageListLocalViewController.h"
 #include "prime/DeploymentManager.h"
+#include "prime/EmbassyObjectViewer.h"
 #include "prime/EventSystem.h"
 #include "prime/FleetBarViewController.h"
 #include "prime/FleetLocalViewController.h"
 #include "prime/FleetsManager.h"
 #include "prime/FullScreenChatViewController.h"
+#include "prime/HousingObjectViewerWidget.h"
 #include "prime/Hub.h"
 #include "prime/KeyCode.h"
 #include "prime/MiningObjectViewerWidget.h"
+#include "prime/MissionsObjectViewerWidget.h"
 #include "prime/NavigationInteractionUIViewController.h"
 #include "prime/NavigationSectionManager.h"
 #include "prime/PreScanTargetWidget.h"
@@ -34,8 +41,13 @@ static bool reset_focus_next_frame = false;
 static int  show_info_pending      = 0;
 
 bool     force_space_action_next_frame = false;
+
+void     ChangeNavigationSection(SectionID sectionID);
 void     ExecuteSpaceAction(FleetBarViewController* fleet_bar, bool (*GetKeyDownInt)(KeyCode));
 HullType GetHullTypeFromBattleTarget(BattleTargetData* context);
+void     GotoSection(SectionID sectionID, void* screen_data = nullptr);
+bool     DidHideViewers();
+
 void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 {
   if (Config::Get().use_scopely_hotkeys) {
@@ -49,8 +61,10 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       il2cpp_resolve_icall<bool(KeyCode)>("UnityEngine.Input::GetKeyDownInt(UnityEngine.KeyCode)");
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
 
-  auto       section_manager = Hub::get_SectionManager();
-  const auto current_section = section_manager->CurrentSection;
+  auto       section_manager  = Hub::get_SectionManager();
+  const auto current_section  = section_manager->CurrentSection;
+
+  const auto is_shift_pressed = GetKeyInt(KeyCode::LeftShift) || GetKeyInt(KeyCode::RightShift);
 
   const auto is_in_chat = current_section == SectionID::Chat_Private_Message
                           || current_section == SectionID::Chat_Alliance || current_section == SectionID::Chat_Main
@@ -104,7 +118,7 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
   if (ship_select_request != -1 && !is_input_focused()) {
 
-    if (GetKeyInt(KeyCode::LeftShift) || GetKeyInt(KeyCode::RightShift)) {
+    if (is_shift_pressed) {
       FleetPlayerData* foundDisco = nullptr;
       for (int discoIdx = 0; discoIdx < 10; ++discoIdx) {
         auto fleetPlayerData = FleetsManager::Instance()->GetFleetPlayerData(discoIdx);
@@ -160,52 +174,93 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   }
 
   if (!is_in_chat) {
-    if (GetKeyDownInt(KeyCode::C) && !is_input_focused()) {
-      if (auto chat_manager = ChatManager::Instance(); chat_manager) {
-        if (chat_manager->IsSideChatOpen) {
-          auto view_controller = ObjectFinder<FullScreenChatViewController>::Get();
-          view_controller->_messageList->_inputField->ActivateInputField();
-        } else if (GetKeyInt(KeyCode::LeftAlt) || GetKeyInt(KeyCode::RightAlt)) {
-          chat_manager->OpenChannel(ChatChannelCategory::Alliance, ChatViewMode::Side);
-        } else {
-          chat_manager->OpenChannel(ChatChannelCategory::Alliance, ChatViewMode::Fullscreen);
+    if (!is_input_focused()) {
+      if ((GetKeyDownInt(KeyCode::C) || GetKeyDownInt(KeyCode::BackQuote))) {
+        if (auto chat_manager = ChatManager::Instance(); chat_manager) {
+          if (chat_manager->IsSideChatOpen) {
+            auto view_controller = ObjectFinder<FullScreenChatViewController>::Get();
+            view_controller->_messageList->_inputField->ActivateInputField();
+          } else if (GetKeyInt(KeyCode::LeftAlt) || GetKeyInt(KeyCode::RightAlt) || GetKeyDownInt(KeyCode::BackQuote)) {
+            chat_manager->OpenChannel(ChatChannelCategory::Alliance, ChatViewMode::Side);
+          } else {
+            chat_manager->OpenChannel(ChatChannelCategory::Alliance, ChatViewMode::Fullscreen);
+          }
         }
+      } else if (GetKeyDownInt(KeyCode::Q) && is_shift_pressed) {
+        return GotoSection(SectionID::ChallengeSelection);
+      } else if (GetKeyDownInt(KeyCode::B)) {
+        auto bookmark_manager = BookmarksManager::Instance();
+        if (bookmark_manager) {
+          bookmark_manager->ViewBookmarks();
+          return;
+        }
+        return GotoSection(SectionID::Bookmarks_Main);
+      } else if (GetKeyDownInt(KeyCode::F)) {
+        if (is_shift_pressed) {
+          return GotoSection(SectionID::Shop_Refining_List);
+        } else {
+          return GotoSection(SectionID::Shop_MainFactions);
+        }
+      } else if (GetKeyDownInt(KeyCode::G)) {
+        if (is_shift_pressed) {
+          return GotoSection(SectionID::Starbase_Exterior);
+        } else {
+          return ChangeNavigationSection(SectionID::Navigation_Galaxy);
+        }
+      } else if (GetKeyDownInt(KeyCode::H)) {
+        if (is_shift_pressed) {
+          return GotoSection(SectionID::Starbase_Interior);
+        } else {
+          return ChangeNavigationSection(SectionID::Navigation_System);
+        }
+      } else if (GetKeyDownInt(KeyCode::I)) {
+        return GotoSection(SectionID::InventoryList);
+      } else if (GetKeyDownInt(KeyCode::M)) {
+        return GotoSection(SectionID::Missions_AcceptedList);
+      } else if (GetKeyDownInt(KeyCode::O)) {
+        if (is_shift_pressed) {
+          return GotoSection(SectionID::OfficerInventory);
+        } else {
+          // TODO: Does not work properly, defaults to first FleetCommander (spock, rather than selected fleet commander)
+          return GotoSection(SectionID::FleetCommander_Showcase);
+        }
+      } else if (GetKeyDownInt(KeyCode::T)) {
+        if (is_shift_pressed) {
+          return GotoSection(SectionID::Missions_AwayTeamsList);
+        } else {
+          return GotoSection(SectionID::Tournament_Group_Selection);
+        }
+      } else if (GetKeyDownInt(KeyCode::X)) {
+        return GotoSection(SectionID::Consumables);
+      } else if (GetKeyDownInt(KeyCode::Z)) {
+        return GotoSection(SectionID::Missions_DailyGoals);
       }
-    } else if (GetKeyDownInt(KeyCode::G) && !is_input_focused()) {
-      const auto galaxy_section_data =
-          Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Navigation_Galaxy);
-      if (galaxy_section_data) {
-        Hub::get_SectionManager()->TriggerSectionChange(SectionID::Navigation_Galaxy, galaxy_section_data);
-      } else {
-        NavigationSectionManager::ChangeNavigationSection(SectionID::Navigation_Galaxy);
-      }
-    } else if (GetKeyDownInt(KeyCode::H) && !is_input_focused()) {
-      const auto system_section_data =
-          Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Navigation_System);
-      if (system_section_data) {
-        Hub::get_SectionManager()->TriggerSectionChange(SectionID::Navigation_System, system_section_data);
-      } else {
-        NavigationSectionManager::ChangeNavigationSection(SectionID::Navigation_System);
-      }
-    } else if (GetKeyDownInt(KeyCode::T) && !is_input_focused()) {
-      Hub::get_SectionManager()->TriggerSectionChange(SectionID::Tournament_Group_Selection, nullptr);
     }
-  } else if (is_in_chat) {
+  } else {
     if (GetKeyInt(KeyCode::LeftControl)) {
       if (auto chat_manager = ChatManager::Instance(); chat_manager) {
         if (GetKeyDownInt(KeyCode::Alpha1)) {
-          chat_manager->OpenChannel(ChatChannelCategory::Global);
+          return chat_manager->OpenChannel(ChatChannelCategory::Global);
         } else if (GetKeyDownInt(KeyCode::Alpha2)) {
-          chat_manager->OpenChannel(ChatChannelCategory::Alliance);
+          return chat_manager->OpenChannel(ChatChannelCategory::Alliance);
         } else if (GetKeyDownInt(KeyCode::Alpha3)) {
-          chat_manager->OpenChannel(ChatChannelCategory::Private);
+          return chat_manager->OpenChannel(ChatChannelCategory::Private);
         }
       }
     } else if (GetKeyDownInt(KeyCode::V) && !is_input_focused()) {
       if (auto view_controller = ObjectFinder<FullScreenChatViewController>::Get(); view_controller) {
         if (view_controller->_messageList && view_controller->_messageList->_inputField) {
-          view_controller->_messageList->_inputField->ActivateInputField();
+          return view_controller->_messageList->_inputField->ActivateInputField();
         }
+      }
+    }
+  }
+
+  // Dismiss the golden rewards screen when escape or space is pressed.
+  if (GetKeyDownInt(KeyCode::Space) || GetKeyDownInt(KeyCode::Escape)) {
+    if (auto reward_controller = ObjectFinder<AnimatedRewardsScreenViewController>::Get(); reward_controller) {
+      if (reward_controller->IsActive()) {
+        return reward_controller->GoBackToLastSection();
       }
     }
   }
@@ -259,6 +314,14 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     }
     show_info_pending -= 1;
   }
+
+  // Lets try to remove the pre-scan because we hit escape and it's visible
+  if (GetKeyDownInt(KeyCode::Escape)) {
+    if (DidHideViewers()) {
+      return;
+    }
+  }
+
   // {
   //  auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
   //  for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
@@ -274,6 +337,51 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   // Config::Get().Load();
 
   original(_this);
+}
+
+template <typename T> inline bool DidHideViewersOfType() {
+  auto widgets = ObjectFinder<T>::GetAll();
+  for (auto i = 0; i < widgets->max_length; ++i) {
+    auto       widget  = il2cpp_get_array_element<T>(widgets, i);
+    const auto visible = widget
+        && (widget->_visibilityController->_state == VisibilityState::Visible
+        || widget->_visibilityController->_state == VisibilityState::Show);
+    if (visible) {
+      widget->HideAllViewers();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool DidHideViewers() {
+  return
+    DidHideViewersOfType<AllianceStarbaseObjectViewerWidget>() ||
+    DidHideViewersOfType<ArmadaObjectViewerWidget>() ||
+    DidHideViewersOfType<CelestialObjectViewerWidget>() ||
+    DidHideViewersOfType<EmbassyObjectViewer>() ||
+    DidHideViewersOfType<HousingObjectViewerWidget>() ||
+    DidHideViewersOfType<MiningObjectViewerWidget>() ||
+    DidHideViewersOfType<MissionsObjectViewerWidget>() ||
+    DidHideViewersOfType<PreScanTargetWidget>() ||
+    DidHideViewersOfType<HousingObjectViewerWidget>();
+}
+
+void GotoSection(SectionID sectionID, void* section_data)
+{
+  Hub::get_SectionManager()->TriggerSectionChange(sectionID, section_data, false, false, true);
+}
+
+void ChangeNavigationSection(SectionID sectionID)
+{
+  const auto section_data = Hub::get_SectionManager()->_sectionStorage->GetState(sectionID);
+
+  if (section_data) {
+    GotoSection(sectionID, section_data);
+  } else {
+    NavigationSectionManager::ChangeNavigationSection(sectionID);
+  }
 }
 
 void ExecuteSpaceAction(FleetBarViewController* fleet_bar, bool (*GetKeyDownInt)(KeyCode))
@@ -373,6 +481,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar, bool (*GetKeyDownInt)
         if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
           NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
         }
+
         fleet_local_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
       }
     }

@@ -105,6 +105,23 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
     do_absolute_zoom = false;
   }
 
+  bool is_shift_pressed = GetKeyInt(KeyCode::LeftShift) || GetKeyInt(KeyCode::RightShift);
+  if (GetKeyDownInt(KeyCode::Equals) && !is_input_focused()) {
+    if (Config::Get().default_system_zoom > 0.0f) {
+      zoomDelta = Config::Get().default_system_zoom;
+      do_absolute_zoom = true;
+      do_default_zoom = false;
+    }
+  } else if (GetKeyDownInt(KeyCode::Minus) && !is_input_focused()) {
+    zoomDelta = Config::Get().zoom;
+    do_absolute_zoom = true;
+    do_default_zoom = false;
+  } else if (GetKeyDownInt(KeyCode::Backspace) && !is_input_focused()) {
+    zoomDelta = 100;
+    do_absolute_zoom = true;
+    do_default_zoom = false;
+  }
+
   if (do_default_zoom) {
     if (Config::Get().default_system_zoom > 0.0f) {
       do_absolute_zoom = true;
