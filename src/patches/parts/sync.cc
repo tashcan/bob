@@ -408,10 +408,9 @@ void ship_combat_log_data()
 
     using json = nlohmann::json;
 
-    auto ship_array     = json::array();
-    auto battle_json    = json::parse(battle_log);
-    battle_json["type"] = "battlelog";
-    ship_array.push_back(battle_json);
+    auto ship_array  = json::array();
+    auto battle_json = json::parse(battle_log);
+    ship_array.push_back({{"type", "battlelog"}, {"journal", battle_json["journal"]}});
 
     try {
       http::send_data(ship_array.dump());
