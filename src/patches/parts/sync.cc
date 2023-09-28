@@ -221,10 +221,8 @@ void HandleEntityGroup(EntityGroup* entity_group)
           mission_array.push_back({{"type", "mission"}, {"mid", mission}});
         }
       }
-      if (Config::Get().sync_missions == false) {
-        return;
-      } else {
-      queue_data(mission_array.dump());
+      if (Config::Get().sync_missions) {
+        queue_data(mission_array.dump());
       }
     }
   } else if (type == EntityGroup::Type::PlayerInventories) {
@@ -246,9 +244,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
       for (const auto& research : response.researchprojectlevels()) {
         research_array.push_back({{"type", "research"}, {"rid", research.first}, {"level", research.second}});
       }
-      if (Config::Get().sync_research == false) {
-        return;
-      } else {
+      if (Config::Get().sync_research) {
         queue_data(research_array.dump());
       }
     }
@@ -265,11 +261,9 @@ void HandleEntityGroup(EntityGroup* entity_group)
           officers_array.push_back(
               {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}});
         }
-      } 
-      if (Config::Get().sync_officer == false) {
-        return;
-      } else {
-       queue_data(officers_array.dump());
+      }
+      if (Config::Get().sync_officer) {
+        queue_data(officers_array.dump());
       }
     }
   } else if (type == EntityGroup::Type::ForbiddenTechs) {
@@ -282,10 +276,8 @@ void HandleEntityGroup(EntityGroup* entity_group)
           ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}});
         }
       }
-      if (Config::Get().sync_tech == false) {
-        return;
-      } else {
-      queue_data(ft_array.dump());
+      if (Config::Get().sync_tech) {
+        queue_data(ft_array.dump());
       }
     }
   } else if (type == EntityGroup::Type::ActiveOfficerTraits) {
@@ -302,10 +294,8 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                  {"level", trait.second.level()}});
         }
       }
-      if (Config::Get().sync_traits == false) {
-        return;
-      } else {
-      queue_data(trait_array.dump());
+      if (Config::Get().sync_traits) {
+        queue_data(trait_array.dump());
       }
     }
   } else if (type == EntityGroup::Type::Json) {
@@ -322,7 +312,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
             const auto id = header["id"].get<uint64_t>();
             battlelog_states.insert(id);
           }
-        } else {
+        } else if (Config::Get().sync_battlelogs) {
           std::lock_guard lk(m2);
           for (const auto header : headers) {
             const auto id = header["id"].get<uint64_t>();
@@ -332,14 +322,10 @@ void HandleEntityGroup(EntityGroup* entity_group)
             }
           }
         }
-        if (Config::Get().sync_battlelogs == false) {
-          return;
-        } else {
         cv2.notify_all();
-        }
       }
 
-      if (result.contains("resources") ) {
+      if (result.contains("resources")) {
         auto resource_array = json::array();
         for (const auto& resource : result["resources"].get<json::object_t>()) {
           auto id     = std::stoll(resource.first);
@@ -352,10 +338,8 @@ void HandleEntityGroup(EntityGroup* entity_group)
             resource_array.push_back({{"type", "resource"}, {"rid", id}, {"amount", amount}});
           }
         }
-        if (Config::Get().sync_resources == false) {
-          return;
-        } else {
-        queue_data(resource_array.dump());
+        if (Config::Get().sync_resources) {
+          queue_data(resource_array.dump());
         }
       }
       if (result.contains("starbase_modules")) {
@@ -369,9 +353,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
           }
         }
         if (Config::Get().sync_buildings) {
-          return;
-        } else {
-        queue_data(starbase_array.dump());
+          queue_data(starbase_array.dump());
         }
       }
       if (result.contains("ships")) {
@@ -385,9 +367,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                 {"components", resource.second["components"]}});
         }
         if (Config::Get().sync_ships) {
-          return;
-        } else {
-        queue_data(ship_array.dump());
+          queue_data(ship_array.dump());
         }
       }
     } catch (json::exception e) {
