@@ -1,9 +1,8 @@
 #pragma once
 
 #include <il2cpp/il2cpp_helper.h>
-"
 
-    struct RequestDispatcherBase {
+struct RequestDispatcherBase {
 public:
 private:
   friend class ObjectFinder<ScanEngageButtonsWidget>;

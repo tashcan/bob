@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NavigationInteractionUIContext.h"
+#include "ParentObjectViewerViewController.h"
 #include "VisibilityController.h"
 #include "Widget.h"
 
@@ -10,6 +11,7 @@ class ObjectViewerBaseWidget : public Widget<NavigationInteractionUIContext, Obj
 public:
   __declspec(property(get = __get__visibilityController)) VisibilityController* _visibilityController;
   __declspec(property(get = __get_IsInfoShown, put = __set_IsInfoShown)) bool IsInfoShown;
+  __declspec(property(get = __get_Parent)) ParentObjectViewerViewController* Parent;
 
 private:
   friend struct Widget<NavigationInteractionUIContext, ObjectViewerBaseWidget>;
@@ -20,10 +22,24 @@ private:
   }
 
 public:
+  void HideAllViewers() {
+    static auto HideAllViewersMethod = get_class_helper().GetMethod<void()>("HideAllViewers");
+
+    if (HideAllViewersMethod) {
+      HideAllViewersMethod();
+    }
+  }
+
   VisibilityController* __get__visibilityController()
   {
     static auto field = get_class_helper().GetField("_visibilityController");
     return *(VisibilityController**)((ptrdiff_t)this + field.offset());
+  }
+
+  ParentObjectViewerViewController* __get_Parent()
+  {
+    static auto field = get_class_helper().GetProperty("Parent");
+    return field.GetRaw<ParentObjectViewerViewController>(this);
   }
 
   bool __get_IsInfoShown()

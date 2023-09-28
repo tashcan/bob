@@ -1,21 +1,33 @@
-# 0.4.0 (future)
+# Change Log
+
+## 0.5.0 (future)
+
+- add default toml config when none exists with default values
+
+- add parsed toml config output to show what settings are in use
+
+- add zoom shortcuts (minus, equals, backspace) to provide max, default and minimum zoom
+
+- add more keyboard shortcuts for missions (daily, away, etc), station views, quick chat
+
+## 0.4.0
 
 - add better handling for Pike/Picard, those will no longer buff things that don't activate in combat
 
-# 0.3.8
+## 0.3.8
 
 - add drydock H hotkey
 
-# 0.3.2
+## 0.3.2
 
 - add compatibility with Unity 2020.3 LTS
 
-# 0.3.1
+## 0.3.1
 
 - add option to disable galaxy chat
-- fix a bug where <Space> didn't trigger correctly
+- fix a bug where [Space] didn't trigger correctly
 
-# 0.3.0
+## 0.3.0
 
 - add recall option, this is bound to `R` when not having another item selected that has an `R` action
 - remove fix for iss jellyfish as this is now fixed in the regular client (`fix_iss_jellyfish_warp` config no longer has any effect)
