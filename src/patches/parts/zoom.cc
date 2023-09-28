@@ -65,7 +65,6 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 
   if (is_in_chat) {
     return original(_this);
-    ;
   }
 
   auto is_input_focused = []() {
@@ -106,20 +105,16 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
   }
 
   bool is_shift_pressed = GetKeyInt(KeyCode::LeftShift) || GetKeyInt(KeyCode::RightShift);
-  if (GetKeyDownInt(KeyCode::Equals) && !is_input_focused()) {
-    if (Config::Get().default_system_zoom > 0.0f) {
-      zoomDelta = Config::Get().default_system_zoom;
+  if (Config::Get().hotkeys_extended) {
+    if (GetKeyDownInt(KeyCode::Equals) && !is_input_focused()) {
+      do_default_zoom = true;
+    } else if (GetKeyDownInt(KeyCode::Minus) && !is_input_focused()) {
+      zoomDelta        = Config::Get().zoom;
       do_absolute_zoom = true;
-      do_default_zoom = false;
+    } else if (GetKeyDownInt(KeyCode::Backspace) && !is_input_focused()) {
+      zoomDelta        = 100;
+      do_absolute_zoom = true;
     }
-  } else if (GetKeyDownInt(KeyCode::Minus) && !is_input_focused()) {
-    zoomDelta = Config::Get().zoom;
-    do_absolute_zoom = true;
-    do_default_zoom = false;
-  } else if (GetKeyDownInt(KeyCode::Backspace) && !is_input_focused()) {
-    zoomDelta = 100;
-    do_absolute_zoom = true;
-    do_default_zoom = false;
   }
 
   if (do_default_zoom) {

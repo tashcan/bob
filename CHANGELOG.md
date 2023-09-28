@@ -12,7 +12,7 @@
 
 ## 0.4.0
 
-- add better handling for Pike/Picard, those will no longer buff things that don't activate in combat
+- who knows 
 
 ## 0.3.8
 

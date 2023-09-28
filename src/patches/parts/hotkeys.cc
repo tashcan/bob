@@ -40,7 +40,7 @@ extern HWND unityWindow;
 static bool reset_focus_next_frame = false;
 static int  show_info_pending      = 0;
 
-bool     force_space_action_next_frame = false;
+bool force_space_action_next_frame = false;
 
 void     ChangeNavigationSection(SectionID sectionID);
 void     ExecuteSpaceAction(FleetBarViewController* fleet_bar, bool (*GetKeyDownInt)(KeyCode));
@@ -48,7 +48,7 @@ HullType GetHullTypeFromBattleTarget(BattleTargetData* context);
 void     GotoSection(SectionID sectionID, void* screen_data = nullptr);
 bool     DidHideViewers();
 
-void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
+void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 {
   if (Config::Get().use_scopely_hotkeys) {
     return original(_this);
@@ -61,8 +61,8 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       il2cpp_resolve_icall<bool(KeyCode)>("UnityEngine.Input::GetKeyDownInt(UnityEngine.KeyCode)");
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
 
-  auto       section_manager  = Hub::get_SectionManager();
-  const auto current_section  = section_manager->CurrentSection;
+  auto       section_manager = Hub::get_SectionManager();
+  const auto current_section = section_manager->CurrentSection;
 
   const auto is_shift_pressed = GetKeyInt(KeyCode::LeftShift) || GetKeyInt(KeyCode::RightShift);
 
@@ -175,7 +175,7 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
   if (!is_in_chat) {
     if (!is_input_focused()) {
-      if ((GetKeyDownInt(KeyCode::C) || GetKeyDownInt(KeyCode::BackQuote))) {
+      if ((GetKeyDownInt(KeyCode::C) || (Config::Get().hotkeys_extended && GetKeyDownInt(KeyCode::BackQuote)))) {
         if (auto chat_manager = ChatManager::Instance(); chat_manager) {
           if (chat_manager->IsSideChatOpen) {
             auto view_controller = ObjectFinder<FullScreenChatViewController>::Get();
@@ -186,16 +186,16 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
             chat_manager->OpenChannel(ChatChannelCategory::Alliance, ChatViewMode::Fullscreen);
           }
         }
-      } else if (GetKeyDownInt(KeyCode::Q) && is_shift_pressed) {
+      } else if (GetKeyDownInt(KeyCode::Q) && is_shift_pressed && Config::Get().hotkeys_extended) {
         return GotoSection(SectionID::ChallengeSelection);
-      } else if (GetKeyDownInt(KeyCode::B)) {
+      } else if (GetKeyDownInt(KeyCode::B) && Config::Get().hotkeys_extended) {
         auto bookmark_manager = BookmarksManager::Instance();
         if (bookmark_manager) {
           bookmark_manager->ViewBookmarks();
           return;
         }
         return GotoSection(SectionID::Bookmarks_Main);
-      } else if (GetKeyDownInt(KeyCode::F)) {
+      } else if (GetKeyDownInt(KeyCode::F) && Config::Get().hotkeys_extended) {
         if (is_shift_pressed) {
           return GotoSection(SectionID::Shop_Refining_List);
         } else {
@@ -213,26 +213,27 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         } else {
           return ChangeNavigationSection(SectionID::Navigation_System);
         }
-      } else if (GetKeyDownInt(KeyCode::I)) {
+      } else if (GetKeyDownInt(KeyCode::I) && Config::Get().hotkeys_extended) {
         return GotoSection(SectionID::InventoryList);
-      } else if (GetKeyDownInt(KeyCode::M)) {
+      } else if (GetKeyDownInt(KeyCode::M) && Config::Get().hotkeys_extended) {
         return GotoSection(SectionID::Missions_AcceptedList);
-      } else if (GetKeyDownInt(KeyCode::O)) {
+      } else if (GetKeyDownInt(KeyCode::O) && Config::Get().hotkeys_extended) {
         if (is_shift_pressed) {
           return GotoSection(SectionID::OfficerInventory);
         } else {
-          // TODO: Does not work properly, defaults to first FleetCommander (spock, rather than selected fleet commander)
+          // TODO: Does not work properly, defaults to first FleetCommander (spock, rather than selected fleet
+          // commander)
           return GotoSection(SectionID::FleetCommander_Showcase);
         }
       } else if (GetKeyDownInt(KeyCode::T)) {
-        if (is_shift_pressed) {
+        if (is_shift_pressed && Config::Get().hotkeys_extended) {
           return GotoSection(SectionID::Missions_AwayTeamsList);
         } else {
           return GotoSection(SectionID::Tournament_Group_Selection);
         }
-      } else if (GetKeyDownInt(KeyCode::X)) {
+      } else if (GetKeyDownInt(KeyCode::X) && Config::Get().hotkeys_extended) {
         return GotoSection(SectionID::Consumables);
-      } else if (GetKeyDownInt(KeyCode::Z)) {
+      } else if (GetKeyDownInt(KeyCode::Z) && Config::Get().hotkeys_extended) {
         return GotoSection(SectionID::Missions_DailyGoals);
       }
     }
@@ -339,13 +340,14 @@ void     ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   original(_this);
 }
 
-template <typename T> inline bool DidHideViewersOfType() {
+template <typename T> inline bool DidHideViewersOfType()
+{
   auto widgets = ObjectFinder<T>::GetAll();
   for (auto i = 0; i < widgets->max_length; ++i) {
     auto       widget  = il2cpp_get_array_element<T>(widgets, i);
     const auto visible = widget
-        && (widget->_visibilityController->_state == VisibilityState::Visible
-        || widget->_visibilityController->_state == VisibilityState::Show);
+                         && (widget->_visibilityController->_state == VisibilityState::Visible
+                             || widget->_visibilityController->_state == VisibilityState::Show);
     if (visible) {
       widget->HideAllViewers();
       return true;
@@ -355,17 +357,13 @@ template <typename T> inline bool DidHideViewersOfType() {
   return false;
 }
 
-bool DidHideViewers() {
-  return
-    DidHideViewersOfType<AllianceStarbaseObjectViewerWidget>() ||
-    DidHideViewersOfType<ArmadaObjectViewerWidget>() ||
-    DidHideViewersOfType<CelestialObjectViewerWidget>() ||
-    DidHideViewersOfType<EmbassyObjectViewer>() ||
-    DidHideViewersOfType<HousingObjectViewerWidget>() ||
-    DidHideViewersOfType<MiningObjectViewerWidget>() ||
-    DidHideViewersOfType<MissionsObjectViewerWidget>() ||
-    DidHideViewersOfType<PreScanTargetWidget>() ||
-    DidHideViewersOfType<HousingObjectViewerWidget>();
+bool DidHideViewers()
+{
+  return DidHideViewersOfType<AllianceStarbaseObjectViewerWidget>() || DidHideViewersOfType<ArmadaObjectViewerWidget>()
+         || DidHideViewersOfType<CelestialObjectViewerWidget>() || DidHideViewersOfType<EmbassyObjectViewer>()
+         || DidHideViewersOfType<HousingObjectViewerWidget>() || DidHideViewersOfType<MiningObjectViewerWidget>()
+         || DidHideViewersOfType<MissionsObjectViewerWidget>() || DidHideViewersOfType<PreScanTargetWidget>()
+         || DidHideViewersOfType<HousingObjectViewerWidget>();
 }
 
 void GotoSection(SectionID sectionID, void* section_data)
@@ -515,12 +513,10 @@ void ChatMessageListLocalViewController_AboutToShow_Hook(ChatMessageListLocalVie
   }
 }
 
-bool get_CanUseShortcuts_Hook(auto original, void* _this)
+void InitializeActions_Hook(auto original, void* _this)
 {
   if (Config::Get().use_scopely_hotkeys && Config::Get().hotkeys_enabled) {
     return original(_this);
-  } else {
-    return false;
   }
 }
 
@@ -581,11 +577,11 @@ void InstallHotkeyHooks()
 {
   auto shortcuts_manager_helper =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameInput", "ShortcutsManager");
-  auto ptr_can_user_shortcuts = shortcuts_manager_helper.GetMethodXor("get_CanUseShortcuts");
+  auto ptr_can_user_shortcuts = shortcuts_manager_helper.GetMethodXor("InitializeActions");
   if (!ptr_can_user_shortcuts) {
     return;
   }
-  SPUD_STATIC_DETOUR(ptr_can_user_shortcuts, get_CanUseShortcuts_Hook);
+  SPUD_STATIC_DETOUR(ptr_can_user_shortcuts, InitializeActions_Hook);
 
   if (Config::Get().hotkeys_enabled == false) {
     return;

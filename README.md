@@ -56,6 +56,9 @@ Alt-C | Focus Chat (or Open Alliance Chat - Side of Screen)
 
 The following keybinds have recently been added:
 
+> [!NOTE]
+> Can be disabled via `hotkeys_extended` config option
+
 Key | Shortcut
 --: | ---
 MINUS | Zoom (min)
