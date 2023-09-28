@@ -4,6 +4,7 @@
 
 #include <prime/EntityGroup.h>
 #include <prime/HttpResponse.h>
+#include <prime/Hub.h>
 #include <prime/ServiceResponse.h>
 
 #include <prime/proto/Digit.PrimeServer.Models.pb.h>
@@ -17,6 +18,7 @@
 #include <winrt/Windows.Web.Http.Headers.h>
 
 #include <condition_variable>
+#include <format>
 #include <queue>
 #include <string>
 
@@ -25,7 +27,7 @@ namespace http
 using namespace winrt;
 using namespace Windows::Foundation;
 
-static auto get_client()
+static auto get_client(std::wstring sessionid = L"")
 {
   Windows::Web::Http::HttpClient httpClient;
   auto                           headers{httpClient.DefaultRequestHeaders()};
@@ -34,8 +36,13 @@ static auto get_client()
     throw L"Invalid header value: " + header;
   }
   auto token = to_hstring(Config::Get().sync_token);
-  if (!token.empty()) {
+  if (!token.empty() && sessionid.empty()) {
     headers.Append(L"stfc-sync-token", token);
+  }
+  if (!sessionid.empty()) {
+    headers.Append(L"X-AUTH-SESSION-ID", sessionid);
+    headers.Append(L"X-PRIME-VERSION", L"meh");
+    headers.Append(L"X-Api-Key", L"meh");
   }
   return httpClient;
 }
@@ -62,6 +69,35 @@ static void send_data(std::wstring post_data)
   }
 }
 
+static std::wstring get_data_data(std::wstring session, std::wstring url, std::wstring path, std::wstring post_data)
+{
+  if (Config::Get().sync_url.empty()) {
+    return {};
+  }
+
+  using namespace Windows::Storage::Streams;
+  try {
+    Windows::Web::Http::HttpResponseMessage httpResponseMessage;
+    std::wstring                            httpResponseBody;
+
+    auto httpClient = get_client(session);
+    if (url.ends_with(L"/")) {
+      url = url.substr(0, url.length() - 1);
+      url += path;
+    } else {
+      url += path;
+    }
+    Uri requestUri{url};
+
+    Windows::Web::Http::HttpStringContent jsonContent(post_data, UnicodeEncoding::Utf8, L"application/json");
+    httpResponseMessage = httpClient.PostAsync(requestUri, jsonContent).get();
+    httpResponseMessage.EnsureSuccessStatusCode();
+    return httpResponseMessage.Content().ReadAsStringAsync().get().c_str();
+  } catch (winrt::hresult_error const& ex) {
+    spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+  }
+}
+
 static void send_data(std::string post_data)
 {
   return send_data(std::wstring(winrt::to_hstring(post_data)));
@@ -72,6 +108,10 @@ static void send_data(std::string post_data)
 std::mutex              m;
 std::condition_variable cv;
 std::queue<std::string> sync_data_queue;
+
+std::mutex              m2;
+std::condition_variable cv2;
+std::queue<uint64_t>    combat_log_data_queue;
 
 void queue_data(std::string data)
 {
@@ -162,6 +202,7 @@ static std::unordered_map<uint64_t, RankLevelState>                             
 static std::unordered_map<uint64_t, RankLevelState>                              ft_states;
 static std::unordered_map<std::pair<int64_t, int64_t>, RankLevelState, pairhash> trait_states;
 static std::unordered_set<int64_t>                                               mission_states;
+static std::unordered_set<uint64_t>                                              battlelog_states;
 
 void HandleEntityGroup(EntityGroup* entity_group)
 {
@@ -253,6 +294,26 @@ void HandleEntityGroup(EntityGroup* entity_group)
       auto text   = bytes->bytes->m_Items;
       auto result = json::parse(text);
 
+      if (result.contains("battle_result_headers")) {
+        auto headers = result["battle_result_headers"];
+        if (battlelog_states.empty()) {
+          for (const auto header : headers) {
+            const auto id = header["id"].get<uint64_t>();
+            battlelog_states.insert(id);
+          }
+        } else {
+          std::lock_guard lk(m2);
+          for (const auto header : headers) {
+            const auto id = header["id"].get<uint64_t>();
+            if (!battlelog_states.contains(id)) {
+              battlelog_states.insert(id);
+              combat_log_data_queue.push(id);
+            }
+          }
+        }
+        cv2.notify_all();
+      }
+
       if (result.contains("resources")) {
         auto resource_array = json::array();
         for (const auto& resource : result["resources"].get<json::object_t>()) {
@@ -293,10 +354,13 @@ void HandleEntityGroup(EntityGroup* entity_group)
         queue_data(ship_array.dump());
       }
     } catch (json::exception e) {
-      //
+      printf("Fuck this: %s\n", e.what());
     }
   }
 }
+
+static std::wstring instanceSessionId;
+static std::wstring gameServerUrl;
 
 void ship_sync_data()
 {
@@ -321,6 +385,50 @@ void ship_sync_data()
       spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
     }
   }
+}
+
+void ship_combat_log_data()
+{
+  winrt::init_apartment();
+
+  for (;;) {
+    {
+      std::unique_lock lk(m2);
+      cv2.wait(lk, []() { return !combat_log_data_queue.empty(); });
+    }
+
+    const auto sync_data  = ([&] {
+      std::lock_guard lk(m2);
+      auto            data = combat_log_data_queue.front();
+      combat_log_data_queue.pop();
+      return data;
+    })();
+    auto       body       = std::format(L"{{\"journal_id\":{}}}", sync_data);
+    auto       battle_log = http::get_data_data(instanceSessionId, gameServerUrl, L"/journals/get", body);
+
+    using json = nlohmann::json;
+
+    auto ship_array     = json::array();
+    auto battle_json    = json::parse(battle_log);
+    battle_json["type"] = "battlelog";
+    ship_array.push_back(battle_json);
+
+    try {
+      http::send_data(ship_array.dump());
+    } catch (winrt::hresult_error const& ex) {
+      spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+    } catch (const std::wstring& sz) {
+      spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
+    }
+  }
+}
+
+void PrimeApp_InitPrimeServer(auto original, void* _this, Il2CppString* gameServerUrl, Il2CppString* gatewayServerUrl,
+                              Il2CppString* sessionId)
+{
+  original(_this, gameServerUrl, gatewayServerUrl, sessionId);
+  ::instanceSessionId = sessionId->chars;
+  ::gameServerUrl     = gameServerUrl->chars;
 }
 
 void InstallSyncPatches()
@@ -357,5 +465,10 @@ void InstallSyncPatches()
   ptr = platform_model_registry.GetMethod("ProcessResultInternal");
   SPUD_STATIC_DETOUR(ptr, GameServerModelRegistry_ProcessResultInternal);
 
+  auto authentication_service = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "PrimeApp");
+  ptr                         = authentication_service.GetMethod("InitPrimeServer");
+  SPUD_STATIC_DETOUR(ptr, PrimeApp_InitPrimeServer);
+
   std::thread(ship_sync_data).detach();
+  std::thread(ship_combat_log_data).detach();
 }

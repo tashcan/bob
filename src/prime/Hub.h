@@ -193,11 +193,39 @@ public:
   }
 };
 
+struct GSServiceRegistry {
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.Networking.Core", "GSServiceRegistry");
+    return class_helper;
+  }
+};
+
+struct PrimeApp {
+  GSServiceRegistry* get_Services()
+  {
+    static auto field = get_class_helper().GetProperty("Services");
+    return field.GetRaw<GSServiceRegistry>(this);
+  }
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "PrimeApp");
+    return class_helper;
+  }
+};
+
 struct Hub {
   static SectionManager* get_SectionManager()
   {
     static auto field = get_class_helper().GetProperty("SectionManager");
     return field.GetRaw<SectionManager>(nullptr);
+  }
+  static PrimeApp* get_App()
+  {
+    static auto field = get_class_helper().GetProperty("App");
+    return field.GetRaw<PrimeApp>(nullptr);
   }
 
 private:
