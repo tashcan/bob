@@ -58,4 +58,13 @@ public:
 
   std::string sync_url;
   std::string sync_token;
+  bool        sync_resources;
+  bool        sync_battlelogs;
+  bool        sync_officer;
+  bool        sync_missions;
+  bool        sync_research;
+  bool        sync_tech;
+  bool        sync_traits;
+  bool        sync_buildings;
+  bool        sync_ships;
 };

@@ -221,7 +221,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
           mission_array.push_back({{"type", "mission"}, {"mid", mission}});
         }
       }
+      if (Config::Get().sync_missions == false) {
+        return;
+      } else {
       queue_data(mission_array.dump());
+      }
     }
   } else if (type == EntityGroup::Type::PlayerInventories) {
     auto response = Digit::PrimeServer::Models::InventoryResponse();
@@ -242,7 +246,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
       for (const auto& research : response.researchprojectlevels()) {
         research_array.push_back({{"type", "research"}, {"rid", research.first}, {"level", research.second}});
       }
-      queue_data(research_array.dump());
+      if (Config::Get().sync_research == false) {
+        return;
+      } else {
+        queue_data(research_array.dump());
+      }
     }
   } else if (type == EntityGroup::Type::Officers) {
     auto response = Digit::PrimeServer::Models::OfficersResponse();
@@ -257,8 +265,12 @@ void HandleEntityGroup(EntityGroup* entity_group)
           officers_array.push_back(
               {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}});
         }
+      } 
+      if (Config::Get().sync_officer == false) {
+        return;
+      } else {
+       queue_data(officers_array.dump());
       }
-      queue_data(officers_array.dump());
     }
   } else if (type == EntityGroup::Type::ForbiddenTechs) {
     auto response = Digit::PrimeServer::Models::ForbiddenTechsResponse();
@@ -270,7 +282,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
           ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}});
         }
       }
+      if (Config::Get().sync_tech == false) {
+        return;
+      } else {
       queue_data(ft_array.dump());
+      }
     }
   } else if (type == EntityGroup::Type::ActiveOfficerTraits) {
     auto response = Digit::PrimeServer::Models::ActiveOfficerTraits();
@@ -286,7 +302,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                  {"level", trait.second.level()}});
         }
       }
+      if (Config::Get().sync_traits == false) {
+        return;
+      } else {
       queue_data(trait_array.dump());
+      }
     }
   } else if (type == EntityGroup::Type::Json) {
     try {
@@ -312,10 +332,14 @@ void HandleEntityGroup(EntityGroup* entity_group)
             }
           }
         }
+        if (Config::Get().sync_battlelogs == false) {
+          return;
+        } else {
         cv2.notify_all();
+        }
       }
 
-      if (result.contains("resources")) {
+      if (result.contains("resources") ) {
         auto resource_array = json::array();
         for (const auto& resource : result["resources"].get<json::object_t>()) {
           auto id     = std::stoll(resource.first);
@@ -328,7 +352,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
             resource_array.push_back({{"type", "resource"}, {"rid", id}, {"amount", amount}});
           }
         }
+        if (Config::Get().sync_resources == false) {
+          return;
+        } else {
         queue_data(resource_array.dump());
+        }
       }
       if (result.contains("starbase_modules")) {
         auto starbase_array = json::array();
@@ -340,7 +368,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
             starbase_array.push_back({{"type", "module"}, {"bid", id}, {"level", level}});
           }
         }
+        if (Config::Get().sync_buildings) {
+          return;
+        } else {
         queue_data(starbase_array.dump());
+        }
       }
       if (result.contains("ships")) {
         auto ship_array = json::array();
@@ -352,7 +384,11 @@ void HandleEntityGroup(EntityGroup* entity_group)
                                 {"hull_id", resource.second["hull_id"]},
                                 {"components", resource.second["components"]}});
         }
+        if (Config::Get().sync_ships) {
+          return;
+        } else {
         queue_data(ship_array.dump());
+        }
       }
     } catch (json::exception e) {
       printf("Fuck this: %s\n", e.what());

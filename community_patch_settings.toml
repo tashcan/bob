@@ -1,0 +1,50 @@
+[buffs]
+# This is the option to always show out of dock power for ships when they are docked. Defaults to false
+use_out_of_dock_power = false
+
+[ui]
+show_cargo_default = false
+show_armada_cargo = true
+show_hostile_cargo = true
+
+use_scopely_hotkeys = false
+
+# Change 'false' to 'true' from the line below to remove Galaxy Chat from the game
+disable_galaxy_chat = false
+
+# Change 'false' to 'true' from the line below to extend the donation slider to max value for next Alliance level
+extend_donation_slider = false
+
+# This specifies the types of Banners you DON'T want to see, I think they are relatively self explanatory.
+disabled_banner_types = 'Victory,Defeat'
+
+[graphics]
+# This is an option that can be enabled to try and keep a more 'useable' UI scale size when resizing the Game Window, defaults to false
+adjust_scale_res = false
+default_system_zoom = 2500.0
+system_zoom_preset_1 = 3000
+
+# This controls the zoom speed when using Q/E in System View, defaults to 350
+keyboard_zoom_speed = 350
+
+# This controls how quickly the the momentum falls off when letting go of the mouse, the lower the number the quicker it stops, defaults to 0.8
+system_pan_momentum_falloff = 0.8
+
+# This specifies the amount to scale the UI by, 1.0 being default and anything above 1 making it larger than default, defaults to 0.9
+ui_scale = 0.65
+
+# This controls the maximum zoom distance in System View, default is 2500.
+zoom = 5000
+
+[sync]
+url = "http://localhost:8083/balls"
+token = "wtf"
+resources = false
+battlelogs = false
+officer = false
+missions = false
+research = true
+tech = false
+traits = true
+buildings = false
+ships = false
