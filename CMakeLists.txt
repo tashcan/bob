@@ -3,7 +3,7 @@ project(STFC-Community-Patch)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /W4 /permissive- /bigobj")
-set(FETCHCONTENT_QUIET FALSE)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") 
 
 # Windows' math include does not define constants by default.
 # Set this definition so it does.
@@ -45,10 +45,20 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(protobuf)
 
 FetchContent_Declare(
+    eabase
+    GIT_REPOSITORY https://github.com/electronicarts/EABase.git
+    GIT_TAG origin/master
+    GIT_PROGRESS TRUE
+    GIT_SUBMODULES ""
+)
+FetchContent_MakeAvailable(eabase)
+
+FetchContent_Declare(
     eastl
     GIT_REPOSITORY https://github.com/electronicarts/EASTL.git
     GIT_TAG origin/master
     GIT_PROGRESS TRUE
+    GIT_SUBMODULES ""
 )
 FetchContent_MakeAvailable(eastl)
 
@@ -114,6 +124,7 @@ target_sources(stfc-communty-patch PRIVATE src/version.rc)
 
 include_directories(stfc-communty-patch third_party src src/patches third_party/xorstr/include ${Protobuf_INCLUDE_DIRS})
 
-target_link_libraries(stfc-communty-patch PRIVATE spud nlohmann_json::nlohmann_json protobuf::libprotobuf tomlplusplus_tomlplusplus absl::base absl::synchronization absl::strings spdlog eastl)
+add_dependencies(stfc-communty-patch EASTL)
+target_link_libraries(stfc-communty-patch PRIVATE spud nlohmann_json::nlohmann_json protobuf::libprotobuf tomlplusplus_tomlplusplus absl::base absl::synchronization absl::strings spdlog EASTL)
 
 add_subdirectory(third_party)

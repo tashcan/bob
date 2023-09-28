@@ -19,8 +19,13 @@
 
 #include <condition_variable>
 #include <format>
+#include <fstream>
+#include <ostream>
 #include <queue>
 #include <string>
+
+#include <EASTL/algorithm.h>
+#include <EASTL/bonus/ring_buffer.h>
 
 namespace http
 {
@@ -205,6 +210,36 @@ static std::unordered_map<std::pair<int64_t, int64_t>, RankLevelState, pairhash>
 static std::unordered_set<int64_t>                                               mission_states;
 static std::unordered_set<uint64_t>                                              battlelog_states;
 
+static eastl::ring_buffer<uint64_t> previously_sent_battlelogs;
+
+static void load_previously_sent_logs()
+{
+  previously_sent_battlelogs.set_capacity(300);
+  using json = nlohmann::json;
+  try {
+    std::ifstream file("patch_battlelogs_sent.json");
+    std::string   battlelog_json;
+    file >> battlelog_json;
+    const auto battlelogs = json::parse(battlelog_json);
+    for (auto v : battlelogs) {
+      previously_sent_battlelogs.push_back(v.get<uint64_t>());
+    }
+  } catch (...) {
+  }
+}
+
+static void save_previously_sent_logs()
+{
+  using json           = nlohmann::json;
+  auto battlelog_array = json::array();
+  for (auto id : previously_sent_battlelogs) {
+    battlelog_array.push_back(id);
+  }
+  std::ofstream file("patch_battlelogs_sent.json");
+  file << battlelog_array.dump();
+  file.close();
+}
+
 void HandleEntityGroup(EntityGroup* entity_group)
 {
   using json = nlohmann::json;
@@ -307,11 +342,18 @@ void HandleEntityGroup(EntityGroup* entity_group)
 
       if (result.contains("battle_result_headers")) {
         auto headers = result["battle_result_headers"];
-        if (battlelog_states.empty()) {
+        if (Config::Get().sync_battlelogs && battlelog_states.empty()) {
+          load_previously_sent_logs();
           for (const auto header : headers) {
             const auto id = header["id"].get<uint64_t>();
             battlelog_states.insert(id);
+            if (eastl::find(previously_sent_battlelogs.begin(), previously_sent_battlelogs.end(), id)
+                == previously_sent_battlelogs.end()) {
+              combat_log_data_queue.push(id);
+              previously_sent_battlelogs.push_back(id);
+            }
           }
+          save_previously_sent_logs();
         } else if (Config::Get().sync_battlelogs) {
           std::lock_guard lk(m2);
           for (const auto header : headers) {
@@ -319,6 +361,8 @@ void HandleEntityGroup(EntityGroup* entity_group)
             if (!battlelog_states.contains(id)) {
               battlelog_states.insert(id);
               combat_log_data_queue.push(id);
+              previously_sent_battlelogs.push_back(id);
+              save_previously_sent_logs();
             }
           }
         }
@@ -371,7 +415,6 @@ void HandleEntityGroup(EntityGroup* entity_group)
         }
       }
     } catch (json::exception e) {
-      printf("Fuck this: %s\n", e.what());
     }
   }
 }
