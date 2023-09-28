@@ -78,6 +78,9 @@ void Config::Load()
   this->always_skip_reveal_sequence  = config["ui"]["always_skip_reveal_sequence"].value_or(false);
   this->stay_in_bundle_after_summary = config["ui"]["stay_in_bundle_after_summary"].value_or(true);
 
+  this->sync_url   = config["sync"]["url"].value_or("");
+  this->sync_token = config["sync"]["token"].value_or("");
+
   std::string disabled_banner_types_str = config["ui"]["disabled_banner_types"].value_or("");
 
   std::vector<std::string> types = absl::StrSplit(disabled_banner_types_str, ",", absl::SkipWhitespace());
