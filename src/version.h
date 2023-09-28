@@ -2,8 +2,8 @@
 
 // clang-format off
 #define VERSION_MAJOR               0
-#define VERSION_MINOR               4
-#define VERSION_REVISION            5
+#define VERSION_MINOR               5
+#define VERSION_REVISION            0
 
 // https://assets.stfc.space/mods/community-patch/0.3.13.test.1/version.dll
 
