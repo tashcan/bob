@@ -43,6 +43,7 @@ static auto get_client(std::wstring sessionid = L"")
     headers.Append(L"X-AUTH-SESSION-ID", sessionid);
     headers.Append(L"X-PRIME-VERSION", L"meh");
     headers.Append(L"X-Api-Key", L"meh");
+    headers.Append(L"X-PRIME-SYNC", L"0");
   }
   return httpClient;
 }
