@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.11)
 project(STFC-Community-Patch)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /W4 /permissive- /bigobj")
+set(FETCHCONTENT_QUIET FALSE)
 
 # Windows' math include does not define constants by default.
 # Set this definition so it does.
@@ -23,6 +24,7 @@ FetchContent_Declare(
     tomlplusplus
     GIT_REPOSITORY https://github.com/marzer/tomlplusplus.git
     GIT_TAG v2.5.0
+    GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(tomlplusplus)
 
@@ -30,6 +32,7 @@ FetchContent_Declare(
       spud
       GIT_REPOSITORY "https://github.com/tashcan/spud.git"
       GIT_TAG origin/main
+      GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(spud)
 
@@ -37,8 +40,17 @@ FetchContent_Declare(
       protobuf
       GIT_REPOSITORY "https://github.com/protocolbuffers/protobuf.git"
       GIT_TAG v3.24.3
+      GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(protobuf)
+
+FetchContent_Declare(
+    eastl
+    GIT_REPOSITORY https://github.com/electronicarts/EASTL.git
+    GIT_TAG origin/master
+    GIT_PROGRESS TRUE
+)
+FetchContent_MakeAvailable(eastl)
 
 SET(TARGET_H
     Header.h
@@ -102,6 +114,6 @@ target_sources(stfc-communty-patch PRIVATE src/version.rc)
 
 include_directories(stfc-communty-patch third_party src src/patches third_party/xorstr/include ${Protobuf_INCLUDE_DIRS})
 
-target_link_libraries(stfc-communty-patch PRIVATE spud nlohmann_json::nlohmann_json protobuf::libprotobuf tomlplusplus_tomlplusplus absl::base absl::synchronization absl::strings spdlog)
+target_link_libraries(stfc-communty-patch PRIVATE spud nlohmann_json::nlohmann_json protobuf::libprotobuf tomlplusplus_tomlplusplus absl::base absl::synchronization absl::strings spdlog eastl)
 
 add_subdirectory(third_party)
