@@ -79,27 +79,14 @@ template <typename T>
 inline T get_config_or_default(toml::table config, toml::table& new_config, std::string_view section,
                                std::string_view item, T default_value)
 {
-  std::stringstream message;
-
-  message.str("");
-  message << "getting config value " << section << "." << item;
-  spdlog::info(message.str());
-
   config.emplace<toml::table>(section, toml::table());
   new_config.emplace<toml::table>(section, toml::table());
-
-  message.str("");
-  message << "        config value " << section << "." << item
-          << "  type: " << get_config_type_as_string(config[section][item].type());
-  spdlog::info(message.str());
 
   auto sectionTable = new_config[section];
   auto final_value  = config[section][item].value_or(default_value);
   sectionTable.as_table()->insert_or_assign(item, final_value);
 
-  message.str("");
-  message << "        config value " << section << "." << item << " value: " << final_value;
-  spdlog::info(message.str());
+  spdlog::info("config value {}.{} value: {}", section, item, final_value);
 
   return (T)final_value;
 }

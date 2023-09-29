@@ -24,7 +24,7 @@ void SetResolution_Hook(auto original, int x, int y, int mode, int unk)
 
 void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager* _this)
 {
-  return original(_this);
+  original(_this);
 
   static auto get_height = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_height()");
   static auto get_width  = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_width()");
