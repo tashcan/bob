@@ -104,7 +104,6 @@ struct ResolutionArray {
 
 void AspectRatioConstraintHandler_Update(auto original, void* _this)
 {
-  // original(_this);
   static auto get_fullscreen  = il2cpp_resolve_icall<bool()>("UnityEngine.Screen::get_fullScreen()");
   static auto get_height      = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_height()");
   static auto get_width       = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_width()");
@@ -133,12 +132,14 @@ void AspectRatioConstraintHandler_Update(auto original, void* _this)
       }
     }
   }
-
   // SetResolution(1920, 1080, 4, 60);
 }
 
 intptr_t AspectRatioConstraintHandler_WndProc(auto original, HWND hWnd, uint32_t msg, intptr_t wParam, intptr_t lParam)
 {
+  if (Config::Get().free_resize) {
+    return CallWindowProcA(AspectRatioConstraintHandler::_unityWndProc(), hWnd, msg, wParam, lParam);
+  }
   return original(hWnd, msg, wParam, lParam);
 }
 
@@ -146,12 +147,10 @@ void InstallFreeResizeHooks()
 {
   auto AspectRatioConstraintHandler_helper =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Utils", "AspectRatioConstraintHandler");
-  auto ptr_initialize = AspectRatioConstraintHandler_helper.GetMethodXor("Initialise");
-  auto ptr_update     = AspectRatioConstraintHandler_helper.GetMethodXor("Update");
-  auto ptr_reset      = AspectRatioConstraintHandler_helper.GetMethodXor("Reset");
-  auto ptr_wndproc    = AspectRatioConstraintHandler_helper.GetMethodXor("WndProc");
+  auto ptr_update     = AspectRatioConstraintHandler_helper.GetMethod("Update");
+  auto ptr_wndproc    = AspectRatioConstraintHandler_helper.GetMethod("WndProc");
 
-  if (!ptr_initialize || !ptr_update || !ptr_reset || !ptr_wndproc) {
+  if (!ptr_update || !ptr_wndproc) {
     return;
   }
 
