@@ -316,17 +316,17 @@ void HandleEntityGroup(EntityGroup* entity_group)
       }
     }
   } else if (type == EntityGroup::Type::ActiveOfficerTraits) {
-    auto response = Digit::PrimeServer::Models::ActiveOfficerTraits();
+    auto response = Digit::PrimeServer::Models::OfficerTraitsResponse();
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto trait_array = json::array();
-      for (const auto& trait : response.activetraits()) {
-        const auto key = std::make_pair(response.officerid(), trait.first);
-        if (trait_states[key] != trait.second.level()) {
-          trait_states[key] = trait.second.level();
-          trait_array.push_back({{"type", "trait"},
-                                 {"oid", response.officerid()},
-                                 {"tid", trait.first},
-                                 {"level", trait.second.level()}});
+      for (const auto& trait_outer : response.activeofficertraits()) {
+        for (const auto& trait : trait_outer.second.activetraits()) {
+          const auto key = std::make_pair(trait_outer.first, trait.first);
+          if (trait_states[key] != trait.second.level()) {
+            trait_states[key] = trait.second.level();
+            trait_array.push_back(
+                {{"type", "trait"}, {"oid", trait_outer.first}, {"tid", trait.first}, {"level", trait.second.level()}});
+          }
         }
       }
       if (Config::Get().sync_traits) {
