@@ -84,6 +84,14 @@ public:
     return !r ? nullptr : (T*)(il2cpp_object_unbox(r));
   }
 
+  template <typename T> T* GetUnboxedSelf(void* _this)
+  {
+    static auto il2cpp_object_unbox = (il2cpp_object_unbox_t)(GetProcAddress(
+        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_unbox")));
+    auto        r                   = GetRaw<Il2CppObject>(il2cpp_object_unbox((Il2CppObject*)_this));
+    return !r ? nullptr : (T*)(il2cpp_object_unbox(r));
+  }
+
 private:
   Il2CppClass*        cls;
   const PropertyInfo* propInfo;

@@ -14,6 +14,7 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
+#include <algorithm>
 #include <chrono>
 #include <iostream>
 
@@ -70,8 +71,6 @@ struct ResolutionArray {
   Resolution   data[1];
 };
 
-#include <algorithm>
-
 ResolutionArray* GetResolutions_Hook(auto original)
 {
   auto resolutions = original();
@@ -119,14 +118,12 @@ void InstallResolutionListFix()
 
 IList* ExtractBuffsOfType_Hook(auto original, ClientModifierType modifier, IList* list)
 {
-
   if (list) {
     for (int i = 0; i < list->Count; ++i) {
       auto item = list->Get(i);
       if (item == 0) {
         return nullptr;
       }
-      item = item;
     }
   }
   return original(modifier, list);
@@ -140,25 +137,156 @@ bool ShouldShowRevealHook(auto original, void* _this, bool ignore)
   return original(_this, ignore);
 }
 
-void ShopSummaryDirectorCtr(auto original, ShopSummaryDirector* _this)
-{
-  original(_this);
+struct ShopCategory {
+public:
+  __declspec(property(get = __get__flagValue)) int Value;
 
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper =
+        il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.Prime.Shop", "ShopCategory");
+    return class_helper;
+  }
+
+public:
+  int __get__flagValue()
+  {
+    static auto field = get_class_helper().GetProperty("Value");
+    return *field.GetUnboxedSelf<int>(this);
+  }
+};
+
+struct CurrencyType {
+public:
+  __declspec(property(get = __get__flagValue)) int Value;
+  //
+
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper =
+        il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimePlatform.Content", "CurrencyType");
+    return class_helper;
+  }
+
+public:
+  int __get__flagValue()
+  {
+    static auto field = get_class_helper().GetProperty("Value");
+    return *field.GetUnboxedSelf<int>(this);
+  }
+};
+
+struct BundleGroupConfig {
+public:
+  __declspec(property(get = __get__category)) int _category;
+  __declspec(property(get = __get__currency)) int _currency;
+
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Shop", "BundleGroupConfig");
+    return class_helper;
+  }
+
+public:
+  int __get__category()
+  {
+    static auto field = get_class_helper().GetField("_category");
+    return *(int*)((ptrdiff_t)this + field.offset());
+  }
+
+  int __get__currency()
+  {
+    static auto field = get_class_helper().GetField("_currency");
+    return *(int*)((ptrdiff_t)this + field.offset());
+  }
+};
+
+class ShopSectionContext
+{
+public:
+  __declspec(property(get = __get__bundleConfig)) BundleGroupConfig* _bundleConfig;
+
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Shop", "ShopSectionContext");
+    return class_helper;
+  }
+
+public:
+  BundleGroupConfig* __get__bundleConfig()
+  {
+    static auto field = get_class_helper().GetProperty("BundleGroup");
+    return field.GetRaw<BundleGroupConfig>(this);
+  }
+};
+
+SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* _this, void* status,
+                                            SectionNavHistory* history)
+{
   if (Config::Get().stay_in_bundle_after_summary == false) {
-    return;
+    return original(_this, status, history);
   }
 
   if (strcmp(((Il2CppObject*)(_this))->klass->name, "ShopSummaryDirector") == 0) {
-    auto id_array = _this->_backLogicSkipSectionIds;
-    auto ids      = (SectionID*)id_array->vector;
-    for (int i = 0; i < id_array->max_length; ++i) {
-      auto id = ids[i];
-      if (id == SectionID::Shop_Showcase) {
-        ids[i] = SectionID::Navigation_Combat_Debug;
+    auto section_data = (ShopSectionContext*)Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Shop_List);
+    section_data      = section_data;
+    auto bundle_config = section_data->_bundleConfig;
+    auto f             = bundle_config->_category;
+    f                  = f;
+    if (f == 3 || f == 10) {
+      auto id_array = _this->_backLogicSkipSectionIds;
+      auto ids      = (SectionID*)id_array->vector;
+      for (size_t i = 0; i < id_array->max_length; ++i) {
+        auto id = ids[i];
+        if (id == SectionID::Shop_Showcase) {
+          ids[i] = SectionID::Navigation_Combat_Debug;
+        }
       }
+
+      if (auto cache_id_array = _this->backlogicCache; cache_id_array) {
+        auto cache_ids = (SectionID*)cache_id_array->vector;
+        for (size_t i = 0; i < cache_id_array->max_length; ++i) {
+          auto id = cache_ids[i];
+          if (id == SectionID::Shop_Showcase) {
+            cache_ids[i] = SectionID::Navigation_Combat_Debug;
+          }
+        }
+      }
+
+      auto sectionID = original(_this, status, history);
+
+      for (size_t i = 0; i < id_array->max_length; ++i) {
+        auto id = ids[i];
+        if (id == SectionID::Navigation_Combat_Debug) {
+          ids[i] = SectionID::Shop_Showcase;
+        }
+      }
+
+      if (auto cache_id_array = _this->backlogicCache; cache_id_array) {
+        auto cache_ids = (SectionID*)cache_id_array->vector;
+        for (size_t i = 0; i < cache_id_array->max_length; ++i) {
+          auto id = cache_ids[i];
+          if (id == SectionID::Navigation_Combat_Debug) {
+            cache_ids[i] = SectionID::Shop_Showcase;
+          }
+        }
+      }
+      return sectionID;
     }
   }
+  return original(_this, status, history);
 }
+
+void ShopSummaryDirectorCtr(auto original, ShopSummaryDirector* _this)
+{
+  original(_this);
+}
+
+//   const auto section_data = Hub::get_SectionManager()->_sectionStorage->GetState(sectionID);
 
 void InstallTempCrashFixes()
 {
@@ -176,4 +304,6 @@ void InstallTempCrashFixes()
   auto shop_summary_director = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Shop", "ShopSummaryDirector");
   reveal_show                = shop_summary_director.GetMethod("Start");
   SPUD_STATIC_DETOUR(reveal_show, ShopSummaryDirectorCtr);
+  reveal_show = shop_summary_director.GetMethod("GoBackBehaviour");
+  SPUD_STATIC_DETOUR(reveal_show, ShopSummaryDirectorGoBackBehavior);
 }

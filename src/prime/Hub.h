@@ -158,10 +158,28 @@ private:
   }
 };
 
+struct SectionNavHistory {
+public:
+  bool Contains(SectionID section)
+  {
+    static auto Contains = get_class_helper().GetMethod<bool(SectionNavHistory*, SectionID)>("Contains");
+    return Contains(this, section);
+  }
+
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Sections", "SectionNavHistory");
+    return class_helper;
+  }
+};
+
+
 struct SectionManager {
 public:
   __declspec(property(get = __get_CurrentSection)) SectionID CurrentSection;
   __declspec(property(get = __get__sectionStorage)) SectionStorage* _sectionStorage;
+  __declspec(property(get = __get__history)) SectionNavHistory* _history;
 
   void TriggerSectionChange(SectionID nextSectionID, void* args, bool forcedSectionChange = false,
                             bool isGoBackStep = false, bool allowSameSection = false)
@@ -190,6 +208,12 @@ public:
   {
     static auto field = get_class_helper().GetField("_sectionStorage");
     return *(SectionStorage**)((ptrdiff_t)this + field.offset());
+  }
+
+  SectionNavHistory* __get__history()
+  {
+    static auto field = get_class_helper().GetField("_history");
+    return *(SectionNavHistory**)((ptrdiff_t)this + field.offset());
   }
 };
 
