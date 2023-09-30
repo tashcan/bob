@@ -77,39 +77,16 @@ X | ExoComp
 Z | Daily Missions
 ` | Open Alliance Chat - Side of Screen
 
-## Building
+## Contributing / Building
 
-First clone and initialise the repository:
+If you wish to contribute to the project, or simply compile the DLL yourself, please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
-```bash
-git clone https://github.com/tashcan/bob.git
-cd bob
-git submodules update --recursive --init
-```
+## Configuration
 
-This will download three submodules and further submodules that they have, so this will take some time to complete.
-
-If you have Visual Studio Code, open the folder and it should ask you to install the CMake extensions bundle.  Once the extensions are installed, you can build the project by pressing `F7` or right clicking on the `CMakeLists.txt` file and selecting `Build All Projects`.  This may ask you to configure the project and pick various items to use in the build.  That should only occur once.
-
-If you do not have Visual Studio Code, this project uses CMake, so the simplest way to build it on Windows:
-
-```ps1
-mkdir build
-cd build
-cmake ../
-cmake --build .
-```
-
-## Usage
-
-Please note that when this project compiles, it will create a DLL called `stfc-communty-patch.dll`.  This file must be either copied to the `C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game` folder as `version.dll` or create a symbolic link to the file using an elevated (administrator) command prompt:
-
-```console
-cd C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game
-mklink C:\Source\tashcan\debug\stfc-communty-patch.dll version.dll
-```
-
-If you do link the file, please note you will need to close the game to recompile.
+An example configuration file is [example_community_patch_settings.toml](example_community_patch_settings.toml) and should be
+renamed to `community_patch_settings.toml`.  When running this file will be parsed (see `community_patch.log`) and the running
+values can be found in `community_patch_settings_parsed.toml`.  If you have any problems with a setting, check the log and parsed
+file to verify that the setting was applied.
 
 ## Disclaimer
 
