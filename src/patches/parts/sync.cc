@@ -256,12 +256,9 @@ void HandleEntityGroup(EntityGroup* entity_group)
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto mission_array = json::array();
       for (const auto& mission : response.activemissions()) {
-        if (!active_mission_states.contains(mission.id())) {
-          active_mission_states.insert(mission.id());
-          mission_array.push_back({{"type", "active_mission"}, {"mid", mission.id()}});
-        }
+        mission_array.push_back({{"type", "active_mission"}, {"mid", mission.id()}});
       }
-      if (Config::Get().sync_active_missions) {
+      if (Config::Get().sync_missions) {
         queue_data(mission_array.dump());
       }
     }

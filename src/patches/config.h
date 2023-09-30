@@ -63,7 +63,6 @@ public:
   bool        sync_battlelogs;
   bool        sync_officer;
   bool        sync_missions;
-  bool        sync_active_missions;
   bool        sync_research;
   bool        sync_tech;
   bool        sync_traits;
