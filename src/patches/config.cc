@@ -11,6 +11,8 @@
 #include <spdlog/spdlog.h>
 
 #include <absl/strings/str_split.h>
+#include <mapkey.h>
+#include <prime/KeyCode.h>
 
 std::map<std::string, int> bannerTypes{
     {"Standard", ToastState::Standard},
@@ -89,6 +91,35 @@ inline T get_config_or_default(toml::table config, toml::table& new_config, std:
   spdlog::info("config value {}.{} value: {}", section, item, final_value);
 
   return (T)final_value;
+}
+
+void parse_config_shortcut(toml::table config, toml::table& new_config, std::string_view item,
+                           GameFunction gameFunction, std::string_view default_value)
+{
+  auto section = "shortcuts";
+
+  config.emplace<toml::table>(section, toml::table());
+  new_config.emplace<toml::table>(section, toml::table());
+
+  auto sectionTable = new_config[section];
+  auto config_value = config[section][item].value_or(default_value);
+
+  MapKey*     mapKey   = MapKey::Parse(config_value);
+  std::string shortcut = "disabled";
+
+  if (!mapKey) {
+    mapKey = MapKey::Parse(default_value);
+  }
+
+  if (mapKey) {
+    shortcut = mapKey->GetParsedValues();
+    MapKey::AddMappedKey(gameFunction, mapKey);
+  }
+
+  sectionTable.as_table()->insert_or_assign(item, shortcut);
+
+  spdlog::info("shortcut value {}.{} value: {}", section, item, shortcut);
+  ;
 }
 
 void Config::Load()
@@ -197,6 +228,66 @@ void Config::Load()
   spdlog::info(message.str());
 
   parsed["ui"].as_table()->insert_or_assign("disabled_banner_types", bannerString);
+
+  parse_config_shortcut(config, parsed, "MoveLeft1", GameFunction::MoveLeft1, "LEFT");
+  parse_config_shortcut(config, parsed, "MoveLeft2", GameFunction::MoveLeft2, "A");
+  parse_config_shortcut(config, parsed, "MoveRight1", GameFunction::MoveRight1, "RIGHT");
+  parse_config_shortcut(config, parsed, "MoveRight2", GameFunction::MoveRight2, "D");
+  parse_config_shortcut(config, parsed, "MoveDown1", GameFunction::MoveDown1, "DOWN");
+  parse_config_shortcut(config, parsed, "MoveDown2", GameFunction::MoveDown2, "S");
+  parse_config_shortcut(config, parsed, "MoveUp1", GameFunction::MoveUp1, "UP");
+  parse_config_shortcut(config, parsed, "MoveUp2", GameFunction::MoveUp2, "W");
+
+  parse_config_shortcut(config, parsed, "SelectChatAlliance", GameFunction::SelectChatAlliance, "CTRL-2");
+  parse_config_shortcut(config, parsed, "SelectChatGlobal", GameFunction::SelectChatGlobal, "CTRL-1");
+  parse_config_shortcut(config, parsed, "SelectChatPrivate", GameFunction::SelectChatPrivate, "CTRL-3");
+
+  parse_config_shortcut(config, parsed, "SelectShip1", GameFunction::SelectShip1, "1");
+  parse_config_shortcut(config, parsed, "SelectShip2", GameFunction::SelectShip2, "2");
+  parse_config_shortcut(config, parsed, "SelectShip3", GameFunction::SelectShip3, "3");
+  parse_config_shortcut(config, parsed, "SelectShip4", GameFunction::SelectShip4, "4");
+  parse_config_shortcut(config, parsed, "SelectShip5", GameFunction::SelectShip5, "5");
+  parse_config_shortcut(config, parsed, "SelectShip6", GameFunction::SelectShip6, "6");
+  parse_config_shortcut(config, parsed, "SelectShip7", GameFunction::SelectShip7, "7");
+  parse_config_shortcut(config, parsed, "SelectShip8", GameFunction::SelectShip8, "8");
+
+  parse_config_shortcut(config, parsed, "ActionPrimary", GameFunction::ActionPrimary, "SPACE");
+  parse_config_shortcut(config, parsed, "ActionSecondary", GameFunction::ActionSecondary, "R");
+  parse_config_shortcut(config, parsed, "ActionView", GameFunction::ActionView, "V");
+  parse_config_shortcut(config, parsed, "ShowChat", GameFunction::ShowChat, "C");
+  parse_config_shortcut(config, parsed, "ShowChatSide1", GameFunction::ShowChatSide1, "ALT-C");
+  parse_config_shortcut(config, parsed, "ShowChatSide2", GameFunction::ShowChatSide2, "`");
+  parse_config_shortcut(config, parsed, "ShowGalaxy", GameFunction::ShowGalaxy, "G");
+  parse_config_shortcut(config, parsed, "ShowSystem", GameFunction::ShowSystem, "H");
+  parse_config_shortcut(config, parsed, "ZoomPreset1", GameFunction::ZoomPreset1, "F1");
+  parse_config_shortcut(config, parsed, "ZoomPreset2", GameFunction::ZoomPreset2, "F2");
+  parse_config_shortcut(config, parsed, "ZoomPreset3", GameFunction::ZoomPreset3, "F3");
+  parse_config_shortcut(config, parsed, "ZoomPreset4", GameFunction::ZoomPreset4, "F4");
+  parse_config_shortcut(config, parsed, "ZoomPreset5", GameFunction::ZoomPreset5, "F5");
+  parse_config_shortcut(config, parsed, "ZoomIn", GameFunction::ZoomIn, "Q");
+  parse_config_shortcut(config, parsed, "ZoomOut", GameFunction::ZoomOut, "E");
+  parse_config_shortcut(config, parsed, "ZoomMax", GameFunction::ZoomMax, "MINUS");
+  parse_config_shortcut(config, parsed, "ZoomMin", GameFunction::ZoomMin, "BACKSPACE");
+  parse_config_shortcut(config, parsed, "ZoomReset", GameFunction::ZoomReset, "=");
+  parse_config_shortcut(config, parsed, "UiScaleUp", GameFunction::UiScaleUp, "PGUP");
+  parse_config_shortcut(config, parsed, "UiScaleDown", GameFunction::UiScaleDown, "PGDOWN");
+
+  if (this->hotkeys_extended) {
+    parse_config_shortcut(config, parsed, "ShowAwayTeam", GameFunction::ShowAwayTeam, "SHIFT-T");
+    parse_config_shortcut(config, parsed, "ShowBookmarks", GameFunction::ShowBookmarks, "B");
+    parse_config_shortcut(config, parsed, "ShowCommander", GameFunction::ShowCommander, "O");
+    parse_config_shortcut(config, parsed, "ShowDaily", GameFunction::ShowDaily, "Z");
+    parse_config_shortcut(config, parsed, "ShowEvents", GameFunction::ShowEvents, "T");
+    parse_config_shortcut(config, parsed, "ShowExoComp", GameFunction::ShowExoComp, "X");
+    parse_config_shortcut(config, parsed, "ShowFactions", GameFunction::ShowFactions, "F");
+    parse_config_shortcut(config, parsed, "ShowInventory", GameFunction::ShowInventory, "I");
+    parse_config_shortcut(config, parsed, "ShowMissions", GameFunction::ShowMissions, "M");
+    parse_config_shortcut(config, parsed, "ShowOfficers", GameFunction::ShowOfficers, "SHIFT-O");
+    parse_config_shortcut(config, parsed, "ShowQTrials", GameFunction::ShowQTrials, "SHIFT-Q");
+    parse_config_shortcut(config, parsed, "ShowRefinery", GameFunction::ShowRefinery, "SHIFT-F");
+    parse_config_shortcut(config, parsed, "ShowStationExterior", GameFunction::ShoWStationExterior, "SHIFT-G");
+    parse_config_shortcut(config, parsed, "ShowStationInterior", GameFunction::ShowStationInterior, "SHIFT-H");
+  }
 
   if (!std::filesystem::exists("community_patch_settings.toml")) {
     message.str("");
