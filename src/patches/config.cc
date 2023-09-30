@@ -157,7 +157,6 @@ void Config::Load()
   this->sync_resources  = get_config_or_default(config, parsed, "sync", "resources", false);
   this->sync_officer    = get_config_or_default(config, parsed, "sync", "officer", false);
   this->sync_missions   = get_config_or_default(config, parsed, "sync", "missions", false);
-  this->sync_active_missions = get_config_or_default(config, parsed, "sync", "active_missions", false);
   this->sync_research   = get_config_or_default(config, parsed, "sync", "research", false);
   this->sync_tech       = get_config_or_default(config, parsed, "sync", "tech", false);
   this->sync_traits     = get_config_or_default(config, parsed, "sync", "traits", false);
