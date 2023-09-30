@@ -3,6 +3,7 @@
 
 #include <spud/detour.h>
 
+#include "mapkey.h"
 #include "utils.h"
 
 #include <il2cpp/il2cpp_helper.h>
@@ -42,9 +43,6 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 
   static auto il2cpp_string_new =
       (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
-  static auto GetKeyInt = il2cpp_resolve_icall<bool(KeyCode)>("UnityEngine.Input::GetKeyInt(UnityEngine.KeyCode)");
-  static auto GetKeyDownInt =
-      il2cpp_resolve_icall<bool(KeyCode)>("UnityEngine.Input::GetKeyDownInt(UnityEngine.KeyCode)");
   static auto GetMousePosition =
       il2cpp_resolve_icall<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
@@ -52,13 +50,8 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
   auto       section_manager = Hub::get_SectionManager();
   const auto current_section = section_manager->CurrentSection;
 
-  const auto is_in_chat = current_section == SectionID::Chat_Private_Message
-                          || current_section == SectionID::Chat_Alliance || current_section == SectionID::Chat_Main
-                          || current_section == SectionID::Chat_Private_List;
-
-  const auto is_in_system_galaxy =
-      current_section == SectionID::Navigation_Galaxy || current_section == SectionID::Navigation_System
-      || current_section == SectionID::Starbase_Interior || current_section == SectionID::Starbase_Exterior;
+  const auto is_in_chat          = Hub::IsInChat();
+  const auto is_in_system_galaxy = Hub::IsInSystemOrGalaxyOrStarbase();
 
   const auto dt        = GetDeltaTime();
   auto       zoomDelta = Config::Get().keyboard_zoom_speed * dt;
@@ -67,51 +60,30 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
     return original(_this);
   }
 
-  auto is_input_focused = []() {
-    bool is_input_focused = false;
-    auto eventSystem      = EventSystem::current();
-    if (eventSystem) {
-      auto n = eventSystem->currentSelectedGameObject;
-      if (!n) {
-        return false;
-      }
-      try {
-        if (n) {
-          auto n2 = n->GetComponentFastPath2<TMP_InputField>();
-          if (n2) {
-            return n2->isFocused;
-          }
-        }
-      } catch (...) {
-        return false;
-      }
+  bool do_absolute_zoom = false;
+  if (!Key::IsInputFocused()) {
+    do_absolute_zoom = true;
+    if (MapKey::IsPressed(GameFunction::ZoomPreset1)) {
+      zoomDelta = Config::Get().system_zoom_preset_1;
+    } else if (MapKey::IsPressed(GameFunction::ZoomPreset2)) {
+      zoomDelta = Config::Get().system_zoom_preset_2;
+    } else if (MapKey::IsPressed(GameFunction::ZoomPreset3)) {
+      zoomDelta = Config::Get().system_zoom_preset_3;
+    } else if (MapKey::IsPressed(GameFunction::ZoomPreset4)) {
+      zoomDelta = Config::Get().system_zoom_preset_4;
+    } else if (MapKey::IsPressed(GameFunction::ZoomPreset5)) {
+      zoomDelta = Config::Get().system_zoom_preset_5;
+    } else {
+      do_absolute_zoom = false;
     }
-    return false;
-  };
-
-  bool do_absolute_zoom = true;
-  if (GetKeyDownInt(KeyCode::F1) && !is_input_focused()) {
-    zoomDelta = Config::Get().system_zoom_preset_1;
-  } else if (GetKeyDownInt(KeyCode::F2) && !is_input_focused()) {
-    zoomDelta = Config::Get().system_zoom_preset_2;
-  } else if (GetKeyDownInt(KeyCode::F3) && !is_input_focused()) {
-    zoomDelta = Config::Get().system_zoom_preset_3;
-  } else if (GetKeyDownInt(KeyCode::F4) && !is_input_focused()) {
-    zoomDelta = Config::Get().system_zoom_preset_4;
-  } else if (GetKeyDownInt(KeyCode::F5) && !is_input_focused()) {
-    zoomDelta = Config::Get().system_zoom_preset_5;
-  } else {
-    do_absolute_zoom = false;
   }
-
-  bool is_shift_pressed = GetKeyInt(KeyCode::LeftShift) || GetKeyInt(KeyCode::RightShift);
-  if (Config::Get().hotkeys_extended) {
-    if (GetKeyDownInt(KeyCode::Equals) && !is_input_focused()) {
+  if (Config::Get().hotkeys_extended && !Key::IsInputFocused()) {
+    if (MapKey::IsPressed(GameFunction::ZoomReset)) {
       do_default_zoom = true;
-    } else if (GetKeyDownInt(KeyCode::Minus) && !is_input_focused()) {
+    } else if (MapKey::IsPressed(GameFunction::ZoomMin)) {
       zoomDelta        = Config::Get().zoom;
       do_absolute_zoom = true;
-    } else if (GetKeyDownInt(KeyCode::Backspace) && !is_input_focused()) {
+    } else if (MapKey::IsPressed(GameFunction::ZoomMax)) {
       zoomDelta        = 100;
       do_absolute_zoom = true;
     }
@@ -125,7 +97,7 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
     do_default_zoom = false;
   }
 
-  if ((GetKeyInt(KeyCode::Q) && !is_input_focused()) || do_absolute_zoom) {
+  if ((MapKey::IsPressed(GameFunction::ZoomIn) && !Key::IsInputFocused()) || do_absolute_zoom) {
     vec3 mousePos;
     GetMousePosition(&mousePos);
     _this->_zoomLocation = vec2{mousePos.x, mousePos.y};
@@ -141,7 +113,7 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
     auto worldPos      = GetMouseWorldPos(_this->_sceneCamera, &mousePos);
     _this->_worldPoint = worldPos;
     _this->ZoomCameraAtWorldPoint();
-  } else if (GetKeyInt(KeyCode::E) && !is_input_focused()) {
+  } else if (MapKey::IsPressed(GameFunction::ZoomOut) && !Key::IsInputFocused()) {
     vec3 mousePos;
     GetMousePosition(&mousePos);
     _this->_zoomLocation  = vec2{mousePos.x, mousePos.y};

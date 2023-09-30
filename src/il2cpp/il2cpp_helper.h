@@ -47,7 +47,8 @@ public:
 
     Il2CppException* exception = nullptr;
     void*            params[1] = {&v};
-    auto             result    = il2cpp_runtime_invoke(set_method_virtual, _this, params, &exception);
+    
+    il2cpp_runtime_invoke(set_method_virtual, _this, params, &exception);
   }
 
   template <typename T = void> T* GetRaw(void* _this)

@@ -153,3 +153,137 @@ tech = false
 
 # Do you want to sync trait data?
 traits = false
+
+[shortcuts]
+# Primary actions such as Mine or Attack or Go
+ActionPrimary = 'SPACE'
+
+# Secondary actions such as Recall or Scan
+ActionSecondary = 'R'
+
+# Switch between Cargo and Preview screens when clicked on a ship/node/station
+ActionView = 'V'
+
+# Move the viewport down
+MoveDown1 = 'DOWN'
+MoveDown2 = 'S'
+
+# Move the viewport left
+MoveLeft1 = 'LEFT'
+MoveLeft2 = 'A'
+
+# Move the viewport right
+MoveRight1 = 'RIGHT'
+MoveRight2 = 'D'
+
+# Move the viewport up
+MoveUp1 = 'UP'
+MoveUp2 = 'W'
+
+# Select the Alliance tab when in chat
+SelectChatAlliance = 'CTRL-2'
+
+# Select the Global tab when in chat (if not disabled)
+SelectChatGlobal = 'CTRL-1'
+
+# Select the Private tab when in chat
+SelectChatPrivate = 'CTRL-CTRL-3'
+
+# Select ship 1 (or locate on second press)
+SelectShip1 = '1'
+
+# Select ship 2 (or locate on second press)
+SelectShip2 = '2'
+
+# Select ship 3 (or locate on second press)
+SelectShip3 = '3'
+
+# Select ship 4 (or locate on second press)
+SelectShip4 = '4'
+
+# Select ship 5 (or locate on second press)
+SelectShip5 = '5'
+
+# Select ship 6 (or locate on second press)
+SelectShip6 = '6'
+
+# Select ship 7 (or locate on second press)
+SelectShip7 = '7'
+
+# Select ship 8 (or locate on second press)
+SelectShip8 = '8'
+
+# Go to the AwayTeam screen
+ShowAwayTeam = 'SHIFT-T'
+
+# Go to the Bookmarks screen
+ShowBookmarks = 'B'
+
+# Show the chat full screen
+ShowChat = 'C'
+
+# Show the chat on the left side
+ShowChatSide1 = 'ALT-C'
+ShowChatSide2 = '`'
+
+# Go to the Fleet Commander screen
+ShowCommander = 'O'
+
+# Go to the Daily Missions tab
+ShowDaily = 'Z'
+
+# Go to the Events screen
+ShowEvents = 'T'
+
+# Go to the Exo Comp screen
+ShowExoComp = 'X'
+
+# Go to the Factions screen
+ShowFactions = 'F'
+
+# Go to the Galaxy view
+ShowGalaxy = 'G'
+
+# Go to the Inventory screen
+ShowInventory = 'I'
+
+# Go to the Missions tab
+ShowMissions = 'M'
+
+# Go to the Officers screen
+ShowOfficers = 'SHIFT-O'
+
+# Go to the Q Trials screen
+ShowQTrials = 'SHIFT-Q'
+
+# Go to the Refinery screen
+ShowRefinery = 'SHIFT-SHIFT-F'
+
+# Go to the Station's Exterior view
+ShowStationExterior = 'SHIFT-SHIFT-G'
+
+# Go to the Station's Interior view
+ShowStationInterior = 'SHIFT-SHIFT-H'
+
+# Go to the Systme view
+ShowSystem = 'H'
+
+# Scale the UI down
+UiScaleDown = 'PGDOWN'
+
+# Scale the UI up
+UiScaleUp = 'PGUP'
+
+# Set zoom to Presets
+ZoomPreset1 = 'F1'
+ZoomPreset2 = 'F2'
+ZoomPreset3 = 'F3'
+ZoomPreset4 = 'F4'
+ZoomPreset5 = 'F5'
+
+# Zoom in/out
+ZoomIn = 'Q'
+ZoomOut = 'E'
+ZoomMax = 'MINUS'
+ZoomMin = 'BACKSPACE'
+ZoomReset = '='

@@ -35,8 +35,11 @@
 - Exit section when collecting gifts
 - Create default toml file settings file if none exists
 - Create parsed toml file to show what settings have been applied
+- Customise your keyboard shortcuts
 
 ## Keyboard shortcuts
+
+The following are default shortcuts that can be modified (see [KEYMAPPING.md](KEYMAPPING.md))
 
 Key | Shortcut
 --: | ---
@@ -53,6 +56,8 @@ R | When clicking on mine/player/enemy, perform non-default action (eg, scan)
 V | When clicking on mine/player/enemy, toggle view of cargo or default screen
 C | Focus Chat (or Open Alliance Chat - Full Screen)
 Alt-C | Focus Chat (or Open Alliance Chat - Side of Screen)
+PGUP | UI Scale Up
+PGDOWN | UI Scale Down
 
 The following keybinds have recently been added:
 
