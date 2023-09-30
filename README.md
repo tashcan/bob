@@ -103,6 +103,40 @@ renamed to `community_patch_settings.toml`.  When running this file will be pars
 values can be found in `community_patch_settings_parsed.toml`.  If you have any problems with a setting, check the log and parsed
 file to verify that the setting was applied.
 
+## Problems?
+
+The most common problems getting the DLL to work are:
+
+1. Not installed in the correct location.  This must be:
+
+   ```console
+   C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game
+   ```
+
+2. Windows is blocking the DLL.  Right-click the file and select Properties.  On the `General` tab
+   there will be additional text at the bottom:
+
+   ```console
+   This file can from another
+   computer and might be blocked to
+   help protect this computer
+   ```
+
+   To the right of this, there will be a tick box called `Unblock`.  Tick the box and then click OK
+   to unblock the file.
+
+3. The configuration file has the wrong name (see above)
+
+4. The configuration file is not being parsed as you expect which is normally because:
+
+   - Your configuration isn't being parsed
+   - The configuration option name is spelt wrong
+   - The configuration option name is in the wrong section
+   - The configuration option value is not a true or false
+
+   You can verify your configuration by looking at `community_patch_settings_parsed.toml` and/or the
+   log file `community_patch.log`.
+
 ## Disclaimer
 
 This is intended to give people insight and possiblity to add new things for QoL improvements.
