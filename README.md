@@ -81,6 +81,21 @@ Z | Daily Missions
 
 If you wish to contribute to the project, or simply compile the DLL yourself, please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
+## Installation / Runtme
+
+Both the DLL and the toml file must be placed in the STFC game folder which is always located
+at `C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game` as the following
+names:
+
+- community_patch_settings.toml
+- version.dll
+
+The pre-compiled DLL can be downloaded from the official assets hosted at:
+
+- https://assets.stfc.lol/mods/community-patch/0.5.2/version.dll
+- https://assets.stfc.lol/mods/community-patch/0.5.2/version.zip
+- https://assets.stfc.lol/mods/community-patch/0.5.2/version_0.5.2.zip
+
 ## Configuration
 
 An example configuration file is [example_community_patch_settings.toml](example_community_patch_settings.toml) and should be
