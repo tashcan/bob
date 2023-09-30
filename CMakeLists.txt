@@ -115,7 +115,7 @@ add_library(stfc-communty-patch SHARED ${TARGET_SRC} ${PATCHES} ${PRIME}
     "src/prime/AspectRatioConstraintHandler.h"
     "src/prime/RewardsButtonWidget.h"
     "src/prime/IEnumerator.h"
-)
+ "src/prime/LanguageManager.h")
 
 set_property(TARGET stfc-communty-patch PROPERTY CXX_STANDARD 20)
 set_property(TARGET stfc-communty-patch PROPERTY CXX_STANDARD_REQUIRED ON)
