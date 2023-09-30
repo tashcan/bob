@@ -234,10 +234,18 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
   if (strcmp(((Il2CppObject*)(_this))->klass->name, "ShopSummaryDirector") == 0) {
     auto section_data = (ShopSectionContext*)Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Shop_List);
     section_data      = section_data;
-    auto bundle_config = section_data->_bundleConfig;
-    auto f             = bundle_config->_category;
-    f                  = f;
-    if (f == 3 || f == 10) {
+
+    auto suppress_go_back = false;
+    if (section_data) {
+      auto bundle_config = section_data->_bundleConfig;
+      if (bundle_config) {
+        auto f           = bundle_config->_category;
+        f                = f;
+        suppress_go_back = (f == 3 || f == 10);
+      }
+    }
+
+    if (suppress_go_back) {
       auto id_array = _this->_backLogicSkipSectionIds;
       auto ids      = (SectionID*)id_array->vector;
       for (size_t i = 0; i < id_array->max_length; ++i) {
