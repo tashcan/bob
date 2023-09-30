@@ -5,6 +5,7 @@
 #include <prime/EntityGroup.h>
 #include <prime/HttpResponse.h>
 #include <prime/Hub.h>
+#include <prime/LanguageManager.h>
 #include <prime/ServiceResponse.h>
 
 #include <prime/proto/Digit.PrimeServer.Models.pb.h>
@@ -26,6 +27,8 @@
 
 #include <EASTL/algorithm.h>
 #include <EASTL/bonus/ring_buffer.h>
+
+#include <absl/strings/str_join.h>
 
 namespace http
 {
@@ -96,6 +99,7 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
     Uri requestUri{url};
 
     Windows::Web::Http::HttpStringContent jsonContent(post_data, UnicodeEncoding::Utf8, L"application/json");
+    jsonContent.Headers().ContentType().CharSet(L"");
     httpResponseMessage = httpClient.PostAsync(requestUri, jsonContent).get();
     httpResponseMessage.EnsureSuccessStatusCode();
     return httpResponseMessage.Content().ReadAsStringAsync().get().c_str();
@@ -208,6 +212,7 @@ static std::unordered_map<uint64_t, RankLevelState>                             
 static std::unordered_map<uint64_t, RankLevelState>                              ft_states;
 static std::unordered_map<std::pair<int64_t, int64_t>, RankLevelState, pairhash> trait_states;
 static std::unordered_set<int64_t>                                               mission_states;
+static std::unordered_set<int64_t>                                               active_mission_states;
 static std::unordered_set<uint64_t>                                              battlelog_states;
 
 static eastl::ring_buffer<uint64_t> previously_sent_battlelogs;
@@ -246,7 +251,21 @@ void HandleEntityGroup(EntityGroup* entity_group)
 
   auto bytes = entity_group->Group;
   auto type  = entity_group->Type_;
-  if (type == EntityGroup::Type::CompletedMissions) {
+  if (type == EntityGroup::Type::ActiveMissions) {
+    auto response = Digit::PrimeServer::Models::ActiveMissionsResponse();
+    if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
+      auto mission_array = json::array();
+      for (const auto& mission : response.activemissions()) {
+        if (!active_mission_states.contains(mission.id())) {
+          active_mission_states.insert(mission.id());
+          mission_array.push_back({{"type", "active_mission"}, {"mid", mission.id()}});
+        }
+      }
+      if (Config::Get().sync_active_missions) {
+        queue_data(mission_array.dump());
+      }
+    }
+  } else if (type == EntityGroup::Type::CompletedMissions) {
     auto response = Digit::PrimeServer::Models::CompletedMissionsResponse();
     if (response.ParseFromArray(bytes->bytes->m_Items, bytes->bytes->max_length)) {
       auto mission_array = json::array();
@@ -457,27 +476,61 @@ void ship_combat_log_data()
       cv2.wait(lk, []() { return !combat_log_data_queue.empty(); });
     }
 
-    const auto sync_data  = ([&] {
-      std::lock_guard lk(m2);
-      auto            data = combat_log_data_queue.front();
-      combat_log_data_queue.pop();
-      return data;
-    })();
-    auto       body       = std::format(L"{{\"journal_id\":{}}}", sync_data);
-    auto       battle_log = http::get_data_data(instanceSessionId, gameServerUrl, L"/journals/get", body);
-
-    using json = nlohmann::json;
-
-    auto ship_array  = json::array();
-    auto battle_json = json::parse(battle_log);
-    ship_array.push_back({{"type", "battlelog"}, {"journal", battle_json["journal"]}});
-
     try {
-      http::send_data(ship_array.dump());
-    } catch (winrt::hresult_error const& ex) {
-      spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
-    } catch (const std::wstring& sz) {
-      spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
+      const auto sync_data  = ([&] {
+        std::lock_guard lk(m2);
+        auto            data = combat_log_data_queue.front();
+        combat_log_data_queue.pop();
+        return data;
+      })();
+      auto       body       = std::format(L"{{\"journal_id\":{}}}", sync_data);
+      auto       battle_log = http::get_data_data(instanceSessionId, gameServerUrl, L"/journals/get", body);
+
+      using json = nlohmann::json;
+
+      auto ship_array  = json::array();
+      auto battle_json = json::parse(battle_log);
+
+      const auto journal = battle_json["journal"];
+
+      const auto target_fleet_data    = journal["target_fleet_data"];
+      const auto initiator_fleet_data = journal["initiator_fleet_data"];
+
+      std::vector<std::string> profiles_to_fetch;
+
+      if (target_fleet_data["ref_ids"].is_null()) {
+        for (const auto& fleet : target_fleet_data["deployed_fleets"]) {
+          const auto player_id = fleet["uid"].get<std::string>();
+          profiles_to_fetch.push_back(std::string("\"") + player_id + "\"");
+        }
+      }
+
+      if (initiator_fleet_data["ref_ids"].is_null()) {
+        for (const auto& fleet : initiator_fleet_data["deployed_fleets"]) {
+          const auto player_id = fleet["uid"].get<std::string>();
+          profiles_to_fetch.push_back(std::string("\"") + player_id + "\"");
+        }
+      }
+
+      std::string profiles_joined = absl::StrJoin(profiles_to_fetch, ",");
+      auto        profiles_body   = std::format("{{\"user_ids\":[{}]}}", profiles_joined);
+      auto        profiles        = http::get_data_data(instanceSessionId, gameServerUrl, L"/user_profile/profiles",
+                                                        winrt::to_hstring(profiles_body).c_str());
+      auto        profiles_json   = json::parse(profiles);
+      auto        names           = json::object();
+      for (const auto& profile : profiles_json["user_profiles"].get<json::object_t>()) {
+        names[profile.first] = profile.second["name"];
+      }
+      ship_array.push_back({{"type", "battlelog"}, {"names", names}, {"journal", battle_json["journal"]}});
+
+      try {
+        http::send_data(ship_array.dump());
+      } catch (winrt::hresult_error const& ex) {
+        spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+      } catch (const std::wstring& sz) {
+        spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
+      }
+    } catch (...) {
     }
   }
 }
