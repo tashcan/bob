@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.5.2
+
+- fix free resize not working anymore
+- restrict the stay in bundle after summary behavior to officer and event store
+- add player names to battle log sync
+- fix trait sync not working
+- add sync of active missions
+
 ## 0.5.0 (future)
 
 - add default toml config when none exists with default values
