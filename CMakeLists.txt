@@ -31,7 +31,7 @@ FetchContent_MakeAvailable(tomlplusplus)
 FetchContent_Declare(
       spud
       GIT_REPOSITORY "https://github.com/tashcan/spud.git"
-      GIT_TAG origin/main
+      GIT_TAG 43f9d645401d8e014502af67cc59160cb46a6b3e
       GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(spud)
