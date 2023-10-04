@@ -241,7 +241,7 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
       if (bundle_config) {
         auto f           = bundle_config->_category;
         f                = f;
-        suppress_go_back = (f == 3 || f == 10);
+        suppress_go_back = (f == 3 || f == 10 || f == 22);
       }
     }
 
