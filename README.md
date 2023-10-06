@@ -92,9 +92,9 @@ names:
 
 The pre-compiled DLL can be downloaded from the official assets hosted at:
 
-- https://assets.stfc.lol/mods/community-patch/0.5.2/version.dll
-- https://assets.stfc.lol/mods/community-patch/0.5.2/version.zip
-- https://assets.stfc.lol/mods/community-patch/0.5.2/version_0.5.2.zip
+- https://assets.stfc.lol/mods/community-patch/0.5.3/version.dll
+- https://assets.stfc.lol/mods/community-patch/0.5.3/version.zip
+- https://assets.stfc.lol/mods/community-patch/0.5.3/version_0.5.2.zip
 
 ## Configuration
 
