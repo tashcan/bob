@@ -1,5 +1,13 @@
 # Change Log
 
+## 0.6.0
+
+- Add customisable hotkeys
+- Prevent ship 'locate' functionality when viewing nodes
+- Add manage ship key ('N')
+- Add example configuration file
+- Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
+
 ## 0.5.2
 
 - fix free resize not working anymore

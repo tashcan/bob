@@ -2,12 +2,12 @@
 
 #include "config.h"
 #include "utils.h"
+#include <abseil-cpp/absl/strings/str_split.h>
+#include <iostream>
 #include <key.h>
 #include <modifierkey.h>
 #include <string>
 #include <string_view>
-#include <iostream>
-#include <abseil-cpp/absl/strings/str_split.h>
 
 ModifierKey::ModifierKey() {}
 
@@ -68,12 +68,19 @@ void ModifierKey::AddModifier(std::string_view shortcut, KeyCode modifier1, KeyC
 bool ModifierKey::IsPressed()
 {
   for (auto modifier : this->Modifiers) {
-    auto result = Key::Pressed(modifier);
-    if (modifier == KeyCode::LeftShift) {
-      std::cout << "LeftShift = " << result << "\n";
+    if (Key::Pressed(modifier)) {
+      return true;
     }
-    if (result) {
-        return true;
+  }
+
+  return false;
+}
+
+bool ModifierKey::IsDown()
+{
+  for (auto modifier : this->Modifiers) {
+    if (Key::Down(modifier)) {
+      return true;
     }
   }
 

@@ -229,64 +229,66 @@ void Config::Load()
 
   parsed["ui"].as_table()->insert_or_assign("disabled_banner_types", bannerString);
 
-  parse_config_shortcut(config, parsed, "MoveLeft1", GameFunction::MoveLeft1, "LEFT");
-  parse_config_shortcut(config, parsed, "MoveLeft2", GameFunction::MoveLeft2, "A");
-  parse_config_shortcut(config, parsed, "MoveRight1", GameFunction::MoveRight1, "RIGHT");
-  parse_config_shortcut(config, parsed, "MoveRight2", GameFunction::MoveRight2, "D");
-  parse_config_shortcut(config, parsed, "MoveDown1", GameFunction::MoveDown1, "DOWN");
-  parse_config_shortcut(config, parsed, "MoveDown2", GameFunction::MoveDown2, "S");
-  parse_config_shortcut(config, parsed, "MoveUp1", GameFunction::MoveUp1, "UP");
-  parse_config_shortcut(config, parsed, "MoveUp2", GameFunction::MoveUp2, "W");
+  parse_config_shortcut(config, parsed, "move_left1", GameFunction::MoveLeft1, "LEFT");
+  parse_config_shortcut(config, parsed, "move_left2", GameFunction::MoveLeft2, "A");
+  parse_config_shortcut(config, parsed, "move_right1", GameFunction::MoveRight1, "RIGHT");
+  parse_config_shortcut(config, parsed, "move_right2", GameFunction::MoveRight2, "D");
+  parse_config_shortcut(config, parsed, "move_down1", GameFunction::MoveDown1, "DOWN");
+  parse_config_shortcut(config, parsed, "move_down2", GameFunction::MoveDown2, "S");
+  parse_config_shortcut(config, parsed, "move_up1", GameFunction::MoveUp1, "UP");
+  parse_config_shortcut(config, parsed, "move_up2", GameFunction::MoveUp2, "W");
 
-  parse_config_shortcut(config, parsed, "SelectChatAlliance", GameFunction::SelectChatAlliance, "CTRL-2");
-  parse_config_shortcut(config, parsed, "SelectChatGlobal", GameFunction::SelectChatGlobal, "CTRL-1");
-  parse_config_shortcut(config, parsed, "SelectChatPrivate", GameFunction::SelectChatPrivate, "CTRL-3");
+  parse_config_shortcut(config, parsed, "select_chatalliance", GameFunction::SelectChatAlliance, "CTRL-2");
+  parse_config_shortcut(config, parsed, "select_chatglobal", GameFunction::SelectChatGlobal, "CTRL-1");
+  parse_config_shortcut(config, parsed, "select_chatprivate", GameFunction::SelectChatPrivate, "CTRL-3");
 
-  parse_config_shortcut(config, parsed, "SelectShip1", GameFunction::SelectShip1, "1");
-  parse_config_shortcut(config, parsed, "SelectShip2", GameFunction::SelectShip2, "2");
-  parse_config_shortcut(config, parsed, "SelectShip3", GameFunction::SelectShip3, "3");
-  parse_config_shortcut(config, parsed, "SelectShip4", GameFunction::SelectShip4, "4");
-  parse_config_shortcut(config, parsed, "SelectShip5", GameFunction::SelectShip5, "5");
-  parse_config_shortcut(config, parsed, "SelectShip6", GameFunction::SelectShip6, "6");
-  parse_config_shortcut(config, parsed, "SelectShip7", GameFunction::SelectShip7, "7");
-  parse_config_shortcut(config, parsed, "SelectShip8", GameFunction::SelectShip8, "8");
+  parse_config_shortcut(config, parsed, "select_ship1", GameFunction::SelectShip1, "1");
+  parse_config_shortcut(config, parsed, "select_ship2", GameFunction::SelectShip2, "2");
+  parse_config_shortcut(config, parsed, "select_ship3", GameFunction::SelectShip3, "3");
+  parse_config_shortcut(config, parsed, "select_ship4", GameFunction::SelectShip4, "4");
+  parse_config_shortcut(config, parsed, "select_ship5", GameFunction::SelectShip5, "5");
+  parse_config_shortcut(config, parsed, "select_ship6", GameFunction::SelectShip6, "6");
+  parse_config_shortcut(config, parsed, "select_ship7", GameFunction::SelectShip7, "7");
+  parse_config_shortcut(config, parsed, "select_ship8", GameFunction::SelectShip8, "8");
 
-  parse_config_shortcut(config, parsed, "ActionPrimary", GameFunction::ActionPrimary, "SPACE");
-  parse_config_shortcut(config, parsed, "ActionSecondary", GameFunction::ActionSecondary, "R");
-  parse_config_shortcut(config, parsed, "ActionView", GameFunction::ActionView, "V");
-  parse_config_shortcut(config, parsed, "ShowChat", GameFunction::ShowChat, "C");
-  parse_config_shortcut(config, parsed, "ShowChatSide1", GameFunction::ShowChatSide1, "ALT-C");
-  parse_config_shortcut(config, parsed, "ShowChatSide2", GameFunction::ShowChatSide2, "`");
-  parse_config_shortcut(config, parsed, "ShowGalaxy", GameFunction::ShowGalaxy, "G");
-  parse_config_shortcut(config, parsed, "ShowSystem", GameFunction::ShowSystem, "H");
-  parse_config_shortcut(config, parsed, "ZoomPreset1", GameFunction::ZoomPreset1, "F1");
-  parse_config_shortcut(config, parsed, "ZoomPreset2", GameFunction::ZoomPreset2, "F2");
-  parse_config_shortcut(config, parsed, "ZoomPreset3", GameFunction::ZoomPreset3, "F3");
-  parse_config_shortcut(config, parsed, "ZoomPreset4", GameFunction::ZoomPreset4, "F4");
-  parse_config_shortcut(config, parsed, "ZoomPreset5", GameFunction::ZoomPreset5, "F5");
-  parse_config_shortcut(config, parsed, "ZoomIn", GameFunction::ZoomIn, "Q");
-  parse_config_shortcut(config, parsed, "ZoomOut", GameFunction::ZoomOut, "E");
-  parse_config_shortcut(config, parsed, "ZoomMax", GameFunction::ZoomMax, "MINUS");
-  parse_config_shortcut(config, parsed, "ZoomMin", GameFunction::ZoomMin, "BACKSPACE");
-  parse_config_shortcut(config, parsed, "ZoomReset", GameFunction::ZoomReset, "=");
-  parse_config_shortcut(config, parsed, "UiScaleUp", GameFunction::UiScaleUp, "PGUP");
-  parse_config_shortcut(config, parsed, "UiScaleDown", GameFunction::UiScaleDown, "PGDOWN");
+  parse_config_shortcut(config, parsed, "action_primary", GameFunction::ActionPrimary, "SPACE");
+  parse_config_shortcut(config, parsed, "action_secondary", GameFunction::ActionSecondary, "R");
+  parse_config_shortcut(config, parsed, "action_view", GameFunction::ActionView, "V");
+  parse_config_shortcut(config, parsed, "action_recall", GameFunction::ActionRecall, "R");
+  parse_config_shortcut(config, parsed, "show_chat", GameFunction::ShowChat, "C");
+  parse_config_shortcut(config, parsed, "show_chatside1", GameFunction::ShowChatSide1, "ALT-C");
+  parse_config_shortcut(config, parsed, "show_chatside2", GameFunction::ShowChatSide2, "`");
+  parse_config_shortcut(config, parsed, "show_galaxy", GameFunction::ShowGalaxy, "G");
+  parse_config_shortcut(config, parsed, "show_system", GameFunction::ShowSystem, "H");
+  parse_config_shortcut(config, parsed, "zoom_preset1", GameFunction::ZoomPreset1, "F1");
+  parse_config_shortcut(config, parsed, "zoom_preset2", GameFunction::ZoomPreset2, "F2");
+  parse_config_shortcut(config, parsed, "zoom_preset3", GameFunction::ZoomPreset3, "F3");
+  parse_config_shortcut(config, parsed, "zoom_preset4", GameFunction::ZoomPreset4, "F4");
+  parse_config_shortcut(config, parsed, "zoom_preset5", GameFunction::ZoomPreset5, "F5");
+  parse_config_shortcut(config, parsed, "zoom_in", GameFunction::ZoomIn, "Q");
+  parse_config_shortcut(config, parsed, "zoom_out", GameFunction::ZoomOut, "E");
+  parse_config_shortcut(config, parsed, "zoom_max", GameFunction::ZoomMax, "MINUS");
+  parse_config_shortcut(config, parsed, "zoom_min", GameFunction::ZoomMin, "BACKSPACE");
+  parse_config_shortcut(config, parsed, "zoom_reset", GameFunction::ZoomReset, "=");
+  parse_config_shortcut(config, parsed, "ui_scaleup", GameFunction::UiScaleUp, "PGUP");
+  parse_config_shortcut(config, parsed, "ui_scaledown", GameFunction::UiScaleDown, "PGDOWN");
 
   if (this->hotkeys_extended) {
-    parse_config_shortcut(config, parsed, "ShowAwayTeam", GameFunction::ShowAwayTeam, "SHIFT-T");
-    parse_config_shortcut(config, parsed, "ShowBookmarks", GameFunction::ShowBookmarks, "B");
-    parse_config_shortcut(config, parsed, "ShowCommander", GameFunction::ShowCommander, "O");
-    parse_config_shortcut(config, parsed, "ShowDaily", GameFunction::ShowDaily, "Z");
-    parse_config_shortcut(config, parsed, "ShowEvents", GameFunction::ShowEvents, "T");
-    parse_config_shortcut(config, parsed, "ShowExoComp", GameFunction::ShowExoComp, "X");
-    parse_config_shortcut(config, parsed, "ShowFactions", GameFunction::ShowFactions, "F");
-    parse_config_shortcut(config, parsed, "ShowInventory", GameFunction::ShowInventory, "I");
-    parse_config_shortcut(config, parsed, "ShowMissions", GameFunction::ShowMissions, "M");
-    parse_config_shortcut(config, parsed, "ShowOfficers", GameFunction::ShowOfficers, "SHIFT-O");
-    parse_config_shortcut(config, parsed, "ShowQTrials", GameFunction::ShowQTrials, "SHIFT-Q");
-    parse_config_shortcut(config, parsed, "ShowRefinery", GameFunction::ShowRefinery, "SHIFT-F");
-    parse_config_shortcut(config, parsed, "ShowStationExterior", GameFunction::ShoWStationExterior, "SHIFT-G");
-    parse_config_shortcut(config, parsed, "ShowStationInterior", GameFunction::ShowStationInterior, "SHIFT-H");
+    parse_config_shortcut(config, parsed, "show_awayteam", GameFunction::ShowAwayTeam, "SHIFT-T");
+    parse_config_shortcut(config, parsed, "show_bookmarks", GameFunction::ShowBookmarks, "B");
+    parse_config_shortcut(config, parsed, "show_commander", GameFunction::ShowCommander, "O");
+    parse_config_shortcut(config, parsed, "show_daily", GameFunction::ShowDaily, "Z");
+    parse_config_shortcut(config, parsed, "show_events", GameFunction::ShowEvents, "T");
+    parse_config_shortcut(config, parsed, "show_exocomp", GameFunction::ShowExoComp, "X");
+    parse_config_shortcut(config, parsed, "show_factions", GameFunction::ShowFactions, "F");
+    parse_config_shortcut(config, parsed, "show_inventory", GameFunction::ShowInventory, "I");
+    parse_config_shortcut(config, parsed, "show_missions", GameFunction::ShowMissions, "M");
+    parse_config_shortcut(config, parsed, "show_officers", GameFunction::ShowOfficers, "SHIFT-O");
+    parse_config_shortcut(config, parsed, "show_qtrials", GameFunction::ShowQTrials, "SHIFT-Q");
+    parse_config_shortcut(config, parsed, "show_refinery", GameFunction::ShowRefinery, "SHIFT-F");
+    parse_config_shortcut(config, parsed, "show_stationexterior", GameFunction::ShoWStationExterior, "SHIFT-G");
+    parse_config_shortcut(config, parsed, "show_stationinterior", GameFunction::ShowStationInterior, "SHIFT-H");
+    parse_config_shortcut(config, parsed, "show_ships", GameFunction::ShowShips, "N");
   }
 
   if (!std::filesystem::exists("community_patch_settings.toml")) {
@@ -304,8 +306,12 @@ void Config::Load()
   message << "Creating paresd config file";
   spdlog::info(message.str());
 
+  if (std::filesystem::exists("community_patch_settings_parsed.toml")) {
+    std::filesystem::remove("community_patch_settings_parsed.toml");
+  }
+
   std::ofstream config_file;
-  config_file.open("community_patch_settings_parsed.toml");
+  config_file.open("community_patch_runtime.vars");
   config_file << parsed;
   config_file.close();
 

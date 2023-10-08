@@ -32,6 +32,7 @@ enum GameFunction {
   ShowDaily,
   ShowAwayTeam,
   ShowMissions,
+  ShowShips,
   ShowInventory,
   ShowStationInterior,
   ShoWStationExterior,
@@ -56,4 +57,5 @@ enum GameFunction {
   ActionPrimary,
   ActionSecondary,
   ActionView,
+  ActionRecall,
 };

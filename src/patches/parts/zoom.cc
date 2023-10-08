@@ -37,10 +37,6 @@ auto do_default_zoom = false;
 
 void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 {
-  if ((NodeDepth)_this->_depth == NodeDepth::SolarSystem) {
-    // _this->SetViewParameters(_this->_viewRadius, NodeDepth::SolarSystem);
-  }
-
   static auto il2cpp_string_new =
       (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
   static auto GetMousePosition =
@@ -97,7 +93,7 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
     do_default_zoom = false;
   }
 
-  if ((MapKey::IsPressed(GameFunction::ZoomIn) && !Key::IsInputFocused()) || do_absolute_zoom) {
+  if ((MapKey::IsDown(GameFunction::ZoomIn) && !Key::IsInputFocused()) || do_absolute_zoom) {
     vec3 mousePos;
     GetMousePosition(&mousePos);
     _this->_zoomLocation = vec2{mousePos.x, mousePos.y};
@@ -113,7 +109,7 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
     auto worldPos      = GetMouseWorldPos(_this->_sceneCamera, &mousePos);
     _this->_worldPoint = worldPos;
     _this->ZoomCameraAtWorldPoint();
-  } else if (MapKey::IsPressed(GameFunction::ZoomOut) && !Key::IsInputFocused()) {
+  } else if (MapKey::IsDown(GameFunction::ZoomOut) && !Key::IsInputFocused()) {
     vec3 mousePos;
     GetMousePosition(&mousePos);
     _this->_zoomLocation  = vec2{mousePos.x, mousePos.y};

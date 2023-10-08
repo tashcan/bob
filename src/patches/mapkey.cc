@@ -80,19 +80,41 @@ bool MapKey::IsPressed(GameFunction gameFunction)
     return false;
   }
 
-  auto    result = false;
+  MapKey* mapKey = MapKey::mappedKeys.at(gameFunction);
+
+  if (Key::Pressed(mapKey->Key)) {
+    return MapKey::HasCorrectModifiers(mapKey);
+  }
+
+  return false;
+}
+
+bool MapKey::IsDown(GameFunction gameFunction)
+{
+  if (!MapKey::HasGameFunction(gameFunction)) {
+    return false;
+  }
+
   MapKey* mapKey = MapKey::mappedKeys.at(gameFunction);
 
   if (Key::Down(mapKey->Key)) {
-    if (mapKey->Modifiers.empty()) {
-      result = !Key::IsModified();
-    } else {
-      result = true;
-      for (const auto modifier : mapKey->Modifiers) {
-        if (!modifier->IsPressed()) {
-          result = false;
-          break;
-        }
+    return MapKey::HasCorrectModifiers(mapKey);
+  }
+
+  return false;
+}
+
+bool MapKey::HasCorrectModifiers(MapKey* mapKey)
+{
+  auto result = false;
+  if (mapKey->Modifiers.empty()) {
+    result = !Key::IsModified();
+  } else {
+    result = true;
+    for (const auto modifier : mapKey->Modifiers) {
+      if (!modifier->IsPressed()) {
+        result = false;
+        break;
       }
     }
   }

@@ -47,6 +47,7 @@ void     ChangeNavigationSection(SectionID sectionID);
 void     ExecuteSpaceAction(FleetBarViewController* fleet_bar);
 HullType GetHullTypeFromBattleTarget(BattleTargetData* context);
 void     GotoSection(SectionID sectionID, void* screen_data = nullptr);
+bool     CanHideViewers();
 bool     DidHideViewers();
 
 void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
@@ -109,7 +110,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     } else {
       auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
       if (fleet_bar) {
-        if (fleet_bar->IsIndexSelected(ship_select_request)) {
+        if (!CanHideViewers() && fleet_bar->IsIndexSelected(ship_select_request)) {
           auto fleet = fleet_bar->_fleetPanelController->fleet;
           if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
             NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
@@ -119,7 +120,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
           fleet_bar->RequestSelect(ship_select_request);
         }
         return;
-      }     
+      }
     }
   }
 
@@ -174,7 +175,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       } else if (MapKey::IsPressed(GameFunction::ShowCommander)) {
         // TODO: Does not work properly, defaults to first FleetCommander (spock, rather than selected fleet
         // commander)
-        return GotoSection(SectionID::FleetCommander_Showcase);
+        return GotoSection(SectionID::FleetCommander_Management);
       } else if (MapKey::IsPressed(GameFunction::ShowAwayTeam)) {
         return GotoSection(SectionID::Missions_AwayTeamsList);
       } else if (MapKey::IsPressed(GameFunction::ShowEvents)) {
@@ -184,7 +185,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       } else if (MapKey::IsPressed(GameFunction::ShowDaily)) {
         return GotoSection(SectionID::Missions_DailyGoals);
       } else if (MapKey::IsPressed(GameFunction::UiScaleUp)) {
-        auto &config = Config::Get();
+        auto& config    = Config::Get();
         auto  old_scale = config.ui_scale;
         config.ui_scale -= 0.1f;
         spdlog::info("UI has ben scaled up, was {}, now {}", old_scale, config.ui_scale);
@@ -193,6 +194,14 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         auto  old_scale = config.ui_scale;
         config.ui_scale += 0.1f;
         spdlog::info("UI has been scaled down, was {}, now {}", old_scale, config.ui_scale);
+      } else if (MapKey::IsPressed(GameFunction::ShowShips)) {
+        auto fleet_bar        = ObjectFinder<FleetBarViewController>::Get();
+        auto fleet_controller = fleet_bar->_fleetPanelController;
+        auto fleet            = fleet_bar->_fleetPanelController->fleet;
+        if (fleet) {
+          fleet_controller->RequestAction(fleet, ActionType::Manage, 0, ActionBehaviour::Default);
+          return;
+        }
       }
     }
   } else {
@@ -206,7 +215,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       }
     }
 
-    if (MapKey::IsPressed(GameFunction::ActionView) && !Key::IsInputFocused()) {
+    if (MapKey::IsPressed(GameFunction::ActionView)) {
       if (auto view_controller = ObjectFinder<FullScreenChatViewController>::Get(); view_controller) {
         if (view_controller->_messageList && view_controller->_messageList->_inputField) {
           return view_controller->_messageList->_inputField->ActivateInputField();
@@ -215,89 +224,79 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     }
   }
 
-  // Dismiss the golden rewards screen when escape or space is pressed.
-  if (MapKey::IsPressed(GameFunction::ActionPrimary) || Key::Down(KeyCode::Escape)) {
-    if (auto reward_controller = ObjectFinder<AnimatedRewardsScreenViewController>::Get(); reward_controller) {
-      if (reward_controller->IsActive()) {
-        return reward_controller->GoBackToLastSection();
-      }
+  if (!Key::IsInputFocused()) {
+    // Lets try to remove the pre-scan because we hit escape and it's visible
+    if (Key::Pressed(KeyCode::Escape) && DidHideViewers()) {
+      return;
     }
-  }
 
-  if (MapKey::IsPressed(GameFunction::ActionPrimary) || MapKey::IsPressed(GameFunction::ActionSecondary)
-      || force_space_action_next_frame) {
-    if (Hub::IsInSystemOrGalaxyOrStarbase() && !Hub::IsInChat() && !Key::IsInputFocused()) {
-      auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
-      if (fleet_bar) {
-        bool was_forced = force_space_action_next_frame;
-        ExecuteSpaceAction(fleet_bar);
-        if (was_forced) {
-          force_space_action_next_frame = false;
+    // Dismiss the golden rewards screen when escape or space is pressed.
+    if (MapKey::IsPressed(GameFunction::ActionPrimary) || Key::Down(KeyCode::Escape)) {
+      if (auto reward_controller = ObjectFinder<AnimatedRewardsScreenViewController>::Get(); reward_controller) {
+        if (reward_controller->IsActive()) {
+          return reward_controller->GoBackToLastSection();
         }
       }
     }
-  }
 
-  if (MapKey::IsPressed(GameFunction::ActionView)) {
-    auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
-    for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
-      auto pre_scan_widget = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
-      if (pre_scan_widget
-          && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
-              || pre_scan_widget->_visibilityController->_state == VisibilityState::Show)) {
-        auto rewardsWidget = pre_scan_widget->_rewardsButtonWidget;
-        if (rewardsWidget->_rewardsController->_state != VisibilityState::Visible
-            && rewardsWidget->_rewardsController->_state != VisibilityState::Show) {
-          show_info_pending = 5;
-        } else {
-          rewardsWidget->_rewardsController->Hide();
+    if (MapKey::IsPressed(GameFunction::ActionPrimary) || MapKey::IsPressed(GameFunction::ActionSecondary)
+        || MapKey::IsPressed(GameFunction::ActionRecall) || force_space_action_next_frame) {
+      if (Hub::IsInSystemOrGalaxyOrStarbase() && !Hub::IsInChat() && !Key::IsInputFocused()) {
+        auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
+        if (fleet_bar) {
+          bool was_forced = force_space_action_next_frame;
+          ExecuteSpaceAction(fleet_bar);
+          if (was_forced) {
+            force_space_action_next_frame = false;
+          }
+          return;
         }
       }
     }
-  }
 
-  if (show_info_pending > 0) {
-    auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
-    for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
-      auto       pre_scan_widget  = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
-      const auto pre_scan_visible = pre_scan_widget
-                                    && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
-                                        || pre_scan_widget->_visibilityController->_state == VisibilityState::Show);
-      if (pre_scan_visible) {
-        auto       rewardsWidget          = pre_scan_widget->_rewardsButtonWidget;
-        const auto rewards_widget_visible = rewardsWidget->_rewardsController->_state == VisibilityState::Visible
-                                            || rewardsWidget->_rewardsController->_state == VisibilityState::Show;
-        if (!rewards_widget_visible) {
-          rewardsWidget->_rewardsController->Show(true);
+    if (MapKey::IsPressed(GameFunction::ActionView)) {
+      auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
+      for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
+        auto pre_scan_widget = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
+        if (pre_scan_widget
+            && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
+                || pre_scan_widget->_visibilityController->_state == VisibilityState::Show)) {
+          auto rewardsWidget = pre_scan_widget->_rewardsButtonWidget;
+          if (rewardsWidget->_rewardsController->_state != VisibilityState::Visible
+              && rewardsWidget->_rewardsController->_state != VisibilityState::Show) {
+            show_info_pending = 5;
+          } else {
+            rewardsWidget->_rewardsController->Hide();
+          }
         }
       }
     }
-    show_info_pending -= 1;
+
+    // Did we not find a rewards widget in the previous frame?
+    if (show_info_pending > 0) {
+      auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
+      for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
+        auto       pre_scan_widget  = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
+        const auto pre_scan_visible = pre_scan_widget
+                                      && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
+                                          || pre_scan_widget->_visibilityController->_state == VisibilityState::Show);
+        if (pre_scan_visible) {
+          auto       rewardsWidget          = pre_scan_widget->_rewardsButtonWidget;
+          const auto rewards_widget_visible = rewardsWidget->_rewardsController->_state == VisibilityState::Visible
+                                              || rewardsWidget->_rewardsController->_state == VisibilityState::Show;
+          if (!rewards_widget_visible) {
+            rewardsWidget->_rewardsController->Show(true);
+          }
+        }
+      }
+      show_info_pending -= 1;
+    }
   }
-
-  // Lets try to remove the pre-scan because we hit escape and it's visible
-  if (Key::Pressed(KeyCode::Escape) && DidHideViewers()) {
-    return;
-  }
-
-  // {
-  //  auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
-  //  for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
-  //    auto pre_scan_widget = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
-  //    if (pre_scan_widget
-  //        && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
-  //            || pre_scan_widget->_visibilityController->_state == VisibilityState::Show)) {
-  //      pre_scan_widget->_rewardsButtonWidget->RewardsClicked();
-  //    }
-  //  }
-  //}
-
-  // Config::Get().Load();
 
   original(_this);
 }
 
-template <typename T> inline bool DidHideViewersOfType()
+template <typename T> inline bool CanHideViewersOfType(bool shouldHide = false)
 {
   auto widgets = ObjectFinder<T>::GetAll();
   for (auto i = 0; i < widgets->max_length; ++i) {
@@ -306,7 +305,9 @@ template <typename T> inline bool DidHideViewersOfType()
                          && (widget->_visibilityController->_state == VisibilityState::Visible
                              || widget->_visibilityController->_state == VisibilityState::Show);
     if (visible) {
-      widget->HideAllViewers();
+      if (shouldHide) {
+        widget->HideAllViewers();
+      }
       return true;
     }
   }
@@ -314,13 +315,24 @@ template <typename T> inline bool DidHideViewersOfType()
   return false;
 }
 
+bool CanHideViewers()
+{
+  return CanHideViewersOfType<AllianceStarbaseObjectViewerWidget>() || CanHideViewersOfType<ArmadaObjectViewerWidget>()
+         || CanHideViewersOfType<CelestialObjectViewerWidget>() || CanHideViewersOfType<EmbassyObjectViewer>()
+         || CanHideViewersOfType<HousingObjectViewerWidget>() || CanHideViewersOfType<MiningObjectViewerWidget>()
+         || CanHideViewersOfType<MissionsObjectViewerWidget>() || CanHideViewersOfType<PreScanTargetWidget>()
+         || CanHideViewersOfType<HousingObjectViewerWidget>();
+}
+
 bool DidHideViewers()
 {
-  return DidHideViewersOfType<AllianceStarbaseObjectViewerWidget>() || DidHideViewersOfType<ArmadaObjectViewerWidget>()
-         || DidHideViewersOfType<CelestialObjectViewerWidget>() || DidHideViewersOfType<EmbassyObjectViewer>()
-         || DidHideViewersOfType<HousingObjectViewerWidget>() || DidHideViewersOfType<MiningObjectViewerWidget>()
-         || DidHideViewersOfType<MissionsObjectViewerWidget>() || DidHideViewersOfType<PreScanTargetWidget>()
-         || DidHideViewersOfType<HousingObjectViewerWidget>();
+  return CanHideViewersOfType<AllianceStarbaseObjectViewerWidget>(true)
+         || CanHideViewersOfType<ArmadaObjectViewerWidget>(true)
+         || CanHideViewersOfType<CelestialObjectViewerWidget>(true) || CanHideViewersOfType<EmbassyObjectViewer>(true)
+         || CanHideViewersOfType<HousingObjectViewerWidget>(true)
+         || CanHideViewersOfType<MiningObjectViewerWidget>(true)
+         || CanHideViewersOfType<MissionsObjectViewerWidget>(true) || CanHideViewersOfType<PreScanTargetWidget>(true)
+         || CanHideViewersOfType<HousingObjectViewerWidget>(true);
 }
 
 void GotoSection(SectionID sectionID, void* section_data)
@@ -341,10 +353,15 @@ void ChangeNavigationSection(SectionID sectionID)
 
 void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
 {
-  auto fleet_local_controller = fleet_bar->_fleetPanelController;
-  auto fleet                  = fleet_bar->_fleetPanelController->fleet;
-  if (fleet->CurrentState == FleetState::WarpCharging) {
-    fleet_local_controller->CancelWarpClicked();
+  auto has_primary   = MapKey::IsPressed(GameFunction::ActionPrimary) || force_space_action_next_frame;
+  auto has_secondary = MapKey::IsPressed(GameFunction::ActionSecondary);
+  auto has_recall    = MapKey::IsPressed(GameFunction::ActionRecall);
+
+  auto fleet_controller = fleet_bar->_fleetPanelController;
+  auto fleet            = fleet_bar->_fleetPanelController->fleet;
+
+  if (has_primary && fleet->CurrentState == FleetState::WarpCharging) {
+    fleet_controller->CancelWarpClicked();
   } else {
     auto did_pre_scan         = false;
     auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
@@ -353,20 +370,20 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
       if (pre_scan_widget
           && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
               || pre_scan_widget->_visibilityController->_state == VisibilityState::Show)) {
-        did_pre_scan = true;
+
         if (auto mine_object_viewer_widget = ObjectFinder<MiningObjectViewerWidget>::Get();
             mine_object_viewer_widget
             && (mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Visible
                 || mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Show)) {
-          if (MapKey::IsPressed(GameFunction::ActionSecondary)) {
-            pre_scan_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
-          } else {
-            mine_object_viewer_widget->MineClicked();
+          if (has_secondary) {
+            return pre_scan_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
+          } else if (has_primary) {
+            return mine_object_viewer_widget->MineClicked();
           }
         } else {
-          if (MapKey::IsPressed(GameFunction::ActionSecondary)) {
-            pre_scan_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
-          } else {
+          if (has_secondary) {
+            return pre_scan_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
+          } else if (has_primary) {
             auto armada_object_viewer_widget = ObjectFinder<ArmadaObjectViewerWidget>::Get();
             if (!armada_object_viewer_widget
                 || (armada_object_viewer_widget->_visibilityController->_state != VisibilityState::Visible
@@ -381,43 +398,40 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
               } else if (type == HullType::Any) {
                 force_space_action_next_frame = true;
               }
+
+              return;
             }
           }
         }
       }
     }
 
-    if (did_pre_scan) {
-      return;
-    }
-
     if (auto mine_object_viewer_widget = ObjectFinder<MiningObjectViewerWidget>::Get();
         mine_object_viewer_widget
         && (mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Visible
             || mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Show)) {
-      if (MapKey::IsPressed(GameFunction::ActionSecondary)) {
+      if (has_secondary) {
         if (mine_object_viewer_widget->_scanEngageButtonsWidget->Context) {
-          mine_object_viewer_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
+          return mine_object_viewer_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
         }
-      } else {
-        mine_object_viewer_widget->MineClicked();
+      } else if (has_primary) {
+        return mine_object_viewer_widget->MineClicked();
       }
     } else if (auto star_node_object_viewer_widget = ObjectFinder<StarNodeObjectViewerWidget>::Get();
                star_node_object_viewer_widget && star_node_object_viewer_widget->Context) {
-      if (MapKey::IsPressed(GameFunction::ActionSecondary)) {
+      if (has_secondary) {
         star_node_object_viewer_widget->OnViewButtonActivation();
-      } else {
+      } else if (has_primary) {
         star_node_object_viewer_widget->InitiateWarp();
       }
     } else if (auto navigation_ui_controller = ObjectFinder<NavigationInteractionUIViewController>::Get();
                navigation_ui_controller) {
-      if (MapKey::IsPressed(GameFunction::ActionSecondary)) {
-        auto fleet = fleet_bar->_fleetPanelController->fleet;
+      if (has_recall) {
         if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
           NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
         }
-        fleet_local_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
-      } else {
+        fleet_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
+      } else if (has_primary) {
         if (auto armada_object_viewer_widget = ObjectFinder<ArmadaObjectViewerWidget>::Get();
             armada_object_viewer_widget
             && (armada_object_viewer_widget->_visibilityController->_state == VisibilityState::Visible
@@ -430,15 +444,12 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
           navigation_ui_controller->OnSetCourseButtonClick();
         }
       }
-    } else {
-      if (MapKey::IsPressed(GameFunction::ActionSecondary)) {
-        auto fleet = fleet_bar->_fleetPanelController->fleet;
-        if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
-          NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
-        }
-
-        fleet_local_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
+    } else if (has_recall) {
+      if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
+        NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
       }
+
+      fleet_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
     }
   }
 }
@@ -472,7 +483,7 @@ void ChatMessageListLocalViewController_AboutToShow_Hook(ChatMessageListLocalVie
 
 void InitializeActions_Hook(auto original, void* _this)
 {
-  if (Config::Get().use_scopely_hotkeys && Config::Get().hotkeys_enabled) {
+  if (Config::Get().use_scopely_hotkeys) {
     return original(_this);
   }
 }

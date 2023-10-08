@@ -105,8 +105,8 @@ The pre-compiled DLL can be downloaded from the official assets hosted at:
 
 An example configuration file is [example_community_patch_settings.toml](example_community_patch_settings.toml) and should be
 renamed to `community_patch_settings.toml`.  When running this file will be parsed (see `community_patch.log`) and the running
-values can be found in `community_patch_settings_parsed.toml`.  If you have any problems with a setting, check the log and parsed
-file to verify that the setting was applied.
+values can be found in `community_patch_runtime.vars`.  If you have any problems with a setting, check the log and parsed
+file to verify that the setting was applied.s
 
 ## Problems?
 
@@ -139,7 +139,7 @@ The most common problems getting the DLL to work are:
    - The configuration option name is in the wrong section
    - The configuration option value is not a true or false
 
-   You can verify your configuration by looking at `community_patch_settings_parsed.toml` and/or the
+   You can verify your configuration by looking at `community_patch_runtime.vars` and/or the
    log file `community_patch.log`.
 
 ## Disclaimer

@@ -21,11 +21,13 @@ public:
   static void    SetMappedKey(GameFunction gameFunction, MapKey* mappedKey);
   static bool    HasGameFunction(GameFunction gameFunction);
   static bool    IsPressed(GameFunction gameFunction);
+  static bool    IsDown(GameFunction gameFunction);
+  static bool    HasCorrectModifiers(MapKey* mapKey);
 
   std::string GetParsedValues();
 
   std::vector<ModifierKey*> Modifiers;
-  std::vector<std::string> Shortcuts;
+  std::vector<std::string>  Shortcuts;
 
   KeyCode Key;
 };

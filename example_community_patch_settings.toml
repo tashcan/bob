@@ -1,3 +1,7 @@
+[buffs]
+# This is the option to always show out of dock power for ships when they are docked. Defaults to false
+use_out_of_dock_power = false
+
 [control]
 # If you don't want any hotkeys you can set this to false
 hotkeys_enabled = true
@@ -8,6 +12,86 @@ hotkeys_extended = true
 # If you prefer to use Scopely's hotkeys set this to true
 use_scopely_hotkeys = false
 
+[graphics]
+# This is an option that can be enabled to try and keep a more 'useable' UI scale size when resizing the Game Window, defaults to false
+adjust_scale_res = false
+
+# Allow borderless full screen mode, set to false to disable
+borderless_fullscreen_f11 = true
+
+# Set to 0.0 to disable a custom zoom, enter system at specified zoom otherwise, this doesn't work for the first time you view ANY system. But that should be fine
+default_system_zoom = 0.0
+
+# Allow free resizing, set to false to disable
+free_resize = true
+
+# This controls the zoom speed when using Q/E in System View, defaults to 350
+keyboard_zoom_speed = 350
+
+# To enable addtional resolution options set this to true.
+show_all_resolutions = false
+
+# This controls how quickly the the momentum falls off when letting go of the mouse, the lower the number the quicker it stops, defaults to 0.8
+system_pan_momentum_falloff = 0.8
+
+# These are used for the F1-F5 zoom hotkeys
+system_zoom_preset_1 = 0.0
+system_zoom_preset_2 = 0.0
+system_zoom_preset_3 = 0.0
+system_zoom_preset_4 = 0.0
+system_zoom_preset_5 = 0.0
+
+# These options does not appear to be used, and may be removed from future configuration
+target_framerate = 60
+
+# The amount of time to spend between transitions, increase to slow transitions down
+transition_time = 0.1
+
+# This specifies the amount to scale the UI by, 1.0 being default and anything above 1 making it larger than default, defaults to 0.9
+ui_scale = 0.9
+
+vsync = 1
+
+# This controls the maximum zoom distance in System View, default is 2500.
+# If you set this too a very high value the distance at which ship text labels are shown is also increased.
+zoom = 2500
+
+
+[sync]
+# Token for auth on remote system
+token = ''
+
+# Url to post sync data to
+url = ''
+
+# Do you want to sync battlelogs?
+battlelogs = false
+
+# Do you want to sync building data?
+buildings = false
+
+# Do you want to sync mission data?
+missions = false
+
+# Do you want to sync owned officer data?
+officer = false
+
+# Do you want to sync research data?
+research = false
+
+# Do you want to sync inventory data?
+resources = false
+
+# Do you want to sync owned ship data?
+ships = false
+
+# Do you want to sync owned forbidden tech data?
+tech = false
+
+# Do you want to sync trait data?
+traits = false
+
+
 [tech]
 # NOTE: The following is currently disabled in InstallWebRequestHooks() which instantly returns
 #       but may be restored at some point?
@@ -15,32 +99,12 @@ use_scopely_hotkeys = false
 # Set to false to leave web requests alone
 fix_unity_web_requests = true
 
-[buffs]
-# This is the option to always show out of dock power for ships when they are docked. Defaults to false
-use_out_of_dock_power = false
-
 [ui]
 # Skip the reveal box animation, and just open the damn boxes
 always_skip_reveal_sequence = true
 
-# Stay in non-restricted bundles after collecting
-stay_in_bundle_after_summary = true
-
-# Set to true to always show the rewards for selected ships/stations
-show_cargo_default = false
-
-# These should be self-explanatory
-# They control the behavior of the above default option
-show_player_cargo = false
-show_station_cargo = true
-show_hostile_cargo = true
-show_armada_cargo = true
-
 # Change 'false' to 'true' from the line below to remove Galaxy Chat from the game
 disable_galaxy_chat = false
-
-# Change 'false' to 'true' from the line below to extend the donation slider to max value for next Alliance level
-extend_donation_slider = false
 
 # Allow suppressing configured banners (disabled_banner_types) from being displayed
 # This option does not appear to be used, and may be removed from future configuration
@@ -77,213 +141,160 @@ disabled_banner_types = 'Event,Victory,Defeat'
 # TakeoverVictory
 # TakeoverDefeat
 
-[graphics]
-# This is an option that can be enabled to try and keep a more 'useable' UI scale size when resizing the Game Window, defaults to false
-adjust_scale_res = false
+# Change 'false' to 'true' from the line below to extend the donation slider to max value for next Alliance level
+extend_donation_slider = false
 
-# Allow borderless full screen mode, set to false to disable
-borderless_fullscreen_f11 = true
+# Set to true to always show the rewards for selected ships/stations
+show_cargo_default = false
 
-# Allow free resizing, set to false to disable
-free_resize = true
+# These should be self-explanatory
+# They control the behavior of the above default option
+show_armada_cargo = true
+show_hostile_cargo = true
+show_player_cargo = false
+show_station_cargo = true
 
-# This controls the zoom speed when using Q/E in System View, defaults to 350
-keyboard_zoom_speed = 350
-
-# This controls how quickly the the momentum falls off when letting go of the mouse, the lower the number the quicker it stops, defaults to 0.8
-system_pan_momentum_falloff = 0.8
-
-# This specifies the amount to scale the UI by, 1.0 being default and anything above 1 making it larger than default, defaults to 0.9
-ui_scale = 0.9
-
-# This controls the maximum zoom distance in System View, default is 2500.
-# If you set this too a very high value the distance at which ship text labels are shown is also increased.
-zoom = 2500
-
-# To enable addtional resolution options set this to true.
-show_all_resolutions = false
-
-# Set to 0.0 to disable a custom zoom, enter system at specified zoom otherwise, this doesn't work for the first time you view ANY system. But that should be fine
-default_system_zoom = 0.0
-
-# These are used for the F1-F5 zoom hotkeys
-system_zoom_preset_1 = 0.0
-system_zoom_preset_2 = 0.0
-system_zoom_preset_3 = 0.0
-system_zoom_preset_4 = 0.0
-system_zoom_preset_5 = 0.0
-
-# The amount of time to spend between transitions, increase to slow transitions down
-transition_time = 0.1
-
-# These options does not appear to be used, and may be removed from future configuration
-target_framerate = 60
-vsync = 1
-
-[sync]
-# Token for auth on remote system
-token = ''
-
-# Url to post sync data to
-url = ''
-
-# Do you want to sync battlelogs?
-battlelogs = false
-
-# Do you want to sync building data?
-buildings = false
-
-# Do you want to sync mission data?
-missions = false
-
-# Do you want to sync owned officer data?
-officer = false
-
-# Do you want to sync research data?
-research = false
-
-# Do you want to sync inventory data?
-resources = false
-
-# Do you want to sync owned ship data?
-ships = false
-
-# Do you want to sync owned forbidden tech data?
-tech = false
-
-# Do you want to sync trait data?
-traits = false
+# Stay in non-restricted bundles after collecting
+stay_in_bundle_after_summary = true
 
 [shortcuts]
 # Primary actions such as Mine or Attack or Go
-ActionPrimary = 'SPACE'
+action_primary = 'SPACE'
 
-# Secondary actions such as Recall or Scan
-ActionSecondary = 'R'
+# Recall ship action
+action_recall = 'R'
+
+# Secondary actions such as Scan
+action_secondary = 'R'
 
 # Switch between Cargo and Preview screens when clicked on a ship/node/station
-ActionView = 'V'
+action_view = 'V'
 
 # Move the viewport down (content moves up)
-MoveDown1 = 'DOWN'
-MoveDown2 = 'S'
+move_down1 = 'DOWN'
+move_down2 = 'S'
 
 # Move the viewport left (content moves right)
-MoveLeft1 = 'LEFT'
-MoveLeft2 = 'A'
+move_left1 = 'LEFT'
+move_left2 = 'A'
 
 # Move the viewport right (content moves left)
-MoveRight1 = 'RIGHT'
-MoveRight2 = 'D'
+move_right1 = 'RIGHT'
+move_right2 = 'D'
 
 # Move the viewport up (content moves down)
-MoveUp1 = 'UP'
-MoveUp2 = 'W'
+move_up1 = 'UP'
+move_up2 = 'W'
 
 # Select the Alliance tab when in chat
-SelectChatAlliance = 'CTRL-2'
+select_chatalliance = 'CTRL-2'
 
 # Select the Global tab when in chat (if not disabled)
-SelectChatGlobal = 'CTRL-1'
+select_chatglobal = 'CTRL-1'
 
 # Select the Private tab when in chat
-SelectChatPrivate = 'CTRL-3'
+select_chatprivate = 'CTRL-3'
 
 # Select ship 1 (or locate on second press)
-SelectShip1 = '1'
+select_ship1 = '1'
 
 # Select ship 2 (or locate on second press)
-SelectShip2 = '2'
+select_ship2 = '2'
 
 # Select ship 3 (or locate on second press)
-SelectShip3 = '3'
+select_ship3 = '3'
 
 # Select ship 4 (or locate on second press)
-SelectShip4 = '4'
+select_ship4 = '4'
 
 # Select ship 5 (or locate on second press)
-SelectShip5 = '5'
+select_ship5 = '5'
 
 # Select ship 6 (or locate on second press)
-SelectShip6 = '6'
+select_ship6 = '6'
 
 # Select ship 7 (or locate on second press)
-SelectShip7 = '7'
+select_ship7 = '7'
 
 # Select ship 8 (or locate on second press)
-SelectShip8 = '8'
+select_ship8 = '8'
 
 # Go to the Away Team screen
-ShowAwayTeam = 'SHIFT-T'
+show_awayteam = 'SHIFT-T'
 
 # Go to the Bookmarks screen
-ShowBookmarks = 'B'
+show_bookmarks = 'B'
 
 # Show the chat full screen
-ShowChat = 'C'
+show_chat = 'C'
 
 # Show the chat on the left side
-ShowChatSide1 = 'ALT-C'
-ShowChatSide2 = '`'
+show_chatside1 = 'ALT-C'
+show_chatside2 = '`'
 
 # Go to the Fleet Commander screen
-ShowCommander = 'O'
+show_commander = 'O'
 
 # Go to the Daily Missions tab
-ShowDaily = 'Z'
+show_daily = 'Z'
 
 # Go to the Events screen
-ShowEvents = 'T'
+show_events = 'T'
 
 # Go to the Exocomp screen
-ShowExocomp = 'X'
+show_exocomp = 'X'
 
 # Go to the Factions screen
-ShowFactions = 'F'
+show_factions = 'F'
 
 # Go to the Galaxy view
-ShowGalaxy = 'G'
+show_galaxy = 'G'
 
 # Go to the Inventory screen
-ShowInventory = 'I'
+show_inventory = 'I'
 
 # Go to the Missions tab
-ShowMissions = 'M'
+show_missions = 'M'
 
 # Go to the Officers screen
-ShowOfficers = 'SHIFT-O'
+show_officers = 'SHIFT-O'
 
 # Go to the Q Trials screen
-ShowQTrials = 'SHIFT-Q'
+show_qtrials = 'SHIFT-Q'
 
 # Go to the Refinery screen
-ShowRefinery = 'SHIFT-F'
+show_refinery = 'SHIFT-F'
+
+# Go to the manage ship view
+show_ships = 'N'
 
 # Go to the Station's Exterior view
-ShowStationExterior = 'SHIFT-G'
+show_stationexterior = 'SHIFT-G'
 
 # Go to the Station's Interior view
-ShowStationInterior = 'SHIFT-H'
+show_stationinterior = 'SHIFT-H'
 
 # Go to the System view
-ShowSystem = 'H'
+show_system = 'H'
 
 # Scale the UI down (shrink the HUD)
-UiScaleDown = 'PGDOWN'
+ui_scaledown = 'PGDOWN'
 
 # Scale the UI up (expand the HUD)
-UiScaleUp = 'PGUP'
+ui_scaleup = 'PGUP'
 
 # Set zoom to Presets
-ZoomPreset1 = 'F1'
-ZoomPreset2 = 'F2'
-ZoomPreset3 = 'F3'
-ZoomPreset4 = 'F4'
-ZoomPreset5 = 'F5'
+zoom_preset1 = 'F1'
+zoom_preset2 = 'F2'
+zoom_preset3 = 'F3'
+zoom_preset4 = 'F4'
+zoom_preset5 = 'F5'
 
 # Zoom in/out
-ZoomIn = 'Q'
-ZoomOut = 'E'
-ZoomMax = 'MINUS'
-ZoomMin = 'BACKSPACE'
-ZoomReset = '='
+zoom_in = 'Q'
+zoom_out = 'E'
+zoom_max = 'MINUS'
+zoom_min = 'BACKSPACE'
+zoom_reset = '='
+
+

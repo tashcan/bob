@@ -17,6 +17,7 @@ public:
   void AddModifier(std::string_view shortcut, KeyCode modifier1, KeyCode modifier2);
   bool Contains(KeyCode modifier);
   bool IsPressed();
+  bool IsDown();
 
   std::string GetParsedValues();
 
