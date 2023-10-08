@@ -1,10 +1,10 @@
 #include "config.h"
 #include "prime_types.h"
 
-#include <spud/detour.h>
-
 #include "mapkey.h"
 #include "utils.h"
+#include <spdlog/spdlog.h>
+#include <spud/detour.h>
 
 #include <il2cpp/il2cpp_helper.h>
 
@@ -59,65 +59,68 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
   bool do_absolute_zoom = false;
   if (!Key::IsInputFocused()) {
     do_absolute_zoom = true;
-    if (MapKey::IsPressed(GameFunction::ZoomPreset1)) {
+    if (MapKey::IsDown(GameFunction::ZoomPreset1)) {
       zoomDelta = Config::Get().system_zoom_preset_1;
-    } else if (MapKey::IsPressed(GameFunction::ZoomPreset2)) {
+    } else if (MapKey::IsDown(GameFunction::ZoomPreset2)) {
       zoomDelta = Config::Get().system_zoom_preset_2;
-    } else if (MapKey::IsPressed(GameFunction::ZoomPreset3)) {
+    } else if (MapKey::IsDown(GameFunction::ZoomPreset3)) {
       zoomDelta = Config::Get().system_zoom_preset_3;
-    } else if (MapKey::IsPressed(GameFunction::ZoomPreset4)) {
+    } else if (MapKey::IsDown(GameFunction::ZoomPreset4)) {
       zoomDelta = Config::Get().system_zoom_preset_4;
-    } else if (MapKey::IsPressed(GameFunction::ZoomPreset5)) {
+    } else if (MapKey::IsDown(GameFunction::ZoomPreset5)) {
       zoomDelta = Config::Get().system_zoom_preset_5;
     } else {
       do_absolute_zoom = false;
     }
-  }
-  if (Config::Get().hotkeys_extended && !Key::IsInputFocused()) {
-    if (MapKey::IsPressed(GameFunction::ZoomReset)) {
-      do_default_zoom = true;
-    } else if (MapKey::IsPressed(GameFunction::ZoomMin)) {
-      zoomDelta        = Config::Get().zoom;
-      do_absolute_zoom = true;
-    } else if (MapKey::IsPressed(GameFunction::ZoomMax)) {
-      zoomDelta        = 100;
-      do_absolute_zoom = true;
-    }
-  }
 
-  if (do_default_zoom) {
-    if (Config::Get().default_system_zoom > 0.0f) {
-      do_absolute_zoom = true;
-      zoomDelta        = Config::Get().default_system_zoom;
+    if (Config::Get().hotkeys_extended) {
+      if (MapKey::IsDown(GameFunction::ZoomReset)) {
+        do_default_zoom = true;
+      } else if (MapKey::IsDown(GameFunction::ZoomMin)) {
+        zoomDelta        = Config::Get().zoom;
+        do_absolute_zoom = true;
+      } else if (MapKey::IsDown(GameFunction::ZoomMax)) {
+        zoomDelta        = 100;
+        do_absolute_zoom = true;
+      }
     }
-    do_default_zoom = false;
-  }
 
-  if ((MapKey::IsDown(GameFunction::ZoomIn) && !Key::IsInputFocused()) || do_absolute_zoom) {
-    vec3 mousePos;
-    GetMousePosition(&mousePos);
-    _this->_zoomLocation = vec2{mousePos.x, mousePos.y};
-    if (do_absolute_zoom) {
-      auto minMaxRange   = (_this->_maximum - _this->_minimum);
-      auto percentage    = (zoomDelta / Config::Get().zoom);
-      auto zoom_distance = _this->_minimum + (_this->_maximum - _this->_minimum) * (zoomDelta / Config::Get().zoom);
-      _this->Distance    = zoom_distance;
+    if (do_default_zoom) {
+      if (Config::Get().default_system_zoom > 0.0f) {
+        do_absolute_zoom = true;
+        zoomDelta        = Config::Get().default_system_zoom;
+      }
+      do_default_zoom = false;
+    }
+
+    if (MapKey::IsPressed(GameFunction::ZoomIn) || do_absolute_zoom) {
+      vec3 mousePos;
+      GetMousePosition(&mousePos);
+      _this->_zoomLocation = vec2{mousePos.x, mousePos.y};
+      if (do_absolute_zoom) {
+        auto minMaxRange   = (_this->_maximum - _this->_minimum);
+        auto percentage    = (zoomDelta / Config::Get().zoom);
+        auto zoom_distance = _this->_minimum + (_this->_maximum - _this->_minimum) * (zoomDelta / Config::Get().zoom);
+        _this->Distance    = zoom_distance;
+      } else {
+        _this->_zoomDelta     = zoomDelta;
+        _this->_lastZoomDelta = zoomDelta;
+      }
+      auto worldPos      = GetMouseWorldPos(_this->_sceneCamera, &mousePos);
+      _this->_worldPoint = worldPos;
+      _this->ZoomCameraAtWorldPoint();
+    } else if (MapKey::IsPressed(GameFunction::ZoomOut) && !Key::IsInputFocused()) {
+      vec3 mousePos;
+      GetMousePosition(&mousePos);
+      _this->_zoomLocation  = vec2{mousePos.x, mousePos.y};
+      _this->_zoomDelta     = -1.0f * zoomDelta;
+      _this->_lastZoomDelta = -1.0f * zoomDelta;
+      auto worldPos         = GetMouseWorldPos(_this->_sceneCamera, &mousePos);
+      _this->_worldPoint    = worldPos;
+      _this->ZoomCameraAtWorldPoint();
     } else {
-      _this->_zoomDelta     = zoomDelta;
-      _this->_lastZoomDelta = zoomDelta;
+      original(_this);
     }
-    auto worldPos      = GetMouseWorldPos(_this->_sceneCamera, &mousePos);
-    _this->_worldPoint = worldPos;
-    _this->ZoomCameraAtWorldPoint();
-  } else if (MapKey::IsDown(GameFunction::ZoomOut) && !Key::IsInputFocused()) {
-    vec3 mousePos;
-    GetMousePosition(&mousePos);
-    _this->_zoomLocation  = vec2{mousePos.x, mousePos.y};
-    _this->_zoomDelta     = -1.0f * zoomDelta;
-    _this->_lastZoomDelta = -1.0f * zoomDelta;
-    auto worldPos         = GetMouseWorldPos(_this->_sceneCamera, &mousePos);
-    _this->_worldPoint    = worldPos;
-    _this->ZoomCameraAtWorldPoint();
   } else {
     original(_this);
   }

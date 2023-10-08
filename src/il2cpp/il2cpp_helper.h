@@ -310,12 +310,13 @@ public:
     static auto  il2cpp_class_get_parent = (il2cpp_class_get_parent_t)(GetProcAddress(
         GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_parent")));
     Il2CppClass* pcls                    = this->cls;
-    do {
-      if (pcls->name[0] == name[0] && !strcmp(name, pcls->name)) {
-        return IL2CppClassHelper{pcls};
-      }
-    } while (pcls = il2cpp_class_get_parent(pcls));
-
+    if (pcls) {
+      do {
+        if (pcls->name[0] == name[0] && !strcmp(name, pcls->name)) {
+          return IL2CppClassHelper{pcls};
+        }
+      } while (pcls = il2cpp_class_get_parent(pcls));
+    }
     return IL2CppClassHelper{nullptr};
   }
 

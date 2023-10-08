@@ -4,4 +4,4 @@ out/
 build/
 *.code-workspace
 version.aps
-
+*.vars

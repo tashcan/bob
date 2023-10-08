@@ -1,6 +1,7 @@
 #pragma once
 
 #include "BattleTargetData.h"
+#include "RecallRequirement.h"
 
 #include <cstdint>
 
@@ -26,7 +27,7 @@ enum class FleetState {
   Deployed     = 1989,
   CanLocate    = 1991
 };
-
+    
 struct FleetPlayerData {
 public:
   __declspec(property(get = __get_CurrentState)) FleetState CurrentState;
@@ -34,6 +35,7 @@ public:
   __declspec(property(get = __get_Id)) uint64_t Id;
   __declspec(property(get = __get_Hull)) HullSpec* Hull;
   __declspec(property(get = __get_Address)) void* Address;
+  __declspec(property(get = __get_RecallRequirements)) RecallRequirement* RecallRequirements;
 
 private:
   static IL2CppClassHelper& get_class_helper()
@@ -63,6 +65,12 @@ public:
   {
     static auto field = get_class_helper().GetProperty("PreviousState");
     return *field.Get<FleetState>(this);
+  }
+
+  RecallRequirement* __get_RecallRequirements()
+  {
+    static auto field = get_class_helper().GetProperty("RecallRequirement");
+    return field.GetRaw<RecallRequirement>(this);
   }
 
   uint64_t __get_Id()

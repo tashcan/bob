@@ -45,6 +45,7 @@ bool force_space_action_next_frame = false;
 
 void     ChangeNavigationSection(SectionID sectionID);
 void     ExecuteSpaceAction(FleetBarViewController* fleet_bar);
+void     ExecuteRecall(FleetBarViewController* fleet_bar);
 HullType GetHullTypeFromBattleTarget(BattleTargetData* context);
 void     GotoSection(SectionID sectionID, void* screen_data = nullptr);
 bool     CanHideViewers();
@@ -67,21 +68,21 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   const auto is_in_system_galaxy = Hub::IsInSystemOrGalaxyOrStarbase();
 
   int32_t ship_select_request = -1;
-  if (MapKey::IsPressed(GameFunction::SelectShip1)) {
+  if (MapKey::IsDown(GameFunction::SelectShip1)) {
     ship_select_request = 0;
-  } else if (MapKey::IsPressed(GameFunction::SelectShip2)) {
+  } else if (MapKey::IsDown(GameFunction::SelectShip2)) {
     ship_select_request = 1;
-  } else if (MapKey::IsPressed(GameFunction::SelectShip3)) {
+  } else if (MapKey::IsDown(GameFunction::SelectShip3)) {
     ship_select_request = 2;
-  } else if (MapKey::IsPressed(GameFunction::SelectShip4)) {
+  } else if (MapKey::IsDown(GameFunction::SelectShip4)) {
     ship_select_request = 3;
-  } else if (MapKey::IsPressed(GameFunction::SelectShip5)) {
+  } else if (MapKey::IsDown(GameFunction::SelectShip5)) {
     ship_select_request = 4;
-  } else if (MapKey::IsPressed(GameFunction::SelectShip6)) {
+  } else if (MapKey::IsDown(GameFunction::SelectShip6)) {
     ship_select_request = 5;
-  } else if (MapKey::IsPressed(GameFunction::SelectShip7)) {
+  } else if (MapKey::IsDown(GameFunction::SelectShip7)) {
     ship_select_request = 6;
-  } else if (MapKey::IsPressed(GameFunction::SelectShip8)) {
+  } else if (MapKey::IsDown(GameFunction::SelectShip8)) {
     ship_select_request = 7;
   }
 
@@ -133,89 +134,92 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
   if (!is_in_chat) {
     if (!Key::IsInputFocused()) {
-      if ((MapKey::IsPressed(GameFunction::ShowChat) || MapKey::IsPressed(GameFunction::ShowChatSide1)
-           || MapKey::IsPressed(GameFunction::ShowChatSide2))) {
+      if ((MapKey::IsDown(GameFunction::ShowChat) || MapKey::IsDown(GameFunction::ShowChatSide1)
+           || MapKey::IsDown(GameFunction::ShowChatSide2))) {
         if (auto chat_manager = ChatManager::Instance(); chat_manager) {
           if (chat_manager->IsSideChatOpen) {
-            auto view_controller = ObjectFinder<FullScreenChatViewController>::Get();
-            view_controller->_messageList->_inputField->ActivateInputField();
-          } else if (MapKey::IsPressed(GameFunction::ShowChatSide1) || MapKey::IsPressed(GameFunction::ShowChatSide2)) {
+            if (auto view_controller = ObjectFinder<FullScreenChatViewController>::Get(); view_controller) {
+              if (auto message_list = view_controller->_messageList; message_list) {
+                if (auto message_field = message_list->_inputField; message_field) {
+                  message_field->ActivateInputField();
+                }
+              }
+            }
+          } else if (MapKey::IsDown(GameFunction::ShowChatSide1) || MapKey::IsDown(GameFunction::ShowChatSide2)) {
             chat_manager->OpenChannel(ChatChannelCategory::Alliance, ChatViewMode::Side);
           } else {
             chat_manager->OpenChannel(ChatChannelCategory::Alliance, ChatViewMode::Fullscreen);
           }
         }
-      } else if (MapKey::IsPressed(GameFunction::ShowQTrials)) {
+      } else if (MapKey::IsDown(GameFunction::ShowQTrials)) {
         return GotoSection(SectionID::ChallengeSelection);
-      } else if (MapKey::IsPressed(GameFunction::ShowBookmarks)) {
+      } else if (MapKey::IsDown(GameFunction::ShowBookmarks)) {
         auto bookmark_manager = BookmarksManager::Instance();
         if (bookmark_manager) {
-          bookmark_manager->ViewBookmarks();
-          return;
+          return bookmark_manager->ViewBookmarks();
         }
         return GotoSection(SectionID::Bookmarks_Main);
-      } else if (MapKey::IsPressed(GameFunction::ShowRefinery)) {
+      } else if (MapKey::IsDown(GameFunction::ShowRefinery)) {
         return GotoSection(SectionID::Shop_Refining_List);
-      } else if (MapKey::IsPressed(GameFunction::ShowFactions)) {
+      } else if (MapKey::IsDown(GameFunction::ShowFactions)) {
         return GotoSection(SectionID::Shop_MainFactions);
-      } else if (MapKey::IsPressed(GameFunction::ShoWStationExterior)) {
+      } else if (MapKey::IsDown(GameFunction::ShoWStationExterior)) {
         return GotoSection(SectionID::Starbase_Exterior);
-      } else if (MapKey::IsPressed(GameFunction::ShowGalaxy)) {
+      } else if (MapKey::IsDown(GameFunction::ShowGalaxy)) {
         return ChangeNavigationSection(SectionID::Navigation_Galaxy);
-      } else if (MapKey::IsPressed(GameFunction::ShowStationInterior)) {
+      } else if (MapKey::IsDown(GameFunction::ShowStationInterior)) {
         return GotoSection(SectionID::Starbase_Interior);
-      } else if (MapKey::IsPressed(GameFunction::ShowSystem)) {
+      } else if (MapKey::IsDown(GameFunction::ShowSystem)) {
         return ChangeNavigationSection(SectionID::Navigation_System);
-      } else if (MapKey::IsPressed(GameFunction::ShowInventory)) {
+      } else if (MapKey::IsDown(GameFunction::ShowInventory)) {
         return GotoSection(SectionID::InventoryList);
-      } else if (MapKey::IsPressed(GameFunction::ShowMissions)) {
+      } else if (MapKey::IsDown(GameFunction::ShowMissions)) {
         return GotoSection(SectionID::Missions_AcceptedList);
-      } else if (MapKey::IsPressed(GameFunction::ShowOfficers)) {
+      } else if (MapKey::IsDown(GameFunction::ShowOfficers)) {
         return GotoSection(SectionID::OfficerInventory);
-      } else if (MapKey::IsPressed(GameFunction::ShowCommander)) {
+      } else if (MapKey::IsDown(GameFunction::ShowCommander)) {
         // TODO: Does not work properly, defaults to first FleetCommander (spock, rather than selected fleet
         // commander)
         return GotoSection(SectionID::FleetCommander_Management);
-      } else if (MapKey::IsPressed(GameFunction::ShowAwayTeam)) {
+      } else if (MapKey::IsDown(GameFunction::ShowAwayTeam)) {
         return GotoSection(SectionID::Missions_AwayTeamsList);
-      } else if (MapKey::IsPressed(GameFunction::ShowEvents)) {
+      } else if (MapKey::IsDown(GameFunction::ShowEvents)) {
         return GotoSection(SectionID::Tournament_Group_Selection);
-      } else if (MapKey::IsPressed(GameFunction::ShowExoComp)) {
+      } else if (MapKey::IsDown(GameFunction::ShowExoComp)) {
         return GotoSection(SectionID::Consumables);
-      } else if (MapKey::IsPressed(GameFunction::ShowDaily)) {
+      } else if (MapKey::IsDown(GameFunction::ShowDaily)) {
         return GotoSection(SectionID::Missions_DailyGoals);
-      } else if (MapKey::IsPressed(GameFunction::UiScaleUp)) {
+      } else if (MapKey::IsDown(GameFunction::UiScaleUp)) {
         auto& config    = Config::Get();
         auto  old_scale = config.ui_scale;
         config.ui_scale -= 0.1f;
         spdlog::info("UI has ben scaled up, was {}, now {}", old_scale, config.ui_scale);
-      } else if (MapKey::IsPressed(GameFunction::UiScaleDown)) {
+      } else if (MapKey::IsDown(GameFunction::UiScaleDown)) {
         auto& config    = Config::Get();
         auto  old_scale = config.ui_scale;
         config.ui_scale += 0.1f;
         spdlog::info("UI has been scaled down, was {}, now {}", old_scale, config.ui_scale);
-      } else if (MapKey::IsPressed(GameFunction::ShowShips)) {
+      } else if (MapKey::IsDown(GameFunction::ShowShips)) {
         auto fleet_bar        = ObjectFinder<FleetBarViewController>::Get();
         auto fleet_controller = fleet_bar->_fleetPanelController;
         auto fleet            = fleet_bar->_fleetPanelController->fleet;
         if (fleet) {
           fleet_controller->RequestAction(fleet, ActionType::Manage, 0, ActionBehaviour::Default);
-          return;
         }
       }
     }
   } else {
     if (auto chat_manager = ChatManager::Instance(); chat_manager) {
-      if (MapKey::IsPressed(GameFunction::SelectChatGlobal)) {
+      if (MapKey::IsDown(GameFunction::SelectChatGlobal)) {
         return chat_manager->OpenChannel(ChatChannelCategory::Global);
-      } else if (MapKey::IsPressed(GameFunction::SelectChatAlliance)) {
+      } else if (MapKey::IsDown(GameFunction::SelectChatAlliance)) {
         return chat_manager->OpenChannel(ChatChannelCategory::Alliance);
-      } else if (MapKey::IsPressed(GameFunction::SelectChatPrivate)) {
+      } else if (MapKey::IsDown(GameFunction::SelectChatPrivate)) {
         return chat_manager->OpenChannel(ChatChannelCategory::Private);
       }
     }
 
-    if (MapKey::IsPressed(GameFunction::ActionView)) {
+    if (MapKey::IsDown(GameFunction::ActionView)) {
       if (auto view_controller = ObjectFinder<FullScreenChatViewController>::Get(); view_controller) {
         if (view_controller->_messageList && view_controller->_messageList->_inputField) {
           return view_controller->_messageList->_inputField->ActivateInputField();
@@ -231,7 +235,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     }
 
     // Dismiss the golden rewards screen when escape or space is pressed.
-    if (MapKey::IsPressed(GameFunction::ActionPrimary) || Key::Down(KeyCode::Escape)) {
+    if (MapKey::IsDown(GameFunction::ActionPrimary) || Key::Down(KeyCode::Escape)) {
       if (auto reward_controller = ObjectFinder<AnimatedRewardsScreenViewController>::Get(); reward_controller) {
         if (reward_controller->IsActive()) {
           return reward_controller->GoBackToLastSection();
@@ -239,8 +243,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       }
     }
 
-    if (MapKey::IsPressed(GameFunction::ActionPrimary) || MapKey::IsPressed(GameFunction::ActionSecondary)
-        || MapKey::IsPressed(GameFunction::ActionRecall) || force_space_action_next_frame) {
+    if (MapKey::IsDown(GameFunction::ActionPrimary) || MapKey::IsDown(GameFunction::ActionSecondary)
+        || MapKey::IsDown(GameFunction::ActionRecall) || force_space_action_next_frame) {
       if (Hub::IsInSystemOrGalaxyOrStarbase() && !Hub::IsInChat() && !Key::IsInputFocused()) {
         auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
         if (fleet_bar) {
@@ -249,12 +253,11 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
           if (was_forced) {
             force_space_action_next_frame = false;
           }
-          return;
         }
       }
     }
 
-    if (MapKey::IsPressed(GameFunction::ActionView)) {
+    if (MapKey::IsDown(GameFunction::ActionView)) {
       auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
       for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
         auto pre_scan_widget = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
@@ -292,7 +295,6 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       show_info_pending -= 1;
     }
   }
-
   original(_this);
 }
 
@@ -351,14 +353,37 @@ void ChangeNavigationSection(SectionID sectionID)
   }
 }
 
-void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
+void ExecuteRecall(FleetBarViewController* fleet_bar)
 {
-  auto has_primary   = MapKey::IsPressed(GameFunction::ActionPrimary) || force_space_action_next_frame;
-  auto has_secondary = MapKey::IsPressed(GameFunction::ActionSecondary);
-  auto has_recall    = MapKey::IsPressed(GameFunction::ActionRecall);
-
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_bar->_fleetPanelController->fleet;
+  auto fleet_state      = fleet->CurrentState;
+
+  auto fleet_id     = fleet->Id;
+  auto prev_state   = fleet->PreviousState;
+  auto recall_reqs  = fleet->RecallRequirements;
+  auto recall_ismet = recall_reqs->IsMet;
+
+  spdlog::info("Recall fleet {} previous {} current {}, ismet {}.", (int)fleet_id, (int)prev_state, (int)fleet_state,
+               recall_ismet);
+
+  if (fleet_state == FleetState::IdleInSpace || fleet_state == FleetState::Impulsing
+      || fleet_state == FleetState::Mining) {
+    if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
+      NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
+    }
+    fleet_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
+  }
+}
+
+void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
+{
+  auto has_primary   = MapKey::IsDown(GameFunction::ActionPrimary) || force_space_action_next_frame;
+  auto has_secondary = MapKey::IsDown(GameFunction::ActionSecondary);
+  auto has_recall    = MapKey::IsDown(GameFunction::ActionRecall);
+
+  auto fleet_controller = fleet_bar->_fleetPanelController;
+  auto fleet            = fleet_controller->fleet;
 
   if (has_primary && fleet->CurrentState == FleetState::WarpCharging) {
     fleet_controller->CancelWarpClicked();
@@ -427,10 +452,8 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
     } else if (auto navigation_ui_controller = ObjectFinder<NavigationInteractionUIViewController>::Get();
                navigation_ui_controller) {
       if (has_recall) {
-        if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
-          NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
-        }
-        fleet_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
+        spdlog::info("ExecuteRecall() #1");
+        return ExecuteRecall(fleet_bar);
       } else if (has_primary) {
         if (auto armada_object_viewer_widget = ObjectFinder<ArmadaObjectViewerWidget>::Get();
             armada_object_viewer_widget
@@ -445,11 +468,8 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
         }
       }
     } else if (has_recall) {
-      if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
-        NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
-      }
-
-      fleet_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
+      spdlog::info("ExecuteRecall() #2");
+      return ExecuteRecall(fleet_bar);
     }
   }
 }
@@ -503,10 +523,10 @@ bool CheckShowCargo(RewardsButtonWidget* widget)
   if (!target_fleet_deployed) {
     return Config::Get().show_station_cargo;
   }
-  auto fleetType = target_fleet_deployed->FleetType;
-  if (target_fleet_deployed->FleetType == DeployedFleetType::Player) {
+  auto fleet_type = target_fleet_deployed->FleetType;
+  if (fleet_type == DeployedFleetType::Player) {
     return Config::Get().show_player_cargo;
-  } else if (target_fleet_deployed->FleetType == DeployedFleetType::Marauder) {
+  } else if (fleet_type == DeployedFleetType::Marauder) {
     if (auto hull = target_fleet_deployed->Hull; hull && hull->Type == HullType::ArmadaTarget) {
       return Config::Get().show_armada_cargo;
     } else {

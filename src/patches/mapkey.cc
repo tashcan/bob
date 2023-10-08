@@ -25,7 +25,7 @@ MapKey* MapKey::Parse(std::string_view key)
   auto wantedKeys  = absl::StrSplit(lowerKey, "-", absl::SkipWhitespace());
 
   auto mapKey = new MapKey();
-  for (const auto wantedKey : wantedKeys) {
+  for (auto wantedKey : wantedKeys) {
     auto modifier = ModifierKey::Parse(wantedKey);
     if (modifier) {
       mapKey->Modifiers.emplace_back(modifier);
