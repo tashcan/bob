@@ -15,6 +15,7 @@ public:
 
 public:
   float ui_scale;
+  float ui_scale_adjust;
   float zoom;
   bool  free_resize;
   bool  adjust_scale_res;

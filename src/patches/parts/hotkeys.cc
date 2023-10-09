@@ -125,7 +125,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     }
   }
 
-  if (Key::Down(KeyCode::Escape)) {
+  if (Key::Pressed(KeyCode::Escape) && (Key::IsInputFocused || Hub::IsInChat)) {
     // This fixes issues with detecting when an input is selected
     // As the game usually doesn't clear this when using Escape, only when
     // pressing the back button with the mouse...
@@ -189,15 +189,15 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         return GotoSection(SectionID::Consumables);
       } else if (MapKey::IsDown(GameFunction::ShowDaily)) {
         return GotoSection(SectionID::Missions_DailyGoals);
-      } else if (MapKey::IsDown(GameFunction::UiScaleUp)) {
+      } else if (MapKey::IsPressed(GameFunction::UiScaleUp)) {
         auto& config    = Config::Get();
         auto  old_scale = config.ui_scale;
-        config.ui_scale -= 0.1f;
+        config.ui_scale -= config.ui_scale_adjust;
         spdlog::info("UI has ben scaled up, was {}, now {}", old_scale, config.ui_scale);
-      } else if (MapKey::IsDown(GameFunction::UiScaleDown)) {
+      } else if (MapKey::IsPressed(GameFunction::UiScaleDown)) {
         auto& config    = Config::Get();
         auto  old_scale = config.ui_scale;
-        config.ui_scale += 0.1f;
+        config.ui_scale += config.ui_scale_adjust;
         spdlog::info("UI has been scaled down, was {}, now {}", old_scale, config.ui_scale);
       } else if (MapKey::IsDown(GameFunction::ShowShips)) {
         auto fleet_bar        = ObjectFinder<FleetBarViewController>::Get();
@@ -235,7 +235,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     }
 
     // Dismiss the golden rewards screen when escape or space is pressed.
-    if (MapKey::IsDown(GameFunction::ActionPrimary) || Key::Down(KeyCode::Escape)) {
+    if (MapKey::IsDown(GameFunction::ActionPrimary) || Key::Pressed(KeyCode::Escape)) {
       if (auto reward_controller = ObjectFinder<AnimatedRewardsScreenViewController>::Get(); reward_controller) {
         if (reward_controller->IsActive()) {
           return reward_controller->GoBackToLastSection();
@@ -295,7 +295,6 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       show_info_pending -= 1;
     }
   }
-  original(_this);
 }
 
 template <typename T> inline bool CanHideViewersOfType(bool shouldHide = false)

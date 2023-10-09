@@ -141,6 +141,7 @@ void Config::Load()
   }
 
   this->ui_scale         = get_config_or_default(config, parsed, "graphics", "ui_scale", 0.9f);
+  this->ui_scale_adjust  = get_config_or_default(config, parsed, "graphics", "ui_scale_adjust", 0.05f);
   this->zoom             = get_config_or_default(config, parsed, "graphics", "zoom", 2500.f);
   this->free_resize      = get_config_or_default(config, parsed, "graphics", "free_resize", true);
   this->adjust_scale_res = get_config_or_default(config, parsed, "graphics", "adjust_scale_res", false);

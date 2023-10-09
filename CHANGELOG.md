@@ -7,6 +7,8 @@
 - Add manage ship key ('N')
 - Add example configuration file
 - Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
+- Add ui_scale_adjust to allow changes to "step" between ui_scale's
+- Make ui_scaleup/ui_scaldown operate like zoom and can now be held
 
 ## 0.5.2
 

@@ -13,7 +13,7 @@
 
 ## Features
 
-- Set system UI scale
+- Set system UI scale + adjustment factor
 - Set system zoom
   - default
   - maximum

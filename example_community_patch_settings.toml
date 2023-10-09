@@ -50,6 +50,9 @@ transition_time = 0.1
 # This specifies the amount to scale the UI by, 1.0 being default and anything above 1 making it larger than default, defaults to 0.9
 ui_scale = 0.9
 
+# This specifies the amount to adjust the scale by, 0.05 being default
+ui_scale_adjust = 0.05
+
 vsync = 1
 
 # This controls the maximum zoom distance in System View, default is 2500.
