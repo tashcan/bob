@@ -18,7 +18,7 @@ ModifierKey* ModifierKey::Parse(std::string_view key)
   auto wantedKeys  = absl::StrSplit(upperKey, "-", absl::SkipWhitespace());
 
   auto modifierKey = new ModifierKey();
-  for (const auto wantedKey : wantedKeys) {
+  for (std::string_view wantedKey : wantedKeys) {
     if (wantedKey == "SHIFT") {
       modifierKey->AddModifier(wantedKey, KeyCode::LeftShift, KeyCode::RightShift);
     } else if (wantedKey == "ALT") {
@@ -49,17 +49,23 @@ ModifierKey* ModifierKey::Parse(std::string_view key)
 
 bool ModifierKey::Contains(KeyCode modifier)
 {
-  return (std::find(this->Modifiers.begin(), this->Modifiers.end(), modifier) != this->Modifiers.end());
+  if (this->hasModifier) {
+    return (std::find(this->Modifiers.begin(), this->Modifiers.end(), modifier) != this->Modifiers.end());
+  }
+
+  return false;
 }
 
 void ModifierKey::AddModifier(std::string_view shortcut, KeyCode modifier1, KeyCode modifier2)
 {
   if (!this->Contains(modifier1)) {
+    this->hasModifier = true;
     this->Modifiers.emplace_back(modifier1);
     this->Shortcuts.emplace_back(shortcut);
   }
 
   if (!this->Contains(modifier2)) {
+    this->hasModifier = true;
     this->Modifiers.emplace_back(modifier2);
     this->Shortcuts.emplace_back(shortcut);
   }
@@ -67,9 +73,11 @@ void ModifierKey::AddModifier(std::string_view shortcut, KeyCode modifier1, KeyC
 
 bool ModifierKey::IsPressed()
 {
-  for (auto modifier : this->Modifiers) {
-    if (Key::Pressed(modifier)) {
-      return true;
+  if (this->hasModifier) {
+    for (auto modifier : this->Modifiers) {
+      if (Key::Pressed(modifier)) {
+        return true;
+      }
     }
   }
 
@@ -78,9 +86,11 @@ bool ModifierKey::IsPressed()
 
 bool ModifierKey::IsDown()
 {
-  for (auto modifier : this->Modifiers) {
-    if (Key::Down(modifier)) {
-      return true;
+  if (this->hasModifier) {
+    for (auto modifier : this->Modifiers) {
+      if (Key::Down(modifier)) {
+        return true;
+      }
     }
   }
 
@@ -90,12 +100,16 @@ bool ModifierKey::IsDown()
 std::string ModifierKey::GetParsedValues()
 {
   std::string output = "";
-  for (const std::string_view key : this->Shortcuts) {
-    if (output.length()) {
-      output.append("-");
+  if (this->hasModifier) {
+    for (const std::string_view key : this->Shortcuts) {
+      if (output.length()) {
+        output.append("-");
+      }
+      output.append(key);
     }
-    output.append(key);
   }
 
   return output;
 }
+
+bool MhasModifier = false;

@@ -1,20 +1,27 @@
 #pragma once
 
 #include <absl/strings/ascii.h>
-#include <map>
+#include <unordered_map>
 #include <prime/KeyCode.h>
 #include <string>
-#include <vector>
+#include <array>
 
 class Key
 {
 private:
-  static const std::map<std::string, KeyCode> mappedKeys;
-  static const std::vector<KeyCode>           modifiers;
+  static const std::unordered_map<std::string, KeyCode> mappedKeys;
+
+  static int cacheInputFocused;
+  static int cacheInputModified;
+
+  static std::array<int, (int)KeyCode::Max> cacheKeyPressed;
+  static std::array<int, (int)KeyCode::Max> cacheKeyDown;
 
 public:
   Key();
 
+  static void    ClearInputFocus();
+  static void    ResetCache();
   static KeyCode Parse(std::string_view key);
 
   static bool Pressed(KeyCode key);
@@ -27,6 +34,4 @@ public:
   static bool HasShift();
   static bool HasAlt();
   static bool HasCtrl();
-
-  static void ClearInput();
 };

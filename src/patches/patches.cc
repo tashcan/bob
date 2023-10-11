@@ -97,7 +97,7 @@ void CreateMiniDump(EXCEPTION_POINTERS* pep)
 
     MINIDUMP_TYPE mdt = MiniDumpNormal;
 
-    BOOL rv = (*pFn)(GetCurrentProcess(), GetCurrentProcessId(), hFile, mdt, (pep != 0) ? &mdei : 0, 0, 0);
+    (*pFn)(GetCurrentProcess(), GetCurrentProcessId(), hFile, mdt, (pep != 0) ? &mdei : 0, 0, 0);
 
     CloseHandle(hFile);
   }

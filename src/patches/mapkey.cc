@@ -18,16 +18,17 @@ MapKey::MapKey()
   this->Key = KeyCode::None;
 }
 
-MapKey* MapKey::Parse(std::string_view key)
+MapKey MapKey::Parse(std::string_view key)
 {
   auto strippedKey = absl::StripTrailingAsciiWhitespace(key);
   auto lowerKey    = absl::AsciiStrToUpper(strippedKey);
   auto wantedKeys  = absl::StrSplit(lowerKey, "-", absl::SkipWhitespace());
 
   auto mapKey = new MapKey();
-  for (auto wantedKey : wantedKeys) {
+  for (std::string_view wantedKey : wantedKeys) {
     auto modifier = ModifierKey::Parse(wantedKey);
     if (modifier) {
+      mapKey->hasModifiers = true;
       mapKey->Modifiers.emplace_back(modifier);
       mapKey->Shortcuts.emplace_back(wantedKey);
     } else {
@@ -44,46 +45,21 @@ MapKey* MapKey::Parse(std::string_view key)
     }
   }
 
-  if (mapKey->Key != KeyCode::None) {
-    return mapKey;
-  }
-
-  return nullptr;
+  return *mapKey;
 }
 
-bool MapKey::HasGameFunction(GameFunction gameFunction)
+void MapKey::SetMappedKey(GameFunction gameFunction, MapKey mappedKey)
 {
-  return MapKey::mappedKeys.contains(gameFunction);
-}
-
-void MapKey::AddMappedKey(GameFunction gameFunction, MapKey* mappedKey)
-{
-  if (MapKey::HasGameFunction(gameFunction)) {
-    return MapKey::SetMappedKey(gameFunction, mappedKey);
-  }
-
-  MapKey::mappedKeys.insert(std::make_pair(gameFunction, mappedKey));
-}
-
-void MapKey::SetMappedKey(GameFunction gameFunction, MapKey* mappedKey)
-{
-  if (!MapKey::HasGameFunction(gameFunction)) {
-    return MapKey::AddMappedKey(gameFunction, mappedKey);
-  }
-
   MapKey::mappedKeys[gameFunction] = mappedKey;
 }
 
 bool MapKey::IsPressed(GameFunction gameFunction)
 {
-  if (!MapKey::HasGameFunction(gameFunction)) {
-    return false;
-  }
-
-  MapKey* mapKey = MapKey::mappedKeys.at(gameFunction);
-
-  if (Key::Pressed(mapKey->Key)) {
-    return MapKey::HasCorrectModifiers(mapKey);
+  MapKey mapKey = MapKey::mappedKeys[(int)gameFunction];
+  if (mapKey.Key != KeyCode::None) {
+    if (Key::Pressed(mapKey.Key)) {
+      return MapKey::HasCorrectModifiers(mapKey);
+    }
   }
 
   return false;
@@ -91,28 +67,26 @@ bool MapKey::IsPressed(GameFunction gameFunction)
 
 bool MapKey::IsDown(GameFunction gameFunction)
 {
-  if (!MapKey::HasGameFunction(gameFunction)) {
-    return false;
-  }
+  MapKey mapKey = MapKey::mappedKeys[(int)gameFunction];
 
-  MapKey* mapKey = MapKey::mappedKeys.at(gameFunction);
-
-  if (Key::Down(mapKey->Key)) {
-    return MapKey::HasCorrectModifiers(mapKey);
+  if (mapKey.Key != KeyCode::None) {
+    if (Key::Down(mapKey.Key)) {
+      return MapKey::HasCorrectModifiers(mapKey);
+    }
   }
 
   return false;
 }
 
-bool MapKey::HasCorrectModifiers(MapKey* mapKey)
+bool MapKey::HasCorrectModifiers(MapKey mapKey)
 {
   auto result = false;
-  if (mapKey->Modifiers.empty()) {
+  if (!mapKey.hasModifiers) {
     result = !Key::IsModified();
   } else {
     result = true;
-    for (const auto modifier : mapKey->Modifiers) {
-      if (!modifier->IsPressed()) {
+    for (ModifierKey modifier : mapKey.Modifiers) {
+      if (!modifier.IsPressed()) {
         result = false;
         break;
       }
@@ -135,9 +109,10 @@ std::string MapKey::GetParsedValues()
   return output;
 }
 
-std::map<GameFunction, MapKey*> MapKey::mappedKeys = {};
+std::array<MapKey, (int)GameFunction::Max> MapKey::mappedKeys = {};
 
-std::vector<std::string>  Shortcuts = {};
-std::vector<ModifierKey*> Modifiers = {};
+std::vector<std::string> Shortcuts = {};
+std::vector<ModifierKey> Modifiers = {};
 
-KeyCode Key;
+bool    hasModifiers = false;
+KeyCode Key          = KeyCode::None;

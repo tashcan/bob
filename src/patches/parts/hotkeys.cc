@@ -53,19 +53,17 @@ bool     DidHideViewers();
 
 void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 {
-  if (Config::Get().use_scopely_hotkeys) {
+  if (Config::Get().use_scopely_hotkeys && Config::Get().hotkeys_enabled) {
     return original(_this);
   }
+
+  Key::ResetCache();
 
   static auto il2cpp_string_new =
       (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
 
-  auto       section_manager = Hub::get_SectionManager();
-  const auto current_section = section_manager->CurrentSection;
-
-  const auto is_in_chat          = Hub::IsInChat();
-  const auto is_in_system_galaxy = Hub::IsInSystemOrGalaxyOrStarbase();
+  const auto is_in_chat = Hub::IsInChat();
 
   int32_t ship_select_request = -1;
   if (MapKey::IsDown(GameFunction::SelectShip1)) {
@@ -125,11 +123,11 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     }
   }
 
-  if (Key::Pressed(KeyCode::Escape) && (Key::IsInputFocused || Hub::IsInChat)) {
+  if (Key::Pressed(KeyCode::Escape) && (Key::IsInputFocused() || Hub::IsInChat())) {
     // This fixes issues with detecting when an input is selected
     // As the game usually doesn't clear this when using Escape, only when
     // pressing the back button with the mouse...
-    return Key::ClearInput();
+    return Key::ClearInputFocus();
   }
 
   if (!is_in_chat) {
@@ -297,7 +295,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   }
 }
 
-template <typename T> inline bool CanHideViewersOfType(bool shouldHide = false)
+// NOTE: If you change this loop functionality, also change DoHideViewersOfType template
+template <typename T> inline bool CanHideViewersOfType()
 {
   auto widgets = ObjectFinder<T>::GetAll();
   for (auto i = 0; i < widgets->max_length; ++i) {
@@ -306,9 +305,6 @@ template <typename T> inline bool CanHideViewersOfType(bool shouldHide = false)
                          && (widget->_visibilityController->_state == VisibilityState::Visible
                              || widget->_visibilityController->_state == VisibilityState::Show);
     if (visible) {
-      if (shouldHide) {
-        widget->HideAllViewers();
-      }
       return true;
     }
   }
@@ -325,15 +321,33 @@ bool CanHideViewers()
          || CanHideViewersOfType<HousingObjectViewerWidget>();
 }
 
+// NOTE: If you change this loop functionality, also change CanideViewersOfType template
+template <typename T> inline bool DidHideViewersOfType()
+{
+  auto widgets = ObjectFinder<T>::GetAll();
+  auto didHide = false;
+
+  for (auto i = 0; i < widgets->max_length; ++i) {
+    auto       widget  = il2cpp_get_array_element<T>(widgets, i);
+    const auto visible = widget
+                         && (widget->_visibilityController->_state == VisibilityState::Visible
+                             || widget->_visibilityController->_state == VisibilityState::Show);
+    if (visible) {
+      widget->HideAllViewers();
+      didHide = true;
+    }
+  }
+
+  return didHide;
+}
+
 bool DidHideViewers()
 {
-  return CanHideViewersOfType<AllianceStarbaseObjectViewerWidget>(true)
-         || CanHideViewersOfType<ArmadaObjectViewerWidget>(true)
-         || CanHideViewersOfType<CelestialObjectViewerWidget>(true) || CanHideViewersOfType<EmbassyObjectViewer>(true)
-         || CanHideViewersOfType<HousingObjectViewerWidget>(true)
-         || CanHideViewersOfType<MiningObjectViewerWidget>(true)
-         || CanHideViewersOfType<MissionsObjectViewerWidget>(true) || CanHideViewersOfType<PreScanTargetWidget>(true)
-         || CanHideViewersOfType<HousingObjectViewerWidget>(true);
+  return DidHideViewersOfType<AllianceStarbaseObjectViewerWidget>() || DidHideViewersOfType<ArmadaObjectViewerWidget>()
+         || DidHideViewersOfType<CelestialObjectViewerWidget>() || DidHideViewersOfType<EmbassyObjectViewer>()
+         || DidHideViewersOfType<HousingObjectViewerWidget>() || DidHideViewersOfType<MiningObjectViewerWidget>()
+         || DidHideViewersOfType<MissionsObjectViewerWidget>() || DidHideViewersOfType<PreScanTargetWidget>()
+         || DidHideViewersOfType<HousingObjectViewerWidget>();
 }
 
 void GotoSection(SectionID sectionID, void* section_data)

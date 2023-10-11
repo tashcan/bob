@@ -58,4 +58,7 @@ enum GameFunction {
   ActionSecondary,
   ActionView,
   ActionRecall,
+
+  // Automatic max value
+  Max
 };

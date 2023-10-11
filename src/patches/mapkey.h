@@ -2,7 +2,7 @@
 
 #include <absl/strings/ascii.h>
 #include <key.h>
-#include <map>
+#include <array>
 #include <modifierkey.h>
 #include <patches/gamefunctions.h>
 #include <prime/KeyCode.h>
@@ -10,24 +10,25 @@
 
 class MapKey
 {
-private:
-  static std::map<GameFunction, MapKey*> mappedKeys;
-
 public:
   MapKey();
 
-  static MapKey* Parse(std::string_view key);
-  static void    AddMappedKey(GameFunction gameFunction, MapKey* mappedKey);
-  static void    SetMappedKey(GameFunction gameFunction, MapKey* mappedKey);
-  static bool    HasGameFunction(GameFunction gameFunction);
-  static bool    IsPressed(GameFunction gameFunction);
-  static bool    IsDown(GameFunction gameFunction);
-  static bool    HasCorrectModifiers(MapKey* mapKey);
+private:
+  static std::array<MapKey, (int)GameFunction::Max> mappedKeys;
+
+  bool hasModifiers;
+
+public:
+  static MapKey Parse(std::string_view key);
+  static void   SetMappedKey(GameFunction gameFunction, MapKey mappedKey);
+  static bool   IsPressed(GameFunction gameFunction);
+  static bool   IsDown(GameFunction gameFunction);
+  static bool   HasCorrectModifiers(MapKey mapKey);
 
   std::string GetParsedValues();
 
-  std::vector<ModifierKey*> Modifiers;
-  std::vector<std::string>  Shortcuts;
+  std::vector<ModifierKey> Modifiers;
+  std::vector<std::string> Shortcuts;
 
   KeyCode Key;
 };

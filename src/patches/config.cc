@@ -104,17 +104,18 @@ void parse_config_shortcut(toml::table config, toml::table& new_config, std::str
   auto sectionTable = new_config[section];
   auto config_value = config[section][item].value_or(default_value);
 
-  MapKey*     mapKey   = MapKey::Parse(config_value);
+  MapKey      mapKey   = MapKey::Parse(config_value);
   std::string shortcut = "disabled";
 
-  if (!mapKey) {
+  if (mapKey.Key == KeyCode::None) {
     mapKey = MapKey::Parse(default_value);
   }
 
-  if (mapKey) {
-    shortcut = mapKey->GetParsedValues();
-    MapKey::AddMappedKey(gameFunction, mapKey);
+  if (mapKey.Key != KeyCode::None) {
+    shortcut = mapKey.GetParsedValues();
   }
+
+  MapKey::SetMappedKey(gameFunction, mapKey);
 
   sectionTable.as_table()->insert_or_assign(item, shortcut);
 

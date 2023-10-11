@@ -12,6 +12,10 @@ class ModifierKey
 public:
   ModifierKey();
 
+private:
+  bool hasModifier;
+
+public:
   static ModifierKey* Parse(std::string_view key);
 
   void AddModifier(std::string_view shortcut, KeyCode modifier1, KeyCode modifier2);

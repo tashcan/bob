@@ -47,7 +47,7 @@ public:
 
     Il2CppException* exception = nullptr;
     void*            params[1] = {&v};
-    
+
     il2cpp_runtime_invoke(set_method_virtual, _this, params, &exception);
   }
 
@@ -315,7 +315,9 @@ public:
         if (pcls->name[0] == name[0] && !strcmp(name, pcls->name)) {
           return IL2CppClassHelper{pcls};
         }
-      } while (pcls = il2cpp_class_get_parent(pcls));
+
+        pcls = il2cpp_class_get_parent(pcls);
+      } while (pcls);
     }
     return IL2CppClassHelper{nullptr};
   }

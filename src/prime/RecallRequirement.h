@@ -7,7 +7,7 @@
 struct RecallRequirement : public ActionRequirement<RecallRequirement> {
 
 public:
-  friend class ActionRequirement<RecallRequirement>;
+  friend struct ActionRequirement<RecallRequirement>;
 
 private:
   static IL2CppClassHelper& get_class_helper()

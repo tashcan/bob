@@ -43,11 +43,7 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
       il2cpp_resolve_icall<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
 
-  auto       section_manager = Hub::get_SectionManager();
-  const auto current_section = section_manager->CurrentSection;
-
   const auto is_in_chat          = Hub::IsInChat();
-  const auto is_in_system_galaxy = Hub::IsInSystemOrGalaxyOrStarbase();
 
   const auto dt        = GetDeltaTime();
   auto       zoomDelta = Config::Get().keyboard_zoom_speed * dt;
@@ -98,8 +94,6 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
       GetMousePosition(&mousePos);
       _this->_zoomLocation = vec2{mousePos.x, mousePos.y};
       if (do_absolute_zoom) {
-        auto minMaxRange   = (_this->_maximum - _this->_minimum);
-        auto percentage    = (zoomDelta / Config::Get().zoom);
         auto zoom_distance = _this->_minimum + (_this->_maximum - _this->_minimum) * (zoomDelta / Config::Get().zoom);
         _this->Distance    = zoom_distance;
       } else {
