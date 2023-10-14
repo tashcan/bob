@@ -3,14 +3,20 @@
 #include <vector>
 
 #include "prime/Toast.h"
+#include <toml++/toml.h>
 
-class Config
+#define CONFIG_FILE_DEFAULT "community_patch_settings.toml"
+#define CONFIG_FILE_RUNTIME "community_patch_runtime.vars"
+#define CONFIG_FILE_PARSED "community_patch_settings_parsed.toml"
+
+ class Config
 {
 public:
   Config();
 
   static Config& Get();
 
+  static void Save(toml::table config, std::string_view filename, bool apply_warning = true);
   void Load();
 
 public:

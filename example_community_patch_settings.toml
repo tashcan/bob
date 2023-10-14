@@ -152,10 +152,10 @@ show_cargo_default = false
 
 # These should be self-explanatory
 # They control the behavior of the above default option
-show_armada_cargo = true
-show_hostile_cargo = true
 show_player_cargo = false
 show_station_cargo = true
+show_hostile_cargo = true
+show_armada_cargo = true
 
 # Stay in non-restricted bundles after collecting
 stay_in_bundle_after_summary = true
@@ -166,6 +166,9 @@ action_primary = 'SPACE'
 
 # Recall ship action
 action_recall = 'R'
+
+# Repair ship action
+action_repair = 'R'
 
 # Secondary actions such as Scan
 action_secondary = 'R'
@@ -286,12 +289,19 @@ ui_scaledown = 'PGDOWN'
 # Scale the UI up (expand the HUD)
 ui_scaleup = 'PGUP'
 
-# Set zoom to Presets
+# Adjust zoom to Presets
 zoom_preset1 = 'F1'
 zoom_preset2 = 'F2'
 zoom_preset3 = 'F3'
 zoom_preset4 = 'F4'
 zoom_preset5 = 'F5'
+
+# Set zoom presets from zoom for current session
+set_zoom_preset1 = 'SHIFT-F1'
+set_zoom_preset2 = 'SHIFT-F2'
+set_zoom_preset3 = 'SHIFT-F3'
+set_zoom_preset4 = 'SHIFT-F4'
+set_zoom_preset5 = 'SHIFT-F5'
 
 # Zoom in/out
 zoom_in = 'Q'
@@ -300,4 +310,9 @@ zoom_max = 'MINUS'
 zoom_min = 'BACKSPACE'
 zoom_reset = '='
 
-
+# Toggle cargo options for current session
+toggle_cargo_default = 'ALT-1'
+toggle_cargo_player = 'ALT-2'
+toggle_cargo_station = 'ALT-3'
+toggle_cargo_hostile = 'ALT-4'
+toggle_cargo_armada = 'ALT-5'

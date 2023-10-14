@@ -43,10 +43,10 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
       il2cpp_resolve_icall<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
 
-  const auto is_in_chat          = Hub::IsInChat();
+  const auto is_in_chat = Hub::IsInChat();
 
   const auto dt        = GetDeltaTime();
-  auto       zoomDelta = Config::Get().keyboard_zoom_speed * dt;
+  auto       zoomDelta = 0.0f;
 
   if (is_in_chat) {
     return original(_this);
@@ -65,28 +65,28 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
       zoomDelta = Config::Get().system_zoom_preset_4;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset5)) {
       zoomDelta = Config::Get().system_zoom_preset_5;
-    } else {
-      do_absolute_zoom = false;
     }
 
     if (Config::Get().hotkeys_extended) {
       if (MapKey::IsDown(GameFunction::ZoomReset)) {
-        do_default_zoom = true;
+        do_absolute_zoom = false;
+        do_default_zoom  = true;
       } else if (MapKey::IsDown(GameFunction::ZoomMin)) {
-        zoomDelta        = Config::Get().zoom;
-        do_absolute_zoom = true;
+        zoomDelta = Config::Get().zoom;
       } else if (MapKey::IsDown(GameFunction::ZoomMax)) {
-        zoomDelta        = 100;
-        do_absolute_zoom = true;
+        zoomDelta = 100;
       }
     }
 
     if (do_default_zoom) {
-      if (Config::Get().default_system_zoom > 0.0f) {
-        do_absolute_zoom = true;
-        zoomDelta        = Config::Get().default_system_zoom;
-      }
-      do_default_zoom = false;
+      do_default_zoom  = false;
+      do_absolute_zoom = true;
+      zoomDelta        = Config::Get().default_system_zoom;
+    }
+
+    if (zoomDelta == 0.0f) {
+      do_absolute_zoom = false;
+      zoomDelta        = Config::Get().keyboard_zoom_speed * dt;
     }
 
     if (MapKey::IsPressed(GameFunction::ZoomIn) || do_absolute_zoom) {
@@ -112,12 +112,27 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
       auto worldPos         = GetMouseWorldPos(_this->_sceneCamera, &mousePos);
       _this->_worldPoint    = worldPos;
       _this->ZoomCameraAtWorldPoint();
-    } else {
-      original(_this);
     }
-  } else {
-    original(_this);
+
+    auto zoom_calc = (_this->Distance - _this->_minimum) / (_this->_maximum - _this->_minimum) / Config::Get().zoom;
+    if (MapKey::IsDown(GameFunction::SetZoomPreset1)) {
+      auto config                 = &Config::Get();
+      config->system_zoom_preset_1 = zoom_calc;
+    } else if (MapKey::IsDown(GameFunction::SetZoomPreset2)) {
+      auto config                 = &Config::Get();
+      config->system_zoom_preset_2 = zoom_calc;
+    } else if (MapKey::IsDown(GameFunction::SetZoomPreset3)) {
+      auto config                 = &Config::Get();
+      config->system_zoom_preset_3 = zoom_calc;
+    } else if (MapKey::IsDown(GameFunction::SetZoomPreset4)) {
+      auto config                 = &Config::Get();
+      config->system_zoom_preset_4 = zoom_calc;
+    } else if (MapKey::IsDown(GameFunction::SetZoomPreset5)) {
+      auto config                 = &Config::Get();
+      config->system_zoom_preset_5 = zoom_calc;
+    }
   }
+  original(_this);
 }
 
 void NavigationZoom_SetViewParameters_Hook(auto original, NavigationZoom *_this, float radius, NodeDepth depth)

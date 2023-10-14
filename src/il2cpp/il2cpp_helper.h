@@ -179,6 +179,24 @@ public:
     return (T*)fn->methodPointer;
   }
 
+  template <typename T = void> T* GetVirtualMethod(const char* name, int arg_count = -1)
+  {
+    if (!this->cls) {
+      return nullptr;
+    }
+
+    static auto il2cpp_class_get_method_from_name = (il2cpp_class_get_method_from_name_t)(GetProcAddress(
+        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_method_from_name")));
+    static auto il2cpp_object_get_virtual_method  = (il2cpp_object_get_virtual_method_t)(GetProcAddress(
+        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_get_virtual_method")));
+
+    auto fn = il2cpp_class_get_method_from_name(this->cls, name, arg_count);
+
+    auto get_method_virtual = il2cpp_object_get_virtual_method((Il2CppObject*)this, fn);
+
+    return (T*)get_method_virtual->methodPointer;
+  }
+
   template <typename R, typename... Args> class InvokerMethod
   {
 

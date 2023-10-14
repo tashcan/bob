@@ -32,6 +32,7 @@ enum GameFunction {
   ShowDaily,
   ShowAwayTeam,
   ShowMissions,
+  ShowResearch,
   ShowShips,
   ShowInventory,
   ShowStationInterior,
@@ -58,6 +59,17 @@ enum GameFunction {
   ActionSecondary,
   ActionView,
   ActionRecall,
+  ActionRepair,
+  SetZoomPreset1,
+  SetZoomPreset2,
+  SetZoomPreset3,
+  SetZoomPreset4,
+  SetZoomPreset5,
+  ToggleCargoDefault,
+  ToggleCargoPlayer,
+  ToggleCargoStation,
+  ToggleCargoHostile,
+  ToggleCargoArmada,
 
   // Automatic max value
   Max

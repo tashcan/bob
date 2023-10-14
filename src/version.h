@@ -4,7 +4,7 @@
 #define VERSION_MAJOR               0
 #define VERSION_MINOR               5
 #define VERSION_REVISION            3
-#define VERSION_PATCH               2
+#define VERSION_PATCH               3
 
 // https://assets.stfc.space/mods/community-patch/0.3.13.test.1/version.dll
 

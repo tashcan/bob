@@ -165,11 +165,6 @@ const std::unordered_map<std::string, KeyCode> Key::mappedKeys = {
     {"KEYPLUS", KeyCode::KeypadPlus},
 };
 
-Key::Key()
-{
-  // Map();
-}
-
 KeyCode Key::Parse(std::string_view key)
 {
   auto wantedKey = absl::AsciiStrToUpper(key);

@@ -7,24 +7,23 @@
 #include <prime/KeyCode.h>
 #include <string>
 
-class ModifierKey
+struct ModifierKey
 {
 public:
   ModifierKey();
 
-private:
-  bool hasModifier;
-
-public:
-  static ModifierKey* Parse(std::string_view key);
+  static ModifierKey Parse(std::string_view key);
 
   void AddModifier(std::string_view shortcut, KeyCode modifier1, KeyCode modifier2);
   bool Contains(KeyCode modifier);
   bool IsPressed();
   bool IsDown();
+  bool HasModifiers();
 
   std::string GetParsedValues();
 
+private:
   std::vector<KeyCode>     Modifiers;
   std::vector<std::string> Shortcuts;
+  bool                     hasModifier;
 };

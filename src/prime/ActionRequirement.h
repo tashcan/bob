@@ -7,6 +7,12 @@ template <typename Y> struct ActionRequirement {
 public:
   __declspec(property(get = __get_IsMet)) bool IsMet;
 
+  bool CheckIsMet()
+  {
+    static auto CheckIsMetMethod = get_class_helper().GetVirtualMethod<bool(ActionRequirement*)>("CheckIsMet");
+    return CheckIsMetMethod(this);
+  }
+
 private:
   static IL2CppClassHelper& get_class_helper()
   {

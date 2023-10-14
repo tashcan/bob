@@ -2,6 +2,7 @@
 
 #include "BattleTargetData.h"
 #include "RecallRequirement.h"
+#include "CanRepairRequirement.h"
 
 #include <cstdint>
 
@@ -36,6 +37,7 @@ public:
   __declspec(property(get = __get_Hull)) HullSpec* Hull;
   __declspec(property(get = __get_Address)) void* Address;
   __declspec(property(get = __get_RecallRequirements)) RecallRequirement* RecallRequirements;
+  __declspec(property(get = __get_CanRepairRequirement)) CanRepairRequirement* CanRepairRequirements;
 
 private:
   static IL2CppClassHelper& get_class_helper()
@@ -66,6 +68,13 @@ public:
     static auto field = get_class_helper().GetProperty("PreviousState");
     return *field.Get<FleetState>(this);
   }
+  
+  CanRepairRequirement* __get_CanRepairRequirement()
+  {
+    static auto field = get_class_helper().GetProperty("CanRepairRequirement");
+    return field.GetRaw<CanRepairRequirement>(this);
+  }
+
 
   RecallRequirement* __get_RecallRequirements()
   {

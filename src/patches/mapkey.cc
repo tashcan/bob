@@ -10,6 +10,7 @@
 #include <mapkey.h>
 #include <modifierkey.h>
 #include <prime/TMP_InputField.h>
+#include <stdio.h>
 #include <string>
 #include <string_view>
 
@@ -27,7 +28,7 @@ MapKey MapKey::Parse(std::string_view key)
   auto mapKey = new MapKey();
   for (std::string_view wantedKey : wantedKeys) {
     auto modifier = ModifierKey::Parse(wantedKey);
-    if (modifier) {
+    if (modifier.HasModifiers()) {
       mapKey->hasModifiers = true;
       mapKey->Modifiers.emplace_back(modifier);
       mapKey->Shortcuts.emplace_back(wantedKey);
@@ -43,6 +44,12 @@ MapKey MapKey::Parse(std::string_view key)
         mapKey->Shortcuts.emplace_back(wantedKey);
       }
     }
+
+#ifndef NDEBUG
+    if (mapKey->Key == KeyCode::X) {
+      std::cout << "\n\n----------\nX key:\n" << mapKey << "\n----------\n\n";
+    }
+#endif
   }
 
   return *mapKey;
@@ -80,18 +87,27 @@ bool MapKey::IsDown(GameFunction gameFunction)
 
 bool MapKey::HasCorrectModifiers(MapKey mapKey)
 {
-  auto result = false;
+  auto        result  = false;
+  std::string section = "non set";
   if (!mapKey.hasModifiers) {
-    result = !Key::IsModified();
+    section = "no modifiers";
+    result  = !Key::IsModified();
   } else {
     result = true;
     for (ModifierKey modifier : mapKey.Modifiers) {
       if (!modifier.IsPressed()) {
-        result = false;
+        section = modifier.GetParsedValues();
+        result  = false;
         break;
       }
     }
   }
+
+#ifndef NDEBUG
+  if (mapKey.Key == KeyCode::X && Key::Pressed(KeyCode::X)) {
+    std::cout << "HasCorrectModifiers(" << mapKey.GetParsedValues() << "): [" << section << "] " << result << "\n";
+  }
+#endif
 
   return result;
 }

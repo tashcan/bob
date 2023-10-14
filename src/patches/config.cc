@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 #include <string_view>
-#include <toml++/toml.h>
 
 #include <spdlog/spdlog.h>
 
@@ -41,6 +40,30 @@ std::map<std::string, int> bannerTypes{
 Config::Config()
 {
   Load();
+}
+
+void Config::Save(toml::table config, std::string_view filename, bool apply_warning)
+{
+  std::ofstream config_file;
+  config_file.open(filename);
+  if (apply_warning) {
+    char buff[44];
+    snprintf(buff, 44, "%-44s", CONFIG_FILE_DEFAULT);
+
+    config_file << "#######################################################################\n";
+    config_file << "#######################################################################\n";
+    config_file << "####                                                               ####\n";
+    config_file << "#### NOTE: This file is not the configuration file that is used    ####\n";
+    config_file << "####       by the STFC community patch.  It is provided to help    ####\n";
+    config_file << "####       see what configuration is being used by the runtime     ####\n";
+    config_file << "####       and any desired settings should be copied to the same   ####\n";
+    config_file << "####       section in: " << buff << " ####\n";
+    config_file << "####                                                               ####\n";
+    config_file << "#######################################################################\n";
+    config_file << "#######################################################################\n\n";
+  }
+  config_file << config;
+  config_file.close();
 }
 
 Config& Config::Get()
@@ -257,6 +280,7 @@ void Config::Load()
   parse_config_shortcut(config, parsed, "action_secondary", GameFunction::ActionSecondary, "R");
   parse_config_shortcut(config, parsed, "action_view", GameFunction::ActionView, "V");
   parse_config_shortcut(config, parsed, "action_recall", GameFunction::ActionRecall, "R");
+  parse_config_shortcut(config, parsed, "action_repair", GameFunction::ActionRepair, "R");
   parse_config_shortcut(config, parsed, "show_chat", GameFunction::ShowChat, "C");
   parse_config_shortcut(config, parsed, "show_chatside1", GameFunction::ShowChatSide1, "ALT-C");
   parse_config_shortcut(config, parsed, "show_chatside2", GameFunction::ShowChatSide2, "`");
@@ -285,37 +309,43 @@ void Config::Load()
     parse_config_shortcut(config, parsed, "show_factions", GameFunction::ShowFactions, "F");
     parse_config_shortcut(config, parsed, "show_inventory", GameFunction::ShowInventory, "I");
     parse_config_shortcut(config, parsed, "show_missions", GameFunction::ShowMissions, "M");
+    parse_config_shortcut(config, parsed, "show_research", GameFunction::ShowResearch, "U");
     parse_config_shortcut(config, parsed, "show_officers", GameFunction::ShowOfficers, "SHIFT-O");
     parse_config_shortcut(config, parsed, "show_qtrials", GameFunction::ShowQTrials, "SHIFT-Q");
     parse_config_shortcut(config, parsed, "show_refinery", GameFunction::ShowRefinery, "SHIFT-F");
+    parse_config_shortcut(config, parsed, "show_ships", GameFunction::ShowShips, "N");
     parse_config_shortcut(config, parsed, "show_stationexterior", GameFunction::ShoWStationExterior, "SHIFT-G");
     parse_config_shortcut(config, parsed, "show_stationinterior", GameFunction::ShowStationInterior, "SHIFT-H");
-    parse_config_shortcut(config, parsed, "show_ships", GameFunction::ShowShips, "N");
+    parse_config_shortcut(config, parsed, "set_zoom_preset1", GameFunction::SetZoomPreset1, "SHIFT-F1");
+    parse_config_shortcut(config, parsed, "set_zoom_preset2", GameFunction::SetZoomPreset2, "SHIFT-F2");
+    parse_config_shortcut(config, parsed, "set_zoom_preset3", GameFunction::SetZoomPreset3, "SHIFT-F3");
+    parse_config_shortcut(config, parsed, "set_zoom_preset4", GameFunction::SetZoomPreset4, "SHIFT-F4");
+    parse_config_shortcut(config, parsed, "set_zoom_preset5", GameFunction::SetZoomPreset5, "SHIFT-F5");
+    parse_config_shortcut(config, parsed, "toggle_cargo_default", GameFunction::ToggleCargoDefault, "ALT-1");
+    parse_config_shortcut(config, parsed, "toggle_cargo_player", GameFunction::ToggleCargoPlayer, "ALT-2");
+    parse_config_shortcut(config, parsed, "toggle_cargo_station", GameFunction::ToggleCargoStation, "ALT-3");
+    parse_config_shortcut(config, parsed, "toggle_cargo_hostile", GameFunction::ToggleCargoHostile, "ALT-4");
+    parse_config_shortcut(config, parsed, "toggle_cargo_armada", GameFunction::ToggleCargoArmada, "ALT-5");
   }
 
-  if (!std::filesystem::exists("community_patch_settings.toml")) {
+  if (!std::filesystem::exists(CONFIG_FILE_DEFAULT)) {
     message.str("");
-    message << "Creating new config file";
+    message << "Creating " << CONFIG_FILE_DEFAULT << " (default config file)";
     spdlog::warn(message.str());
 
-    std::ofstream config_file;
-    config_file.open("community_patch_settings.toml");
-    config_file << parsed;
-    config_file.close();
+    Config::Save(config, CONFIG_FILE_DEFAULT, false);
   }
 
   message.str("");
-  message << "Creating paresd config file";
+  message << "Creating " << CONFIG_FILE_RUNTIME << " (final config file)";
   spdlog::info(message.str());
 
-  if (std::filesystem::exists("community_patch_settings_parsed.toml")) {
-    std::filesystem::remove("community_patch_settings_parsed.toml");
+  if (std::filesystem::exists(CONFIG_FILE_PARSED)) {
+    message << "Removing " << CONFIG_FILE_PARSED << " (old parsed file)";
+    std::filesystem::remove(CONFIG_FILE_PARSED);
   }
 
-  std::ofstream config_file;
-  config_file.open("community_patch_runtime.vars");
-  config_file << parsed;
-  config_file.close();
+  Config::Save(parsed, CONFIG_FILE_RUNTIME);
 
-  std::cout << "Running config: \n" << parsed << "\n\n";
+  std::cout << message.str() << ":\n-----------------------------\n\n" << parsed << "\n\n-----------------------------\n";
 }

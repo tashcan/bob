@@ -18,8 +18,6 @@ private:
   static std::array<int, (int)KeyCode::Max> cacheKeyDown;
 
 public:
-  Key();
-
   static void    ClearInputFocus();
   static void    ResetCache();
   static KeyCode Parse(std::string_view key);

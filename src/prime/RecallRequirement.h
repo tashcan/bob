@@ -12,7 +12,7 @@ public:
 private:
   static IL2CppClassHelper& get_class_helper()
   {
-    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Bookmarks", "RecallRequirement");
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.PrimeServer.Models", "FleetPlayerData.RecallRequirement");
     return class_helper;
   }
 };

@@ -9,43 +9,48 @@
 #include <string>
 #include <string_view>
 
-ModifierKey::ModifierKey() {}
+bool hasModifier = false;
 
-ModifierKey* ModifierKey::Parse(std::string_view key)
+bool ModifierKey::HasModifiers() {
+  return this->hasModifier;
+}
+
+ModifierKey::ModifierKey()
+{
+  this->hasModifier = false;
+}
+
+ModifierKey ModifierKey::Parse(std::string_view key)
 {
   auto strippedKey = absl::StripTrailingAsciiWhitespace(key);
   auto upperKey    = absl::AsciiStrToUpper(strippedKey);
   auto wantedKeys  = absl::StrSplit(upperKey, "-", absl::SkipWhitespace());
 
-  auto modifierKey = new ModifierKey();
+  ModifierKey modifierKey;
   for (std::string_view wantedKey : wantedKeys) {
     if (wantedKey == "SHIFT") {
-      modifierKey->AddModifier(wantedKey, KeyCode::LeftShift, KeyCode::RightShift);
+      modifierKey.AddModifier(wantedKey, KeyCode::LeftShift, KeyCode::RightShift);
     } else if (wantedKey == "ALT") {
-      modifierKey->AddModifier(wantedKey, KeyCode::LeftAlt, KeyCode::RightAlt);
+      modifierKey.AddModifier(wantedKey, KeyCode::LeftAlt, KeyCode::RightAlt);
     } else if (wantedKey == "CTRL") {
-      modifierKey->AddModifier(wantedKey, KeyCode::LeftControl, KeyCode::RightControl);
+      modifierKey.AddModifier(wantedKey, KeyCode::LeftControl, KeyCode::RightControl);
     } else if (wantedKey == "APPLE") {
-      modifierKey->AddModifier(wantedKey, KeyCode::LeftApple, KeyCode::RightApple);
+      modifierKey.AddModifier(wantedKey, KeyCode::LeftApple, KeyCode::RightApple);
     } else if (wantedKey == "CMD") {
-      modifierKey->AddModifier(wantedKey, KeyCode::LeftCommand, KeyCode::RightCommand);
+      modifierKey.AddModifier(wantedKey, KeyCode::LeftCommand, KeyCode::RightCommand);
     } else if (wantedKey == "WIN") {
-      modifierKey->AddModifier(wantedKey, KeyCode::LeftWindows, KeyCode::RightWindows);
+      modifierKey.AddModifier(wantedKey, KeyCode::LeftWindows, KeyCode::RightWindows);
     } else {
       auto parsedKey = Key::Parse(wantedKey);
 
       if (Key::IsModifier(parsedKey)) {
-        modifierKey->AddModifier(wantedKey, parsedKey, KeyCode::None);
+        modifierKey.AddModifier(wantedKey, parsedKey, KeyCode::None);
       }
     }
   }
 
-  if (!modifierKey->Modifiers.empty()) {
-    return modifierKey;
-  }
-
-  return nullptr;
-}
+  return modifierKey;
+ }
 
 bool ModifierKey::Contains(KeyCode modifier)
 {
@@ -111,5 +116,3 @@ std::string ModifierKey::GetParsedValues()
 
   return output;
 }
-
-bool MhasModifier = false;

@@ -5,10 +5,17 @@
 - Add customisable hotkeys
 - Prevent ship 'locate' functionality when viewing nodes
 - Add manage ship key ('N')
+- Add repair ship key ('R')
+- Add show resarch key ('U')
 - Add example configuration file
-- Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
+- Adjust runtime configuration output:
+	- Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
+	- Add a massive comment to top of community_patch_runtimes.vars
 - Add ui_scale_adjust to allow changes to "step" between ui_scale's
 - Make ui_scaleup/ui_scaldown operate like zoom and can now be held
+- Add session-based adjustments that last until game is restarted:
+	- Add toggle cargo views (ALT 1-5)
+	- Add set zoom preset (SHIFT F1-F5) 
 
 ## 0.5.2
 

@@ -3,6 +3,7 @@
 
 #include <spud/detour.h>
 
+#include "prime/ActionRequirement.h"
 #include "prime/AllianceStarbaseObjectViewerWidget.h"
 #include "prime/AnimatedRewardsScreenViewController.h"
 #include "prime/ArmadaObjectViewerWidget.h"
@@ -45,7 +46,8 @@ bool force_space_action_next_frame = false;
 
 void     ChangeNavigationSection(SectionID sectionID);
 void     ExecuteSpaceAction(FleetBarViewController* fleet_bar);
-void     ExecuteRecall(FleetBarViewController* fleet_bar);
+bool     DidExecuteRecall(FleetBarViewController* fleet_bar);
+bool     DidExecuteRepair(FleetBarViewController* fleet_bar);
 HullType GetHullTypeFromBattleTarget(BattleTargetData* context);
 void     GotoSection(SectionID sectionID, void* screen_data = nullptr);
 bool     CanHideViewers();
@@ -64,6 +66,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
 
   const auto is_in_chat = Hub::IsInChat();
+  const auto config     = &Config::Get();
 
   int32_t ship_select_request = -1;
   if (MapKey::IsDown(GameFunction::SelectShip1)) {
@@ -173,6 +176,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         return GotoSection(SectionID::InventoryList);
       } else if (MapKey::IsDown(GameFunction::ShowMissions)) {
         return GotoSection(SectionID::Missions_AcceptedList);
+      } else if (MapKey::IsDown(GameFunction::ShowResearch)) {
+        return GotoSection(SectionID::Research_LandingPage);
       } else if (MapKey::IsDown(GameFunction::ShowOfficers)) {
         return GotoSection(SectionID::OfficerInventory);
       } else if (MapKey::IsDown(GameFunction::ShowCommander)) {
@@ -188,15 +193,23 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       } else if (MapKey::IsDown(GameFunction::ShowDaily)) {
         return GotoSection(SectionID::Missions_DailyGoals);
       } else if (MapKey::IsPressed(GameFunction::UiScaleUp)) {
-        auto& config    = Config::Get();
-        auto  old_scale = config.ui_scale;
-        config.ui_scale -= config.ui_scale_adjust;
-        spdlog::info("UI has ben scaled up, was {}, now {}", old_scale, config.ui_scale);
+        auto old_scale = config->ui_scale;
+        config->ui_scale -= config->ui_scale_adjust;
+        spdlog::info("UI has ben scaled up, was {}, now {}", old_scale, config->ui_scale);
       } else if (MapKey::IsPressed(GameFunction::UiScaleDown)) {
-        auto& config    = Config::Get();
-        auto  old_scale = config.ui_scale;
-        config.ui_scale += config.ui_scale_adjust;
-        spdlog::info("UI has been scaled down, was {}, now {}", old_scale, config.ui_scale);
+        auto old_scale = config->ui_scale;
+        config->ui_scale += config->ui_scale_adjust;
+        spdlog::info("UI has been scaled down, was {}, now {}", old_scale, config->ui_scale);
+      } else if (MapKey::IsDown(GameFunction::ToggleCargoDefault)) {
+        config->show_cargo_default = !config->show_cargo_default;
+      } else if (MapKey::IsDown(GameFunction::ToggleCargoPlayer)) {
+        config->show_player_cargo = !config->show_player_cargo;
+      } else if (MapKey::IsDown(GameFunction::ToggleCargoStation)) {
+        config->show_station_cargo = !config->show_station_cargo;
+      } else if (MapKey::IsDown(GameFunction::ToggleCargoHostile)) {
+        config->show_hostile_cargo = !config->show_hostile_cargo;
+      } else if (MapKey::IsDown(GameFunction::ToggleCargoArmada)) {
+        config->show_armada_cargo = !config->show_armada_cargo;
       } else if (MapKey::IsDown(GameFunction::ShowShips)) {
         auto fleet_bar        = ObjectFinder<FleetBarViewController>::Get();
         auto fleet_controller = fleet_bar->_fleetPanelController;
@@ -242,7 +255,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     }
 
     if (MapKey::IsDown(GameFunction::ActionPrimary) || MapKey::IsDown(GameFunction::ActionSecondary)
-        || MapKey::IsDown(GameFunction::ActionRecall) || force_space_action_next_frame) {
+        || MapKey::IsDown(GameFunction::ActionRecall) || MapKey::IsDown(GameFunction::ActionRepair)
+        || force_space_action_next_frame) {
       if (Hub::IsInSystemOrGalaxyOrStarbase() && !Hub::IsInChat() && !Key::IsInputFocused()) {
         auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
         if (fleet_bar) {
@@ -366,27 +380,69 @@ void ChangeNavigationSection(SectionID sectionID)
   }
 }
 
-void ExecuteRecall(FleetBarViewController* fleet_bar)
+#define FleetAction_Format "Fleet {} ({}) #{} - State: {}, previous {} - canAction {}, canState {} - didAction: {}"
+
+template <typename T>
+inline bool DidExecuteFleetAction(std::string_view actionText, ActionType actionType, FleetBarViewController* fleet_bar,
+                                  ActionRequirement<T>* actionRequired, std::vector<FleetState> wantedStates)
 {
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_bar->_fleetPanelController->fleet;
   auto fleet_state      = fleet->CurrentState;
 
-  auto fleet_id     = fleet->Id;
-  auto prev_state   = fleet->PreviousState;
-  auto recall_reqs  = fleet->RecallRequirements;
-  auto recall_ismet = recall_reqs->IsMet;
+  auto fleet_id   = fleet->Id;
+  auto prev_state = fleet->PreviousState;
+  auto canAction  = true; // actionRequired->CheckIsMet();
+  auto canState   = 0;
+  auto didAction  = false;
 
-  spdlog::info("Recall fleet {} previous {} current {}, ismet {}.", (int)fleet_id, (int)prev_state, (int)fleet_state,
-               recall_ismet);
+#ifndef NDEBUG
+  spdlog::info(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
+               canAction, (int)canState, "[start]");
+#endif
 
-  if (fleet_state == FleetState::IdleInSpace || fleet_state == FleetState::Impulsing
-      || fleet_state == FleetState::Mining) {
+  for (auto state : wantedStates) {
+    if (fleet_state == state) {
+      canState = (int)fleet_state;
+      break;
+    }
+  }
+
+  if (canState && canAction) {
     if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
       NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
     }
-    fleet_controller->RequestAction(fleet, ActionType::Recall, 0, ActionBehaviour::Default);
+    didAction = fleet_controller->RequestAction(fleet, actionType, 0, ActionBehaviour::Default);
   }
+
+#ifndef NDEBUG
+  spdlog::info(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
+               canAction, (int)canState, didAction);
+#endif
+
+  return didAction;
+}
+
+bool DidExecuteRecall(FleetBarViewController* fleet_bar)
+{
+  static std::vector<FleetState> states = {{FleetState::IdleInSpace, FleetState::Impulsing, FleetState::Mining}};
+
+  auto fleet_controller = fleet_bar->_fleetPanelController;
+  auto fleet            = fleet_bar->_fleetPanelController->fleet;
+  auto fleet_reqs       = fleet->RecallRequirements;
+
+  return DidExecuteFleetAction<RecallRequirement>("Recall", ActionType::Recall, fleet_bar, fleet_reqs, states);
+}
+
+bool DidExecuteRepair(FleetBarViewController* fleet_bar)
+{
+  static std::vector<FleetState> states = {{FleetState::Docked, FleetState::Destroyed}};
+
+  auto fleet_controller = fleet_bar->_fleetPanelController;
+  auto fleet            = fleet_bar->_fleetPanelController->fleet;
+  auto fleet_reqs       = fleet->CanRepairRequirements;
+
+  return DidExecuteFleetAction<CanRepairRequirement>("Repair", ActionType::Repair, fleet_bar, fleet_reqs, states);
 }
 
 void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
@@ -394,6 +450,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
   auto has_primary   = MapKey::IsDown(GameFunction::ActionPrimary) || force_space_action_next_frame;
   auto has_secondary = MapKey::IsDown(GameFunction::ActionSecondary);
   auto has_recall    = MapKey::IsDown(GameFunction::ActionRecall);
+  auto has_repair    = MapKey::IsDown(GameFunction::ActionRepair);
 
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_controller->fleet;
@@ -463,26 +520,22 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
         star_node_object_viewer_widget->InitiateWarp();
       }
     } else if (auto navigation_ui_controller = ObjectFinder<NavigationInteractionUIViewController>::Get();
-               navigation_ui_controller) {
-      if (has_recall) {
-        spdlog::info("ExecuteRecall() #1");
-        return ExecuteRecall(fleet_bar);
-      } else if (has_primary) {
-        if (auto armada_object_viewer_widget = ObjectFinder<ArmadaObjectViewerWidget>::Get();
-            armada_object_viewer_widget
-            && (armada_object_viewer_widget->_visibilityController->_state == VisibilityState::Visible
-                || armada_object_viewer_widget->_visibilityController->_state == VisibilityState::Show)) {
-          auto button = armada_object_viewer_widget->__get__joinContext();
-          if (button && button->Interactable) {
-            armada_object_viewer_widget->ValidateThenJoinArmada();
-          }
-        } else {
-          navigation_ui_controller->OnSetCourseButtonClick();
+               navigation_ui_controller && has_primary) {
+      if (auto armada_object_viewer_widget = ObjectFinder<ArmadaObjectViewerWidget>::Get();
+          armada_object_viewer_widget
+          && (armada_object_viewer_widget->_visibilityController->_state == VisibilityState::Visible
+              || armada_object_viewer_widget->_visibilityController->_state == VisibilityState::Show)) {
+        auto button = armada_object_viewer_widget->__get__joinContext();
+        if (button && button->Interactable) {
+          armada_object_viewer_widget->ValidateThenJoinArmada();
         }
+      } else {
+        navigation_ui_controller->OnSetCourseButtonClick();
       }
-    } else if (has_recall) {
-      spdlog::info("ExecuteRecall() #2");
-      return ExecuteRecall(fleet_bar);
+    } else if (has_recall && DidExecuteRecall(fleet_bar)) {
+      return;
+    } else if (has_repair && DidExecuteRepair(fleet_bar)) {
+      return;
     }
   }
 }
