@@ -104,7 +104,7 @@ bool MapKey::HasCorrectModifiers(MapKey mapKey)
   }
 
 #ifndef NDEBUG
-  if (mapKey.Key == KeyCode::X && Key::Pressed(KeyCode::X)) {
+  if (mapKey.Key == KeyCode::Backslash && Key::Pressed(KeyCode::Backslash)) {
     std::cout << "HasCorrectModifiers(" << mapKey.GetParsedValues() << "): [" << section << "] " << result << "\n";
   }
 #endif

@@ -9,7 +9,7 @@
 #define CONFIG_FILE_RUNTIME "community_patch_runtime.vars"
 #define CONFIG_FILE_PARSED "community_patch_settings_parsed.toml"
 
- class Config
+class Config
 {
 public:
   Config();
@@ -17,7 +17,7 @@ public:
   static Config& Get();
 
   static void Save(toml::table config, std::string_view filename, bool apply_warning = true);
-  void Load();
+  void        Load();
 
 public:
   float ui_scale;

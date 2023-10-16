@@ -301,6 +301,10 @@ void Config::Load()
 
   if (this->hotkeys_extended) {
     parse_config_shortcut(config, parsed, "show_awayteam", GameFunction::ShowAwayTeam, "SHIFT-T");
+    parse_config_shortcut(config, parsed, "show_gifts", GameFunction::ShowGifts, "\\");
+    parse_config_shortcut(config, parsed, "show_alliance", GameFunction::ShowAlliance, "SHIFT-\\");
+    parse_config_shortcut(config, parsed, "show_alliance_help", GameFunction::ShowAllianceHelp, "ALT-\\");
+    parse_config_shortcut(config, parsed, "show_alliance_help", GameFunction::ShowAllianceArmada, "CTRL-\\");
     parse_config_shortcut(config, parsed, "show_bookmarks", GameFunction::ShowBookmarks, "B");
     parse_config_shortcut(config, parsed, "show_commander", GameFunction::ShowCommander, "O");
     parse_config_shortcut(config, parsed, "show_daily", GameFunction::ShowDaily, "Z");

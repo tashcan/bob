@@ -192,6 +192,14 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         return GotoSection(SectionID::Consumables);
       } else if (MapKey::IsDown(GameFunction::ShowDaily)) {
         return GotoSection(SectionID::Missions_DailyGoals);
+      } else if (MapKey::IsDown(GameFunction::ShowGifts)) {
+        return GotoSection(SectionID::Shop_List);
+      } else if (MapKey::IsDown(GameFunction::ShowAlliance)) {
+        return GotoSection(SectionID::Alliance_Main);
+      } else if (MapKey::IsDown(GameFunction::ShowAllianceHelp)) {
+        return GotoSection(SectionID::Alliance_Help);
+      } else if (MapKey::IsDown(GameFunction::ShowAllianceArmada)) {
+        return GotoSection(SectionID::Alliance_Armadas);
       } else if (MapKey::IsPressed(GameFunction::UiScaleUp)) {
         auto old_scale = config->ui_scale;
         config->ui_scale -= config->ui_scale_adjust;
