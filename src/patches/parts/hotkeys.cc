@@ -218,6 +218,18 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         config->show_hostile_cargo = !config->show_hostile_cargo;
       } else if (MapKey::IsDown(GameFunction::ToggleCargoArmada)) {
         config->show_armada_cargo = !config->show_armada_cargo;
+      } else if (MapKey::IsDown(GameFunction::LogLevelInfo)) {
+        spdlog::set_level(spdlog::level::info);
+        spdlog::flush_on(spdlog::level::info);
+        spdlog::warn("Setting log level to INFO");
+      } else if (MapKey::IsDown(GameFunction::LogLevelDebug)) {
+        spdlog::set_level(spdlog::level::debug);
+        spdlog::flush_on(spdlog::level::debug);
+        spdlog::warn("Setting log level to DEBUG");
+      } else if (MapKey::IsDown(GameFunction::LogLevelTrace)) {
+        spdlog::set_level(spdlog::level::trace);
+        spdlog::flush_on(spdlog::level::trace);
+        spdlog::warn("Setting log level to TRACE");
       } else if (MapKey::IsDown(GameFunction::ShowShips)) {
         auto fleet_bar        = ObjectFinder<FleetBarViewController>::Get();
         auto fleet_controller = fleet_bar->_fleetPanelController;
@@ -404,10 +416,8 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
   auto canState   = 0;
   auto didAction  = false;
 
-#ifndef NDEBUG
-  spdlog::info(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
+  spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
                canAction, (int)canState, "[start]");
-#endif
 
   for (auto state : wantedStates) {
     if (fleet_state == state) {
@@ -423,10 +433,8 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
     didAction = fleet_controller->RequestAction(fleet, actionType, 0, ActionBehaviour::Default);
   }
 
-#ifndef NDEBUG
-  spdlog::info(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
+  spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
                canAction, (int)canState, didAction);
-#endif
 
   return didAction;
 }

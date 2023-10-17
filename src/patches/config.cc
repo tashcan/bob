@@ -108,7 +108,15 @@ inline T get_config_or_default(toml::table config, toml::table& new_config, std:
   new_config.emplace<toml::table>(section, toml::table());
 
   auto sectionTable = new_config[section];
-  auto final_value  = config[section][item].value_or(default_value);
+  T    final_value  = default_value;
+
+  try {
+    auto parsed_value = (T)config[section][item].value_or(default_value);
+    final_value       = parsed_value;
+  } catch (...) {
+    spdlog::warn("invalid config value {}.{}", section, item);
+  }
+
   sectionTable.as_table()->insert_or_assign(item, final_value);
 
   spdlog::info("config value {}.{} value: {}", section, item, final_value);
@@ -298,6 +306,9 @@ void Config::Load()
   parse_config_shortcut(config, parsed, "zoom_reset", GameFunction::ZoomReset, "=");
   parse_config_shortcut(config, parsed, "ui_scaleup", GameFunction::UiScaleUp, "PGUP");
   parse_config_shortcut(config, parsed, "ui_scaledown", GameFunction::UiScaleDown, "PGDOWN");
+  parse_config_shortcut(config, parsed, "log_debug", GameFunction::LogLevelDebug, "F9");
+  parse_config_shortcut(config, parsed, "log_trace", GameFunction::LogLevelTrace, "SHIFT-F9");
+  parse_config_shortcut(config, parsed, "log_info", GameFunction::LogLevelInfo, "F11");
 
   if (this->hotkeys_extended) {
     parse_config_shortcut(config, parsed, "show_awayteam", GameFunction::ShowAwayTeam, "SHIFT-T");

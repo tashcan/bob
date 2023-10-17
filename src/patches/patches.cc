@@ -128,8 +128,17 @@ void Patches::Apply()
 
     file_logger->sinks().push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
 
-    spdlog::set_level(spdlog::level::info);
-    spdlog::flush_on(spdlog::level::info);
+#ifndef NDEBUG
+    const auto log_level = spdlog::level::debug;
+    const auto str_level = "DEBUG";
+#else
+    const auto log_level = spdlog::level::info;
+    const auto str_level = "info";
+#endif
+
+    spdlog::set_level(log_level);
+    spdlog::flush_on(log_level);
+    spdlog::warn("Setting log level to {}", str_level);
 
     auto n = GetProcAddress(assembly, "il2cpp_init");
     SPUD_STATIC_DETOUR(n, il2cpp_init_hook);

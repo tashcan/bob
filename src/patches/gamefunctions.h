@@ -74,6 +74,9 @@ enum GameFunction {
   ToggleCargoStation,
   ToggleCargoHostile,
   ToggleCargoArmada,
+  LogLevelDebug,
+  LogLevelInfo,
+  LogLevelTrace,
 
   // Automatic max value
   Max
