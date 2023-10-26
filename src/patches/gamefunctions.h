@@ -69,6 +69,7 @@ enum GameFunction {
   SetZoomPreset3,
   SetZoomPreset4,
   SetZoomPreset5,
+  SetZoomDefault,
   ToggleCargoDefault,
   ToggleCargoPlayer,
   ToggleCargoStation,
