@@ -174,7 +174,6 @@ private:
   }
 };
 
-
 struct SectionManager {
 public:
   __declspec(property(get = __get_CurrentSection)) SectionID CurrentSection;
@@ -232,6 +231,7 @@ struct PrimeApp {
     static auto field = get_class_helper().GetProperty("Services");
     return field.GetRaw<GSServiceRegistry>(this);
   }
+
 private:
   static IL2CppClassHelper& get_class_helper()
   {
@@ -246,10 +246,25 @@ struct Hub {
     static auto field = get_class_helper().GetProperty("SectionManager");
     return field.GetRaw<SectionManager>(nullptr);
   }
+
   static PrimeApp* get_App()
   {
     static auto field = get_class_helper().GetProperty("App");
     return field.GetRaw<PrimeApp>(nullptr);
+  }
+
+  static bool IsInChat()
+  {
+    auto current_section = Hub::get_SectionManager()->CurrentSection;
+    return current_section == SectionID::Chat_Private_Message || current_section == SectionID::Chat_Alliance
+           || current_section == SectionID::Chat_Main || current_section == SectionID::Chat_Private_List;
+  }
+
+  static bool IsInSystemOrGalaxyOrStarbase()
+  {
+    auto current_section = Hub::get_SectionManager()->CurrentSection;
+    return current_section == SectionID::Navigation_Galaxy || current_section == SectionID::Navigation_System
+           || current_section == SectionID::Starbase_Interior || current_section == SectionID::Starbase_Exterior;
   }
 
 private:

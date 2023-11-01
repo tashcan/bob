@@ -3,6 +3,11 @@
 #include <vector>
 
 #include "prime/Toast.h"
+#include <toml++/toml.h>
+
+#define CONFIG_FILE_DEFAULT "community_patch_settings.toml"
+#define CONFIG_FILE_RUNTIME "community_patch_runtime.vars"
+#define CONFIG_FILE_PARSED "community_patch_settings_parsed.toml"
 
 class Config
 {
@@ -11,10 +16,12 @@ public:
 
   static Config& Get();
 
-  void Load();
+  static void Save(toml::table config, std::string_view filename, bool apply_warning = true);
+  void        Load();
 
 public:
   float ui_scale;
+  float ui_scale_adjust;
   float zoom;
   bool  free_resize;
   bool  adjust_scale_res;

@@ -6,7 +6,7 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
-class FleetPlayerData;
+struct FleetPlayerData;
 struct FleetDeployedData;
 class DeploymentService
 {

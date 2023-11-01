@@ -91,6 +91,8 @@ static void                      *curl_multi_init()
 void InstallWebRequestHooks()
 {
   return;
+
+  /*
   if (!Config::Get().fix_unity_web_requests) {
     return;
   }
@@ -106,4 +108,5 @@ void InstallWebRequestHooks()
   auto send_web_request_ptr = il2cpp_resolve_icall<void(UnityWebRequest *)>(
       xorstr_("UnityEngine.Networking.UnityWebRequest::BeginWebRequest()"));
   SPUD_STATIC_DETOUR(send_web_request_ptr, SendWebRequest_Hook);
+  */
 }

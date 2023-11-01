@@ -106,6 +106,8 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
   } catch (winrt::hresult_error const& ex) {
     spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
   }
+
+  return {};
 }
 
 static void send_data(std::string post_data)

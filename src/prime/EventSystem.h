@@ -15,7 +15,7 @@ public:
   void SetSelectedGameObject(void*)
   {
     static auto SetSelectedGameObject = get_class_helper().GetMethodSpecial<void(EventSystem*, void*)>(
-        "SetSelectedGameObject", [](auto count, auto params) {
+        "SetSelectedGameObject", [](auto count, auto /*params*/) {
           if (count == 1) {
             return true;
           }

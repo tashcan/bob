@@ -19,6 +19,7 @@
 
 void SetResolution_Hook(auto original, int x, int y, int mode, int unk)
 {
+  spdlog::trace("Setting resoltuion {} x {}", x, y);
   return original(x, y, mode, unk);
 }
 
@@ -26,13 +27,15 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
 {
   original(_this);
 
-  static auto get_height = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_height()");
-  static auto get_width  = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_width()");
+  static auto get_height_method = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_height()");
+  static auto get_width_method  = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_width()");
 
   static auto ref_height = 1080;
   static auto ref_width  = 1920;
+  auto        scr_height = (float)get_height_method();
+  auto        scr_width  = (float)get_width_method();
 
-  auto adjustedFactor = (float)get_height() / (float)ref_height;
+  auto adjustedFactor = scr_height / (float)ref_height;
 
   if (!Config::Get().adjust_scale_res) {
     adjustedFactor = 1.0f;
@@ -42,14 +45,17 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
   if (isnan(n)) {
     n = 1.0f;
   }
-  n                                      = std::clamp(n, 0.1f, 5.0f);
+  n = std::clamp(n, 0.1f, 5.0f);
+
   _this->m_canvasRootScaler->scaleFactor = n;
-  spdlog::debug("Setting UI Scale to {}", n);
+
+  spdlog::trace("Setting UI Scale to {} ({} x {} ref height {} scale {} adjustment {})", n, scr_width, scr_height,
+                ref_height, Config::Get().ui_scale, adjustedFactor);
 }
 
 BOOL SetWindowPos_Hook(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
 {
-  spdlog::info("{} {} {} {}", X, Y, cx, cy);
+  spdlog::trace("Window size/position {} (x) {} (y) {} (cx) {} (cy)", X, Y, cx, cy);
   return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
 }
 

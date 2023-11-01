@@ -76,6 +76,9 @@ SET(TARGET_SRC
     src/version.cc
     src/utils.cc
     src/il2cpp/il2cpp_helper.cc
+    src/patches/key.cc
+    src/patches/modifierkey.cc
+    src/patches/mapkey.cc
     src/patches/config.cc
     src/patches/patches.cc
 )
