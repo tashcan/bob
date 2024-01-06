@@ -5,3 +5,4 @@ build/
 *.code-workspace
 /app/
 /.cache/
+compile_commands.json

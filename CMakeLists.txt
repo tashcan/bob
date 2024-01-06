@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.11)
 project(STFC-Community-Patch)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /W4 /permissive- /bigobj")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++latest /W4 /permissive- /bigobj /await")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") 
 
 # Windows' math include does not define constants by default.

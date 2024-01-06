@@ -2,6 +2,7 @@
 
 #include <spud/detour.h>
 
+#include "config.h"
 #include "utils.h"
 
 #include "prime/BlurController.h"
@@ -118,8 +119,122 @@ void Chat_handleNewMessage(void* _this, Il2CppString* message)
   // original(_this, message);
 }
 
+class AppConfig
+{
+public:
+  __declspec(property(get = __get_PlatformSettingsUrl,
+                      put = __set_PlatformSettingsUrl)) Il2CppString* PlatformSettingsUrl;
+  __declspec(property(get = __get_PlatformApiKey, put = __set_PlatformApiKey)) Il2CppString* PlatformApiKey;
+  __declspec(property(get = __get_AssetUrlOverride, put = __set_AssetUrlOverride)) Il2CppString* AssetUrlOverride;
+
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "AppConfig");
+    return class_helper;
+  }
+
+public:
+  Il2CppString* __get_PlatformSettingsUrl()
+  {
+    static auto prop = get_class_helper().GetProperty("PlatformSettingsUrl");
+    return prop.GetRaw<Il2CppString>((void*)this);
+  }
+
+  void __set_PlatformSettingsUrl(Il2CppString* v)
+  {
+    static auto prop = get_class_helper().GetProperty("PlatformSettingsUrl");
+    return prop.SetRaw((void*)this, *v);
+  }
+
+  Il2CppString* __get_PlatformApiKey()
+  {
+    static auto prop = get_class_helper().GetProperty("PlatformApiKey");
+    return prop.GetRaw<Il2CppString>((void*)this);
+  }
+
+  void __set_PlatformApiKey(Il2CppString* v)
+  {
+    static auto prop = get_class_helper().GetProperty("PlatformApiKey");
+    return prop.SetRaw((void*)this, *v);
+  }
+
+  Il2CppString* __get_AssetUrlOverride()
+  {
+    static auto prop = get_class_helper().GetProperty("AssetUrlOverride");
+    return prop.GetRaw<Il2CppString>((void*)this);
+  }
+
+  void __set_AssetUrlOverride(Il2CppString* v)
+  {
+    static auto prop = get_class_helper().GetProperty("AssetUrlOverride");
+    return prop.SetRaw((void*)this, *v);
+  }
+};
+
+class Model
+{
+public:
+  __declspec(property(get = __get_AppConfig)) AppConfig* AppConfig_;
+
+private:
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "Model");
+    return class_helper;
+  }
+
+public:
+  AppConfig* __get_AppConfig()
+  {
+    static auto field = get_class_helper().GetField("_appConfig");
+    return *(AppConfig**)((ptrdiff_t)this + field.offset());
+  }
+};
+
+void* AppConfig_LoadConfig(auto original)
+{
+  auto app_config = original();
+  return app_config;
+}
+
+AppConfig* Model_LoadConfigs(auto original, Model* _this)
+{
+  original(_this);
+  auto config = _this->AppConfig_;
+
+  static auto il2cpp_string_new_utf16 = (il2cpp_string_new_utf16_t)(GetProcAddress(
+      GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_string_new_utf16")));
+  static auto il2cpp_string_new =
+      (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_string_new")));
+
+  if (!Config::Get().config_settings_url.empty()) {
+    auto new_settings_url       = il2cpp_string_new(Config::Get().config_settings_url.c_str());
+    config->PlatformSettingsUrl = new_settings_url;
+  }
+
+  if (!Config::Get().config_assets_url_override.empty()) {
+    auto new_url             = il2cpp_string_new(Config::Get().config_assets_url_override.c_str());
+    config->AssetUrlOverride = new_url;
+  }
+
+  return config;
+}
+
 void InstallTestPatches()
 {
+  auto app_config      = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "AppConfig");
+  auto load_config_ptr = app_config.GetMethod("LoadConfig");
+  SPUD_STATIC_DETOUR(load_config_ptr, AppConfig_LoadConfig);
+
+  auto model            = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "Model");
+  auto load_configs_ptr = model.GetMethod("LoadConfigs");
+  SPUD_STATIC_DETOUR(load_configs_ptr, Model_LoadConfigs);
+
+  auto battle_target_data =
+      il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Models", "BattleTargetData");
+  battle_target_data = battle_target_data;
+
   auto chat_service =
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimePlatform.Services", "ChatService");
   auto ptr = chat_service.GetMethod("HandleMessageReceived");
