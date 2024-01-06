@@ -14,14 +14,14 @@ This will download three submodules and further submodules that they have, so th
 
 ## Installing
 
-Please note that when this project compiles, it will create a DLL called `stfc-communty-patch.dll`.  This 
+Please note that when this project compiles, it will create a DLL called `stfc-community-patch.dll`.  This 
 file must be either copied to the `C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game` 
 folder as `version.dll` or create a symbolic link to the file using an elevated (administrator) command 
 prompt:
 
 ```console
 cd C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game
-mklink [output folder]\stfc-communty-patch.dll version.dll
+mklink [output folder]\stfc-community-patch.dll version.dll
 ```
 
 If you do link the file, please note you will need to close the game to recompile.
@@ -63,7 +63,7 @@ Create or enter the `.vs/` folder and place the following in `launch.vs.json`:
       "type": "default",
       "exe": "C:\\Games\\Star Trek Fleet Command\\Star Trek Fleet Command\\default\\game\\prime.exe",
       "project": "CMakeLists.txt",
-      "projectTarget": "stfc-communty-patch.dll",
+      "projectTarget": "stfc-community-patch.dll",
       "name": "Prime",
       "cwd": "C:\\Games\\Star Trek Fleet Command\\Star Trek Fleet Command\\default\\game"
     }

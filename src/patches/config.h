@@ -68,4 +68,7 @@ public:
   bool        sync_traits;
   bool        sync_buildings;
   bool        sync_ships;
+
+  std::string config_settings_url;
+  std::string config_assets_url_override;
 };

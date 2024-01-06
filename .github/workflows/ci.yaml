@@ -1,0 +1,30 @@
+name: Build and test
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Configure CMake
+        run: cmake -B build -S ${{ github.workspace }}
+
+      - name: Build
+        run: cmake --build build --target stfc-community-patch -j --config Release
+  
+      - name: Package
+        run: |
+          mv build/Release/stfc-community-patch.dll version.dll
+  
+      - uses: actions/upload-artifact@v2
+        with:
+          name: stfc-community-patch
+          path: version.dll
