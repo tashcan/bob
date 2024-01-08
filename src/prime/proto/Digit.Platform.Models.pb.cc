@@ -305,9 +305,9 @@ const char descriptor_table_protodef_Digit_2ePlatform_2eModels_2eproto[] PROTOBU
     "\n\006getUrl\030\002 \001(\t\0227\n\010postData\030\003 \001(\0132%.Digit"
     ".Platform.Models.SignedPOSTData\022\021\n\tdelet"
     "eUrl\030\004 \001(\t\"-\n\016FormFieldEntry\022\014\n\004name\030\001 \001"
-    "(\t\022\r\n\005value\030\002 \001(\t\"\211\004\n\013EntityGroup\0225\n\004typ"
+    "(\t\022\r\n\005value\030\002 \001(\t\"\241\004\n\013EntityGroup\0225\n\004typ"
     "e\030\001 \001(\0162\'.Digit.Platform.Models.EntityGr"
-    "oup.Type\022\r\n\005group\030\002 \001(\014\"\263\003\n\004Type\022\033\n\027TYPE"
+    "oup.Type\022\r\n\005group\030\002 \001(\014\"\313\003\n\004Type\022\033\n\027TYPE"
     "_STATICTRANSLATIONS\020\000\022\034\n\030TYPE_DYNAMICTRA"
     "NSLATIONS\020\001\022\024\n\020TYPE_STOREOFFERS\020\002\022\031\n\025TYP"
     "E_ORDERVIRTUALGOOD\020\003\022\r\n\tTYPE_JSON\020\004\022\032\n\026T"
@@ -318,11 +318,12 @@ const char descriptor_table_protodef_Digit_2ePlatform_2eModels_2eproto[] PROTOBU
     "E_PLAYERSTATS\020\013\022\021\n\rTYPE_GAMENEWS\020\014\022\027\n\023TY"
     "PE_FILESIGNEDURLS\020\r\022\021\n\rTYPE_GAMEINFO\020\016\022\027"
     "\n\023TYPE_PLAYERPROFILES\020\017\022$\n TYPE_PLAYERLI"
-    "FECYCLENOTIFICATION\020\020\"\250\001\n\017ServiceRespons"
-    "e\0228\n\014entityGroups\030\001 \003(\0132\".Digit.Platform"
-    ".Models.EntityGroup\022.\n\nserverTime\030\002 \001(\0132"
-    "\032.google.protobuf.Timestamp\022+\n\005error\030\003 \001"
-    "(\0132\034.Digit.Platform.Models.Errorb\006proto3"
+    "FECYCLENOTIFICATION\020\020\022\026\n\022TYPE_MINIGAMESL"
+    "IST\020\021\"\250\001\n\017ServiceResponse\0228\n\014entityGroup"
+    "s\030\001 \003(\0132\".Digit.Platform.Models.EntityGr"
+    "oup\022.\n\nserverTime\030\002 \001(\0132\032.google.protobu"
+    "f.Timestamp\022+\n\005error\030\003 \001(\0132\034.Digit.Platf"
+    "orm.Models.Errorb\006proto3"
 };
 static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2ePlatform_2eModels_2eproto_deps[1] =
     {
@@ -332,7 +333,7 @@ static ::absl::once_flag descriptor_table_Digit_2ePlatform_2eModels_2eproto_once
 const ::_pbi::DescriptorTable descriptor_table_Digit_2ePlatform_2eModels_2eproto = {
     false,
     false,
-    1240,
+    1264,
     descriptor_table_protodef_Digit_2ePlatform_2eModels_2eproto,
     "Digit.Platform.Models.proto",
     &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
@@ -390,6 +391,7 @@ bool EntityGroup_Type_IsValid(int value) {
     case 14:
     case 15:
     case 16:
+    case 17:
       return true;
     default:
       return false;
@@ -415,6 +417,7 @@ constexpr EntityGroup_Type EntityGroup::TYPE_FILESIGNEDURLS;
 constexpr EntityGroup_Type EntityGroup::TYPE_GAMEINFO;
 constexpr EntityGroup_Type EntityGroup::TYPE_PLAYERPROFILES;
 constexpr EntityGroup_Type EntityGroup::TYPE_PLAYERLIFECYCLENOTIFICATION;
+constexpr EntityGroup_Type EntityGroup::TYPE_MINIGAMESLIST;
 constexpr EntityGroup_Type EntityGroup::Type_MIN;
 constexpr EntityGroup_Type EntityGroup::Type_MAX;
 constexpr int EntityGroup::Type_ARRAYSIZE;

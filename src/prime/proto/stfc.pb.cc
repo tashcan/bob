@@ -20,34 +20,6 @@ PROTOBUF_PRAGMA_INIT_SEG
 namespace _pb = ::google::protobuf;
 namespace _pbi = ::google::protobuf::internal;
 namespace _fl = ::google::protobuf::internal::field_layout;
-      template <typename>
-PROTOBUF_CONSTEXPR CacheMap_CacheIndexEntry_DoNotUse::CacheMap_CacheIndexEntry_DoNotUse(::_pbi::ConstantInitialized) {}
-struct CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal() {}
-  union {
-    CacheMap_CacheIndexEntry_DoNotUse _instance;
-  };
-};
-
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
-    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal _CacheMap_CacheIndexEntry_DoNotUse_default_instance_;
-        template <typename>
-PROTOBUF_CONSTEXPR CacheMap::CacheMap(::_pbi::ConstantInitialized)
-    : _impl_{
-      /* decltype(_impl_.cacheindex_) */ {},
-      /*decltype(_impl_._cached_size_)*/ {},
-    } {}
-struct CacheMapDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CacheMapDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CacheMapDefaultTypeInternal() {}
-  union {
-    CacheMap _instance;
-  };
-};
-
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
-    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CacheMapDefaultTypeInternal _CacheMap_default_instance_;
         template <typename>
 PROTOBUF_CONSTEXPR CommanderSkillSpec::CommanderSkillSpec(::_pbi::ConstantInitialized)
     : _impl_{
@@ -132,33 +104,12 @@ struct OfficerProgressRewardSpecDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 OfficerProgressRewardSpecDefaultTypeInternal _OfficerProgressRewardSpec_default_instance_;
-static ::_pb::Metadata file_level_metadata_stfc_2eproto[6];
+static ::_pb::Metadata file_level_metadata_stfc_2eproto[4];
 static const ::_pb::EnumDescriptor* file_level_enum_descriptors_stfc_2eproto[3];
 static constexpr const ::_pb::ServiceDescriptor**
     file_level_service_descriptors_stfc_2eproto = nullptr;
 const ::uint32_t TableStruct_stfc_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
     protodesc_cold) = {
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, value_),
-    0,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::CacheMap, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::CacheMap, _impl_.cacheindex_),
     ~0u,  // no _has_bits_
     PROTOBUF_FIELD_OFFSET(::CommanderSkillSpec, _internal_metadata_),
     ~0u,  // no _extensions_
@@ -215,62 +166,55 @@ const ::uint32_t TableStruct_stfc_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
 
 static const ::_pbi::MigrationSchema
     schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 10, -1, sizeof(::CacheMap_CacheIndexEntry_DoNotUse)},
-        {12, -1, -1, sizeof(::CacheMap)},
-        {21, -1, -1, sizeof(::CommanderSkillSpec)},
-        {33, 45, -1, sizeof(::EntityRef)},
-        {49, -1, -1, sizeof(::OfficerLevelRewardsSpec)},
-        {61, -1, -1, sizeof(::OfficerProgressRewardSpec)},
+        {0, -1, -1, sizeof(::CommanderSkillSpec)},
+        {12, 24, -1, sizeof(::EntityRef)},
+        {28, -1, -1, sizeof(::OfficerLevelRewardsSpec)},
+        {40, -1, -1, sizeof(::OfficerProgressRewardSpec)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
-    &::_CacheMap_CacheIndexEntry_DoNotUse_default_instance_._instance,
-    &::_CacheMap_default_instance_._instance,
     &::_CommanderSkillSpec_default_instance_._instance,
     &::_EntityRef_default_instance_._instance,
     &::_OfficerLevelRewardsSpec_default_instance_._instance,
     &::_OfficerProgressRewardSpec_default_instance_._instance,
 };
 const char descriptor_table_protodef_stfc_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\nstfc.proto\"l\n\010CacheMap\022-\n\ncacheIndex\030\001"
-    " \003(\0132\031.CacheMap.CacheIndexEntry\0321\n\017Cache"
-    "IndexEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\002"
-    "8\001\"r\n\022CommanderSkillSpec\022\022\n\nresearchId\030\001"
-    " \001(\003\022\017\n\007groupId\030\002 \001(\005\022\021\n\tsortOrder\030\003 \001(\005"
-    "\022$\n\tskillType\030\004 \001(\0162\021.OfficerSkillType\"u"
-    "\n\tEntityRef\022\020\n\010entityId\030\001 \001(\003\022\023\n\013entityI"
-    "dStr\030\002 \001(\t\022\037\n\nentityType\030\003 \001(\0162\013.EntityT"
-    "ype\022 \n\014parentEntity\030\004 \001(\0132\n.EntityRef\"V\n"
-    "\027OfficerLevelRewardsSpec\022\016\n\006amount\030\001 \001(\005"
-    "\022\n\n\002id\030\002 \001(\003\022\r\n\005level\030\003 \001(\005\022\020\n\010schemaId\030"
-    "\004 \001(\t\"w\n\031OfficerProgressRewardSpec\022*\n\014pr"
-    "ogressType\030\001 \001(\0162\024.OfficerProgressType\022\014"
-    "\n\004rank\030\002 \001(\005\022\020\n\010schemaId\030\003 \001(\005\022\016\n\006amount"
-    "\030\004 \003(\005*\215\001\n\020OfficerSkillType\022\034\n\030OFFICERSK"
-    "ILLTYPE_UNKNOWN\020\000\022\035\n\031OFFICERSKILLTYPE_AL"
-    "WAYSON\020\001\022\033\n\027OFFICERSKILLTYPE_ONDUTY\020\002\022\037\n"
-    "\033OFFICERSKILLTYPE_SELECTABLE\020\003*\312\001\n\nEntit"
-    "yType\022\026\n\022ENTITYTYPE_INVALID\020\000\022\031\n\021ENTITYT"
-    "YPE_PLAYER\020\264\244\376\231\003\022\033\n\023ENTITYTYPE_ALLIANCE\020"
-    "\361\267\326\327\006\022 \n\030ENTITYTYPE_DEPLOYEDFLEET\020\206\376\271\367\007\022"
-    "\026\n\016ENTITYTYPE_NPC\020\355\271\327\351\007\022\032\n\022ENTITYTYPE_OF"
-    "FICER\020\236\202\273\301\004\022\026\n\017ENTITYTYPE_SHIP\020\324\304\350\"*w\n\023O"
-    "fficerProgressType\022\037\n\033OFFICERPROGRESSTYP"
-    "E_UNKNOWN\020\000\022\037\n\033OFFICERPROGRESSTYPE_LEVEL"
-    "UP\020\001\022\036\n\032OFFICERPROGRESSTYPE_RANKUP\020\002b\006pr"
-    "oto3"
+    "\n\nstfc.proto\"r\n\022CommanderSkillSpec\022\022\n\nre"
+    "searchId\030\001 \001(\003\022\017\n\007groupId\030\002 \001(\005\022\021\n\tsortO"
+    "rder\030\003 \001(\005\022$\n\tskillType\030\004 \001(\0162\021.OfficerS"
+    "killType\"u\n\tEntityRef\022\020\n\010entityId\030\001 \001(\003\022"
+    "\023\n\013entityIdStr\030\002 \001(\t\022\037\n\nentityType\030\003 \001(\016"
+    "2\013.EntityType\022 \n\014parentEntity\030\004 \001(\0132\n.En"
+    "tityRef\"V\n\027OfficerLevelRewardsSpec\022\016\n\006am"
+    "ount\030\001 \001(\005\022\n\n\002id\030\002 \001(\003\022\r\n\005level\030\003 \001(\005\022\020\n"
+    "\010schemaId\030\004 \001(\t\"w\n\031OfficerProgressReward"
+    "Spec\022*\n\014progressType\030\001 \001(\0162\024.OfficerProg"
+    "ressType\022\014\n\004rank\030\002 \001(\005\022\020\n\010schemaId\030\003 \001(\005"
+    "\022\016\n\006amount\030\004 \003(\005*\215\001\n\020OfficerSkillType\022\034\n"
+    "\030OFFICERSKILLTYPE_UNKNOWN\020\000\022\035\n\031OFFICERSK"
+    "ILLTYPE_ALWAYSON\020\001\022\033\n\027OFFICERSKILLTYPE_O"
+    "NDUTY\020\002\022\037\n\033OFFICERSKILLTYPE_SELECTABLE\020\003"
+    "*\312\001\n\nEntityType\022\026\n\022ENTITYTYPE_INVALID\020\000\022"
+    "\031\n\021ENTITYTYPE_PLAYER\020\264\244\376\231\003\022\033\n\023ENTITYTYPE"
+    "_ALLIANCE\020\361\267\326\327\006\022 \n\030ENTITYTYPE_DEPLOYEDFL"
+    "EET\020\206\376\271\367\007\022\026\n\016ENTITYTYPE_NPC\020\355\271\327\351\007\022\032\n\022ENT"
+    "ITYTYPE_OFFICER\020\236\202\273\301\004\022\026\n\017ENTITYTYPE_SHIP"
+    "\020\324\304\350\"*w\n\023OfficerProgressType\022\037\n\033OFFICERP"
+    "ROGRESSTYPE_UNKNOWN\020\000\022\037\n\033OFFICERPROGRESS"
+    "TYPE_LEVELUP\020\001\022\036\n\032OFFICERPROGRESSTYPE_RA"
+    "NKUP\020\002b\006proto3"
 };
 static ::absl::once_flag descriptor_table_stfc_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_stfc_2eproto = {
     false,
     false,
-    1044,
+    934,
     descriptor_table_protodef_stfc_2eproto,
     "stfc.proto",
     &descriptor_table_stfc_2eproto_once,
     nullptr,
     0,
-    6,
+    4,
     schemas,
     file_default_instances,
     TableStruct_stfc_2eproto::offsets,
@@ -342,215 +286,6 @@ bool OfficerProgressType_IsValid(int value) {
     default:
       return false;
   }
-}
-// ===================================================================
-
-CacheMap_CacheIndexEntry_DoNotUse::CacheMap_CacheIndexEntry_DoNotUse() {}
-CacheMap_CacheIndexEntry_DoNotUse::CacheMap_CacheIndexEntry_DoNotUse(::google::protobuf::Arena* arena)
-    : SuperType(arena) {}
-void CacheMap_CacheIndexEntry_DoNotUse::MergeFrom(const CacheMap_CacheIndexEntry_DoNotUse& other) {
-  MergeFromInternal(other);
-}
-::google::protobuf::Metadata CacheMap_CacheIndexEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[0]);
-}
-// ===================================================================
-
-class CacheMap::_Internal {
- public:
-};
-
-CacheMap::CacheMap(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
-  SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:CacheMap)
-}
-CacheMap::CacheMap(const CacheMap& from) : ::google::protobuf::Message() {
-  CacheMap* const _this = this;
-  (void)_this;
-  new (&_impl_) Impl_{
-      /* decltype(_impl_.cacheindex_) */ {},
-      /*decltype(_impl_._cached_size_)*/ {},
-  };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
-      from._internal_metadata_);
-  _this->_impl_.cacheindex_.MergeFrom(from._impl_.cacheindex_);
-
-  // @@protoc_insertion_point(copy_constructor:CacheMap)
-}
-inline void CacheMap::SharedCtor(::_pb::Arena* arena) {
-  (void)arena;
-  new (&_impl_) Impl_{
-      /* decltype(_impl_.cacheindex_) */ {::google::protobuf::internal::ArenaInitialized(), arena},
-      /*decltype(_impl_._cached_size_)*/ {},
-  };
-}
-CacheMap::~CacheMap() {
-  // @@protoc_insertion_point(destructor:CacheMap)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
-  SharedDtor();
-}
-inline void CacheMap::SharedDtor() {
-  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.cacheindex_.~MapField();
-}
-void CacheMap::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-PROTOBUF_NOINLINE void CacheMap::Clear() {
-// @@protoc_insertion_point(message_clear_start:CacheMap)
-  ::uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  _impl_.cacheindex_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
-}
-
-const char* CacheMap::_InternalParse(
-    const char* ptr, ::_pbi::ParseContext* ctx) {
-  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
-  return ptr;
-}
-
-
-PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 1, 27, 2> CacheMap::_table_ = {
-  {
-    0,  // no _has_bits_
-    0, // no _extensions_
-    1, 0,  // max_field_number, fast_idx_mask
-    offsetof(decltype(_table_), field_lookup_table),
-    4294967294,  // skipmap
-    offsetof(decltype(_table_), field_entries),
-    1,  // num_field_entries
-    1,  // num_aux_entries
-    offsetof(decltype(_table_), aux_entries),
-    &_CacheMap_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
-  }, {{
-    {::_pbi::TcParser::MiniParse, {}},
-  }}, {{
-    65535, 65535
-  }}, {{
-    // map<string, string> cacheIndex = 1;
-    {PROTOBUF_FIELD_OFFSET(CacheMap, _impl_.cacheindex_), 0, 0,
-    (0 | ::_fl::kFcRepeated | ::_fl::kMap)},
-  }}, {{
-    {::_pbi::TcParser::GetMapAuxInfo<decltype(CacheMap()._impl_.cacheindex_)>(1, 0, 0)},
-  }}, {{
-    "\10\12\0\0\0\0\0\0"
-    "CacheMap"
-    "cacheIndex"
-  }},
-};
-
-::uint8_t* CacheMap::_InternalSerialize(
-    ::uint8_t* target,
-    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CacheMap)
-  ::uint32_t cached_has_bits = 0;
-  (void)cached_has_bits;
-
-  // map<string, string> cacheIndex = 1;
-  if (!_internal_cacheindex().empty()) {
-    using MapType = ::google::protobuf::Map<std::string, std::string>;
-    using WireHelper = CacheMap_CacheIndexEntry_DoNotUse::Funcs;
-    const auto& field = _internal_cacheindex();
-
-    if (stream->IsSerializationDeterministic() && field.size() > 1) {
-      for (const auto& entry : ::google::protobuf::internal::MapSorterPtr<MapType>(field)) {
-        target = WireHelper::InternalSerialize(
-            1, entry.first, entry.second, target, stream);
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.first.data(), static_cast<int>(entry.first.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.second.data(), static_cast<int>(entry.second.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-      }
-    } else {
-      for (const auto& entry : field) {
-        target = WireHelper::InternalSerialize(
-            1, entry.first, entry.second, target, stream);
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.first.data(), static_cast<int>(entry.first.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.second.data(), static_cast<int>(entry.second.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-      }
-    }
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CacheMap)
-  return target;
-}
-
-::size_t CacheMap::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CacheMap)
-  ::size_t total_size = 0;
-
-  ::uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // map<string, string> cacheIndex = 1;
-  total_size += 1 * ::google::protobuf::internal::FromIntSize(_internal_cacheindex_size());
-  for (const auto& entry : _internal_cacheindex()) {
-    total_size += CacheMap_CacheIndexEntry_DoNotUse::Funcs::ByteSizeLong(entry.first, entry.second);
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::google::protobuf::Message::ClassData CacheMap::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CacheMap::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CacheMap::GetClassData() const { return &_class_data_; }
-
-
-void CacheMap::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CacheMap*>(&to_msg);
-  auto& from = static_cast<const CacheMap&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CacheMap)
-  ABSL_DCHECK_NE(&from, _this);
-  ::uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  _this->_impl_.cacheindex_.MergeFrom(from._impl_.cacheindex_);
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
-}
-
-void CacheMap::CopyFrom(const CacheMap& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CacheMap)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-PROTOBUF_NOINLINE bool CacheMap::IsInitialized() const {
-  return true;
-}
-
-void CacheMap::InternalSwap(CacheMap* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.cacheindex_.InternalSwap(&other->_impl_.cacheindex_);
-}
-
-::google::protobuf::Metadata CacheMap::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[1]);
 }
 // ===================================================================
 
@@ -792,7 +527,7 @@ void CommanderSkillSpec::InternalSwap(CommanderSkillSpec* other) {
 ::google::protobuf::Metadata CommanderSkillSpec::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[2]);
+      file_level_metadata_stfc_2eproto[0]);
 }
 // ===================================================================
 
@@ -1094,7 +829,7 @@ void EntityRef::InternalSwap(EntityRef* other) {
 ::google::protobuf::Metadata EntityRef::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[3]);
+      file_level_metadata_stfc_2eproto[1]);
 }
 // ===================================================================
 
@@ -1369,7 +1104,7 @@ void OfficerLevelRewardsSpec::InternalSwap(OfficerLevelRewardsSpec* other) {
 ::google::protobuf::Metadata OfficerLevelRewardsSpec::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[4]);
+      file_level_metadata_stfc_2eproto[2]);
 }
 // ===================================================================
 
@@ -1635,7 +1370,7 @@ void OfficerProgressRewardSpec::InternalSwap(OfficerProgressRewardSpec* other) {
 ::google::protobuf::Metadata OfficerProgressRewardSpec::GetMetadata() const {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[5]);
+      file_level_metadata_stfc_2eproto[3]);
 }
 // @@protoc_insertion_point(namespace_scope)
 namespace google {

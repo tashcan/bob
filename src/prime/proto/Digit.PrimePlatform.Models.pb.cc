@@ -98,9 +98,18 @@ PROTOBUF_CONSTEXPR EventMetadata::EventMetadata(::_pbi::ConstantInitialized)
           &::_pbi::fixed_address_empty_string,
           ::_pbi::ConstantInitialized{},
       },
+      /*decltype(_impl_.battlepasslink_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
+      /*decltype(_impl_.battlepassresourceid_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
       /*decltype(_impl_.bucket_)*/ nullptr,
       /*decltype(_impl_.servertransfercost_)*/ nullptr,
       /*decltype(_impl_.visualvideoassets_)*/ nullptr,
+      /*decltype(_impl_.cta_)*/ ::int64_t{0},
       /*decltype(_impl_.isautoregister_)*/ false,
       /*decltype(_impl_.autoreward_)*/ false,
       /*decltype(_impl_.immediatereward_)*/ false,
@@ -108,8 +117,11 @@ PROTOBUF_CONSTEXPR EventMetadata::EventMetadata(::_pbi::ConstantInitialized)
       /*decltype(_impl_.isuniquewinner_)*/ false,
       /*decltype(_impl_.iscrossserver_)*/ false,
       /*decltype(_impl_.respectpriority_)*/ false,
-      /*decltype(_impl_.cta_)*/ ::int64_t{0},
+      /*decltype(_impl_.minigamelock_)*/ false,
       /*decltype(_impl_.priority_)*/ ::int64_t{0},
+      /*decltype(_impl_.battlepasstype_)*/ 0,
+      /*decltype(_impl_.minigamelevelmin_)*/ 0u,
+      /*decltype(_impl_.minigamelevelmax_)*/ 0u,
     } {}
 struct EventMetadataDefaultTypeInternal {
   PROTOBUF_CONSTEXPR EventMetadataDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
@@ -784,11 +796,71 @@ struct TranslationCacheUpdateDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 TranslationCacheUpdateDefaultTypeInternal _TranslationCacheUpdate_default_instance_;
+        template <typename>
+PROTOBUF_CONSTEXPR MinigameHolder::MinigameHolder(::_pbi::ConstantInitialized)
+    : _impl_{
+      /*decltype(_impl_.games_)*/ {},
+      /*decltype(_impl_._cached_size_)*/ {},
+    } {}
+struct MinigameHolderDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MinigameHolderDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~MinigameHolderDefaultTypeInternal() {}
+  union {
+    MinigameHolder _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MinigameHolderDefaultTypeInternal _MinigameHolder_default_instance_;
+        template <typename>
+PROTOBUF_CONSTEXPR Minigame::Minigame(::_pbi::ConstantInitialized)
+    : _impl_{
+      /*decltype(_impl_.stages_)*/ {},
+      /*decltype(_impl_.configid_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
+      /*decltype(_impl_._cached_size_)*/ {},
+    } {}
+struct MinigameDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MinigameDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~MinigameDefaultTypeInternal() {}
+  union {
+    Minigame _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MinigameDefaultTypeInternal _Minigame_default_instance_;
+        template <typename>
+PROTOBUF_CONSTEXPR MinigameStage::MinigameStage(::_pbi::ConstantInitialized)
+    : _impl_{
+      /*decltype(_impl_.rewards_)*/ {},
+      /* _impl_._rewards_cached_byte_size_ = */ {0},
+      /*decltype(_impl_.configid_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
+      /*decltype(_impl_.locked_)*/ false,
+      /*decltype(_impl_.score_)*/ 0u,
+      /*decltype(_impl_.priority_)*/ 0u,
+      /*decltype(_impl_._cached_size_)*/ {},
+    } {}
+struct MinigameStageDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MinigameStageDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~MinigameStageDefaultTypeInternal() {}
+  union {
+    MinigameStage _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MinigameStageDefaultTypeInternal _MinigameStage_default_instance_;
 }  // namespace Models
 }  // namespace PrimePlatform
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[31];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[5];
+static ::_pb::Metadata file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[34];
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[6];
 static constexpr const ::_pb::ServiceDescriptor**
     file_level_service_descriptors_Digit_2ePrimePlatform_2eModels_2eproto = nullptr;
 const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eModels_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
@@ -846,6 +918,12 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eModels_2eproto::offsets[] P
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.respectpriority_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.visualvideoid_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.visualvideoassets_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.battlepasslink_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.battlepassresourceid_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.battlepasstype_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.minigamelock_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.minigamelevelmin_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.minigamelevelmax_),
     ~0u,
     ~0u,
     ~0u,
@@ -867,6 +945,12 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eModels_2eproto::offsets[] P
     ~0u,
     ~0u,
     2,
+    ~0u,
+    ~0u,
+    ~0u,
+    ~0u,
+    ~0u,
+    ~0u,
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_._has_bits_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _internal_metadata_),
     ~0u,  // no _extensions_
@@ -1252,41 +1336,76 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eModels_2eproto::offsets[] P
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::TranslationCacheUpdate, _impl_.updatedat_),
     ~0u,
     0,
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameHolder, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameHolder, _impl_.games_),
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Minigame, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Minigame, _impl_.configid_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Minigame, _impl_.stages_),
+    ~0u,  // no _has_bits_
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameStage, _internal_metadata_),
+    ~0u,  // no _extensions_
+    ~0u,  // no _oneof_case_
+    ~0u,  // no _weak_field_map_
+    ~0u,  // no _inlined_string_donated_
+    ~0u,  // no _split_
+    ~0u,  // no sizeof(Split)
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameStage, _impl_.configid_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameStage, _impl_.locked_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameStage, _impl_.rewards_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameStage, _impl_.score_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::MinigameStage, _impl_.priority_),
 };
 
 static const ::_pbi::MigrationSchema
     schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
         {0, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventEntryData)},
         {12, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventHighlights)},
-        {24, 53, -1, sizeof(::Digit::PrimePlatform::Models::EventMetadata)},
-        {74, 96, -1, sizeof(::Digit::PrimePlatform::Models::EventModel)},
-        {110, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventRank)},
-        {125, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventRanking)},
-        {135, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventReward)},
-        {147, 163, -1, sizeof(::Digit::PrimePlatform::Models::EventSchedule)},
-        {171, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventScoringInfo)},
-        {181, -1, -1, sizeof(::Digit::PrimePlatform::Models::Events)},
-        {191, 203, -1, sizeof(::Digit::PrimePlatform::Models::EventNotification)},
-        {207, 219, -1, sizeof(::Digit::PrimePlatform::Models::EventSegment)},
-        {223, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventVideoAssets)},
-        {243, -1, -1, sizeof(::Digit::PrimePlatform::Models::RepeatedInt32)},
-        {252, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerlifecycleNotification)},
-        {263, 279, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsModel)},
-        {287, -1, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsHolder)},
-        {296, -1, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsMetadata)},
-        {306, -1, -1, sizeof(::Digit::PrimePlatform::Models::Notifications)},
-        {317, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlatformUserProfile)},
-        {327, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlatformUserProfileResponse)},
-        {336, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStats)},
-        {346, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStatsGroup)},
-        {356, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStatsEntry)},
-        {367, -1, -1, sizeof(::Digit::PrimePlatform::Models::CacheHints)},
-        {376, -1, -1, sizeof(::Digit::PrimePlatform::Models::Product)},
-        {389, 400, -1, sizeof(::Digit::PrimePlatform::Models::ProductInfoHolder)},
-        {403, -1, -1, sizeof(::Digit::PrimePlatform::Models::Region)},
-        {414, 429, -1, sizeof(::Digit::PrimePlatform::Models::Instance)},
-        {436, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerTransferState)},
-        {447, 457, -1, sizeof(::Digit::PrimePlatform::Models::TranslationCacheUpdate)},
+        {24, 59, -1, sizeof(::Digit::PrimePlatform::Models::EventMetadata)},
+        {86, 108, -1, sizeof(::Digit::PrimePlatform::Models::EventModel)},
+        {122, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventRank)},
+        {137, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventRanking)},
+        {147, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventReward)},
+        {159, 175, -1, sizeof(::Digit::PrimePlatform::Models::EventSchedule)},
+        {183, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventScoringInfo)},
+        {193, -1, -1, sizeof(::Digit::PrimePlatform::Models::Events)},
+        {203, 215, -1, sizeof(::Digit::PrimePlatform::Models::EventNotification)},
+        {219, 231, -1, sizeof(::Digit::PrimePlatform::Models::EventSegment)},
+        {235, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventVideoAssets)},
+        {255, -1, -1, sizeof(::Digit::PrimePlatform::Models::RepeatedInt32)},
+        {264, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerlifecycleNotification)},
+        {275, 291, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsModel)},
+        {299, -1, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsHolder)},
+        {308, -1, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsMetadata)},
+        {318, -1, -1, sizeof(::Digit::PrimePlatform::Models::Notifications)},
+        {329, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlatformUserProfile)},
+        {339, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlatformUserProfileResponse)},
+        {348, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStats)},
+        {358, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStatsGroup)},
+        {368, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStatsEntry)},
+        {379, -1, -1, sizeof(::Digit::PrimePlatform::Models::CacheHints)},
+        {388, -1, -1, sizeof(::Digit::PrimePlatform::Models::Product)},
+        {401, 412, -1, sizeof(::Digit::PrimePlatform::Models::ProductInfoHolder)},
+        {415, -1, -1, sizeof(::Digit::PrimePlatform::Models::Region)},
+        {426, 441, -1, sizeof(::Digit::PrimePlatform::Models::Instance)},
+        {448, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerTransferState)},
+        {459, 469, -1, sizeof(::Digit::PrimePlatform::Models::TranslationCacheUpdate)},
+        {471, -1, -1, sizeof(::Digit::PrimePlatform::Models::MinigameHolder)},
+        {480, -1, -1, sizeof(::Digit::PrimePlatform::Models::Minigame)},
+        {490, -1, -1, sizeof(::Digit::PrimePlatform::Models::MinigameStage)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -1321,6 +1440,9 @@ static const ::_pb::Message* const file_default_instances[] = {
     &::Digit::PrimePlatform::Models::_Instance_default_instance_._instance,
     &::Digit::PrimePlatform::Models::_PlayerTransferState_default_instance_._instance,
     &::Digit::PrimePlatform::Models::_TranslationCacheUpdate_default_instance_._instance,
+    &::Digit::PrimePlatform::Models::_MinigameHolder_default_instance_._instance,
+    &::Digit::PrimePlatform::Models::_Minigame_default_instance_._instance,
+    &::Digit::PrimePlatform::Models::_MinigameStage_default_instance_._instance,
 };
 const char descriptor_table_protodef_Digit_2ePrimePlatform_2eModels_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
     "\n Digit.PrimePlatform.Models.proto\022\032Digi"
@@ -1332,7 +1454,7 @@ const char descriptor_table_protodef_Digit_2ePrimePlatform_2eModels_2eproto[] PR
     " \001(\0162).Digit.PrimePlatform.Models.JoinFo"
     "rbidden\"\\\n\017EventHighlights\022\014\n\004type\030\001 \001(\005"
     "\022\017\n\007nodeIds\030\002 \003(\003\022\022\n\nspecialIds\030\003 \003(\003\022\026\n"
-    "\016calloutAssetId\030\004 \001(\t\"\347\005\n\rEventMetadata\022"
+    "\016calloutAssetId\030\004 \001(\t\"\253\007\n\rEventMetadata\022"
     "\026\n\016isAutoRegister\030\001 \001(\010\022\022\n\nautoReward\030\002 "
     "\001(\010\022\027\n\017immediateReward\030\003 \001(\010\022\023\n\013canShowc"
     "ase\030\004 \001(\010\022\023\n\013iconAssetId\030\005 \001(\t\022\031\n\021iconAs"
@@ -1351,135 +1473,151 @@ const char descriptor_table_protodef_Digit_2ePrimePlatform_2eModels_2eproto[] PR
     "dInt32\022\027\n\017respectPriority\030\023 \001(\010\022\025\n\rvisua"
     "lVideoId\030\024 \001(\t\022G\n\021visualVideoAssets\030\025 \001("
     "\0132,.Digit.PrimePlatform.Models.EventVide"
-    "oAssets\"\212\005\n\nEventModel\0224\n\005ranks\030\014 \001(\0132%."
-    "Digit.PrimePlatform.Models.EventRank\022\020\n\010"
-    "configId\030\001 \001(\t\022\016\n\006source\030\002 \001(\t\022\021\n\teventT"
-    "ype\030\003 \001(\t\022=\n\010category\030\004 \001(\0162+.Digit.Prim"
-    "ePlatform.Models.EventCategories\022@\n\rplac"
-    "ementType\030\005 \001(\0162).Digit.PrimePlatform.Mo"
-    "dels.PlacementType\022;\n\010schedule\030\006 \001(\0132).D"
-    "igit.PrimePlatform.Models.EventSchedule\022"
-    ";\n\010metaData\030\007 \001(\0132).Digit.PrimePlatform."
-    "Models.EventMetadata\022\021\n\tgroupName\030\010 \001(\t\022"
-    ":\n\010segments\030\t \003(\0132(.Digit.PrimePlatform."
-    "Models.EventSegment\0226\n\007ranking\030\n \001(\0132%.D"
-    "igit.PrimePlatform.Models.EventRank\022=\n\te"
-    "ntryData\030\013 \001(\0132*.Digit.PrimePlatform.Mod"
-    "els.EventEntryData\0227\n\010joinCost\030\r \003(\0132%.D"
-    "igit.PrimePlatform.Content.Resource\022\027\n\017c"
-    "ategoryGroupId\030\016 \001(\t\"~\n\tEventRank\022\n\n\002id\030"
-    "\001 \001(\t\022\020\n\010position\030\002 \001(\005\022\014\n\004rank\030\003 \001(\005\022\r\n"
-    "\005score\030\004 \001(\002\022\r\n\005delta\030\005 \001(\005\022\022\n\ninstanceI"
-    "d\030\006 \001(\005\022\023\n\013scoreDouble\030\007 \001(\001\"V\n\014EventRan"
-    "king\0224\n\005ranks\030\001 \003(\0132%.Digit.PrimePlatfor"
-    "m.Models.EventRank\022\020\n\010configId\030\002 \001(\t\"L\n\013"
-    "EventReward\022\020\n\010position\030\001 \003(\003\022\016\n\006amount\030"
-    "\002 \001(\003\022\014\n\004type\030\003 \001(\t\022\r\n\005level\030\004 \001(\t\"\273\002\n\rE"
-    "ventSchedule\022\014\n\004term\030\001 \001(\t\022\023\n\013roundNumbe"
-    "r\030\002 \001(\005\022,\n\010announce\030\003 \001(\0132\032.google.proto"
-    "buf.Timestamp\022)\n\005start\030\004 \001(\0132\032.google.pr"
-    "otobuf.Timestamp\022+\n\007display\030\005 \001(\0132\032.goog"
-    "le.protobuf.Timestamp\022)\n\005delay\030\006 \001(\0132\032.g"
-    "oogle.protobuf.Timestamp\022\'\n\003end\030\007 \001(\0132\032."
-    "google.protobuf.Timestamp\022-\n\tnextStart\030\010"
-    " \001(\0132\032.google.protobuf.Timestamp\",\n\020Even"
-    "tScoringInfo\022\n\n\002id\030\001 \001(\005\022\014\n\004icon\030\002 \001(\t\"Y"
-    "\n\006Events\022;\n\013tournaments\030\001 \003(\0132&.Digit.Pr"
-    "imePlatform.Models.EventModel\022\022\n\ncategor"
-    "ies\030\002 \003(\005\"\315\001\n\021EventNotification\022\020\n\010confi"
-    "gId\030\001 \001(\t\022,\n\010modified\030\002 \001(\0132\032.google.pro"
-    "tobuf.Timestamp\0229\n\nplayerRank\030\003 \001(\0132%.Di"
-    "git.PrimePlatform.Models.EventRank\022=\n\ten"
-    "tryData\030\004 \001(\0132*.Digit.PrimePlatform.Mode"
-    "ls.EventEntryData\"\316\001\n\014EventSegment\0225\n\004ty"
-    "pe\030\001 \001(\0162\'.Digit.PrimePlatform.Models.Se"
-    "gmentType\022\016\n\006values\030\002 \003(\003\0228\n\007rewards\030\003 \003"
-    "(\0132\'.Digit.PrimePlatform.Models.EventRew"
-    "ard\022=\n\014uniqueWinner\030\004 \001(\0132\'.Digit.PrimeP"
-    "latform.Models.EventReward\"\242\001\n\020EventVide"
-    "oAssets\022\n\n\002en\030\001 \001(\t\022\n\n\002es\030\002 \001(\t\022\n\n\002fr\030\003 "
-    "\001(\t\022\n\n\002de\030\004 \001(\t\022\n\n\002it\030\005 \001(\t\022\n\n\002ja\030\006 \001(\t\022"
-    "\n\n\002pt\030\007 \001(\t\022\n\n\002ru\030\010 \001(\t\022\n\n\002cn\030\t \001(\t\022\n\n\002k"
-    "o\030\n \001(\t\022\n\n\002hk\030\013 \001(\t\022\n\n\002tr\030\014 \001(\t\"\037\n\rRepea"
-    "tedInt32\022\016\n\006values\030\001 \003(\005\"\220\001\n\033Playerlifec"
-    "ycleNotification\022K\n\013contentType\030\001 \001(\01626."
-    "Digit.PrimePlatform.Models.Playerlifecyc"
-    "leContentType\022\022\n\nplaygamiId\030\002 \001(\t\022\020\n\010cat"
-    "egory\030\003 \001(\t\"\213\002\n\rGameNewsModel\022\016\n\006newsId\030"
-    "\001 \001(\005\022\020\n\010priority\030\002 \001(\005\022\016\n\006pinned\030\003 \001(\010\022"
-    "\021\n\timportant\030\004 \001(\010\022-\n\tstartDate\030\005 \001(\0132\032."
-    "google.protobuf.Timestamp\022+\n\007endDate\030\006 \001"
-    "(\0132\032.google.protobuf.Timestamp\022>\n\010metada"
-    "ta\030\007 \001(\0132,.Digit.PrimePlatform.Models.Ga"
-    "meNewsMetadata\022\031\n\021isPlayerlifecycle\030\010 \001("
-    "\010\"N\n\016GameNewsHolder\022<\n\tnewsItems\030\001 \003(\0132)"
-    ".Digit.PrimePlatform.Models.GameNewsMode"
-    "l\":\n\020GameNewsMetadata\022\017\n\007assetId\030\001 \001(\t\022\025"
-    "\n\rassetFilename\030\002 \001(\t\"\217\002\n\rNotifications\022"
-    "N\n\027tournamentNotifications\030\001 \003(\0132-.Digit"
-    ".PrimePlatform.Models.EventNotification\022"
-    "O\n\030leaderboardNotifications\030\002 \003(\0132-.Digi"
-    "t.PrimePlatform.Models.EventNotification"
-    "\022]\n\034playerlifecycleNotifications\030\003 \003(\01327"
-    ".Digit.PrimePlatform.Models.Playerlifecy"
-    "cleNotification\"6\n\023PlatformUserProfile\022\021"
-    "\n\taccountId\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\"f\n\033Platf"
-    "ormUserProfileResponse\022G\n\016playerProfiles"
-    "\030\001 \003(\0132/.Digit.PrimePlatform.Models.Plat"
-    "formUserProfile\"^\n\013PlayerStats\022\021\n\taccoun"
-    "tId\030\001 \001(\t\022<\n\006groups\030\002 \003(\0132,.Digit.PrimeP"
-    "latform.Models.PlayerStatsGroup\"_\n\020Playe"
-    "rStatsGroup\022\014\n\004name\030\001 \001(\t\022=\n\007entries\030\002 \003"
-    "(\0132,.Digit.PrimePlatform.Models.PlayerSt"
-    "atsEntry\"C\n\020PlayerStatsEntry\022\016\n\006statId\030\001"
-    " \001(\t\022\020\n\010priority\030\002 \001(\005\022\r\n\005value\030\003 \001(\002\"`\n"
-    "\nCacheHints\022R\n\026translationCacheUpdate\030\001 "
-    "\003(\01322.Digit.PrimePlatform.Models.Transla"
-    "tionCacheUpdate\"z\n\007Product\022\n\n\002id\030\001 \001(\r\022\014"
-    "\n\004name\030\002 \001(\t\022\014\n\004code\030\003 \001(\t\022\016\n\006status\030\004 \001"
-    "(\r\0227\n\tinstances\030\005 \003(\0132$.Digit.PrimePlatf"
-    "orm.Models.Instance\"\226\001\n\021ProductInfoHolde"
-    "r\022\017\n\007version\030\001 \001(\t\0224\n\007product\030\002 \001(\0132#.Di"
-    "git.PrimePlatform.Models.Product\022:\n\ncach"
-    "eHints\030\003 \001(\0132&.Digit.PrimePlatform.Model"
-    "s.CacheHints\"6\n\006Region\022\n\n\002id\030\001 \001(\t\022\023\n\013de"
-    "scription\030\002 \001(\t\022\013\n\003num\030\003 \001(\r\"\335\001\n\010Instanc"
-    "e\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\020\n\010priority\030"
-    "\003 \001(\r\0222\n\006region\030\004 \001(\0132\".Digit.PrimePlatf"
-    "orm.Models.Region\022\016\n\006status\030\005 \001(\005\022\023\n\013mai"
-    "ntenance\030\006 \001(\003\022L\n\023playerTransferState\030\007 "
-    "\001(\0132/.Digit.PrimePlatform.Models.PlayerT"
-    "ransferState\"U\n\023PlayerTransferState\022\022\n\nt"
-    "ransferIn\030\001 \001(\010\022\023\n\013transferOut\030\002 \001(\010\022\025\n\r"
-    "authenticated\030\003 \001(\010\"X\n\026TranslationCacheU"
-    "pdate\022\017\n\007section\030\001 \001(\t\022-\n\tupdatedAt\030\002 \001("
-    "\0132\032.google.protobuf.Timestamp*\223\004\n\017EventC"
-    "ategories\022\034\n\030EVENTCATEGORIES_STANDARD\020\000\022"
-    "\036\n\032EVENTCATEGORIES_DAILYGOALS\020\001\022\"\n\036EVENT"
-    "CATEGORIES_DAILYMILESTONE\020\002\022\037\n\033EVENTCATE"
-    "GORIES_LEADERBOARD\020\003\022\030\n\024EVENTCATEGORIES_"
-    "STAT\020\004\022$\n EVENTCATEGORIES_BATTLEPASSSEAS"
-    "ON\020\005\022#\n\037EVENTCATEGORIES_BATTLEPASSEVENT\020"
-    "\006\022$\n EVENTCATEGORIES_TREASURYPROGRESS\020\007\022"
-    "\"\n\036EVENTCATEGORIES_TREASURYREWARD\020\010\022$\n E"
-    "VENTCATEGORIES_SERVERCLASHEVENT\020\t\022!\n\035EVE"
-    "NTCATEGORIES_WEBSTOREEVENT\020\n\022#\n\037EVENTCAT"
-    "EGORIES_PLAYERLIFECYCLE\020\013\022!\n\035EVENTCATEGO"
-    "RIES_FIELDTRAINING\020\014\022\036\n\032EVENTCATEGORIES_"
-    "FTCATEGORY\020\r\022\035\n\031EVENTCATEGORIES_CUTSCENE"
-    "S\020\016*J\n\rJoinForbidden\022\026\n\022JOINFORBIDDEN_NO"
-    "NE\020\000\022!\n\035JOINFORBIDDEN_EVENTINPROGRESS\020\001*"
-    "H\n\rPlacementType\022\032\n\026PLACEMENTTYPE_POSITI"
-    "ON\020\000\022\033\n\027PLACEMENTTYPE_MILESTONE\020\001*\310\001\n\013Se"
-    "gmentType\022\023\n\017SEGMENTTYPE_ALL\020\000\022\025\n\021SEGMEN"
-    "TTYPE_RANGE\020\001\022\024\n\020SEGMENTTYPE_EACH\020\002\022\025\n\021S"
-    "EGMENTTYPE_MATCH\020\003\022\025\n\021SEGMENTTYPE_GROUP\020"
-    "\004\022\024\n\020SEGMENTTYPE_VOID\020\005\022\027\n\023SEGMENTTYPE_E"
-    "ACHAND\020\006\022\032\n\026SEGMENTTYPE_RANGEMULTI\020\007*\220\001\n"
-    "\032PlayerlifecycleContentType\022#\n\037PLAYERLIF"
-    "ECYCLECONTENTTYPE_NEWS\020\000\022&\n\"PLAYERLIFECY"
-    "CLECONTENTTYPE_BUNDLES\020\001\022%\n!PLAYERLIFECY"
-    "CLECONTENTTYPE_EVENTS\020\002b\006proto3"
+    "oAssets\022\026\n\016battlePassLink\030\026 \001(\t\022\034\n\024battl"
+    "ePassResourceId\030\027 \001(\t\022B\n\016battlePassType\030"
+    "\030 \001(\0162*.Digit.PrimePlatform.Models.Battl"
+    "ePassType\022\024\n\014minigameLock\030\031 \001(\010\022\030\n\020minig"
+    "ameLevelMin\030\032 \001(\r\022\030\n\020minigameLevelMax\030\033 "
+    "\001(\r\"\212\005\n\nEventModel\0224\n\005ranks\030\014 \001(\0132%.Digi"
+    "t.PrimePlatform.Models.EventRank\022\020\n\010conf"
+    "igId\030\001 \001(\t\022\016\n\006source\030\002 \001(\t\022\021\n\teventType\030"
+    "\003 \001(\t\022=\n\010category\030\004 \001(\0162+.Digit.PrimePla"
+    "tform.Models.EventCategories\022@\n\rplacemen"
+    "tType\030\005 \001(\0162).Digit.PrimePlatform.Models"
+    ".PlacementType\022;\n\010schedule\030\006 \001(\0132).Digit"
+    ".PrimePlatform.Models.EventSchedule\022;\n\010m"
+    "etaData\030\007 \001(\0132).Digit.PrimePlatform.Mode"
+    "ls.EventMetadata\022\021\n\tgroupName\030\010 \001(\t\022:\n\010s"
+    "egments\030\t \003(\0132(.Digit.PrimePlatform.Mode"
+    "ls.EventSegment\0226\n\007ranking\030\n \001(\0132%.Digit"
+    ".PrimePlatform.Models.EventRank\022=\n\tentry"
+    "Data\030\013 \001(\0132*.Digit.PrimePlatform.Models."
+    "EventEntryData\0227\n\010joinCost\030\r \003(\0132%.Digit"
+    ".PrimePlatform.Content.Resource\022\027\n\017categ"
+    "oryGroupId\030\016 \001(\t\"~\n\tEventRank\022\n\n\002id\030\001 \001("
+    "\t\022\020\n\010position\030\002 \001(\005\022\014\n\004rank\030\003 \001(\005\022\r\n\005sco"
+    "re\030\004 \001(\002\022\r\n\005delta\030\005 \001(\005\022\022\n\ninstanceId\030\006 "
+    "\001(\005\022\023\n\013scoreDouble\030\007 \001(\001\"V\n\014EventRanking"
+    "\0224\n\005ranks\030\001 \003(\0132%.Digit.PrimePlatform.Mo"
+    "dels.EventRank\022\020\n\010configId\030\002 \001(\t\"L\n\013Even"
+    "tReward\022\020\n\010position\030\001 \003(\003\022\016\n\006amount\030\002 \001("
+    "\003\022\014\n\004type\030\003 \001(\t\022\r\n\005level\030\004 \001(\t\"\273\002\n\rEvent"
+    "Schedule\022\014\n\004term\030\001 \001(\t\022\023\n\013roundNumber\030\002 "
+    "\001(\005\022,\n\010announce\030\003 \001(\0132\032.google.protobuf."
+    "Timestamp\022)\n\005start\030\004 \001(\0132\032.google.protob"
+    "uf.Timestamp\022+\n\007display\030\005 \001(\0132\032.google.p"
+    "rotobuf.Timestamp\022)\n\005delay\030\006 \001(\0132\032.googl"
+    "e.protobuf.Timestamp\022\'\n\003end\030\007 \001(\0132\032.goog"
+    "le.protobuf.Timestamp\022-\n\tnextStart\030\010 \001(\013"
+    "2\032.google.protobuf.Timestamp\",\n\020EventSco"
+    "ringInfo\022\n\n\002id\030\001 \001(\005\022\014\n\004icon\030\002 \001(\t\"Y\n\006Ev"
+    "ents\022;\n\013tournaments\030\001 \003(\0132&.Digit.PrimeP"
+    "latform.Models.EventModel\022\022\n\ncategories\030"
+    "\002 \003(\005\"\315\001\n\021EventNotification\022\020\n\010configId\030"
+    "\001 \001(\t\022,\n\010modified\030\002 \001(\0132\032.google.protobu"
+    "f.Timestamp\0229\n\nplayerRank\030\003 \001(\0132%.Digit."
+    "PrimePlatform.Models.EventRank\022=\n\tentryD"
+    "ata\030\004 \001(\0132*.Digit.PrimePlatform.Models.E"
+    "ventEntryData\"\316\001\n\014EventSegment\0225\n\004type\030\001"
+    " \001(\0162\'.Digit.PrimePlatform.Models.Segmen"
+    "tType\022\016\n\006values\030\002 \003(\003\0228\n\007rewards\030\003 \003(\0132\'"
+    ".Digit.PrimePlatform.Models.EventReward\022"
+    "=\n\014uniqueWinner\030\004 \001(\0132\'.Digit.PrimePlatf"
+    "orm.Models.EventReward\"\242\001\n\020EventVideoAss"
+    "ets\022\n\n\002en\030\001 \001(\t\022\n\n\002es\030\002 \001(\t\022\n\n\002fr\030\003 \001(\t\022"
+    "\n\n\002de\030\004 \001(\t\022\n\n\002it\030\005 \001(\t\022\n\n\002ja\030\006 \001(\t\022\n\n\002p"
+    "t\030\007 \001(\t\022\n\n\002ru\030\010 \001(\t\022\n\n\002cn\030\t \001(\t\022\n\n\002ko\030\n "
+    "\001(\t\022\n\n\002hk\030\013 \001(\t\022\n\n\002tr\030\014 \001(\t\"\037\n\rRepeatedI"
+    "nt32\022\016\n\006values\030\001 \003(\005\"\220\001\n\033Playerlifecycle"
+    "Notification\022K\n\013contentType\030\001 \001(\01626.Digi"
+    "t.PrimePlatform.Models.PlayerlifecycleCo"
+    "ntentType\022\022\n\nplaygamiId\030\002 \001(\t\022\020\n\010categor"
+    "y\030\003 \001(\t\"\213\002\n\rGameNewsModel\022\016\n\006newsId\030\001 \001("
+    "\005\022\020\n\010priority\030\002 \001(\005\022\016\n\006pinned\030\003 \001(\010\022\021\n\ti"
+    "mportant\030\004 \001(\010\022-\n\tstartDate\030\005 \001(\0132\032.goog"
+    "le.protobuf.Timestamp\022+\n\007endDate\030\006 \001(\0132\032"
+    ".google.protobuf.Timestamp\022>\n\010metadata\030\007"
+    " \001(\0132,.Digit.PrimePlatform.Models.GameNe"
+    "wsMetadata\022\031\n\021isPlayerlifecycle\030\010 \001(\010\"N\n"
+    "\016GameNewsHolder\022<\n\tnewsItems\030\001 \003(\0132).Dig"
+    "it.PrimePlatform.Models.GameNewsModel\":\n"
+    "\020GameNewsMetadata\022\017\n\007assetId\030\001 \001(\t\022\025\n\ras"
+    "setFilename\030\002 \001(\t\"\217\002\n\rNotifications\022N\n\027t"
+    "ournamentNotifications\030\001 \003(\0132-.Digit.Pri"
+    "mePlatform.Models.EventNotification\022O\n\030l"
+    "eaderboardNotifications\030\002 \003(\0132-.Digit.Pr"
+    "imePlatform.Models.EventNotification\022]\n\034"
+    "playerlifecycleNotifications\030\003 \003(\01327.Dig"
+    "it.PrimePlatform.Models.PlayerlifecycleN"
+    "otification\"6\n\023PlatformUserProfile\022\021\n\tac"
+    "countId\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\"f\n\033PlatformU"
+    "serProfileResponse\022G\n\016playerProfiles\030\001 \003"
+    "(\0132/.Digit.PrimePlatform.Models.Platform"
+    "UserProfile\"^\n\013PlayerStats\022\021\n\taccountId\030"
+    "\001 \001(\t\022<\n\006groups\030\002 \003(\0132,.Digit.PrimePlatf"
+    "orm.Models.PlayerStatsGroup\"_\n\020PlayerSta"
+    "tsGroup\022\014\n\004name\030\001 \001(\t\022=\n\007entries\030\002 \003(\0132,"
+    ".Digit.PrimePlatform.Models.PlayerStatsE"
+    "ntry\"C\n\020PlayerStatsEntry\022\016\n\006statId\030\001 \001(\t"
+    "\022\020\n\010priority\030\002 \001(\005\022\r\n\005value\030\003 \001(\002\"`\n\nCac"
+    "heHints\022R\n\026translationCacheUpdate\030\001 \003(\0132"
+    "2.Digit.PrimePlatform.Models.Translation"
+    "CacheUpdate\"z\n\007Product\022\n\n\002id\030\001 \001(\r\022\014\n\004na"
+    "me\030\002 \001(\t\022\014\n\004code\030\003 \001(\t\022\016\n\006status\030\004 \001(\r\0227"
+    "\n\tinstances\030\005 \003(\0132$.Digit.PrimePlatform."
+    "Models.Instance\"\226\001\n\021ProductInfoHolder\022\017\n"
+    "\007version\030\001 \001(\t\0224\n\007product\030\002 \001(\0132#.Digit."
+    "PrimePlatform.Models.Product\022:\n\ncacheHin"
+    "ts\030\003 \001(\0132&.Digit.PrimePlatform.Models.Ca"
+    "cheHints\"6\n\006Region\022\n\n\002id\030\001 \001(\t\022\023\n\013descri"
+    "ption\030\002 \001(\t\022\013\n\003num\030\003 \001(\r\"\335\001\n\010Instance\022\n\n"
+    "\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\020\n\010priority\030\003 \001("
+    "\r\0222\n\006region\030\004 \001(\0132\".Digit.PrimePlatform."
+    "Models.Region\022\016\n\006status\030\005 \001(\005\022\023\n\013mainten"
+    "ance\030\006 \001(\003\022L\n\023playerTransferState\030\007 \001(\0132"
+    "/.Digit.PrimePlatform.Models.PlayerTrans"
+    "ferState\"U\n\023PlayerTransferState\022\022\n\ntrans"
+    "ferIn\030\001 \001(\010\022\023\n\013transferOut\030\002 \001(\010\022\025\n\rauth"
+    "enticated\030\003 \001(\010\"X\n\026TranslationCacheUpdat"
+    "e\022\017\n\007section\030\001 \001(\t\022-\n\tupdatedAt\030\002 \001(\0132\032."
+    "google.protobuf.Timestamp\"E\n\016MinigameHol"
+    "der\0223\n\005games\030\001 \003(\0132$.Digit.PrimePlatform"
+    ".Models.Minigame\"W\n\010Minigame\022\020\n\010configId"
+    "\030\001 \001(\t\0229\n\006stages\030\002 \003(\0132).Digit.PrimePlat"
+    "form.Models.MinigameStage\"c\n\rMinigameSta"
+    "ge\022\020\n\010configId\030\001 \001(\t\022\016\n\006locked\030\002 \001(\010\022\017\n\007"
+    "rewards\030\003 \003(\r\022\r\n\005score\030\004 \001(\r\022\020\n\010priority"
+    "\030\005 \001(\r*\334\004\n\017EventCategories\022\034\n\030EVENTCATEG"
+    "ORIES_STANDARD\020\000\022\036\n\032EVENTCATEGORIES_DAIL"
+    "YGOALS\020\001\022\"\n\036EVENTCATEGORIES_DAILYMILESTO"
+    "NE\020\002\022\037\n\033EVENTCATEGORIES_LEADERBOARD\020\003\022\030\n"
+    "\024EVENTCATEGORIES_STAT\020\004\022$\n EVENTCATEGORI"
+    "ES_BATTLEPASSSEASON\020\005\022#\n\037EVENTCATEGORIES"
+    "_BATTLEPASSEVENT\020\006\022$\n EVENTCATEGORIES_TR"
+    "EASURYPROGRESS\020\007\022\"\n\036EVENTCATEGORIES_TREA"
+    "SURYREWARD\020\010\022$\n EVENTCATEGORIES_SERVERCL"
+    "ASHEVENT\020\t\022!\n\035EVENTCATEGORIES_WEBSTOREEV"
+    "ENT\020\n\022#\n\037EVENTCATEGORIES_PLAYERLIFECYCLE"
+    "\020\013\022!\n\035EVENTCATEGORIES_FIELDTRAINING\020\014\022\036\n"
+    "\032EVENTCATEGORIES_FTCATEGORY\020\r\022\035\n\031EVENTCA"
+    "TEGORIES_CUTSCENES\020\016\022$\n EVENTCATEGORIES_"
+    "MINIGAMECATEGORY\020\017\022!\n\035EVENTCATEGORIES_MI"
+    "NIGAMESTAGE\020\020*J\n\rJoinForbidden\022\026\n\022JOINFO"
+    "RBIDDEN_NONE\020\000\022!\n\035JOINFORBIDDEN_EVENTINP"
+    "ROGRESS\020\001*R\n\016BattlePassType\022\033\n\027BATTLEPAS"
+    "STYPE_STANDARD\020\000\022#\n\037BATTLEPASSTYPE_TERRI"
+    "TORYCAPTURE\020\001*H\n\rPlacementType\022\032\n\026PLACEM"
+    "ENTTYPE_POSITION\020\000\022\033\n\027PLACEMENTTYPE_MILE"
+    "STONE\020\001*\310\001\n\013SegmentType\022\023\n\017SEGMENTTYPE_A"
+    "LL\020\000\022\025\n\021SEGMENTTYPE_RANGE\020\001\022\024\n\020SEGMENTTY"
+    "PE_EACH\020\002\022\025\n\021SEGMENTTYPE_MATCH\020\003\022\025\n\021SEGM"
+    "ENTTYPE_GROUP\020\004\022\024\n\020SEGMENTTYPE_VOID\020\005\022\027\n"
+    "\023SEGMENTTYPE_EACHAND\020\006\022\032\n\026SEGMENTTYPE_RA"
+    "NGEMULTI\020\007*\220\001\n\032PlayerlifecycleContentTyp"
+    "e\022#\n\037PLAYERLIFECYCLECONTENTTYPE_NEWS\020\000\022&"
+    "\n\"PLAYERLIFECYCLECONTENTTYPE_BUNDLES\020\001\022%"
+    "\n!PLAYERLIFECYCLECONTENTTYPE_EVENTS\020\002b\006p"
+    "roto3"
 };
 static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_deps[2] =
     {
@@ -1490,13 +1628,13 @@ static ::absl::once_flag descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto
 const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto = {
     false,
     false,
-    6271,
+    6885,
     descriptor_table_protodef_Digit_2ePrimePlatform_2eModels_2eproto,
     "Digit.PrimePlatform.Models.proto",
     &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
     descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_deps,
     2,
-    31,
+    34,
     schemas,
     file_default_instances,
     TableStruct_Digit_2ePrimePlatform_2eModels_2eproto::offsets,
@@ -1546,6 +1684,8 @@ bool EventCategories_IsValid(int value) {
     case 12:
     case 13:
     case 14:
+    case 15:
+    case 16:
       return true;
     default:
       return false;
@@ -1564,9 +1704,22 @@ bool JoinForbidden_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* PlacementType_descriptor() {
+const ::google::protobuf::EnumDescriptor* BattlePassType_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
   return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[2];
+}
+bool BattlePassType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+const ::google::protobuf::EnumDescriptor* PlacementType_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
+  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[3];
 }
 bool PlacementType_IsValid(int value) {
   switch (value) {
@@ -1579,7 +1732,7 @@ bool PlacementType_IsValid(int value) {
 }
 const ::google::protobuf::EnumDescriptor* SegmentType_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[3];
+  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[4];
 }
 bool SegmentType_IsValid(int value) {
   switch (value) {
@@ -1598,7 +1751,7 @@ bool SegmentType_IsValid(int value) {
 }
 const ::google::protobuf::EnumDescriptor* PlayerlifecycleContentType_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[4];
+  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[5];
 }
 bool PlayerlifecycleContentType_IsValid(int value) {
   switch (value) {
@@ -2198,9 +2351,12 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
       decltype(_impl_.visualassetfilename_){},
       decltype(_impl_.unlockitemid_){},
       decltype(_impl_.visualvideoid_){},
+      decltype(_impl_.battlepasslink_){},
+      decltype(_impl_.battlepassresourceid_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.servertransfercost_){nullptr},
       decltype(_impl_.visualvideoassets_){nullptr},
+      decltype(_impl_.cta_){},
       decltype(_impl_.isautoregister_){},
       decltype(_impl_.autoreward_){},
       decltype(_impl_.immediatereward_){},
@@ -2208,8 +2364,11 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
       decltype(_impl_.isuniquewinner_){},
       decltype(_impl_.iscrossserver_){},
       decltype(_impl_.respectpriority_){},
-      decltype(_impl_.cta_){},
+      decltype(_impl_.minigamelock_){},
       decltype(_impl_.priority_){},
+      decltype(_impl_.battlepasstype_){},
+      decltype(_impl_.minigamelevelmin_){},
+      decltype(_impl_.minigamelevelmax_){},
   };
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
@@ -2255,6 +2414,20 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
   if (!from._internal_visualvideoid().empty()) {
     _this->_impl_.visualvideoid_.Set(from._internal_visualvideoid(), _this->GetArenaForAllocation());
   }
+  _impl_.battlepasslink_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepasslink_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_battlepasslink().empty()) {
+    _this->_impl_.battlepasslink_.Set(from._internal_battlepasslink(), _this->GetArenaForAllocation());
+  }
+  _impl_.battlepassresourceid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepassresourceid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_battlepassresourceid().empty()) {
+    _this->_impl_.battlepassresourceid_.Set(from._internal_battlepassresourceid(), _this->GetArenaForAllocation());
+  }
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.bucket_ = new ::Digit::PrimePlatform::Content::Bucket(*from._impl_.bucket_);
   }
@@ -2264,9 +2437,9 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
   if ((from._impl_._has_bits_[0] & 0x00000004u) != 0) {
     _this->_impl_.visualvideoassets_ = new ::Digit::PrimePlatform::Models::EventVideoAssets(*from._impl_.visualvideoassets_);
   }
-  ::memcpy(&_impl_.isautoregister_, &from._impl_.isautoregister_,
-    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.priority_) -
-    reinterpret_cast<char*>(&_impl_.isautoregister_)) + sizeof(_impl_.priority_));
+  ::memcpy(&_impl_.cta_, &from._impl_.cta_,
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.minigamelevelmax_) -
+    reinterpret_cast<char*>(&_impl_.cta_)) + sizeof(_impl_.minigamelevelmax_));
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.EventMetadata)
 }
@@ -2284,9 +2457,12 @@ inline void EventMetadata::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.visualassetfilename_){},
       decltype(_impl_.unlockitemid_){},
       decltype(_impl_.visualvideoid_){},
+      decltype(_impl_.battlepasslink_){},
+      decltype(_impl_.battlepassresourceid_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.servertransfercost_){nullptr},
       decltype(_impl_.visualvideoassets_){nullptr},
+      decltype(_impl_.cta_){::int64_t{0}},
       decltype(_impl_.isautoregister_){false},
       decltype(_impl_.autoreward_){false},
       decltype(_impl_.immediatereward_){false},
@@ -2294,8 +2470,11 @@ inline void EventMetadata::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.isuniquewinner_){false},
       decltype(_impl_.iscrossserver_){false},
       decltype(_impl_.respectpriority_){false},
-      decltype(_impl_.cta_){::int64_t{0}},
+      decltype(_impl_.minigamelock_){false},
       decltype(_impl_.priority_){::int64_t{0}},
+      decltype(_impl_.battlepasstype_){0},
+      decltype(_impl_.minigamelevelmin_){0u},
+      decltype(_impl_.minigamelevelmax_){0u},
   };
   _impl_.iconassetid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2321,6 +2500,14 @@ inline void EventMetadata::SharedCtor(::_pb::Arena* arena) {
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
         _impl_.visualvideoid_.Set("", GetArenaForAllocation());
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.battlepasslink_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepasslink_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.battlepassresourceid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepassresourceid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 EventMetadata::~EventMetadata() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventMetadata)
@@ -2338,6 +2525,8 @@ inline void EventMetadata::SharedDtor() {
   _impl_.visualassetfilename_.Destroy();
   _impl_.unlockitemid_.Destroy();
   _impl_.visualvideoid_.Destroy();
+  _impl_.battlepasslink_.Destroy();
+  _impl_.battlepassresourceid_.Destroy();
   if (this != internal_default_instance()) delete _impl_.bucket_;
   if (this != internal_default_instance()) delete _impl_.servertransfercost_;
   if (this != internal_default_instance()) delete _impl_.visualvideoassets_;
@@ -2361,6 +2550,8 @@ PROTOBUF_NOINLINE void EventMetadata::Clear() {
   _impl_.visualassetfilename_.ClearToEmpty();
   _impl_.unlockitemid_.ClearToEmpty();
   _impl_.visualvideoid_.ClearToEmpty();
+  _impl_.battlepasslink_.ClearToEmpty();
+  _impl_.battlepassresourceid_.ClearToEmpty();
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
@@ -2376,9 +2567,9 @@ PROTOBUF_NOINLINE void EventMetadata::Clear() {
       _impl_.visualvideoassets_->Clear();
     }
   }
-  ::memset(&_impl_.isautoregister_, 0, static_cast<::size_t>(
-      reinterpret_cast<char*>(&_impl_.priority_) -
-      reinterpret_cast<char*>(&_impl_.isautoregister_)) + sizeof(_impl_.priority_));
+  ::memset(&_impl_.cta_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.minigamelevelmax_) -
+      reinterpret_cast<char*>(&_impl_.cta_)) + sizeof(_impl_.minigamelevelmax_));
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -2391,15 +2582,15 @@ const char* EventMetadata::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
+const ::_pbi::TcParseTable<5, 27, 6, 190, 2> EventMetadata::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_._has_bits_),
     0, // no _extensions_
-    21, 248,  // max_field_number, fast_idx_mask
+    27, 248,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4292870144,  // skipmap
+    4160749568,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    21,  // num_field_entries
+    27,  // num_field_entries
     6,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EventMetadata_default_instance_._instance,
@@ -2469,12 +2660,24 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     // .Digit.PrimePlatform.Models.EventVideoAssets visualVideoAssets = 21;
     {::_pbi::TcParser::FastMtS2,
      {426, 2, 5, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.visualvideoassets_)}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
+    // string battlePassLink = 22;
+    {::_pbi::TcParser::FastUS2,
+     {434, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasslink_)}},
+    // string battlePassResourceId = 23;
+    {::_pbi::TcParser::FastUS2,
+     {442, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepassresourceid_)}},
+    // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+    {::_pbi::TcParser::FastV32S2,
+     {448, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasstype_)}},
+    // bool minigameLock = 25;
+    {::_pbi::TcParser::FastV8S2,
+     {456, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelock_)}},
+    // uint32 minigameLevelMin = 26;
+    {::_pbi::TcParser::FastV32S2,
+     {464, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmin_)}},
+    // uint32 minigameLevelMax = 27;
+    {::_pbi::TcParser::FastV32S2,
+     {472, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmax_)}},
     {::_pbi::TcParser::MiniParse, {}},
     {::_pbi::TcParser::MiniParse, {}},
     {::_pbi::TcParser::MiniParse, {}},
@@ -2545,6 +2748,24 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     // .Digit.PrimePlatform.Models.EventVideoAssets visualVideoAssets = 21;
     {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.visualvideoassets_), _Internal::kHasBitsOffset + 2, 5,
     (0 | ::_fl::kFcOptional | ::_fl::kMessage | ::_fl::kTvTable)},
+    // string battlePassLink = 22;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasslink_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string battlePassResourceId = 23;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepassresourceid_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasstype_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
+    // bool minigameLock = 25;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelock_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
+    // uint32 minigameLevelMin = 26;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmin_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
+    // uint32 minigameLevelMax = 27;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmax_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
   }}, {{
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::EventScoringInfo>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::EventHighlights>()},
@@ -2553,7 +2774,7 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::RepeatedInt32>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::EventVideoAssets>()},
   }}, {{
-    "\50\0\0\0\0\13\21\13\23\0\0\0\0\0\14\0\0\0\0\0\15\0\0\0"
+    "\50\0\0\0\0\13\21\13\23\0\0\0\0\0\14\0\0\0\0\0\15\0\16\24\0\0\0\0\0\0\0\0"
     "Digit.PrimePlatform.Models.EventMetadata"
     "iconAssetId"
     "iconAssetFilename"
@@ -2561,6 +2782,8 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     "visualAssetFilename"
     "unlockItemId"
     "visualVideoId"
+    "battlePassLink"
+    "battlePassResourceId"
   }},
 };
 
@@ -2728,6 +2951,50 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
         _Internal::visualvideoassets(this).GetCachedSize(), target, stream);
   }
 
+  // string battlePassLink = 22;
+  if (!this->_internal_battlepasslink().empty()) {
+    const std::string& _s = this->_internal_battlepasslink();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.EventMetadata.battlePassLink");
+    target = stream->WriteStringMaybeAliased(22, _s, target);
+  }
+
+  // string battlePassResourceId = 23;
+  if (!this->_internal_battlepassresourceid().empty()) {
+    const std::string& _s = this->_internal_battlepassresourceid();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId");
+    target = stream->WriteStringMaybeAliased(23, _s, target);
+  }
+
+  // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+  if (this->_internal_battlepasstype() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+        24, this->_internal_battlepasstype(), target);
+  }
+
+  // bool minigameLock = 25;
+  if (this->_internal_minigamelock() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        25, this->_internal_minigamelock(), target);
+  }
+
+  // uint32 minigameLevelMin = 26;
+  if (this->_internal_minigamelevelmin() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        26, this->_internal_minigamelevelmin(), target);
+  }
+
+  // uint32 minigameLevelMax = 27;
+  if (this->_internal_minigamelevelmax() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        27, this->_internal_minigamelevelmax(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -2799,6 +3066,18 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
                                     this->_internal_visualvideoid());
   }
 
+  // string battlePassLink = 22;
+  if (!this->_internal_battlepasslink().empty()) {
+    total_size += 2 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_battlepasslink());
+  }
+
+  // string battlePassResourceId = 23;
+  if (!this->_internal_battlepassresourceid().empty()) {
+    total_size += 2 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_battlepassresourceid());
+  }
+
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000007u) {
     // .Digit.PrimePlatform.Content.Bucket bucket = 13;
@@ -2823,6 +3102,12 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     }
 
   }
+  // int64 cta = 10;
+  if (this->_internal_cta() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
+        this->_internal_cta());
+  }
+
   // bool isAutoRegister = 1;
   if (this->_internal_isautoregister() != 0) {
     total_size += 2;
@@ -2858,16 +3143,33 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     total_size += 3;
   }
 
-  // int64 cta = 10;
-  if (this->_internal_cta() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
-        this->_internal_cta());
+  // bool minigameLock = 25;
+  if (this->_internal_minigamelock() != 0) {
+    total_size += 3;
   }
 
   // int64 priority = 11;
   if (this->_internal_priority() != 0) {
     total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
         this->_internal_priority());
+  }
+
+  // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+  if (this->_internal_battlepasstype() != 0) {
+    total_size += 2 +
+                  ::_pbi::WireFormatLite::EnumSize(this->_internal_battlepasstype());
+  }
+
+  // uint32 minigameLevelMin = 26;
+  if (this->_internal_minigamelevelmin() != 0) {
+    total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                    this->_internal_minigamelevelmin());
+  }
+
+  // uint32 minigameLevelMax = 27;
+  if (this->_internal_minigamelevelmax() != 0) {
+    total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                    this->_internal_minigamelevelmax());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -2909,6 +3211,12 @@ void EventMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
   if (!from._internal_visualvideoid().empty()) {
     _this->_internal_set_visualvideoid(from._internal_visualvideoid());
   }
+  if (!from._internal_battlepasslink().empty()) {
+    _this->_internal_set_battlepasslink(from._internal_battlepasslink());
+  }
+  if (!from._internal_battlepassresourceid().empty()) {
+    _this->_internal_set_battlepassresourceid(from._internal_battlepassresourceid());
+  }
   cached_has_bits = from._impl_._has_bits_[0];
   if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
@@ -2923,6 +3231,9 @@ void EventMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
       _this->_internal_mutable_visualvideoassets()->::Digit::PrimePlatform::Models::EventVideoAssets::MergeFrom(
           from._internal_visualvideoassets());
     }
+  }
+  if (from._internal_cta() != 0) {
+    _this->_internal_set_cta(from._internal_cta());
   }
   if (from._internal_isautoregister() != 0) {
     _this->_internal_set_isautoregister(from._internal_isautoregister());
@@ -2945,11 +3256,20 @@ void EventMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
   if (from._internal_respectpriority() != 0) {
     _this->_internal_set_respectpriority(from._internal_respectpriority());
   }
-  if (from._internal_cta() != 0) {
-    _this->_internal_set_cta(from._internal_cta());
+  if (from._internal_minigamelock() != 0) {
+    _this->_internal_set_minigamelock(from._internal_minigamelock());
   }
   if (from._internal_priority() != 0) {
     _this->_internal_set_priority(from._internal_priority());
+  }
+  if (from._internal_battlepasstype() != 0) {
+    _this->_internal_set_battlepasstype(from._internal_battlepasstype());
+  }
+  if (from._internal_minigamelevelmin() != 0) {
+    _this->_internal_set_minigamelevelmin(from._internal_minigamelevelmin());
+  }
+  if (from._internal_minigamelevelmax() != 0) {
+    _this->_internal_set_minigamelevelmax(from._internal_minigamelevelmax());
   }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -2986,9 +3306,13 @@ void EventMetadata::InternalSwap(EventMetadata* other) {
                                        &other->_impl_.unlockitemid_, rhs_arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.visualvideoid_, lhs_arena,
                                        &other->_impl_.visualvideoid_, rhs_arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.battlepasslink_, lhs_arena,
+                                       &other->_impl_.battlepasslink_, rhs_arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.battlepassresourceid_, lhs_arena,
+                                       &other->_impl_.battlepassresourceid_, rhs_arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.priority_)
-      + sizeof(EventMetadata::_impl_.priority_)
+      PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmax_)
+      + sizeof(EventMetadata::_impl_.minigamelevelmax_)
       - PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.bucket_)>(
           reinterpret_cast<char*>(&_impl_.bucket_),
           reinterpret_cast<char*>(&other->_impl_.bucket_));
@@ -11325,6 +11649,708 @@ void TranslationCacheUpdate::InternalSwap(TranslationCacheUpdate* other) {
   return ::_pbi::AssignDescriptors(
       &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
       file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[30]);
+}
+// ===================================================================
+
+class MinigameHolder::_Internal {
+ public:
+};
+
+MinigameHolder::MinigameHolder(::google::protobuf::Arena* arena)
+    : ::google::protobuf::Message(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.MinigameHolder)
+}
+MinigameHolder::MinigameHolder(const MinigameHolder& from) : ::google::protobuf::Message() {
+  MinigameHolder* const _this = this;
+  (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.games_){from._impl_.games_},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+
+  // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.MinigameHolder)
+}
+inline void MinigameHolder::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.games_){arena},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+}
+MinigameHolder::~MinigameHolder() {
+  // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.MinigameHolder)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void MinigameHolder::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.games_.~RepeatedPtrField();
+}
+void MinigameHolder::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+PROTOBUF_NOINLINE void MinigameHolder::Clear() {
+// @@protoc_insertion_point(message_clear_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_mutable_games()->Clear();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+const char* MinigameHolder::_InternalParse(
+    const char* ptr, ::_pbi::ParseContext* ctx) {
+  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
+  return ptr;
+}
+
+
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<0, 1, 1, 0, 2> MinigameHolder::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    1, 0,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967294,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    1,  // num_field_entries
+    1,  // num_aux_entries
+    offsetof(decltype(_table_), aux_entries),
+    &_MinigameHolder_default_instance_._instance,
+    ::_pbi::TcParser::GenericFallback,  // fallback
+  }, {{
+    // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+    {::_pbi::TcParser::FastMtR1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameHolder, _impl_.games_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+    {PROTOBUF_FIELD_OFFSET(MinigameHolder, _impl_.games_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+  }}, {{
+    {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::Minigame>()},
+  }}, {{
+  }},
+};
+
+::uint8_t* MinigameHolder::_InternalSerialize(
+    ::uint8_t* target,
+    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_games_size()); i < n; i++) {
+    const auto& repfield = this->_internal_games().Get(i);
+    target = ::google::protobuf::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.MinigameHolder)
+  return target;
+}
+
+::size_t MinigameHolder::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+  total_size += 1UL * this->_internal_games_size();
+  for (const auto& msg : this->_internal_games()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+  }
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::google::protobuf::Message::ClassData MinigameHolder::_class_data_ = {
+    ::google::protobuf::Message::CopyWithSourceCheck,
+    MinigameHolder::MergeImpl
+};
+const ::google::protobuf::Message::ClassData*MinigameHolder::GetClassData() const { return &_class_data_; }
+
+
+void MinigameHolder::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
+  auto* const _this = static_cast<MinigameHolder*>(&to_msg);
+  auto& from = static_cast<const MinigameHolder&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_games()->MergeFrom(from._internal_games());
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void MinigameHolder::CopyFrom(const MinigameHolder& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Digit.PrimePlatform.Models.MinigameHolder)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+PROTOBUF_NOINLINE bool MinigameHolder::IsInitialized() const {
+  return true;
+}
+
+void MinigameHolder::InternalSwap(MinigameHolder* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.games_.InternalSwap(&other->_impl_.games_);
+}
+
+::google::protobuf::Metadata MinigameHolder::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
+      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[31]);
+}
+// ===================================================================
+
+class Minigame::_Internal {
+ public:
+};
+
+Minigame::Minigame(::google::protobuf::Arena* arena)
+    : ::google::protobuf::Message(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.Minigame)
+}
+Minigame::Minigame(const Minigame& from) : ::google::protobuf::Message() {
+  Minigame* const _this = this;
+  (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.stages_){from._impl_.stages_},
+      decltype(_impl_.configid_){},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_configid().empty()) {
+    _this->_impl_.configid_.Set(from._internal_configid(), _this->GetArenaForAllocation());
+  }
+
+  // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.Minigame)
+}
+inline void Minigame::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.stages_){arena},
+      decltype(_impl_.configid_){},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+Minigame::~Minigame() {
+  // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.Minigame)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void Minigame::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.stages_.~RepeatedPtrField();
+  _impl_.configid_.Destroy();
+}
+void Minigame::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+PROTOBUF_NOINLINE void Minigame::Clear() {
+// @@protoc_insertion_point(message_clear_start:Digit.PrimePlatform.Models.Minigame)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_mutable_stages()->Clear();
+  _impl_.configid_.ClearToEmpty();
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+const char* Minigame::_InternalParse(
+    const char* ptr, ::_pbi::ParseContext* ctx) {
+  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
+  return ptr;
+}
+
+
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<1, 2, 1, 52, 2> Minigame::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    2, 8,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967292,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    2,  // num_field_entries
+    1,  // num_aux_entries
+    offsetof(decltype(_table_), aux_entries),
+    &_Minigame_default_instance_._instance,
+    ::_pbi::TcParser::GenericFallback,  // fallback
+  }, {{
+    // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+    {::_pbi::TcParser::FastMtR1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(Minigame, _impl_.stages_)}},
+    // string configId = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(Minigame, _impl_.configid_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string configId = 1;
+    {PROTOBUF_FIELD_OFFSET(Minigame, _impl_.configid_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+    {PROTOBUF_FIELD_OFFSET(Minigame, _impl_.stages_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+  }}, {{
+    {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::MinigameStage>()},
+  }}, {{
+    "\43\10\0\0\0\0\0\0"
+    "Digit.PrimePlatform.Models.Minigame"
+    "configId"
+  }},
+};
+
+::uint8_t* Minigame::_InternalSerialize(
+    ::uint8_t* target,
+    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Digit.PrimePlatform.Models.Minigame)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    const std::string& _s = this->_internal_configid();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.Minigame.configId");
+    target = stream->WriteStringMaybeAliased(1, _s, target);
+  }
+
+  // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_stages_size()); i < n; i++) {
+    const auto& repfield = this->_internal_stages().Get(i);
+    target = ::google::protobuf::internal::WireFormatLite::
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.Minigame)
+  return target;
+}
+
+::size_t Minigame::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Digit.PrimePlatform.Models.Minigame)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+  total_size += 1UL * this->_internal_stages_size();
+  for (const auto& msg : this->_internal_stages()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+  }
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_configid());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::google::protobuf::Message::ClassData Minigame::_class_data_ = {
+    ::google::protobuf::Message::CopyWithSourceCheck,
+    Minigame::MergeImpl
+};
+const ::google::protobuf::Message::ClassData*Minigame::GetClassData() const { return &_class_data_; }
+
+
+void Minigame::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
+  auto* const _this = static_cast<Minigame*>(&to_msg);
+  auto& from = static_cast<const Minigame&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.Minigame)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_stages()->MergeFrom(from._internal_stages());
+  if (!from._internal_configid().empty()) {
+    _this->_internal_set_configid(from._internal_configid());
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void Minigame::CopyFrom(const Minigame& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Digit.PrimePlatform.Models.Minigame)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+PROTOBUF_NOINLINE bool Minigame::IsInitialized() const {
+  return true;
+}
+
+void Minigame::InternalSwap(Minigame* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.stages_.InternalSwap(&other->_impl_.stages_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.configid_, lhs_arena,
+                                       &other->_impl_.configid_, rhs_arena);
+}
+
+::google::protobuf::Metadata Minigame::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
+      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[32]);
+}
+// ===================================================================
+
+class MinigameStage::_Internal {
+ public:
+};
+
+MinigameStage::MinigameStage(::google::protobuf::Arena* arena)
+    : ::google::protobuf::Message(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.MinigameStage)
+}
+MinigameStage::MinigameStage(const MinigameStage& from) : ::google::protobuf::Message() {
+  MinigameStage* const _this = this;
+  (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.rewards_){from._impl_.rewards_},
+      /* _impl_._rewards_cached_byte_size_ = */ {0},
+      decltype(_impl_.configid_){},
+      decltype(_impl_.locked_){},
+      decltype(_impl_.score_){},
+      decltype(_impl_.priority_){},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+      from._internal_metadata_);
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_configid().empty()) {
+    _this->_impl_.configid_.Set(from._internal_configid(), _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.locked_, &from._impl_.locked_,
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.priority_) -
+    reinterpret_cast<char*>(&_impl_.locked_)) + sizeof(_impl_.priority_));
+
+  // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.MinigameStage)
+}
+inline void MinigameStage::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.rewards_){arena},
+      /* _impl_._rewards_cached_byte_size_ = */ {0},
+      decltype(_impl_.configid_){},
+      decltype(_impl_.locked_){false},
+      decltype(_impl_.score_){0u},
+      decltype(_impl_.priority_){0u},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+MinigameStage::~MinigameStage() {
+  // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.MinigameStage)
+  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  SharedDtor();
+}
+inline void MinigameStage::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.rewards_.~RepeatedField();
+  _impl_.configid_.Destroy();
+}
+void MinigameStage::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+PROTOBUF_NOINLINE void MinigameStage::Clear() {
+// @@protoc_insertion_point(message_clear_start:Digit.PrimePlatform.Models.MinigameStage)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_mutable_rewards()->Clear();
+  _impl_.configid_.ClearToEmpty();
+  ::memset(&_impl_.locked_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.priority_) -
+      reinterpret_cast<char*>(&_impl_.locked_)) + sizeof(_impl_.priority_));
+  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+}
+
+const char* MinigameStage::_InternalParse(
+    const char* ptr, ::_pbi::ParseContext* ctx) {
+  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
+  return ptr;
+}
+
+
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<3, 5, 0, 57, 2> MinigameStage::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    5, 56,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967264,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    5,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    &_MinigameStage_default_instance_._instance,
+    ::_pbi::TcParser::GenericFallback,  // fallback
+  }, {{
+    {::_pbi::TcParser::MiniParse, {}},
+    // string configId = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.configid_)}},
+    // bool locked = 2;
+    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(MinigameStage, _impl_.locked_), 63>(),
+     {16, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.locked_)}},
+    // repeated uint32 rewards = 3;
+    {::_pbi::TcParser::FastV32P1,
+     {26, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.rewards_)}},
+    // uint32 score = 4;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(MinigameStage, _impl_.score_), 63>(),
+     {32, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.score_)}},
+    // uint32 priority = 5;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(MinigameStage, _impl_.priority_), 63>(),
+     {40, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.priority_)}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string configId = 1;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.configid_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // bool locked = 2;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.locked_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
+    // repeated uint32 rewards = 3;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.rewards_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
+    // uint32 score = 4;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.score_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
+    // uint32 priority = 5;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.priority_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
+  }},
+  // no aux_entries
+  {{
+    "\50\10\0\0\0\0\0\0"
+    "Digit.PrimePlatform.Models.MinigameStage"
+    "configId"
+  }},
+};
+
+::uint8_t* MinigameStage::_InternalSerialize(
+    ::uint8_t* target,
+    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Digit.PrimePlatform.Models.MinigameStage)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    const std::string& _s = this->_internal_configid();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.MinigameStage.configId");
+    target = stream->WriteStringMaybeAliased(1, _s, target);
+  }
+
+  // bool locked = 2;
+  if (this->_internal_locked() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        2, this->_internal_locked(), target);
+  }
+
+  // repeated uint32 rewards = 3;
+  {
+    int byte_size = _impl_._rewards_cached_byte_size_.Get();
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(3, _internal_rewards(),
+                                                 byte_size, target);
+    }
+  }
+
+  // uint32 score = 4;
+  if (this->_internal_score() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        4, this->_internal_score(), target);
+  }
+
+  // uint32 priority = 5;
+  if (this->_internal_priority() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        5, this->_internal_priority(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target =
+        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
+            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.MinigameStage)
+  return target;
+}
+
+::size_t MinigameStage::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Digit.PrimePlatform.Models.MinigameStage)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated uint32 rewards = 3;
+  {
+    std::size_t data_size = ::_pbi::WireFormatLite::UInt32Size(
+        this->_internal_rewards())
+    ;
+    _impl_._rewards_cached_byte_size_.Set(::_pbi::ToCachedSize(data_size));
+    std::size_t tag_size = data_size == 0
+        ? 0
+        : 1 + ::_pbi::WireFormatLite::Int32Size(
+                            static_cast<int32_t>(data_size))
+    ;
+    total_size += tag_size + data_size;
+  }
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_configid());
+  }
+
+  // bool locked = 2;
+  if (this->_internal_locked() != 0) {
+    total_size += 2;
+  }
+
+  // uint32 score = 4;
+  if (this->_internal_score() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+        this->_internal_score());
+  }
+
+  // uint32 priority = 5;
+  if (this->_internal_priority() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+        this->_internal_priority());
+  }
+
+  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+}
+
+const ::google::protobuf::Message::ClassData MinigameStage::_class_data_ = {
+    ::google::protobuf::Message::CopyWithSourceCheck,
+    MinigameStage::MergeImpl
+};
+const ::google::protobuf::Message::ClassData*MinigameStage::GetClassData() const { return &_class_data_; }
+
+
+void MinigameStage::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
+  auto* const _this = static_cast<MinigameStage*>(&to_msg);
+  auto& from = static_cast<const MinigameStage&>(from_msg);
+  // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.MinigameStage)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_rewards()->MergeFrom(from._internal_rewards());
+  if (!from._internal_configid().empty()) {
+    _this->_internal_set_configid(from._internal_configid());
+  }
+  if (from._internal_locked() != 0) {
+    _this->_internal_set_locked(from._internal_locked());
+  }
+  if (from._internal_score() != 0) {
+    _this->_internal_set_score(from._internal_score());
+  }
+  if (from._internal_priority() != 0) {
+    _this->_internal_set_priority(from._internal_priority());
+  }
+  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+}
+
+void MinigameStage::CopyFrom(const MinigameStage& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Digit.PrimePlatform.Models.MinigameStage)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+PROTOBUF_NOINLINE bool MinigameStage::IsInitialized() const {
+  return true;
+}
+
+void MinigameStage::InternalSwap(MinigameStage* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.rewards_.InternalSwap(&other->_impl_.rewards_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.configid_, lhs_arena,
+                                       &other->_impl_.configid_, rhs_arena);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.priority_)
+      + sizeof(MinigameStage::_impl_.priority_)
+      - PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.locked_)>(
+          reinterpret_cast<char*>(&_impl_.locked_),
+          reinterpret_cast<char*>(&other->_impl_.locked_));
+}
+
+::google::protobuf::Metadata MinigameStage::GetMetadata() const {
+  return ::_pbi::AssignDescriptors(
+      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
+      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[33]);
 }
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Models

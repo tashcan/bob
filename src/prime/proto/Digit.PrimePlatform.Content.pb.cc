@@ -55,6 +55,7 @@ PROTOBUF_CONSTEXPR Bundle::Bundle(::_pbi::ConstantInitialized)
       /*decltype(_impl_.sortorder_)*/ 0u,
       /*decltype(_impl_.isspecial_)*/ false,
       /*decltype(_impl_.isplayerlifecycle_)*/ false,
+      /*decltype(_impl_.allowcustomquantity_)*/ false,
     } {}
 struct BundleDefaultTypeInternal {
   PROTOBUF_CONSTEXPR BundleDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
@@ -307,6 +308,7 @@ PROTOBUF_CONSTEXPR Resource::Resource(::_pbi::ConstantInitialized)
       },
       /*decltype(_impl_.amount_)*/ 0u,
       /*decltype(_impl_.amountold_)*/ 0u,
+      /*decltype(_impl_.amountulong_)*/ ::uint64_t{0u},
       /*decltype(_impl_.unavailabledisplaymode_)*/ 0,
       /*decltype(_impl_._cached_size_)*/ {},
     } {}
@@ -347,6 +349,8 @@ PROTOBUF_CONSTEXPR Metadata::Metadata(::_pbi::ConstantInitialized)
       },
       /*decltype(_impl_.bucket_)*/ nullptr,
       /*decltype(_impl_.secondarybundleid_)*/ ::int64_t{0},
+      /*decltype(_impl_.animationonclaimtype_)*/ 0,
+      /*decltype(_impl_.skiponclaimall_)*/ false,
     } {}
 struct MetadataDefaultTypeInternal {
   PROTOBUF_CONSTEXPR MetadataDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
@@ -427,8 +431,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace PrimePlatform
 }  // namespace Digit
 static ::_pb::Metadata file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[17];
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_Digit_2ePrimePlatform_2eContent_2eproto = nullptr;
+static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2ePrimePlatform_2eContent_2eproto[1];
 static constexpr const ::_pb::ServiceDescriptor**
     file_level_service_descriptors_Digit_2ePrimePlatform_2eContent_2eproto = nullptr;
 const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
@@ -456,6 +459,7 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets[] 
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.oldexternalid_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.offerdetails_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.isplayerlifecycle_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.allowcustomquantity_),
     ~0u,
     ~0u,
     ~0u,
@@ -470,6 +474,7 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets[] 
     ~0u,
     ~0u,
     3,
+    ~0u,
     ~0u,
     ~0u,  // no _has_bits_
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationsContainer, _internal_metadata_),
@@ -619,6 +624,7 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets[] 
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.id_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.type_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.unavailabledisplaymode_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.amountulong_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_._has_bits_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _internal_metadata_),
     ~0u,  // no _extensions_
@@ -634,11 +640,15 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets[] 
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.bucket_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.bundlemultiplier_),
     PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.secondarybundleid_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.animationonclaimtype_),
+    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.skiponclaimall_),
     ~0u,
     ~0u,
     ~0u,
     ~0u,
     0,
+    ~0u,
+    ~0u,
     ~0u,
     ~0u,
     ~0u,  // no _has_bits_
@@ -686,23 +696,23 @@ const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets[] 
 
 static const ::_pbi::MigrationSchema
     schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 23, -1, sizeof(::Digit::PrimePlatform::Content::Bundle)},
-        {38, -1, -1, sizeof(::Digit::PrimePlatform::Content::TranslationsContainer)},
-        {47, 59, -1, sizeof(::Digit::PrimePlatform::Content::TranslationSection)},
-        {63, -1, -1, sizeof(::Digit::PrimePlatform::Content::Translation)},
-        {75, -1, -1, sizeof(::Digit::PrimePlatform::Content::ContentItem)},
-        {87, -1, -1, sizeof(::Digit::PrimePlatform::Content::Bucket)},
-        {99, 112, -1, sizeof(::Digit::PrimePlatform::Content::BundleContent)},
-        {117, -1, -1, sizeof(::Digit::PrimePlatform::Content::ContentItemList)},
-        {126, 137, -1, sizeof(::Digit::PrimePlatform::Content::Order)},
-        {140, 151, -1, sizeof(::Digit::PrimePlatform::Content::OrderItem)},
-        {154, -1, -1, sizeof(::Digit::PrimePlatform::Content::Bundles)},
-        {163, -1, -1, sizeof(::Digit::PrimePlatform::Content::Cost)},
-        {173, -1, -1, sizeof(::Digit::PrimePlatform::Content::Resource)},
-        {186, 201, -1, sizeof(::Digit::PrimePlatform::Content::Metadata)},
-        {208, -1, -1, sizeof(::Digit::PrimePlatform::Content::Hinting_TranslationKey)},
-        {218, -1, -1, sizeof(::Digit::PrimePlatform::Content::Hinting)},
-        {227, 242, -1, sizeof(::Digit::PrimePlatform::Content::OfferDetails)},
+        {0, 24, -1, sizeof(::Digit::PrimePlatform::Content::Bundle)},
+        {40, -1, -1, sizeof(::Digit::PrimePlatform::Content::TranslationsContainer)},
+        {49, 61, -1, sizeof(::Digit::PrimePlatform::Content::TranslationSection)},
+        {65, -1, -1, sizeof(::Digit::PrimePlatform::Content::Translation)},
+        {77, -1, -1, sizeof(::Digit::PrimePlatform::Content::ContentItem)},
+        {89, -1, -1, sizeof(::Digit::PrimePlatform::Content::Bucket)},
+        {101, 114, -1, sizeof(::Digit::PrimePlatform::Content::BundleContent)},
+        {119, -1, -1, sizeof(::Digit::PrimePlatform::Content::ContentItemList)},
+        {128, 139, -1, sizeof(::Digit::PrimePlatform::Content::Order)},
+        {142, 153, -1, sizeof(::Digit::PrimePlatform::Content::OrderItem)},
+        {156, -1, -1, sizeof(::Digit::PrimePlatform::Content::Bundles)},
+        {165, -1, -1, sizeof(::Digit::PrimePlatform::Content::Cost)},
+        {175, -1, -1, sizeof(::Digit::PrimePlatform::Content::Resource)},
+        {189, 206, -1, sizeof(::Digit::PrimePlatform::Content::Metadata)},
+        {215, -1, -1, sizeof(::Digit::PrimePlatform::Content::Hinting_TranslationKey)},
+        {225, -1, -1, sizeof(::Digit::PrimePlatform::Content::Hinting)},
+        {234, 249, -1, sizeof(::Digit::PrimePlatform::Content::OfferDetails)},
 };
 
 static const ::_pb::Message* const file_default_instances[] = {
@@ -727,7 +737,7 @@ static const ::_pb::Message* const file_default_instances[] = {
 const char descriptor_table_protodef_Digit_2ePrimePlatform_2eContent_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
     "\n!Digit.PrimePlatform.Content.proto\022\033Dig"
     "it.PrimePlatform.Content\032\037google/protobu"
-    "f/timestamp.proto\"\240\004\n\006Bundle\022\020\n\010bundleId"
+    "f/timestamp.proto\"\275\004\n\006Bundle\022\020\n\010bundleId"
     "\030\001 \001(\003\022\030\n\020bundleTypeString\030\002 \001(\t\022\020\n\010prio"
     "rity\030\003 \001(\r\022\021\n\tsortOrder\030\004 \001(\r\022\021\n\tisSpeci"
     "al\030\005 \001(\010\022/\n\004cost\030\006 \003(\0132!.Digit.PrimePlat"
@@ -741,56 +751,63 @@ const char descriptor_table_protodef_Digit_2ePrimePlatform_2eContent_2eproto[] P
     "lId\030\014 \001(\t\022\025\n\roldExternalId\030\r \001(\t\022\?\n\014offe"
     "rDetails\030\016 \001(\0132).Digit.PrimePlatform.Con"
     "tent.OfferDetails\022\031\n\021isPlayerlifecycle\030\017"
-    " \001(\010\"Z\n\025TranslationsContainer\022A\n\010section"
-    "s\030\001 \003(\0132/.Digit.PrimePlatform.Content.Tr"
-    "anslationSection\"\250\001\n\022TranslationSection\022"
-    "\017\n\007section\030\001 \001(\t\022\023\n\013sectionHash\030\002 \001(\005\022>\n"
-    "\014translations\030\003 \003(\0132(.Digit.PrimePlatfor"
-    "m.Content.Translation\022,\n\010modified\030\004 \001(\0132"
-    "\032.google.protobuf.Timestamp\"E\n\013Translati"
-    "on\022\013\n\003key\030\001 \001(\t\022\017\n\007keyHash\030\002 \001(\005\022\014\n\004text"
-    "\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\"H\n\013ContentItem\022\n\n\002id\030"
-    "\001 \001(\t\022\020\n\010quantity\030\002 \001(\003\022\014\n\004type\030\003 \001(\t\022\r\n"
-    "\005level\030\004 \001(\r\"G\n\006Bucket\022\n\n\002id\030\001 \001(\003\022\017\n\007tr"
-    "ansId\030\002 \001(\t\022\r\n\005artId\030\003 \001(\t\022\021\n\tsortOrder\030"
-    "\004 \001(\003\"\313\002\n\rBundleContent\022=\n\007dynamic\030\001 \003(\013"
-    "2,.Digit.PrimePlatform.Content.ContentIt"
-    "emList\022;\n\005gifts\030\002 \001(\0132,.Digit.PrimePlatf"
-    "orm.Content.ContentItemList\022>\n\010showcase\030"
-    "\003 \001(\0132,.Digit.PrimePlatform.Content.Cont"
-    "entItemList\022<\n\006static\030\004 \001(\0132,.Digit.Prim"
-    "ePlatform.Content.ContentItemList\022@\n\nmul"
-    "tiplied\030\005 \001(\0132,.Digit.PrimePlatform.Cont"
-    "ent.ContentItemList\"J\n\017ContentItemList\0227"
-    "\n\005items\030\001 \003(\0132(.Digit.PrimePlatform.Cont"
-    "ent.ContentItem\"\201\001\n\005Order\022\017\n\007orderId\030\001 \001"
-    "(\t\022+\n\007created\030\002 \001(\0132\032.google.protobuf.Ti"
-    "mestamp\022:\n\norderItems\030\003 \003(\0132&.Digit.Prim"
-    "ePlatform.Content.OrderItem\"q\n\tOrderItem"
-    "\022\020\n\010bundleId\030\001 \001(\r\022\025\n\rbundleVersion\030\002 \001("
-    "\r\022;\n\007content\030\003 \001(\0132*.Digit.PrimePlatform"
-    ".Content.BundleContent\"@\n\007Bundles\0225\n\010bun"
-    "dles_\030\001 \003(\0132#.Digit.PrimePlatform.Conten"
-    "t.Bundle\"N\n\004Cost\0224\n\005cost_\030\001 \003(\0132%.Digit."
-    "PrimePlatform.Content.Resource\022\020\n\010quanti"
-    "ty\030\002 \001(\r\"g\n\010Resource\022\016\n\006amount\030\001 \001(\r\022\021\n\t"
-    "amountOld\030\002 \001(\r\022\n\n\002id\030\003 \001(\t\022\014\n\004type\030\004 \001("
-    "\t\022\036\n\026unavailableDisplayMode\030\005 \001(\005\"\306\001\n\010Me"
-    "tadata\022\r\n\005color\030\001 \001(\t\022\017\n\007assetId\030\002 \001(\t\022\025"
-    "\n\rassetFilename\030\003 \001(\t\022\031\n\021iconAssetFilena"
-    "me\030\004 \001(\t\0223\n\006bucket\030\005 \001(\0132#.Digit.PrimePl"
-    "atform.Content.Bucket\022\030\n\020bundleMultiplie"
-    "r\030\006 \001(\t\022\031\n\021secondaryBundleId\030\007 \001(\003\"\216\001\n\007H"
-    "inting\022L\n\017translationKeys\030\001 \003(\01323.Digit."
-    "PrimePlatform.Content.Hinting.Translatio"
-    "nKey\0325\n\016TranslationKey\022\r\n\005field\030\001 \001(\t\022\024\n"
-    "\014isTranslated\030\002 \001(\010\"\372\001\n\014OfferDetails\022\022\n\n"
-    "bonusLabel\030\001 \001(\t\022\022\n\nbonusValue\030\002 \001(\t\022\022\n\n"
-    "validCount\030\003 \001(\005\0226\n\022validFromTimestamp\030\004"
-    " \001(\0132\032.google.protobuf.Timestamp\0227\n\023vali"
-    "dUntilTimestamp\030\005 \001(\0132\032.google.protobuf."
-    "Timestamp\022\032\n\022sameRemainingCount\030\006 \001(\005\022!\n"
-    "\031sameRemainingCountVisible\030\007 \001(\010b\006proto3"
+    " \001(\010\022\033\n\023allowCustomQuantity\030\020 \001(\010\"Z\n\025Tra"
+    "nslationsContainer\022A\n\010sections\030\001 \003(\0132/.D"
+    "igit.PrimePlatform.Content.TranslationSe"
+    "ction\"\250\001\n\022TranslationSection\022\017\n\007section\030"
+    "\001 \001(\t\022\023\n\013sectionHash\030\002 \001(\005\022>\n\014translatio"
+    "ns\030\003 \003(\0132(.Digit.PrimePlatform.Content.T"
+    "ranslation\022,\n\010modified\030\004 \001(\0132\032.google.pr"
+    "otobuf.Timestamp\"E\n\013Translation\022\013\n\003key\030\001"
+    " \001(\t\022\017\n\007keyHash\030\002 \001(\005\022\014\n\004text\030\003 \001(\t\022\n\n\002i"
+    "d\030\004 \001(\t\"H\n\013ContentItem\022\n\n\002id\030\001 \001(\t\022\020\n\010qu"
+    "antity\030\002 \001(\003\022\014\n\004type\030\003 \001(\t\022\r\n\005level\030\004 \001("
+    "\r\"G\n\006Bucket\022\n\n\002id\030\001 \001(\003\022\017\n\007transId\030\002 \001(\t"
+    "\022\r\n\005artId\030\003 \001(\t\022\021\n\tsortOrder\030\004 \001(\003\"\313\002\n\rB"
+    "undleContent\022=\n\007dynamic\030\001 \003(\0132,.Digit.Pr"
+    "imePlatform.Content.ContentItemList\022;\n\005g"
+    "ifts\030\002 \001(\0132,.Digit.PrimePlatform.Content"
+    ".ContentItemList\022>\n\010showcase\030\003 \001(\0132,.Dig"
+    "it.PrimePlatform.Content.ContentItemList"
+    "\022<\n\006static\030\004 \001(\0132,.Digit.PrimePlatform.C"
+    "ontent.ContentItemList\022@\n\nmultiplied\030\005 \001"
+    "(\0132,.Digit.PrimePlatform.Content.Content"
+    "ItemList\"J\n\017ContentItemList\0227\n\005items\030\001 \003"
+    "(\0132(.Digit.PrimePlatform.Content.Content"
+    "Item\"\201\001\n\005Order\022\017\n\007orderId\030\001 \001(\t\022+\n\007creat"
+    "ed\030\002 \001(\0132\032.google.protobuf.Timestamp\022:\n\n"
+    "orderItems\030\003 \003(\0132&.Digit.PrimePlatform.C"
+    "ontent.OrderItem\"q\n\tOrderItem\022\020\n\010bundleI"
+    "d\030\001 \001(\r\022\025\n\rbundleVersion\030\002 \001(\r\022;\n\007conten"
+    "t\030\003 \001(\0132*.Digit.PrimePlatform.Content.Bu"
+    "ndleContent\"@\n\007Bundles\0225\n\010bundles_\030\001 \003(\013"
+    "2#.Digit.PrimePlatform.Content.Bundle\"N\n"
+    "\004Cost\0224\n\005cost_\030\001 \003(\0132%.Digit.PrimePlatfo"
+    "rm.Content.Resource\022\020\n\010quantity\030\002 \001(\r\"|\n"
+    "\010Resource\022\016\n\006amount\030\001 \001(\r\022\021\n\tamountOld\030\002"
+    " \001(\r\022\n\n\002id\030\003 \001(\t\022\014\n\004type\030\004 \001(\t\022\036\n\026unavai"
+    "lableDisplayMode\030\005 \001(\005\022\023\n\013amountUlong\030\006 "
+    "\001(\004\"\257\002\n\010Metadata\022\r\n\005color\030\001 \001(\t\022\017\n\007asset"
+    "Id\030\002 \001(\t\022\025\n\rassetFilename\030\003 \001(\t\022\031\n\021iconA"
+    "ssetFilename\030\004 \001(\t\0223\n\006bucket\030\005 \001(\0132#.Dig"
+    "it.PrimePlatform.Content.Bucket\022\030\n\020bundl"
+    "eMultiplier\030\006 \001(\t\022\031\n\021secondaryBundleId\030\007"
+    " \001(\003\022O\n\024animationOnClaimType\030\010 \001(\01621.Dig"
+    "it.PrimePlatform.Content.AnimationOnClai"
+    "mType\022\026\n\016skipOnClaimAll\030\t \001(\010\"\216\001\n\007Hintin"
+    "g\022L\n\017translationKeys\030\001 \003(\01323.Digit.Prime"
+    "Platform.Content.Hinting.TranslationKey\032"
+    "5\n\016TranslationKey\022\r\n\005field\030\001 \001(\t\022\024\n\014isTr"
+    "anslated\030\002 \001(\010\"\372\001\n\014OfferDetails\022\022\n\nbonus"
+    "Label\030\001 \001(\t\022\022\n\nbonusValue\030\002 \001(\t\022\022\n\nvalid"
+    "Count\030\003 \001(\005\0226\n\022validFromTimestamp\030\004 \001(\0132"
+    "\032.google.protobuf.Timestamp\0227\n\023validUnti"
+    "lTimestamp\030\005 \001(\0132\032.google.protobuf.Times"
+    "tamp\022\032\n\022sameRemainingCount\030\006 \001(\005\022!\n\031same"
+    "RemainingCountVisible\030\007 \001(\010*]\n\024Animation"
+    "OnClaimType\022$\n ANIMATIONONCLAIMTYPE_UNSP"
+    "ECIFIED\020\000\022\037\n\033ANIMATIONONCLAIMTYPE_FLYOUT"
+    "\020\001b\006proto3"
 };
 static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_deps[1] =
     {
@@ -800,7 +817,7 @@ static ::absl::once_flag descriptor_table_Digit_2ePrimePlatform_2eContent_2eprot
 const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto = {
     false,
     false,
-    2640,
+    2890,
     descriptor_table_protodef_Digit_2ePrimePlatform_2eContent_2eproto,
     "Digit.PrimePlatform.Content.proto",
     &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
@@ -835,6 +852,19 @@ static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrimePlatform_2eC
 namespace Digit {
 namespace PrimePlatform {
 namespace Content {
+const ::google::protobuf::EnumDescriptor* AnimationOnClaimType_descriptor() {
+  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto);
+  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eContent_2eproto[0];
+}
+bool AnimationOnClaimType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
 // ===================================================================
 
 class Bundle::_Internal {
@@ -898,6 +928,7 @@ Bundle::Bundle(const Bundle& from) : ::google::protobuf::Message() {
       decltype(_impl_.sortorder_){},
       decltype(_impl_.isspecial_){},
       decltype(_impl_.isplayerlifecycle_){},
+      decltype(_impl_.allowcustomquantity_){},
   };
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
@@ -942,8 +973,8 @@ Bundle::Bundle(const Bundle& from) : ::google::protobuf::Message() {
     _this->_impl_.offerdetails_ = new ::Digit::PrimePlatform::Content::OfferDetails(*from._impl_.offerdetails_);
   }
   ::memcpy(&_impl_.bundleid_, &from._impl_.bundleid_,
-    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.isplayerlifecycle_) -
-    reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.isplayerlifecycle_));
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.allowcustomquantity_) -
+    reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.allowcustomquantity_));
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.Bundle)
 }
@@ -967,6 +998,7 @@ inline void Bundle::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.sortorder_){0u},
       decltype(_impl_.isspecial_){false},
       decltype(_impl_.isplayerlifecycle_){false},
+      decltype(_impl_.allowcustomquantity_){false},
   };
   _impl_.bundletypestring_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1039,8 +1071,8 @@ PROTOBUF_NOINLINE void Bundle::Clear() {
     }
   }
   ::memset(&_impl_.bundleid_, 0, static_cast<::size_t>(
-      reinterpret_cast<char*>(&_impl_.isplayerlifecycle_) -
-      reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.isplayerlifecycle_));
+      reinterpret_cast<char*>(&_impl_.allowcustomquantity_) -
+      reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.allowcustomquantity_));
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -1053,21 +1085,23 @@ const char* Bundle::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
+const ::_pbi::TcParseTable<4, 16, 6, 106, 2> Bundle::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(Bundle, _impl_._has_bits_),
     0, // no _extensions_
-    15, 120,  // max_field_number, fast_idx_mask
+    16, 120,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294934528,  // skipmap
+    4294901760,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    15,  // num_field_entries
+    16,  // num_field_entries
     6,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Bundle_default_instance_._instance,
     ::_pbi::TcParser::GenericFallback,  // fallback
   }, {{
-    {::_pbi::TcParser::MiniParse, {}},
+    // bool allowCustomQuantity = 16;
+    {::_pbi::TcParser::FastV8S2,
+     {384, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.allowcustomquantity_)}},
     // int64 bundleId = 1;
     {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bundle, _impl_.bundleid_), 63>(),
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.bundleid_)}},
@@ -1161,6 +1195,9 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
     // bool isPlayerlifecycle = 15;
     {PROTOBUF_FIELD_OFFSET(Bundle, _impl_.isplayerlifecycle_), -1, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kBool)},
+    // bool allowCustomQuantity = 16;
+    {PROTOBUF_FIELD_OFFSET(Bundle, _impl_.allowcustomquantity_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
   }}, {{
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Cost>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Resource>()},
@@ -1169,7 +1206,7 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Hinting>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::OfferDetails>()},
   }}, {{
-    "\42\0\20\0\0\0\0\0\10\0\0\0\12\15\0\0"
+    "\42\0\20\0\0\0\0\0\10\0\0\0\12\15\0\0\0\0\0\0\0\0\0\0"
     "Digit.PrimePlatform.Content.Bundle"
     "bundleTypeString"
     "category"
@@ -1297,6 +1334,13 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
         15, this->_internal_isplayerlifecycle(), target);
   }
 
+  // bool allowCustomQuantity = 16;
+  if (this->_internal_allowcustomquantity() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        16, this->_internal_allowcustomquantity(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -1409,6 +1453,11 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
     total_size += 2;
   }
 
+  // bool allowCustomQuantity = 16;
+  if (this->_internal_allowcustomquantity() != 0) {
+    total_size += 3;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -1475,6 +1524,9 @@ void Bundle::MergeImpl(::google::protobuf::Message& to_msg, const ::google::prot
   if (from._internal_isplayerlifecycle() != 0) {
     _this->_internal_set_isplayerlifecycle(from._internal_isplayerlifecycle());
   }
+  if (from._internal_allowcustomquantity() != 0) {
+    _this->_internal_set_allowcustomquantity(from._internal_allowcustomquantity());
+  }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -1506,8 +1558,8 @@ void Bundle::InternalSwap(Bundle* other) {
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.oldexternalid_, lhs_arena,
                                        &other->_impl_.oldexternalid_, rhs_arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Bundle, _impl_.isplayerlifecycle_)
-      + sizeof(Bundle::_impl_.isplayerlifecycle_)
+      PROTOBUF_FIELD_OFFSET(Bundle, _impl_.allowcustomquantity_)
+      + sizeof(Bundle::_impl_.allowcustomquantity_)
       - PROTOBUF_FIELD_OFFSET(Bundle, _impl_.metadata_)>(
           reinterpret_cast<char*>(&_impl_.metadata_),
           reinterpret_cast<char*>(&other->_impl_.metadata_));
@@ -4340,6 +4392,7 @@ Resource::Resource(const Resource& from) : ::google::protobuf::Message() {
       decltype(_impl_.type_){},
       decltype(_impl_.amount_){},
       decltype(_impl_.amountold_){},
+      decltype(_impl_.amountulong_){},
       decltype(_impl_.unavailabledisplaymode_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
@@ -4372,6 +4425,7 @@ inline void Resource::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.type_){},
       decltype(_impl_.amount_){0u},
       decltype(_impl_.amountold_){0u},
+      decltype(_impl_.amountulong_){::uint64_t{0u}},
       decltype(_impl_.unavailabledisplaymode_){0},
       /*decltype(_impl_._cached_size_)*/ {},
   };
@@ -4420,15 +4474,15 @@ const char* Resource::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
+const ::_pbi::TcParseTable<3, 6, 0, 51, 2> Resource::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    5, 56,  // max_field_number, fast_idx_mask
+    6, 56,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967264,  // skipmap
+    4294967232,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    5,  // num_field_entries
+    6,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Resource_default_instance_._instance,
@@ -4450,7 +4504,9 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
     // int32 unavailableDisplayMode = 5;
     {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Resource, _impl_.unavailabledisplaymode_), 63>(),
      {40, 63, 0, PROTOBUF_FIELD_OFFSET(Resource, _impl_.unavailabledisplaymode_)}},
-    {::_pbi::TcParser::MiniParse, {}},
+    // uint64 amountUlong = 6;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Resource, _impl_.amountulong_), 63>(),
+     {48, 63, 0, PROTOBUF_FIELD_OFFSET(Resource, _impl_.amountulong_)}},
     {::_pbi::TcParser::MiniParse, {}},
   }}, {{
     65535, 65535
@@ -4470,6 +4526,9 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
     // int32 unavailableDisplayMode = 5;
     {PROTOBUF_FIELD_OFFSET(Resource, _impl_.unavailabledisplaymode_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kInt32)},
+    // uint64 amountUlong = 6;
+    {PROTOBUF_FIELD_OFFSET(Resource, _impl_.amountulong_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt64)},
   }},
   // no aux_entries
   {{
@@ -4524,6 +4583,13 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
             stream, this->_internal_unavailabledisplaymode(), target);
   }
 
+  // uint64 amountUlong = 6;
+  if (this->_internal_amountulong() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(
+        6, this->_internal_amountulong(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -4565,6 +4631,12 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
         this->_internal_amountold());
   }
 
+  // uint64 amountUlong = 6;
+  if (this->_internal_amountulong() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(
+        this->_internal_amountulong());
+  }
+
   // int32 unavailableDisplayMode = 5;
   if (this->_internal_unavailabledisplaymode() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
@@ -4600,6 +4672,9 @@ void Resource::MergeImpl(::google::protobuf::Message& to_msg, const ::google::pr
   }
   if (from._internal_amountold() != 0) {
     _this->_internal_set_amountold(from._internal_amountold());
+  }
+  if (from._internal_amountulong() != 0) {
+    _this->_internal_set_amountulong(from._internal_amountulong());
   }
   if (from._internal_unavailabledisplaymode() != 0) {
     _this->_internal_set_unavailabledisplaymode(from._internal_unavailabledisplaymode());
@@ -4674,6 +4749,8 @@ Metadata::Metadata(const Metadata& from) : ::google::protobuf::Message() {
       decltype(_impl_.bundlemultiplier_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.secondarybundleid_){},
+      decltype(_impl_.animationonclaimtype_){},
+      decltype(_impl_.skiponclaimall_){},
   };
   _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
       from._internal_metadata_);
@@ -4715,7 +4792,9 @@ Metadata::Metadata(const Metadata& from) : ::google::protobuf::Message() {
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.bucket_ = new ::Digit::PrimePlatform::Content::Bucket(*from._impl_.bucket_);
   }
-  _this->_impl_.secondarybundleid_ = from._impl_.secondarybundleid_;
+  ::memcpy(&_impl_.secondarybundleid_, &from._impl_.secondarybundleid_,
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.skiponclaimall_) -
+    reinterpret_cast<char*>(&_impl_.secondarybundleid_)) + sizeof(_impl_.skiponclaimall_));
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.Metadata)
 }
@@ -4731,6 +4810,8 @@ inline void Metadata::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.bundlemultiplier_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.secondarybundleid_){::int64_t{0}},
+      decltype(_impl_.animationonclaimtype_){0},
+      decltype(_impl_.skiponclaimall_){false},
   };
   _impl_.color_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -4787,7 +4868,9 @@ PROTOBUF_NOINLINE void Metadata::Clear() {
     ABSL_DCHECK(_impl_.bucket_ != nullptr);
     _impl_.bucket_->Clear();
   }
-  _impl_.secondarybundleid_ = ::int64_t{0};
+  ::memset(&_impl_.secondarybundleid_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.skiponclaimall_) -
+      reinterpret_cast<char*>(&_impl_.secondarybundleid_)) + sizeof(_impl_.skiponclaimall_));
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
 }
@@ -4800,15 +4883,15 @@ const char* Metadata::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
+const ::_pbi::TcParseTable<4, 9, 1, 111, 2> Metadata::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(Metadata, _impl_._has_bits_),
     0, // no _extensions_
-    7, 56,  // max_field_number, fast_idx_mask
+    9, 120,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967168,  // skipmap
+    4294966784,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    7,  // num_field_entries
+    9,  // num_field_entries
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Metadata_default_instance_._instance,
@@ -4836,6 +4919,18 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
     // int64 secondaryBundleId = 7;
     {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Metadata, _impl_.secondarybundleid_), 63>(),
      {56, 63, 0, PROTOBUF_FIELD_OFFSET(Metadata, _impl_.secondarybundleid_)}},
+    // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Metadata, _impl_.animationonclaimtype_), 63>(),
+     {64, 63, 0, PROTOBUF_FIELD_OFFSET(Metadata, _impl_.animationonclaimtype_)}},
+    // bool skipOnClaimAll = 9;
+    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(Metadata, _impl_.skiponclaimall_), 63>(),
+     {72, 63, 0, PROTOBUF_FIELD_OFFSET(Metadata, _impl_.skiponclaimall_)}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
   }}, {{
     65535, 65535
   }}, {{
@@ -4860,10 +4955,16 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
     // int64 secondaryBundleId = 7;
     {PROTOBUF_FIELD_OFFSET(Metadata, _impl_.secondarybundleid_), -1, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
+    // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+    {PROTOBUF_FIELD_OFFSET(Metadata, _impl_.animationonclaimtype_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
+    // bool skipOnClaimAll = 9;
+    {PROTOBUF_FIELD_OFFSET(Metadata, _impl_.skiponclaimall_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
   }}, {{
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Bucket>()},
   }}, {{
-    "\44\5\7\15\21\0\20\0"
+    "\44\5\7\15\21\0\20\0\0\0\0\0\0\0\0\0"
     "Digit.PrimePlatform.Content.Metadata"
     "color"
     "assetId"
@@ -4935,6 +5036,20 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
             stream, this->_internal_secondarybundleid(), target);
   }
 
+  // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+  if (this->_internal_animationonclaimtype() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+        8, this->_internal_animationonclaimtype(), target);
+  }
+
+  // bool skipOnClaimAll = 9;
+  if (this->_internal_skiponclaimall() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        9, this->_internal_skiponclaimall(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target =
         ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
@@ -4996,6 +5111,17 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
         this->_internal_secondarybundleid());
   }
 
+  // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+  if (this->_internal_animationonclaimtype() != 0) {
+    total_size += 1 +
+                  ::_pbi::WireFormatLite::EnumSize(this->_internal_animationonclaimtype());
+  }
+
+  // bool skipOnClaimAll = 9;
+  if (this->_internal_skiponclaimall() != 0) {
+    total_size += 2;
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
 }
 
@@ -5036,6 +5162,12 @@ void Metadata::MergeImpl(::google::protobuf::Message& to_msg, const ::google::pr
   if (from._internal_secondarybundleid() != 0) {
     _this->_internal_set_secondarybundleid(from._internal_secondarybundleid());
   }
+  if (from._internal_animationonclaimtype() != 0) {
+    _this->_internal_set_animationonclaimtype(from._internal_animationonclaimtype());
+  }
+  if (from._internal_skiponclaimall() != 0) {
+    _this->_internal_set_skiponclaimall(from._internal_skiponclaimall());
+  }
   _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -5067,8 +5199,8 @@ void Metadata::InternalSwap(Metadata* other) {
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.bundlemultiplier_, lhs_arena,
                                        &other->_impl_.bundlemultiplier_, rhs_arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Metadata, _impl_.secondarybundleid_)
-      + sizeof(Metadata::_impl_.secondarybundleid_)
+      PROTOBUF_FIELD_OFFSET(Metadata, _impl_.skiponclaimall_)
+      + sizeof(Metadata::_impl_.skiponclaimall_)
       - PROTOBUF_FIELD_OFFSET(Metadata, _impl_.bucket_)>(
           reinterpret_cast<char*>(&_impl_.bucket_),
           reinterpret_cast<char*>(&other->_impl_.bucket_));

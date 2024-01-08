@@ -31,6 +31,7 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
+#include "google/protobuf/generated_enum_reflection.h"
 #include "google/protobuf/unknown_field_set.h"
 #include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
@@ -119,6 +120,38 @@ namespace protobuf {
 namespace Digit {
 namespace PrimePlatform {
 namespace Content {
+enum AnimationOnClaimType : int {
+  ANIMATIONONCLAIMTYPE_UNSPECIFIED = 0,
+  ANIMATIONONCLAIMTYPE_FLYOUT = 1,
+  AnimationOnClaimType_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::min(),
+  AnimationOnClaimType_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::max(),
+};
+
+bool AnimationOnClaimType_IsValid(int value);
+constexpr AnimationOnClaimType AnimationOnClaimType_MIN = static_cast<AnimationOnClaimType>(0);
+constexpr AnimationOnClaimType AnimationOnClaimType_MAX = static_cast<AnimationOnClaimType>(1);
+constexpr int AnimationOnClaimType_ARRAYSIZE = 1 + 1;
+const ::google::protobuf::EnumDescriptor*
+AnimationOnClaimType_descriptor();
+template <typename T>
+const std::string& AnimationOnClaimType_Name(T value) {
+  static_assert(std::is_same<T, AnimationOnClaimType>::value ||
+                    std::is_integral<T>::value,
+                "Incorrect type passed to AnimationOnClaimType_Name().");
+  return AnimationOnClaimType_Name(static_cast<AnimationOnClaimType>(value));
+}
+template <>
+inline const std::string& AnimationOnClaimType_Name(AnimationOnClaimType value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<AnimationOnClaimType_descriptor,
+                                                 0, 1>(
+      static_cast<int>(value));
+}
+inline bool AnimationOnClaimType_Parse(absl::string_view name, AnimationOnClaimType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<AnimationOnClaimType>(
+      AnimationOnClaimType_descriptor(), name, value);
+}
 
 // ===================================================================
 
@@ -268,6 +301,7 @@ class Bundle final :
     kSortOrderFieldNumber = 4,
     kIsSpecialFieldNumber = 5,
     kIsPlayerlifecycleFieldNumber = 15,
+    kAllowCustomQuantityFieldNumber = 16,
   };
   // repeated .Digit.PrimePlatform.Content.Cost cost = 6;
   int cost_size() const;
@@ -479,12 +513,22 @@ class Bundle final :
   void _internal_set_isplayerlifecycle(bool value);
 
   public:
+  // bool allowCustomQuantity = 16;
+  void clear_allowcustomquantity() ;
+  bool allowcustomquantity() const;
+  void set_allowcustomquantity(bool value);
+
+  private:
+  bool _internal_allowcustomquantity() const;
+  void _internal_set_allowcustomquantity(bool value);
+
+  public:
   // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Content.Bundle)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<4, 15, 6, 98, 2> _table_;
+  static const ::google::protobuf::internal::TcParseTable<4, 16, 6, 106, 2> _table_;
   template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
@@ -506,6 +550,7 @@ class Bundle final :
     ::uint32_t sortorder_;
     bool isspecial_;
     bool isplayerlifecycle_;
+    bool allowcustomquantity_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -2783,6 +2828,7 @@ class Resource final :
     kTypeFieldNumber = 4,
     kAmountFieldNumber = 1,
     kAmountOldFieldNumber = 2,
+    kAmountUlongFieldNumber = 6,
     kUnavailableDisplayModeFieldNumber = 5,
   };
   // string id = 3;
@@ -2837,6 +2883,16 @@ class Resource final :
   void _internal_set_amountold(::uint32_t value);
 
   public:
+  // uint64 amountUlong = 6;
+  void clear_amountulong() ;
+  ::uint64_t amountulong() const;
+  void set_amountulong(::uint64_t value);
+
+  private:
+  ::uint64_t _internal_amountulong() const;
+  void _internal_set_amountulong(::uint64_t value);
+
+  public:
   // int32 unavailableDisplayMode = 5;
   void clear_unavailabledisplaymode() ;
   ::int32_t unavailabledisplaymode() const;
@@ -2852,7 +2908,7 @@ class Resource final :
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<3, 5, 0, 51, 2> _table_;
+  static const ::google::protobuf::internal::TcParseTable<3, 6, 0, 51, 2> _table_;
   template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
@@ -2861,6 +2917,7 @@ class Resource final :
     ::google::protobuf::internal::ArenaStringPtr type_;
     ::uint32_t amount_;
     ::uint32_t amountold_;
+    ::uint64_t amountulong_;
     ::int32_t unavailabledisplaymode_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
@@ -3004,6 +3061,8 @@ class Metadata final :
     kBundleMultiplierFieldNumber = 6,
     kBucketFieldNumber = 5,
     kSecondaryBundleIdFieldNumber = 7,
+    kAnimationOnClaimTypeFieldNumber = 8,
+    kSkipOnClaimAllFieldNumber = 9,
   };
   // string color = 1;
   void clear_color() ;
@@ -3110,12 +3169,32 @@ class Metadata final :
   void _internal_set_secondarybundleid(::int64_t value);
 
   public:
+  // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+  void clear_animationonclaimtype() ;
+  ::Digit::PrimePlatform::Content::AnimationOnClaimType animationonclaimtype() const;
+  void set_animationonclaimtype(::Digit::PrimePlatform::Content::AnimationOnClaimType value);
+
+  private:
+  ::Digit::PrimePlatform::Content::AnimationOnClaimType _internal_animationonclaimtype() const;
+  void _internal_set_animationonclaimtype(::Digit::PrimePlatform::Content::AnimationOnClaimType value);
+
+  public:
+  // bool skipOnClaimAll = 9;
+  void clear_skiponclaimall() ;
+  bool skiponclaimall() const;
+  void set_skiponclaimall(bool value);
+
+  private:
+  bool _internal_skiponclaimall() const;
+  void _internal_set_skiponclaimall(bool value);
+
+  public:
   // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Content.Metadata)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<3, 7, 1, 103, 2> _table_;
+  static const ::google::protobuf::internal::TcParseTable<4, 9, 1, 111, 2> _table_;
   template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
@@ -3129,6 +3208,8 @@ class Metadata final :
     ::google::protobuf::internal::ArenaStringPtr bundlemultiplier_;
     ::Digit::PrimePlatform::Content::Bucket* bucket_;
     ::int64_t secondarybundleid_;
+    int animationonclaimtype_;
+    bool skiponclaimall_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -4536,6 +4617,28 @@ inline void Bundle::_internal_set_isplayerlifecycle(bool value) {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.isplayerlifecycle_ = value;
+}
+
+// bool allowCustomQuantity = 16;
+inline void Bundle::clear_allowcustomquantity() {
+  _impl_.allowcustomquantity_ = false;
+}
+inline bool Bundle::allowcustomquantity() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Content.Bundle.allowCustomQuantity)
+  return _internal_allowcustomquantity();
+}
+inline void Bundle::set_allowcustomquantity(bool value) {
+  _internal_set_allowcustomquantity(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Content.Bundle.allowCustomQuantity)
+}
+inline bool Bundle::_internal_allowcustomquantity() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.allowcustomquantity_;
+}
+inline void Bundle::_internal_set_allowcustomquantity(bool value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.allowcustomquantity_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -6397,6 +6500,28 @@ inline void Resource::_internal_set_unavailabledisplaymode(::int32_t value) {
   _impl_.unavailabledisplaymode_ = value;
 }
 
+// uint64 amountUlong = 6;
+inline void Resource::clear_amountulong() {
+  _impl_.amountulong_ = ::uint64_t{0u};
+}
+inline ::uint64_t Resource::amountulong() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Content.Resource.amountUlong)
+  return _internal_amountulong();
+}
+inline void Resource::set_amountulong(::uint64_t value) {
+  _internal_set_amountulong(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Content.Resource.amountUlong)
+}
+inline ::uint64_t Resource::_internal_amountulong() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.amountulong_;
+}
+inline void Resource::_internal_set_amountulong(::uint64_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.amountulong_ = value;
+}
+
 // -------------------------------------------------------------------
 
 // Metadata
@@ -6772,6 +6897,50 @@ inline void Metadata::_internal_set_secondarybundleid(::int64_t value) {
   PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
   ;
   _impl_.secondarybundleid_ = value;
+}
+
+// .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+inline void Metadata::clear_animationonclaimtype() {
+  _impl_.animationonclaimtype_ = 0;
+}
+inline ::Digit::PrimePlatform::Content::AnimationOnClaimType Metadata::animationonclaimtype() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Content.Metadata.animationOnClaimType)
+  return _internal_animationonclaimtype();
+}
+inline void Metadata::set_animationonclaimtype(::Digit::PrimePlatform::Content::AnimationOnClaimType value) {
+  _internal_set_animationonclaimtype(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Content.Metadata.animationOnClaimType)
+}
+inline ::Digit::PrimePlatform::Content::AnimationOnClaimType Metadata::_internal_animationonclaimtype() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return static_cast<::Digit::PrimePlatform::Content::AnimationOnClaimType>(_impl_.animationonclaimtype_);
+}
+inline void Metadata::_internal_set_animationonclaimtype(::Digit::PrimePlatform::Content::AnimationOnClaimType value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.animationonclaimtype_ = value;
+}
+
+// bool skipOnClaimAll = 9;
+inline void Metadata::clear_skiponclaimall() {
+  _impl_.skiponclaimall_ = false;
+}
+inline bool Metadata::skiponclaimall() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Content.Metadata.skipOnClaimAll)
+  return _internal_skiponclaimall();
+}
+inline void Metadata::set_skiponclaimall(bool value) {
+  _internal_set_skiponclaimall(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Content.Metadata.skipOnClaimAll)
+}
+inline bool Metadata::_internal_skiponclaimall() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.skiponclaimall_;
+}
+inline void Metadata::_internal_set_skiponclaimall(bool value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.skiponclaimall_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -7266,6 +7435,19 @@ inline void OfferDetails::_internal_set_sameremainingcountvisible(bool value) {
 }  // namespace PrimePlatform
 }  // namespace Digit
 
+
+namespace google {
+namespace protobuf {
+
+template <>
+struct is_proto_enum<::Digit::PrimePlatform::Content::AnimationOnClaimType> : std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Content::AnimationOnClaimType>() {
+  return ::Digit::PrimePlatform::Content::AnimationOnClaimType_descriptor();
+}
+
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
 

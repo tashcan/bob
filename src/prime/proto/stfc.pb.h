@@ -31,9 +31,6 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/map.h"  // IWYU pragma: export
-#include "google/protobuf/map_entry.h"
-#include "google/protobuf/map_field_inl.h"
 #include "google/protobuf/generated_enum_reflection.h"
 #include "google/protobuf/unknown_field_set.h"
 // @@protoc_insertion_point(includes)
@@ -57,12 +54,6 @@ struct TableStruct_stfc_2eproto {
 };
 extern const ::google::protobuf::internal::DescriptorTable
     descriptor_table_stfc_2eproto;
-class CacheMap;
-struct CacheMapDefaultTypeInternal;
-extern CacheMapDefaultTypeInternal _CacheMap_default_instance_;
-class CacheMap_CacheIndexEntry_DoNotUse;
-struct CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal;
-extern CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal _CacheMap_CacheIndexEntry_DoNotUse_default_instance_;
 class CommanderSkillSpec;
 struct CommanderSkillSpecDefaultTypeInternal;
 extern CommanderSkillSpecDefaultTypeInternal _CommanderSkillSpec_default_instance_;
@@ -184,201 +175,6 @@ inline bool OfficerProgressType_Parse(absl::string_view name, OfficerProgressTyp
 
 // -------------------------------------------------------------------
 
-class CacheMap_CacheIndexEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<CacheMap_CacheIndexEntry_DoNotUse, 
-    std::string, std::string,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING> {
-public:
-  typedef ::google::protobuf::internal::MapEntry<CacheMap_CacheIndexEntry_DoNotUse, 
-    std::string, std::string,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING> SuperType;
-  CacheMap_CacheIndexEntry_DoNotUse();
-  template <typename = void>
-  explicit PROTOBUF_CONSTEXPR CacheMap_CacheIndexEntry_DoNotUse(
-      ::google::protobuf::internal::ConstantInitialized);
-  explicit CacheMap_CacheIndexEntry_DoNotUse(::google::protobuf::Arena* arena);
-  void MergeFrom(const CacheMap_CacheIndexEntry_DoNotUse& other);
-  static const CacheMap_CacheIndexEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const CacheMap_CacheIndexEntry_DoNotUse*>(&_CacheMap_CacheIndexEntry_DoNotUse_default_instance_); }
-  static bool ValidateKey(std::string* s) {
-    return ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::google::protobuf::internal::WireFormatLite::PARSE, "CacheMap.CacheIndexEntry.key");
- }
-  static bool ValidateValue(std::string* s) {
-    return ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::google::protobuf::internal::WireFormatLite::PARSE, "CacheMap.CacheIndexEntry.value");
- }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
-  friend struct ::TableStruct_stfc_2eproto;
-};
-// -------------------------------------------------------------------
-
-class CacheMap final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CacheMap) */ {
- public:
-  inline CacheMap() : CacheMap(nullptr) {}
-  ~CacheMap() override;
-  template<typename = void>
-  explicit PROTOBUF_CONSTEXPR CacheMap(::google::protobuf::internal::ConstantInitialized);
-
-  CacheMap(const CacheMap& from);
-  CacheMap(CacheMap&& from) noexcept
-    : CacheMap() {
-    *this = ::std::move(from);
-  }
-
-  inline CacheMap& operator=(const CacheMap& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline CacheMap& operator=(CacheMap&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
-  }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
-  }
-
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const CacheMap& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const CacheMap* internal_default_instance() {
-    return reinterpret_cast<const CacheMap*>(
-               &_CacheMap_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    1;
-
-  friend void swap(CacheMap& a, CacheMap& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(CacheMap* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::google::protobuf::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(CacheMap* other) {
-    if (other == this) return;
-    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  CacheMap* New(::google::protobuf::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<CacheMap>(arena);
-  }
-  using ::google::protobuf::Message::CopyFrom;
-  void CopyFrom(const CacheMap& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CacheMap& from) {
-    CacheMap::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  ::size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
-  ::uint8_t* _InternalSerialize(
-      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::google::protobuf::Arena* arena);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(CacheMap* other);
-
-  private:
-  friend class ::google::protobuf::internal::AnyMetadata;
-  static ::absl::string_view FullMessageName() {
-    return "CacheMap";
-  }
-  protected:
-  explicit CacheMap(::google::protobuf::Arena* arena);
-  public:
-
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kCacheIndexFieldNumber = 1,
-  };
-  // map<string, string> cacheIndex = 1;
-  int cacheindex_size() const;
-  private:
-  int _internal_cacheindex_size() const;
-
-  public:
-  void clear_cacheindex() ;
-  const ::google::protobuf::Map<std::string, std::string>& cacheindex() const;
-  ::google::protobuf::Map<std::string, std::string>* mutable_cacheindex();
-
-  private:
-  const ::google::protobuf::Map<std::string, std::string>& _internal_cacheindex() const;
-  ::google::protobuf::Map<std::string, std::string>* _internal_mutable_cacheindex();
-
-  public:
-  // @@protoc_insertion_point(class_scope:CacheMap)
- private:
-  class _Internal;
-
-  friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<0, 1, 1, 27, 2> _table_;
-  template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::google::protobuf::internal::MapField<CacheMap_CacheIndexEntry_DoNotUse, std::string, std::string,
-                      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-                      ::google::protobuf::internal::WireFormatLite::TYPE_STRING>
-        cacheindex_;
-    mutable ::google::protobuf::internal::CachedSize _cached_size_;
-    PROTOBUF_TSAN_DECLARE_MEMBER
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_stfc_2eproto;
-};// -------------------------------------------------------------------
-
 class CommanderSkillSpec final :
     public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CommanderSkillSpec) */ {
  public:
@@ -435,7 +231,7 @@ class CommanderSkillSpec final :
                &_CommanderSkillSpec_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    2;
+    0;
 
   friend void swap(CommanderSkillSpec& a, CommanderSkillSpec& b) {
     a.Swap(&b);
@@ -629,7 +425,7 @@ class EntityRef final :
                &_EntityRef_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    3;
+    1;
 
   friend void swap(EntityRef& a, EntityRef& b) {
     a.Swap(&b);
@@ -835,7 +631,7 @@ class OfficerLevelRewardsSpec final :
                &_OfficerLevelRewardsSpec_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    4;
+    2;
 
   friend void swap(OfficerLevelRewardsSpec& a, OfficerLevelRewardsSpec& b) {
     a.Swap(&b);
@@ -1035,7 +831,7 @@ class OfficerProgressRewardSpec final :
                &_OfficerProgressRewardSpec_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    3;
 
   friend void swap(OfficerProgressRewardSpec& a, OfficerProgressRewardSpec& b) {
     a.Swap(&b);
@@ -1194,39 +990,6 @@ class OfficerProgressRewardSpec final :
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
-// CacheMap
-
-// map<string, string> cacheIndex = 1;
-inline int CacheMap::_internal_cacheindex_size() const {
-  return _internal_cacheindex().size();
-}
-inline int CacheMap::cacheindex_size() const {
-  return _internal_cacheindex_size();
-}
-inline void CacheMap::clear_cacheindex() {
-  _impl_.cacheindex_.Clear();
-}
-inline const ::google::protobuf::Map<std::string, std::string>& CacheMap::_internal_cacheindex() const {
-  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
-  return _impl_.cacheindex_.GetMap();
-}
-inline const ::google::protobuf::Map<std::string, std::string>& CacheMap::cacheindex() const {
-  // @@protoc_insertion_point(field_map:CacheMap.cacheIndex)
-  return _internal_cacheindex();
-}
-inline ::google::protobuf::Map<std::string, std::string>* CacheMap::_internal_mutable_cacheindex() {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  return _impl_.cacheindex_.MutableMap();
-}
-inline ::google::protobuf::Map<std::string, std::string>* CacheMap::mutable_cacheindex() {
-  // @@protoc_insertion_point(field_mutable_map:CacheMap.cacheIndex)
-  return _internal_mutable_cacheindex();
-}
-
 // -------------------------------------------------------------------
 
 // CommanderSkillSpec

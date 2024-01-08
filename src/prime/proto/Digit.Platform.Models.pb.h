@@ -108,6 +108,7 @@ enum EntityGroup_Type : int {
   EntityGroup_Type_TYPE_GAMEINFO = 14,
   EntityGroup_Type_TYPE_PLAYERPROFILES = 15,
   EntityGroup_Type_TYPE_PLAYERLIFECYCLENOTIFICATION = 16,
+  EntityGroup_Type_TYPE_MINIGAMESLIST = 17,
   EntityGroup_Type_EntityGroup_Type_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   EntityGroup_Type_EntityGroup_Type_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -116,8 +117,8 @@ enum EntityGroup_Type : int {
 
 bool EntityGroup_Type_IsValid(int value);
 constexpr EntityGroup_Type EntityGroup_Type_Type_MIN = static_cast<EntityGroup_Type>(0);
-constexpr EntityGroup_Type EntityGroup_Type_Type_MAX = static_cast<EntityGroup_Type>(16);
-constexpr int EntityGroup_Type_Type_ARRAYSIZE = 16 + 1;
+constexpr EntityGroup_Type EntityGroup_Type_Type_MAX = static_cast<EntityGroup_Type>(17);
+constexpr int EntityGroup_Type_Type_ARRAYSIZE = 17 + 1;
 const ::google::protobuf::EnumDescriptor*
 EntityGroup_Type_descriptor();
 template <typename T>
@@ -130,7 +131,7 @@ const std::string& EntityGroup_Type_Name(T value) {
 template <>
 inline const std::string& EntityGroup_Type_Name(EntityGroup_Type value) {
   return ::google::protobuf::internal::NameOfDenseEnum<EntityGroup_Type_descriptor,
-                                                 0, 16>(
+                                                 0, 17>(
       static_cast<int>(value));
 }
 inline bool EntityGroup_Type_Parse(absl::string_view name, EntityGroup_Type* value) {
@@ -1266,6 +1267,7 @@ class EntityGroup final :
   static constexpr Type TYPE_GAMEINFO = EntityGroup_Type_TYPE_GAMEINFO;
   static constexpr Type TYPE_PLAYERPROFILES = EntityGroup_Type_TYPE_PLAYERPROFILES;
   static constexpr Type TYPE_PLAYERLIFECYCLENOTIFICATION = EntityGroup_Type_TYPE_PLAYERLIFECYCLENOTIFICATION;
+  static constexpr Type TYPE_MINIGAMESLIST = EntityGroup_Type_TYPE_MINIGAMESLIST;
   static inline bool Type_IsValid(int value) {
     return EntityGroup_Type_IsValid(value);
   }

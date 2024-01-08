@@ -113,6 +113,15 @@ extern GameNewsModelDefaultTypeInternal _GameNewsModel_default_instance_;
 class Instance;
 struct InstanceDefaultTypeInternal;
 extern InstanceDefaultTypeInternal _Instance_default_instance_;
+class Minigame;
+struct MinigameDefaultTypeInternal;
+extern MinigameDefaultTypeInternal _Minigame_default_instance_;
+class MinigameHolder;
+struct MinigameHolderDefaultTypeInternal;
+extern MinigameHolderDefaultTypeInternal _MinigameHolder_default_instance_;
+class MinigameStage;
+struct MinigameStageDefaultTypeInternal;
+extern MinigameStageDefaultTypeInternal _MinigameStage_default_instance_;
 class Notifications;
 struct NotificationsDefaultTypeInternal;
 extern NotificationsDefaultTypeInternal _Notifications_default_instance_;
@@ -179,6 +188,8 @@ enum EventCategories : int {
   EVENTCATEGORIES_FIELDTRAINING = 12,
   EVENTCATEGORIES_FTCATEGORY = 13,
   EVENTCATEGORIES_CUTSCENES = 14,
+  EVENTCATEGORIES_MINIGAMECATEGORY = 15,
+  EVENTCATEGORIES_MINIGAMESTAGE = 16,
   EventCategories_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   EventCategories_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -187,8 +198,8 @@ enum EventCategories : int {
 
 bool EventCategories_IsValid(int value);
 constexpr EventCategories EventCategories_MIN = static_cast<EventCategories>(0);
-constexpr EventCategories EventCategories_MAX = static_cast<EventCategories>(14);
-constexpr int EventCategories_ARRAYSIZE = 14 + 1;
+constexpr EventCategories EventCategories_MAX = static_cast<EventCategories>(16);
+constexpr int EventCategories_ARRAYSIZE = 16 + 1;
 const ::google::protobuf::EnumDescriptor*
 EventCategories_descriptor();
 template <typename T>
@@ -201,7 +212,7 @@ const std::string& EventCategories_Name(T value) {
 template <>
 inline const std::string& EventCategories_Name(EventCategories value) {
   return ::google::protobuf::internal::NameOfDenseEnum<EventCategories_descriptor,
-                                                 0, 14>(
+                                                 0, 16>(
       static_cast<int>(value));
 }
 inline bool EventCategories_Parse(absl::string_view name, EventCategories* value) {
@@ -239,6 +250,38 @@ inline const std::string& JoinForbidden_Name(JoinForbidden value) {
 inline bool JoinForbidden_Parse(absl::string_view name, JoinForbidden* value) {
   return ::google::protobuf::internal::ParseNamedEnum<JoinForbidden>(
       JoinForbidden_descriptor(), name, value);
+}
+enum BattlePassType : int {
+  BATTLEPASSTYPE_STANDARD = 0,
+  BATTLEPASSTYPE_TERRITORYCAPTURE = 1,
+  BattlePassType_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::min(),
+  BattlePassType_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::max(),
+};
+
+bool BattlePassType_IsValid(int value);
+constexpr BattlePassType BattlePassType_MIN = static_cast<BattlePassType>(0);
+constexpr BattlePassType BattlePassType_MAX = static_cast<BattlePassType>(1);
+constexpr int BattlePassType_ARRAYSIZE = 1 + 1;
+const ::google::protobuf::EnumDescriptor*
+BattlePassType_descriptor();
+template <typename T>
+const std::string& BattlePassType_Name(T value) {
+  static_assert(std::is_same<T, BattlePassType>::value ||
+                    std::is_integral<T>::value,
+                "Incorrect type passed to BattlePassType_Name().");
+  return BattlePassType_Name(static_cast<BattlePassType>(value));
+}
+template <>
+inline const std::string& BattlePassType_Name(BattlePassType value) {
+  return ::google::protobuf::internal::NameOfDenseEnum<BattlePassType_descriptor,
+                                                 0, 1>(
+      static_cast<int>(value));
+}
+inline bool BattlePassType_Parse(absl::string_view name, BattlePassType* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<BattlePassType>(
+      BattlePassType_descriptor(), name, value);
 }
 enum PlacementType : int {
   PLACEMENTTYPE_POSITION = 0,
@@ -898,9 +941,12 @@ class EventMetadata final :
     kVisualAssetFilenameFieldNumber = 8,
     kUnlockItemIdFieldNumber = 14,
     kVisualVideoIdFieldNumber = 20,
+    kBattlePassLinkFieldNumber = 22,
+    kBattlePassResourceIdFieldNumber = 23,
     kBucketFieldNumber = 13,
     kServerTransferCostFieldNumber = 17,
     kVisualVideoAssetsFieldNumber = 21,
+    kCtaFieldNumber = 10,
     kIsAutoRegisterFieldNumber = 1,
     kAutoRewardFieldNumber = 2,
     kImmediateRewardFieldNumber = 3,
@@ -908,8 +954,11 @@ class EventMetadata final :
     kIsUniqueWinnerFieldNumber = 15,
     kIsCrossServerFieldNumber = 16,
     kRespectPriorityFieldNumber = 19,
-    kCtaFieldNumber = 10,
+    kMinigameLockFieldNumber = 25,
     kPriorityFieldNumber = 11,
+    kBattlePassTypeFieldNumber = 24,
+    kMinigameLevelMinFieldNumber = 26,
+    kMinigameLevelMaxFieldNumber = 27,
   };
   // repeated .Digit.PrimePlatform.Models.EventScoringInfo scoringInfo = 9;
   int scoringinfo_size() const;
@@ -1061,6 +1110,38 @@ class EventMetadata final :
   std::string* _internal_mutable_visualvideoid();
 
   public:
+  // string battlePassLink = 22;
+  void clear_battlepasslink() ;
+  const std::string& battlepasslink() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_battlepasslink(Arg_&& arg, Args_... args);
+  std::string* mutable_battlepasslink();
+  PROTOBUF_NODISCARD std::string* release_battlepasslink();
+  void set_allocated_battlepasslink(std::string* ptr);
+
+  private:
+  const std::string& _internal_battlepasslink() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_battlepasslink(
+      const std::string& value);
+  std::string* _internal_mutable_battlepasslink();
+
+  public:
+  // string battlePassResourceId = 23;
+  void clear_battlepassresourceid() ;
+  const std::string& battlepassresourceid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_battlepassresourceid(Arg_&& arg, Args_... args);
+  std::string* mutable_battlepassresourceid();
+  PROTOBUF_NODISCARD std::string* release_battlepassresourceid();
+  void set_allocated_battlepassresourceid(std::string* ptr);
+
+  private:
+  const std::string& _internal_battlepassresourceid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_battlepassresourceid(
+      const std::string& value);
+  std::string* _internal_mutable_battlepassresourceid();
+
+  public:
   // .Digit.PrimePlatform.Content.Bucket bucket = 13;
   bool has_bucket() const;
   void clear_bucket() ;
@@ -1104,6 +1185,16 @@ class EventMetadata final :
   private:
   const ::Digit::PrimePlatform::Models::EventVideoAssets& _internal_visualvideoassets() const;
   ::Digit::PrimePlatform::Models::EventVideoAssets* _internal_mutable_visualvideoassets();
+
+  public:
+  // int64 cta = 10;
+  void clear_cta() ;
+  ::int64_t cta() const;
+  void set_cta(::int64_t value);
+
+  private:
+  ::int64_t _internal_cta() const;
+  void _internal_set_cta(::int64_t value);
 
   public:
   // bool isAutoRegister = 1;
@@ -1176,14 +1267,14 @@ class EventMetadata final :
   void _internal_set_respectpriority(bool value);
 
   public:
-  // int64 cta = 10;
-  void clear_cta() ;
-  ::int64_t cta() const;
-  void set_cta(::int64_t value);
+  // bool minigameLock = 25;
+  void clear_minigamelock() ;
+  bool minigamelock() const;
+  void set_minigamelock(bool value);
 
   private:
-  ::int64_t _internal_cta() const;
-  void _internal_set_cta(::int64_t value);
+  bool _internal_minigamelock() const;
+  void _internal_set_minigamelock(bool value);
 
   public:
   // int64 priority = 11;
@@ -1196,12 +1287,42 @@ class EventMetadata final :
   void _internal_set_priority(::int64_t value);
 
   public:
+  // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+  void clear_battlepasstype() ;
+  ::Digit::PrimePlatform::Models::BattlePassType battlepasstype() const;
+  void set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value);
+
+  private:
+  ::Digit::PrimePlatform::Models::BattlePassType _internal_battlepasstype() const;
+  void _internal_set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value);
+
+  public:
+  // uint32 minigameLevelMin = 26;
+  void clear_minigamelevelmin() ;
+  ::uint32_t minigamelevelmin() const;
+  void set_minigamelevelmin(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_minigamelevelmin() const;
+  void _internal_set_minigamelevelmin(::uint32_t value);
+
+  public:
+  // uint32 minigameLevelMax = 27;
+  void clear_minigamelevelmax() ;
+  ::uint32_t minigamelevelmax() const;
+  void set_minigamelevelmax(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_minigamelevelmax() const;
+  void _internal_set_minigamelevelmax(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.EventMetadata)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<5, 21, 6, 148, 2> _table_;
+  static const ::google::protobuf::internal::TcParseTable<5, 27, 6, 190, 2> _table_;
   template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
@@ -1217,9 +1338,12 @@ class EventMetadata final :
     ::google::protobuf::internal::ArenaStringPtr visualassetfilename_;
     ::google::protobuf::internal::ArenaStringPtr unlockitemid_;
     ::google::protobuf::internal::ArenaStringPtr visualvideoid_;
+    ::google::protobuf::internal::ArenaStringPtr battlepasslink_;
+    ::google::protobuf::internal::ArenaStringPtr battlepassresourceid_;
     ::Digit::PrimePlatform::Content::Bucket* bucket_;
     ::Digit::PrimePlatform::Content::Resource* servertransfercost_;
     ::Digit::PrimePlatform::Models::EventVideoAssets* visualvideoassets_;
+    ::int64_t cta_;
     bool isautoregister_;
     bool autoreward_;
     bool immediatereward_;
@@ -1227,8 +1351,11 @@ class EventMetadata final :
     bool isuniquewinner_;
     bool iscrossserver_;
     bool respectpriority_;
-    ::int64_t cta_;
+    bool minigamelock_;
     ::int64_t priority_;
+    int battlepasstype_;
+    ::uint32_t minigamelevelmin_;
+    ::uint32_t minigamelevelmax_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -7164,6 +7291,577 @@ class TranslationCacheUpdate final :
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_Digit_2ePrimePlatform_2eModels_2eproto;
+};// -------------------------------------------------------------------
+
+class MinigameHolder final :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.MinigameHolder) */ {
+ public:
+  inline MinigameHolder() : MinigameHolder(nullptr) {}
+  ~MinigameHolder() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR MinigameHolder(::google::protobuf::internal::ConstantInitialized);
+
+  MinigameHolder(const MinigameHolder& from);
+  MinigameHolder(MinigameHolder&& from) noexcept
+    : MinigameHolder() {
+    *this = ::std::move(from);
+  }
+
+  inline MinigameHolder& operator=(const MinigameHolder& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline MinigameHolder& operator=(MinigameHolder&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const MinigameHolder& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const MinigameHolder* internal_default_instance() {
+    return reinterpret_cast<const MinigameHolder*>(
+               &_MinigameHolder_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    31;
+
+  friend void swap(MinigameHolder& a, MinigameHolder& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(MinigameHolder* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(MinigameHolder* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  MinigameHolder* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<MinigameHolder>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const MinigameHolder& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom( const MinigameHolder& from) {
+    MinigameHolder::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(MinigameHolder* other);
+
+  private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "Digit.PrimePlatform.Models.MinigameHolder";
+  }
+  protected:
+  explicit MinigameHolder(::google::protobuf::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::google::protobuf::Message::ClassData*GetClassData() const final;
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kGamesFieldNumber = 1,
+  };
+  // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+  int games_size() const;
+  private:
+  int _internal_games_size() const;
+
+  public:
+  void clear_games() ;
+  ::Digit::PrimePlatform::Models::Minigame* mutable_games(int index);
+  ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >*
+      mutable_games();
+  private:
+  const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>& _internal_games() const;
+  ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>* _internal_mutable_games();
+  public:
+  const ::Digit::PrimePlatform::Models::Minigame& games(int index) const;
+  ::Digit::PrimePlatform::Models::Minigame* add_games();
+  const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >&
+      games() const;
+  // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.MinigameHolder)
+ private:
+  class _Internal;
+
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<0, 1, 1, 0, 2> _table_;
+  template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame > games_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Digit_2ePrimePlatform_2eModels_2eproto;
+};// -------------------------------------------------------------------
+
+class Minigame final :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Minigame) */ {
+ public:
+  inline Minigame() : Minigame(nullptr) {}
+  ~Minigame() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR Minigame(::google::protobuf::internal::ConstantInitialized);
+
+  Minigame(const Minigame& from);
+  Minigame(Minigame&& from) noexcept
+    : Minigame() {
+    *this = ::std::move(from);
+  }
+
+  inline Minigame& operator=(const Minigame& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Minigame& operator=(Minigame&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Minigame& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Minigame* internal_default_instance() {
+    return reinterpret_cast<const Minigame*>(
+               &_Minigame_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    32;
+
+  friend void swap(Minigame& a, Minigame& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Minigame* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Minigame* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Minigame* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Minigame>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const Minigame& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom( const Minigame& from) {
+    Minigame::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Minigame* other);
+
+  private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "Digit.PrimePlatform.Models.Minigame";
+  }
+  protected:
+  explicit Minigame(::google::protobuf::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::google::protobuf::Message::ClassData*GetClassData() const final;
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kStagesFieldNumber = 2,
+    kConfigIdFieldNumber = 1,
+  };
+  // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+  int stages_size() const;
+  private:
+  int _internal_stages_size() const;
+
+  public:
+  void clear_stages() ;
+  ::Digit::PrimePlatform::Models::MinigameStage* mutable_stages(int index);
+  ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >*
+      mutable_stages();
+  private:
+  const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>& _internal_stages() const;
+  ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>* _internal_mutable_stages();
+  public:
+  const ::Digit::PrimePlatform::Models::MinigameStage& stages(int index) const;
+  ::Digit::PrimePlatform::Models::MinigameStage* add_stages();
+  const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >&
+      stages() const;
+  // string configId = 1;
+  void clear_configid() ;
+  const std::string& configid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_configid(Arg_&& arg, Args_... args);
+  std::string* mutable_configid();
+  PROTOBUF_NODISCARD std::string* release_configid();
+  void set_allocated_configid(std::string* ptr);
+
+  private:
+  const std::string& _internal_configid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_configid(
+      const std::string& value);
+  std::string* _internal_mutable_configid();
+
+  public:
+  // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.Minigame)
+ private:
+  class _Internal;
+
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<1, 2, 1, 52, 2> _table_;
+  template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage > stages_;
+    ::google::protobuf::internal::ArenaStringPtr configid_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Digit_2ePrimePlatform_2eModels_2eproto;
+};// -------------------------------------------------------------------
+
+class MinigameStage final :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.MinigameStage) */ {
+ public:
+  inline MinigameStage() : MinigameStage(nullptr) {}
+  ~MinigameStage() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR MinigameStage(::google::protobuf::internal::ConstantInitialized);
+
+  MinigameStage(const MinigameStage& from);
+  MinigameStage(MinigameStage&& from) noexcept
+    : MinigameStage() {
+    *this = ::std::move(from);
+  }
+
+  inline MinigameStage& operator=(const MinigameStage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline MinigameStage& operator=(MinigameStage&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  }
+  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  }
+
+  static const ::google::protobuf::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::google::protobuf::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::google::protobuf::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const MinigameStage& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const MinigameStage* internal_default_instance() {
+    return reinterpret_cast<const MinigameStage*>(
+               &_MinigameStage_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    33;
+
+  friend void swap(MinigameStage& a, MinigameStage& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(MinigameStage* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(MinigameStage* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  MinigameStage* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<MinigameStage>(arena);
+  }
+  using ::google::protobuf::Message::CopyFrom;
+  void CopyFrom(const MinigameStage& from);
+  using ::google::protobuf::Message::MergeFrom;
+  void MergeFrom( const MinigameStage& from) {
+    MinigameStage::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(MinigameStage* other);
+
+  private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "Digit.PrimePlatform.Models.MinigameStage";
+  }
+  protected:
+  explicit MinigameStage(::google::protobuf::Arena* arena);
+  public:
+
+  static const ClassData _class_data_;
+  const ::google::protobuf::Message::ClassData*GetClassData() const final;
+
+  ::google::protobuf::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRewardsFieldNumber = 3,
+    kConfigIdFieldNumber = 1,
+    kLockedFieldNumber = 2,
+    kScoreFieldNumber = 4,
+    kPriorityFieldNumber = 5,
+  };
+  // repeated uint32 rewards = 3;
+  int rewards_size() const;
+  private:
+  int _internal_rewards_size() const;
+
+  public:
+  void clear_rewards() ;
+  ::uint32_t rewards(int index) const;
+  void set_rewards(int index, ::uint32_t value);
+  void add_rewards(::uint32_t value);
+  const ::google::protobuf::RepeatedField<::uint32_t>& rewards() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* mutable_rewards();
+
+  private:
+  const ::google::protobuf::RepeatedField<::uint32_t>& _internal_rewards() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* _internal_mutable_rewards();
+
+  public:
+  // string configId = 1;
+  void clear_configid() ;
+  const std::string& configid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_configid(Arg_&& arg, Args_... args);
+  std::string* mutable_configid();
+  PROTOBUF_NODISCARD std::string* release_configid();
+  void set_allocated_configid(std::string* ptr);
+
+  private:
+  const std::string& _internal_configid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_configid(
+      const std::string& value);
+  std::string* _internal_mutable_configid();
+
+  public:
+  // bool locked = 2;
+  void clear_locked() ;
+  bool locked() const;
+  void set_locked(bool value);
+
+  private:
+  bool _internal_locked() const;
+  void _internal_set_locked(bool value);
+
+  public:
+  // uint32 score = 4;
+  void clear_score() ;
+  ::uint32_t score() const;
+  void set_score(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_score() const;
+  void _internal_set_score(::uint32_t value);
+
+  public:
+  // uint32 priority = 5;
+  void clear_priority() ;
+  ::uint32_t priority() const;
+  void set_priority(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_priority() const;
+  void _internal_set_priority(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.MinigameStage)
+ private:
+  class _Internal;
+
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<3, 5, 0, 57, 2> _table_;
+  template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::google::protobuf::RepeatedField<::uint32_t> rewards_;
+    mutable ::google::protobuf::internal::CachedSize _rewards_cached_byte_size_;
+    ::google::protobuf::internal::ArenaStringPtr configid_;
+    bool locked_;
+    ::uint32_t score_;
+    ::uint32_t priority_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Digit_2ePrimePlatform_2eModels_2eproto;
 };
 
 // ===================================================================
@@ -8355,6 +9053,196 @@ inline void EventMetadata::set_allocated_visualvideoassets(::Digit::PrimePlatfor
 
   _impl_.visualvideoassets_ = reinterpret_cast<::Digit::PrimePlatform::Models::EventVideoAssets*>(value);
   // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.EventMetadata.visualVideoAssets)
+}
+
+// string battlePassLink = 22;
+inline void EventMetadata::clear_battlepasslink() {
+  _impl_.battlepasslink_.ClearToEmpty();
+}
+inline const std::string& EventMetadata::battlepasslink() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+  return _internal_battlepasslink();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void EventMetadata::set_battlepasslink(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepasslink_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+}
+inline std::string* EventMetadata::mutable_battlepasslink() {
+  std::string* _s = _internal_mutable_battlepasslink();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+  return _s;
+}
+inline const std::string& EventMetadata::_internal_battlepasslink() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.battlepasslink_.Get();
+}
+inline void EventMetadata::_internal_set_battlepasslink(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepasslink_.Set(value, GetArenaForAllocation());
+}
+inline std::string* EventMetadata::_internal_mutable_battlepasslink() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.battlepasslink_.Mutable( GetArenaForAllocation());
+}
+inline std::string* EventMetadata::release_battlepasslink() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+  return _impl_.battlepasslink_.Release();
+}
+inline void EventMetadata::set_allocated_battlepasslink(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.battlepasslink_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.battlepasslink_.IsDefault()) {
+          _impl_.battlepasslink_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+}
+
+// string battlePassResourceId = 23;
+inline void EventMetadata::clear_battlepassresourceid() {
+  _impl_.battlepassresourceid_.ClearToEmpty();
+}
+inline const std::string& EventMetadata::battlepassresourceid() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+  return _internal_battlepassresourceid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void EventMetadata::set_battlepassresourceid(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepassresourceid_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+}
+inline std::string* EventMetadata::mutable_battlepassresourceid() {
+  std::string* _s = _internal_mutable_battlepassresourceid();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+  return _s;
+}
+inline const std::string& EventMetadata::_internal_battlepassresourceid() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.battlepassresourceid_.Get();
+}
+inline void EventMetadata::_internal_set_battlepassresourceid(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepassresourceid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* EventMetadata::_internal_mutable_battlepassresourceid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.battlepassresourceid_.Mutable( GetArenaForAllocation());
+}
+inline std::string* EventMetadata::release_battlepassresourceid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+  return _impl_.battlepassresourceid_.Release();
+}
+inline void EventMetadata::set_allocated_battlepassresourceid(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.battlepassresourceid_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.battlepassresourceid_.IsDefault()) {
+          _impl_.battlepassresourceid_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+}
+
+// .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+inline void EventMetadata::clear_battlepasstype() {
+  _impl_.battlepasstype_ = 0;
+}
+inline ::Digit::PrimePlatform::Models::BattlePassType EventMetadata::battlepasstype() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.battlePassType)
+  return _internal_battlepasstype();
+}
+inline void EventMetadata::set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value) {
+  _internal_set_battlepasstype(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.battlePassType)
+}
+inline ::Digit::PrimePlatform::Models::BattlePassType EventMetadata::_internal_battlepasstype() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return static_cast<::Digit::PrimePlatform::Models::BattlePassType>(_impl_.battlepasstype_);
+}
+inline void EventMetadata::_internal_set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepasstype_ = value;
+}
+
+// bool minigameLock = 25;
+inline void EventMetadata::clear_minigamelock() {
+  _impl_.minigamelock_ = false;
+}
+inline bool EventMetadata::minigamelock() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.minigameLock)
+  return _internal_minigamelock();
+}
+inline void EventMetadata::set_minigamelock(bool value) {
+  _internal_set_minigamelock(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.minigameLock)
+}
+inline bool EventMetadata::_internal_minigamelock() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.minigamelock_;
+}
+inline void EventMetadata::_internal_set_minigamelock(bool value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.minigamelock_ = value;
+}
+
+// uint32 minigameLevelMin = 26;
+inline void EventMetadata::clear_minigamelevelmin() {
+  _impl_.minigamelevelmin_ = 0u;
+}
+inline ::uint32_t EventMetadata::minigamelevelmin() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMin)
+  return _internal_minigamelevelmin();
+}
+inline void EventMetadata::set_minigamelevelmin(::uint32_t value) {
+  _internal_set_minigamelevelmin(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMin)
+}
+inline ::uint32_t EventMetadata::_internal_minigamelevelmin() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.minigamelevelmin_;
+}
+inline void EventMetadata::_internal_set_minigamelevelmin(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.minigamelevelmin_ = value;
+}
+
+// uint32 minigameLevelMax = 27;
+inline void EventMetadata::clear_minigamelevelmax() {
+  _impl_.minigamelevelmax_ = 0u;
+}
+inline ::uint32_t EventMetadata::minigamelevelmax() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMax)
+  return _internal_minigamelevelmax();
+}
+inline void EventMetadata::set_minigamelevelmax(::uint32_t value) {
+  _internal_set_minigamelevelmax(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMax)
+}
+inline ::uint32_t EventMetadata::_internal_minigamelevelmax() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.minigamelevelmax_;
+}
+inline void EventMetadata::_internal_set_minigamelevelmax(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.minigamelevelmax_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -14146,6 +15034,320 @@ inline void TranslationCacheUpdate::set_allocated_updatedat(::google::protobuf::
   // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.TranslationCacheUpdate.updatedAt)
 }
 
+// -------------------------------------------------------------------
+
+// MinigameHolder
+
+// repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+inline int MinigameHolder::_internal_games_size() const {
+  return _internal_games().size();
+}
+inline int MinigameHolder::games_size() const {
+  return _internal_games_size();
+}
+inline void MinigameHolder::clear_games() {
+  _internal_mutable_games()->Clear();
+}
+inline ::Digit::PrimePlatform::Models::Minigame* MinigameHolder::mutable_games(int index) {
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.MinigameHolder.games)
+  return _internal_mutable_games()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >*
+MinigameHolder::mutable_games() {
+  // @@protoc_insertion_point(field_mutable_list:Digit.PrimePlatform.Models.MinigameHolder.games)
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  return _internal_mutable_games();
+}
+inline const ::Digit::PrimePlatform::Models::Minigame& MinigameHolder::games(int index) const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameHolder.games)
+    return _internal_games().Get(index);
+}
+inline ::Digit::PrimePlatform::Models::Minigame* MinigameHolder::add_games() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ::Digit::PrimePlatform::Models::Minigame* _add = _internal_mutable_games()->Add();
+  // @@protoc_insertion_point(field_add:Digit.PrimePlatform.Models.MinigameHolder.games)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >&
+MinigameHolder::games() const {
+  // @@protoc_insertion_point(field_list:Digit.PrimePlatform.Models.MinigameHolder.games)
+  return _internal_games();
+}
+inline const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>&
+MinigameHolder::_internal_games() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.games_;
+}
+inline ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>*
+MinigameHolder::_internal_mutable_games() {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return &_impl_.games_;
+}
+
+// -------------------------------------------------------------------
+
+// Minigame
+
+// string configId = 1;
+inline void Minigame::clear_configid() {
+  _impl_.configid_.ClearToEmpty();
+}
+inline const std::string& Minigame::configid() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.Minigame.configId)
+  return _internal_configid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void Minigame::set_configid(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.Minigame.configId)
+}
+inline std::string* Minigame::mutable_configid() {
+  std::string* _s = _internal_mutable_configid();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.Minigame.configId)
+  return _s;
+}
+inline const std::string& Minigame::_internal_configid() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.configid_.Get();
+}
+inline void Minigame::_internal_set_configid(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* Minigame::_internal_mutable_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.configid_.Mutable( GetArenaForAllocation());
+}
+inline std::string* Minigame::release_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.Minigame.configId)
+  return _impl_.configid_.Release();
+}
+inline void Minigame::set_allocated_configid(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.configid_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.configid_.IsDefault()) {
+          _impl_.configid_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.Minigame.configId)
+}
+
+// repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+inline int Minigame::_internal_stages_size() const {
+  return _internal_stages().size();
+}
+inline int Minigame::stages_size() const {
+  return _internal_stages_size();
+}
+inline void Minigame::clear_stages() {
+  _internal_mutable_stages()->Clear();
+}
+inline ::Digit::PrimePlatform::Models::MinigameStage* Minigame::mutable_stages(int index) {
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.Minigame.stages)
+  return _internal_mutable_stages()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >*
+Minigame::mutable_stages() {
+  // @@protoc_insertion_point(field_mutable_list:Digit.PrimePlatform.Models.Minigame.stages)
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  return _internal_mutable_stages();
+}
+inline const ::Digit::PrimePlatform::Models::MinigameStage& Minigame::stages(int index) const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.Minigame.stages)
+    return _internal_stages().Get(index);
+}
+inline ::Digit::PrimePlatform::Models::MinigameStage* Minigame::add_stages() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ::Digit::PrimePlatform::Models::MinigameStage* _add = _internal_mutable_stages()->Add();
+  // @@protoc_insertion_point(field_add:Digit.PrimePlatform.Models.Minigame.stages)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >&
+Minigame::stages() const {
+  // @@protoc_insertion_point(field_list:Digit.PrimePlatform.Models.Minigame.stages)
+  return _internal_stages();
+}
+inline const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>&
+Minigame::_internal_stages() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.stages_;
+}
+inline ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>*
+Minigame::_internal_mutable_stages() {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return &_impl_.stages_;
+}
+
+// -------------------------------------------------------------------
+
+// MinigameStage
+
+// string configId = 1;
+inline void MinigameStage::clear_configid() {
+  _impl_.configid_.ClearToEmpty();
+}
+inline const std::string& MinigameStage::configid() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.configId)
+  return _internal_configid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void MinigameStage::set_configid(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.configId)
+}
+inline std::string* MinigameStage::mutable_configid() {
+  std::string* _s = _internal_mutable_configid();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.MinigameStage.configId)
+  return _s;
+}
+inline const std::string& MinigameStage::_internal_configid() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.configid_.Get();
+}
+inline void MinigameStage::_internal_set_configid(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* MinigameStage::_internal_mutable_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.configid_.Mutable( GetArenaForAllocation());
+}
+inline std::string* MinigameStage::release_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.MinigameStage.configId)
+  return _impl_.configid_.Release();
+}
+inline void MinigameStage::set_allocated_configid(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.configid_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.configid_.IsDefault()) {
+          _impl_.configid_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.MinigameStage.configId)
+}
+
+// bool locked = 2;
+inline void MinigameStage::clear_locked() {
+  _impl_.locked_ = false;
+}
+inline bool MinigameStage::locked() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.locked)
+  return _internal_locked();
+}
+inline void MinigameStage::set_locked(bool value) {
+  _internal_set_locked(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.locked)
+}
+inline bool MinigameStage::_internal_locked() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.locked_;
+}
+inline void MinigameStage::_internal_set_locked(bool value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.locked_ = value;
+}
+
+// repeated uint32 rewards = 3;
+inline int MinigameStage::_internal_rewards_size() const {
+  return _internal_rewards().size();
+}
+inline int MinigameStage::rewards_size() const {
+  return _internal_rewards_size();
+}
+inline void MinigameStage::clear_rewards() {
+  _internal_mutable_rewards()->Clear();
+}
+inline ::uint32_t MinigameStage::rewards(int index) const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.rewards)
+  return _internal_rewards().Get(index);
+}
+inline void MinigameStage::set_rewards(int index, ::uint32_t value) {
+  _internal_mutable_rewards()->Set(index, value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.rewards)
+}
+inline void MinigameStage::add_rewards(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _internal_mutable_rewards()->Add(value);
+  // @@protoc_insertion_point(field_add:Digit.PrimePlatform.Models.MinigameStage.rewards)
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>& MinigameStage::rewards() const {
+  // @@protoc_insertion_point(field_list:Digit.PrimePlatform.Models.MinigameStage.rewards)
+  return _internal_rewards();
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* MinigameStage::mutable_rewards() {
+  // @@protoc_insertion_point(field_mutable_list:Digit.PrimePlatform.Models.MinigameStage.rewards)
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  return _internal_mutable_rewards();
+}
+
+inline const ::google::protobuf::RepeatedField<::uint32_t>& MinigameStage::_internal_rewards() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.rewards_;
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* MinigameStage::_internal_mutable_rewards() {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return &_impl_.rewards_;
+}
+
+// uint32 score = 4;
+inline void MinigameStage::clear_score() {
+  _impl_.score_ = 0u;
+}
+inline ::uint32_t MinigameStage::score() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.score)
+  return _internal_score();
+}
+inline void MinigameStage::set_score(::uint32_t value) {
+  _internal_set_score(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.score)
+}
+inline ::uint32_t MinigameStage::_internal_score() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.score_;
+}
+inline void MinigameStage::_internal_set_score(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.score_ = value;
+}
+
+// uint32 priority = 5;
+inline void MinigameStage::clear_priority() {
+  _impl_.priority_ = 0u;
+}
+inline ::uint32_t MinigameStage::priority() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.priority)
+  return _internal_priority();
+}
+inline void MinigameStage::set_priority(::uint32_t value) {
+  _internal_set_priority(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.priority)
+}
+inline ::uint32_t MinigameStage::_internal_priority() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.priority_;
+}
+inline void MinigameStage::_internal_set_priority(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.priority_ = value;
+}
+
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif  // __GNUC__
@@ -14170,6 +15372,12 @@ struct is_proto_enum<::Digit::PrimePlatform::Models::JoinForbidden> : std::true_
 template <>
 inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Models::JoinForbidden>() {
   return ::Digit::PrimePlatform::Models::JoinForbidden_descriptor();
+}
+template <>
+struct is_proto_enum<::Digit::PrimePlatform::Models::BattlePassType> : std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Models::BattlePassType>() {
+  return ::Digit::PrimePlatform::Models::BattlePassType_descriptor();
 }
 template <>
 struct is_proto_enum<::Digit::PrimePlatform::Models::PlacementType> : std::true_type {};
