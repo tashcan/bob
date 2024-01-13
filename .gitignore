@@ -1,7 +1,9 @@
 .vscode/
 .vs/
-out/
-build/
+/out/
+/build/
 *.code-workspace
 /.cache/
 compile_commands.json
+version.aps
+*.vars

@@ -7,7 +7,7 @@
 
 void VersionDllInit();
 
-BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved)
+BOOL WINAPI DllMain(HINSTANCE /*hinstDLL*/, DWORD fdwReason, LPVOID /*lpReserved*/)
 {
   switch (fdwReason) {
     case DLL_PROCESS_ATTACH:
@@ -37,7 +37,7 @@ void* operator new[](size_t size, const char* /*name*/, int /*flags*/, unsigned 
   return malloc(size);
 }
 
-void* operator new[](size_t size, size_t alignment, size_t /*alignmentOffset*/, const char* /*name*/, int /*flags*/,
+void* operator new[](size_t size, size_t /*alignment*/, size_t /*alignmentOffset*/, const char* /*name*/, int /*flags*/,
                      unsigned /*debugFlags*/, const char* /*file*/, int /*line*/)
 {
   return malloc(size);

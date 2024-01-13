@@ -4,15 +4,14 @@
 #define VERSION_MAJOR               0
 #define VERSION_MINOR               5
 #define VERSION_REVISION            3
-
-// https://assets.stfc.space/mods/community-patch/0.3.13.test.1/version.dll
+#define VERSION_PATCH               4
 
 #define STRINGIFY_(s)               #s
 #define STRINGIFY(s)                STRINGIFY_(s)
 
 #define VER_FILE_DESCRIPTION_STR    "Star Trek Fleet Command: Community Patch"
-#define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION,0
-#define VER_FILE_VERSION_STR        STRINGIFY(VERSION_MAJOR) "." STRINGIFY(VERSION_MINOR) "." STRINGIFY(VERSION_REVISION)
+#define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH
+#define VER_FILE_VERSION_STR        STRINGIFY(VERSION_MAJOR) "." STRINGIFY(VERSION_MINOR) "." STRINGIFY(VERSION_REVISION) "." STRINGIFY(VERSION_PATCH)
 
 #define VER_PRODUCTNAME_STR         "STFC: Community Patch"
 #define VER_PRODUCT_VERSION          VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION

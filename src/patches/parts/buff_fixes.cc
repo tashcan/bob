@@ -59,7 +59,6 @@ static bool BuffService_IsBuffConditionMet_Hook(auto original, int64_t _unused, 
       return original(_unused, condition, comparer, buffToCompare, excludeFactionBuffs);
     }
   }
-  return true;
 }
 
 struct BuffModifierValues {
@@ -124,7 +123,6 @@ void InstallBuffFixHooks()
     if (count != 2) {
       return false;
     }
-    auto p1 = params[0].parameter_type->type;
     auto p2 = params[1].parameter_type->type;
     if (p2 == IL2CPP_TYPE_VALUETYPE) {
       return true;

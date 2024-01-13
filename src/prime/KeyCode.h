@@ -327,4 +327,7 @@ enum class KeyCode {
   Joystick8Button17 = 507, // 0x000001FB
   Joystick8Button18 = 508, // 0x000001FC
   Joystick8Button19 = 509, // 0x000001FD
+
+  // Autoamtic maximum
+  Max
 };

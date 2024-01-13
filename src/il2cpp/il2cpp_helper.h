@@ -47,7 +47,8 @@ public:
 
     Il2CppException* exception = nullptr;
     void*            params[1] = {&v};
-    auto             result    = il2cpp_runtime_invoke(set_method_virtual, _this, params, &exception);
+
+    il2cpp_runtime_invoke(set_method_virtual, _this, params, &exception);
   }
 
   template <typename T = void> T* GetRaw(void* _this)
@@ -176,6 +177,24 @@ public:
     auto fn = il2cpp_class_get_method_from_name(this->cls, name, arg_count);
 
     return (T*)fn->methodPointer;
+  }
+
+  template <typename T = void> T* GetVirtualMethod(const char* name, int arg_count = -1)
+  {
+    if (!this->cls) {
+      return nullptr;
+    }
+
+    static auto il2cpp_class_get_method_from_name = (il2cpp_class_get_method_from_name_t)(GetProcAddress(
+        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_method_from_name")));
+    static auto il2cpp_object_get_virtual_method  = (il2cpp_object_get_virtual_method_t)(GetProcAddress(
+        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_get_virtual_method")));
+
+    auto fn = il2cpp_class_get_method_from_name(this->cls, name, arg_count);
+
+    auto get_method_virtual = il2cpp_object_get_virtual_method((Il2CppObject*)this, fn);
+
+    return (T*)get_method_virtual->methodPointer;
   }
 
   template <typename R, typename... Args> class InvokerMethod
@@ -309,12 +328,15 @@ public:
     static auto  il2cpp_class_get_parent = (il2cpp_class_get_parent_t)(GetProcAddress(
         GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_parent")));
     Il2CppClass* pcls                    = this->cls;
-    do {
-      if (pcls->name[0] == name[0] && !strcmp(name, pcls->name)) {
-        return IL2CppClassHelper{pcls};
-      }
-    } while (pcls = il2cpp_class_get_parent(pcls));
+    if (pcls) {
+      do {
+        if (pcls->name[0] == name[0] && !strcmp(name, pcls->name)) {
+          return IL2CppClassHelper{pcls};
+        }
 
+        pcls = il2cpp_class_get_parent(pcls);
+      } while (pcls);
+    }
     return IL2CppClassHelper{nullptr};
   }
 

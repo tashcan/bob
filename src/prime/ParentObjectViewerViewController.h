@@ -18,7 +18,7 @@ private:
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.ObjectViewer", "ParentObjectViewerViewController");
-    spdlog::info("ParentObjectViewerViewController :: Returned Class Helper");
+    spdlog::debug("ParentObjectViewerViewController :: Returned Class Helper");
     return class_helper;
   }
 
@@ -27,9 +27,9 @@ public:
   {
     static auto ActivateViewerHUDStateMethod = get_class_helper().GetMethod<void(ParentObjectViewerViewController*, bool)>("ActivateViewerHUDState");
     if (ActivateViewerHUDStateMethod) {
-      spdlog::info("ParentObjectViewerViewController :: Before ActivateViewerHUDStateMethod");
+      spdlog::debug("ParentObjectViewerViewController :: Before ActivateViewerHUDStateMethod");
       ActivateViewerHUDStateMethod(this, isHUDOpen);
-      spdlog::info("ParentObjectViewerViewController :: After ActivateViewerHUDStateMethod");
+      spdlog::debug("ParentObjectViewerViewController :: After ActivateViewerHUDStateMethod");
     }
   }
 
