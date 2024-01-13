@@ -235,13 +235,18 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
     auto section_data = (ShopSectionContext*)Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Shop_List);
     section_data      = section_data;
 
+    if (!section_data) {
+      section_data =
+          (ShopSectionContext*)Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Shop_Refining_List);
+      section_data = section_data;
+    }
+
     auto suppress_go_back = false;
     if (section_data) {
       auto bundle_config = section_data->_bundleConfig;
       if (bundle_config) {
         auto f           = bundle_config->_category;
-        f                = f;
-        suppress_go_back = (f == 3 || f == 10 || f == 22);
+        suppress_go_back = (f == 3 || f == 10 || f == 22 || f == 29);
       }
     }
 
