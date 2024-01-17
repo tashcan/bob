@@ -22,6 +22,8 @@ public:
 private:
   friend class ObjectFinder<PreScanTargetWidget>;
   friend class ObjectViewerBaseWidget<PreScanTargetWidget>;
+
+ public:
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Combat", "PreScanTargetWidget");

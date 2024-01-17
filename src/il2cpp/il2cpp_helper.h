@@ -18,6 +18,10 @@
 #undef DO_API
 #undef DO_API_NO_RETURN
 
+#include <EASTL/unordered_map.h>
+#include <EASTL/vector.h>
+#include <EASTL/span.h>
+
 class IL2CppPropertyHelper
 {
 public:
@@ -352,6 +356,10 @@ public:
     return nullptr;
   }
 
+  Il2CppClass* get_cls() {
+    return this->cls;
+  }
+
 private:
   Il2CppClass* cls;
 };
@@ -387,24 +395,27 @@ template <typename T> inline T* il2cpp_get_array_element(Il2CppArray* array, siz
   return (T*)n->vector[index];
 }
 
+extern eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_objects;
+
 template <typename T> class ObjectFinder
 {
 public:
   static T* Get()
   {
-    static auto FindObjectsOfType =
-        il2cpp_resolve_icall<Il2CppArray*(void*)>("UnityEngine.Object::FindObjectsOfType(System.Type)");
-    static auto type    = T::get_class_helper().GetType();
-    auto        objects = FindObjectsOfType(type);
-    return il2cpp_get_array_element<T>(objects, objects->max_length - 1);
+    auto& objects = tracked_objects[T::get_class_helper().get_cls()];
+    if (objects.empty()) {
+      // TODO: assert?
+      return nullptr;
+    }
+    return reinterpret_cast<T*>(objects.back());
   }
 
-  static Il2CppArray* GetAll()
+  static eastl::span<T*> GetAll()
   {
-    static auto FindObjectsOfType =
-        il2cpp_resolve_icall<Il2CppArray*(void*)>("UnityEngine.Object::FindObjectsOfType(System.Type)");
-    static auto type    = T::get_class_helper().GetType();
-    auto        objects = FindObjectsOfType(type);
-    return objects;
+    auto& objects = tracked_objects[T::get_class_helper().get_cls()];
+    return {
+      reinterpret_cast<T**>(objects.data()),
+      reinterpret_cast<T**>(objects.data()) + objects.size()
+    };
   }
 };

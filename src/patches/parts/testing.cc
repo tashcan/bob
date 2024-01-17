@@ -20,8 +20,41 @@
 #include "prime/NavigationInteractionUIViewController.h"
 #include "prime/ScanEngageButtonsWidget.h"
 #include "prime/ScreenManager.h"
+#include "prime/AllianceStarbaseObjectViewerWidget.h"
+#include "prime/PreScanTargetWidget.h"
+#include "prime/ActionRequirement.h"
+#include "prime/AllianceStarbaseObjectViewerWidget.h"
+#include "prime/AnimatedRewardsScreenViewController.h"
+#include "prime/ArmadaObjectViewerWidget.h"
+#include "prime/BookmarksManager.h"
+#include "prime/CelestialObjectViewerWidget.h"
+#include "prime/ChatManager.h"
+#include "prime/ChatMessageListLocalViewController.h"
+#include "prime/DeploymentManager.h"
+#include "prime/EmbassyObjectViewer.h"
+#include "prime/FleetBarViewController.h"
+#include "prime/FleetLocalViewController.h"
+#include "prime/FleetsManager.h"
+#include "prime/FullScreenChatViewController.h"
+#include "prime/HousingObjectViewerWidget.h"
+#include "prime/Hub.h"
+#include "prime/KeyCode.h"
+#include "prime/MiningObjectViewerWidget.h"
+#include "prime/MissionsObjectViewerWidget.h"
+#include "prime/NavigationInteractionUIViewController.h"
+#include "prime/NavigationSectionManager.h"
+#include "prime/PreScanTargetWidget.h"
+#include "prime/ScanEngageButtonsWidget.h"
+#include "prime/ScanTargetViewController.h"
+#include "prime/SceneManager.h"
+#include "prime/ScreenManager.h"
+#include "prime/StarNodeObjectViewerWidget.h"
 
 #include <il2cpp/il2cpp_helper.h>
+
+#include <EASTL/unordered_map.h>
+#include <EASTL/vector.h>
+#include <EASTL/unordered_set.h>
 
 #include <chrono>
 #include <iostream>
@@ -221,6 +254,43 @@ AppConfig* Model_LoadConfigs(auto original, Model* _this)
   return config;
 }
 
+eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_objects;
+
+void* track_ctor(auto original, void* _this) {
+  auto cls = (Il2CppObject*)_this;
+  auto &tracked_object_vector = tracked_objects[cls->klass];
+  tracked_object_vector.emplace_back(uintptr_t(_this));
+  return original(_this);
+}
+
+void track_destroy(auto original, void* _this)
+{
+  auto cls = (Il2CppObject*)_this;
+  auto& tracked_object_vector = tracked_objects[cls->klass];
+  tracked_object_vector.erase_first(uintptr_t(_this));
+  original(_this);
+}
+
+template<typename T> void TrackObject() {
+  static eastl::unordered_set<void*> seen_ctor;
+  static eastl::unordered_set<void*> seen_destroy;
+
+  auto &alliance_widget = T::get_class_helper();
+  auto ctor       = alliance_widget.GetMethod(".ctor");
+  auto on_destroy = alliance_widget.GetMethod("OnDestroy");
+
+  if (seen_ctor.find(ctor) == eastl::end(seen_ctor)) {
+    SPUD_STATIC_DETOUR(ctor, track_ctor);
+    seen_ctor.emplace(ctor);
+  }
+
+  if (seen_destroy.find(ctor) == eastl::end(seen_destroy)) {
+    SPUD_STATIC_DETOUR(on_destroy, track_destroy);
+    seen_destroy.emplace(on_destroy);
+  }
+}
+
+
 void InstallTestPatches()
 {
   auto app_config      = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "AppConfig");
@@ -235,8 +305,14 @@ void InstallTestPatches()
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Models", "BattleTargetData");
   battle_target_data = battle_target_data;
 
-  auto chat_service =
-      il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimePlatform.Services", "ChatService");
-  auto ptr = chat_service.GetMethod("HandleMessageReceived");
-  // oChatMessage = SPUD_STATIC_DETOUR(ptr, Chat_handleNewMessage);
+  TrackObject<HousingObjectViewerWidget>();
+  TrackObject<AllianceStarbaseObjectViewerWidget>();
+  TrackObject<ArmadaObjectViewerWidget>();
+  TrackObject<CelestialObjectViewerWidget>();
+  TrackObject<EmbassyObjectViewer>();
+  TrackObject<MiningObjectViewerWidget>();
+  TrackObject<MissionsObjectViewerWidget>();
+  TrackObject<PreScanTargetWidget>();
+  TrackObject<HousingObjectViewerWidget>();
+  TrackObject<FleetBarViewController>();
 }

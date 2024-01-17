@@ -35,6 +35,8 @@ public:
 private:
   friend class ObjectFinder<ArmadaObjectViewerWidget>;
   friend class ObjectViewerBaseWidget<ArmadaObjectViewerWidget>;
+
+public:
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper =

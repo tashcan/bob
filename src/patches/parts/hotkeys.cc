@@ -35,6 +35,9 @@
 #include "mapkey.h"
 #include "utils.h"
 
+#include <EASTL/unordered_map.h>
+#include <EASTL/vector.h>
+
 #include <iostream>
 
 extern HWND unityWindow;
@@ -308,8 +311,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
     if (MapKey::IsDown(GameFunction::ActionView)) {
       auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
-      for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
-        auto pre_scan_widget = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
+
+      for (auto& pre_scan_widget : all_pre_scan_widgets) {
         if (pre_scan_widget
             && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
                 || pre_scan_widget->_visibilityController->_state == VisibilityState::Show)) {
@@ -327,8 +330,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     // Did we not find a rewards widget in the previous frame?
     if (show_info_pending > 0) {
       auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
-      for (auto i = 0; i < all_pre_scan_widgets->max_length; ++i) {
-        auto       pre_scan_widget  = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
+
+      for (auto& pre_scan_widget : all_pre_scan_widgets) {
         const auto pre_scan_visible = pre_scan_widget
                                       && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
                                           || pre_scan_widget->_visibilityController->_state == VisibilityState::Show);
@@ -352,12 +355,15 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   return original(_this);
 }
 
+extern eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_objects;
+
 // NOTE: If you change this loop functionality, also change DoHideViewersOfType template
 template <typename T> inline bool CanHideViewersOfType()
 {
-  auto widgets = ObjectFinder<T>::GetAll();
-  for (auto i = 0; i < widgets->max_length; ++i) {
-    auto       widget  = il2cpp_get_array_element<T>(widgets, i);
+  auto& objects = tracked_objects[T::get_class_helper().get_cls()];
+  auto  didHide = false;
+  for (auto object : objects) {
+    auto       widget  = (T*)object;
     const auto visible = widget
                          && (widget->_visibilityController->_state == VisibilityState::Visible
                              || widget->_visibilityController->_state == VisibilityState::Show);
@@ -381,11 +387,10 @@ bool CanHideViewers()
 // NOTE: If you change this loop functionality, also change CanideViewersOfType template
 template <typename T> inline bool DidHideViewersOfType()
 {
-  auto widgets = ObjectFinder<T>::GetAll();
-  auto didHide = false;
-
-  for (auto i = 0; i < widgets->max_length; ++i) {
-    auto       widget  = il2cpp_get_array_element<T>(widgets, i);
+  auto& objects = tracked_objects[T::get_class_helper().get_cls()];
+  auto  didHide = false;
+  for (auto object : objects) {
+    auto       widget  = (T*)object;
     const auto visible = widget
                          && (widget->_visibilityController->_state == VisibilityState::Visible
                              || widget->_visibilityController->_state == VisibilityState::Show);
@@ -488,8 +493,9 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
 {
   auto has_primary   = MapKey::IsDown(GameFunction::ActionPrimary) || force_space_action_next_frame;
   auto has_secondary = MapKey::IsDown(GameFunction::ActionSecondary);
-  auto has_recall    = MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || CanHideViewers);
-  auto has_repair    = MapKey::IsDown(GameFunction::ActionRepair);
+  auto has_recall =
+      MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || CanHideViewers);
+  auto has_repair = MapKey::IsDown(GameFunction::ActionRepair);
 
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_controller->fleet;
@@ -497,10 +503,8 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
   if (has_primary && fleet->CurrentState == FleetState::WarpCharging) {
     fleet_controller->CancelWarpClicked();
   } else {
-    auto did_pre_scan         = false;
     auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
-    for (auto i = 0; i < all_pre_scan_widgets->max_length && !did_pre_scan; ++i) {
-      auto pre_scan_widget = il2cpp_get_array_element<PreScanTargetWidget>(all_pre_scan_widgets, i);
+    for (auto pre_scan_widget : all_pre_scan_widgets) {
       if (pre_scan_widget
           && (pre_scan_widget->_visibilityController->_state == VisibilityState::Visible
               || pre_scan_widget->_visibilityController->_state == VisibilityState::Show)) {
