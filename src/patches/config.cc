@@ -1,4 +1,5 @@
 #include "config.h"
+#include "version.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -72,6 +73,63 @@ Config& Config::Get()
   return config;
 }
 
+static HMONITOR lastMonitor = (HMONITOR)-1;
+static float    dpi         = 1.0f;
+
+float Config::RefreshDPI()
+{
+  lastMonitor = (HMONITOR)-1;
+
+  return Config::GetDPI();
+}
+
+float Config::GetDPI()
+{
+  auto     activeWindow = GetActiveWindow();
+  HMONITOR monitor      = MonitorFromWindow(activeWindow, MONITOR_DEFAULTTONEAREST);
+
+  if (monitor != lastMonitor) {
+    // Get the logical width and height of the monitor
+    MONITORINFOEX monitorInfoEx;
+    monitorInfoEx.cbSize = sizeof(monitorInfoEx);
+    GetMonitorInfo(monitor, &monitorInfoEx);
+    auto cxLogical = monitorInfoEx.rcMonitor.right - monitorInfoEx.rcMonitor.left;
+    auto cyLogical = monitorInfoEx.rcMonitor.bottom - monitorInfoEx.rcMonitor.top;
+
+    // Get the physical width and height of the monitor
+    DEVMODE devMode;
+    devMode.dmSize        = sizeof(devMode);
+    devMode.dmDriverExtra = 0;
+    EnumDisplaySettings(monitorInfoEx.szDevice, ENUM_CURRENT_SETTINGS, &devMode);
+    auto cxPhysical = devMode.dmPelsWidth;
+    auto cyPhysical = devMode.dmPelsHeight;
+
+    // Calculate the scaling factor
+    auto horizontalScale = ((double)cxPhysical / (double)cxLogical);
+    auto verticalScale   = ((double)cyPhysical / (double)cyLogical);
+
+    spdlog::debug("Horizonzal scaling: {}", horizontalScale);
+    spdlog::debug("Vertical scaling: {}", verticalScale);
+
+    dpi         = horizontalScale;
+    lastMonitor = monitor;
+  }
+
+  return dpi;
+}
+
+void Config::AdjustUiScale(bool scaleUp)
+{
+  auto old_scale    = this->ui_scale;
+  auto scale_factor = (scaleUp ? 1.0f : -1.0f) * this->ui_scale_adjust;
+  auto new_scale    = this->ui_scale + scale_factor;
+  this->ui_scale    = std::clamp(new_scale, 0.1f, 2.0f);
+
+  auto dpi = Config::RefreshDPI();
+  spdlog::info("UI has been scaled {}, was {}, now {} (unclamped {}) @ {} DPI Scaling", (scaleUp ? "UP" : "DOWN"),
+               old_scale, this->ui_scale, new_scale, dpi);
+}
+
 std::string get_config_type_as_string(toml::node_type type)
 {
   switch (type) {
@@ -135,23 +193,30 @@ void parse_config_shortcut(toml::table config, toml::table& new_config, std::str
   auto sectionTable = new_config[section];
   auto config_value = config[section][item].value_or(default_value);
 
-  MapKey      mapKey   = MapKey::Parse(config_value);
-  std::string shortcut = "disabled";
+  auto valueTrimmed = absl::StripTrailingAsciiWhitespace(config_value);
+  auto valueLowered = absl::AsciiStrToUpper(valueTrimmed);
+  auto wantedKeys   = absl::StrSplit(valueLowered, "|", absl::SkipWhitespace());
 
-  if (mapKey.Key == KeyCode::None) {
-    mapKey = MapKey::Parse(default_value);
+  bool keyAdded = false;
+  for (std::string_view wantedKey : wantedKeys) {
+    MapKey mapKey = MapKey::Parse(wantedKey);
+
+    if (mapKey.Key != KeyCode::None) {
+      keyAdded = true;
+    }
+
+    MapKey::AddMappedKey(gameFunction, mapKey);
   }
 
-  if (mapKey.Key != KeyCode::None) {
-    shortcut = mapKey.GetParsedValues();
+  if (!keyAdded) {
+    MapKey mapKey = MapKey::Parse(default_value);
+    MapKey::AddMappedKey(gameFunction, mapKey);
   }
 
-  MapKey::SetMappedKey(gameFunction, mapKey);
-
+  auto shortcut = MapKey::GetShortcuts(gameFunction);
   sectionTable.as_table()->insert_or_assign(item, shortcut);
 
   spdlog::info("shortcut value {}.{} value: {}", section, item, shortcut);
-  ;
 }
 
 void Config::Load()
@@ -172,14 +237,26 @@ void Config::Load()
     write_config = false;
   }
 
-  this->ui_scale         = get_config_or_default(config, parsed, "graphics", "ui_scale", 0.9f);
-  this->ui_scale_adjust  = get_config_or_default(config, parsed, "graphics", "ui_scale_adjust", 0.05f);
-  this->zoom             = get_config_or_default(config, parsed, "graphics", "zoom", 2500.f);
-  this->free_resize      = get_config_or_default(config, parsed, "graphics", "free_resize", true);
-  this->adjust_scale_res = get_config_or_default(config, parsed, "graphics", "adjust_scale_res", false);
+  this->hotkeys_enabled     = get_config_or_default(config, parsed, "control", "hotkeys_enabled", true);
+  this->hotkeys_extended    = get_config_or_default(config, parsed, "control", "hotkeys_extended", true);
+  this->use_scopely_hotkeys = get_config_or_default(config, parsed, "control", "use_scopely_hotkeys", false);
+#if DEBUG
+  this->enable_experimental = get_config_or_default(config, parsed, "control", "enable_experimental", false);
+#endif
+
+  this->ui_scale            = get_config_or_default(config, parsed, "graphics", "ui_scale", 0.9f);
+  this->ui_scale_adjust     = get_config_or_default(config, parsed, "graphics", "ui_scale_adjust", 0.05f);
+  this->zoom                = get_config_or_default(config, parsed, "graphics", "zoom", 2500.f);
+  this->free_resize         = get_config_or_default(config, parsed, "graphics", "free_resize", true);
+  this->adjust_scale_res    = get_config_or_default(config, parsed, "graphics", "adjust_scale_res", false);
+  this->keyboard_zoom_speed = get_config_or_default(config, parsed, "graphics", "keyboard_zoom_speed", 350.0f);
+
+  if (this->enable_experimental) {
+    this->system_pan_momentum = get_config_or_default(config, parsed, "graphics", "system_pan_momentum", 0.2f);
+  }
+
   this->system_pan_momentum_falloff =
       get_config_or_default(config, parsed, "graphics", "system_pan_momentum_falloff", 0.8f);
-  this->keyboard_zoom_speed = get_config_or_default(config, parsed, "graphics", "keyboard_zoom_speed", 350.0f);
   this->borderless_fullscreen_f11 =
       get_config_or_default(config, parsed, "graphics", "borderless_fullscreen_f11", true);
   this->target_framerate     = get_config_or_default(config, parsed, "graphics", "target_framerate", 60);
@@ -188,26 +265,31 @@ void Config::Load()
   this->show_all_resolutions = get_config_or_default(config, parsed, "graphics", "show_all_resolutions", false);
   this->default_system_zoom  = get_config_or_default(config, parsed, "graphics", "default_system_zoom", 0.0f);
 
-  this->system_zoom_preset_1 = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_1", 0.0f);
-  this->system_zoom_preset_2 = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_2", 0.0f);
-  this->system_zoom_preset_3 = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_3", 0.0f);
-  this->system_zoom_preset_4 = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_4", 0.0f);
-  this->system_zoom_preset_5 = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_5", 0.0f);
+  this->system_zoom_preset_1   = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_1", 0.0f);
+  this->system_zoom_preset_2   = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_2", 0.0f);
+  this->system_zoom_preset_3   = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_3", 0.0f);
+  this->system_zoom_preset_4   = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_4", 0.0f);
+  this->system_zoom_preset_5   = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_5", 0.0f);
+  this->use_presets_as_default = get_config_or_default(config, parsed, "graphics", "use_presets_as_default", false);
 
-  this->hotkeys_enabled     = get_config_or_default(config, parsed, "control", "hotkeys_enabled", true);
-  this->hotkeys_extended    = get_config_or_default(config, parsed, "control", "hotkeys_extended", true);
-  this->use_scopely_hotkeys = get_config_or_default(config, parsed, "control", "use_scopely_hotkeys", false);
-
+  this->hotkeys_enabled       = get_config_or_default(config, parsed, "control", "hotkeys_enabled", true);
+  this->hotkeys_extended      = get_config_or_default(config, parsed, "control", "hotkeys_extended", true);
+  this->use_scopely_hotkeys   = get_config_or_default(config, parsed, "control", "use_scopely_hotkeys", false);
+  this->enable_experimental   = get_config_or_default(config, parsed, "control", "enable_experimental", false);
   this->use_out_of_dock_power = get_config_or_default(config, parsed, "buffs", "use_out_of_dock_power", false);
 
-  this->disable_toast_banners  = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
-  this->extend_donation_slider = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);
-  this->disable_galaxy_chat    = get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", false);
-  this->show_cargo_default     = get_config_or_default(config, parsed, "ui", "show_cargo_default", false);
-  this->show_player_cargo      = get_config_or_default(config, parsed, "ui", "show_player_cargo", false);
-  this->show_station_cargo     = get_config_or_default(config, parsed, "ui", "show_station_cargo", true);
-  this->show_hostile_cargo     = get_config_or_default(config, parsed, "ui", "show_hostile_cargo", true);
-  this->show_armada_cargo      = get_config_or_default(config, parsed, "ui", "show_armada_cargo", true);
+  this->disable_escape_exit        = get_config_or_default(config, parsed, "ui", "disable_escape_exit", false);
+  this->disable_preview_locate     = get_config_or_default(config, parsed, "ui", "disable_preview_locate", false);
+  this->disable_preview_recall     = get_config_or_default(config, parsed, "ui", "disable_preview_recall", false);
+  this->disable_move_keys          = get_config_or_default(config, parsed, "ui", "disable_move_keys", false);
+  this->disable_toast_banners      = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
+  this->extend_donation_slider     = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);
+  this->disable_galaxy_chat        = get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", false);
+  this->show_cargo_default         = get_config_or_default(config, parsed, "ui", "show_cargo_default", false);
+  this->show_player_cargo          = get_config_or_default(config, parsed, "ui", "show_player_cargo", false);
+  this->show_station_cargo         = get_config_or_default(config, parsed, "ui", "show_station_cargo", true);
+  this->show_hostile_cargo         = get_config_or_default(config, parsed, "ui", "show_hostile_cargo", true);
+  this->show_armada_cargo          = get_config_or_default(config, parsed, "ui", "show_armada_cargo", true);
 
   this->always_skip_reveal_sequence = get_config_or_default(config, parsed, "ui", "always_skip_reveal_sequence", false);
   this->stay_in_bundle_after_summary =
@@ -216,6 +298,7 @@ void Config::Load()
   this->fix_unity_web_requests = get_config_or_default(config, parsed, "tech", "fix_unity_web_requests", true);
 
   this->sync_url        = get_config_or_default<std::string>(config, parsed, "sync", "url", "");
+  this->sync_file       = get_config_or_default<std::string>(config, parsed, "sync", "file", "");
   this->sync_token      = get_config_or_default<std::string>(config, parsed, "sync", "token", "");
   this->sync_battlelogs = get_config_or_default(config, parsed, "sync", "battlelogs", false);
   this->sync_resources  = get_config_or_default(config, parsed, "sync", "resources", false);
@@ -230,9 +313,6 @@ void Config::Load()
   // must explicitly included std::string typing here or we get back char * which fails us!
   std::string disabled_banner_types_str =
       get_config_or_default<std::string>(config, parsed, "ui", "disabled_banner_types", "");
-
-  this->config_settings_url = get_config_or_default<std::string>(config, parsed, "config", "settings_url", "");
-  this->config_assets_url_override = get_config_or_default<std::string>(config, parsed, "config", "assets_url_override", "");
 
   std::vector<std::string> types = absl::StrSplit(disabled_banner_types_str, ",", absl::SkipWhitespace());
 
@@ -265,15 +345,15 @@ void Config::Load()
 
   parsed["ui"].as_table()->insert_or_assign("disabled_banner_types", bannerString);
 
-  parse_config_shortcut(config, parsed, "move_left1", GameFunction::MoveLeft1, "LEFT");
-  parse_config_shortcut(config, parsed, "move_left2", GameFunction::MoveLeft2, "A");
-  parse_config_shortcut(config, parsed, "move_right1", GameFunction::MoveRight1, "RIGHT");
-  parse_config_shortcut(config, parsed, "move_right2", GameFunction::MoveRight2, "D");
-  parse_config_shortcut(config, parsed, "move_down1", GameFunction::MoveDown1, "DOWN");
-  parse_config_shortcut(config, parsed, "move_down2", GameFunction::MoveDown2, "S");
-  parse_config_shortcut(config, parsed, "move_up1", GameFunction::MoveUp1, "UP");
-  parse_config_shortcut(config, parsed, "move_up2", GameFunction::MoveUp2, "W");
+  if (this->enable_experimental) {
+    parse_config_shortcut(config, parsed, "move_left", GameFunction::MoveLeft, "LEFT|A");
+    parse_config_shortcut(config, parsed, "move_right", GameFunction::MoveRight, "RIGHT|D");
+    parse_config_shortcut(config, parsed, "move_down", GameFunction::MoveDown, "DOWN|S");
+    parse_config_shortcut(config, parsed, "move_up", GameFunction::MoveUp, "UP|W");
+  }
 
+  parse_config_shortcut(config, parsed, "hotkeys_disble", GameFunction::DisableHotKeys, "CTRL-ALT-MINUS");
+  parse_config_shortcut(config, parsed, "hotkeys_enable", GameFunction::EnableHotKeys, "CTRL-ALT-=");
   parse_config_shortcut(config, parsed, "select_chatalliance", GameFunction::SelectChatAlliance, "CTRL-2");
   parse_config_shortcut(config, parsed, "select_chatglobal", GameFunction::SelectChatGlobal, "CTRL-1");
   parse_config_shortcut(config, parsed, "select_chatprivate", GameFunction::SelectChatPrivate, "CTRL-3");
@@ -315,11 +395,20 @@ void Config::Load()
 
   if (this->hotkeys_extended) {
     parse_config_shortcut(config, parsed, "show_awayteam", GameFunction::ShowAwayTeam, "SHIFT-T");
-    parse_config_shortcut(config, parsed, "show_gifts", GameFunction::ShowGifts, "\\");
-    parse_config_shortcut(config, parsed, "show_alliance", GameFunction::ShowAlliance, "SHIFT-\\");
-    parse_config_shortcut(config, parsed, "show_alliance_help", GameFunction::ShowAllianceHelp, "ALT-\\");
-    parse_config_shortcut(config, parsed, "show_alliance_help", GameFunction::ShowAllianceArmada, "CTRL-\\");
+    parse_config_shortcut(config, parsed, "show_gifts", GameFunction::ShowGifts, "/");
+    parse_config_shortcut(config, parsed, "show_alliance", GameFunction::ShowAlliance, "\\");
+
+    if (this->enable_experimental) {
+      parse_config_shortcut(config, parsed, "show_alliance_help", GameFunction::ShowAllianceHelp, "SHIFT-\\");
+      parse_config_shortcut(config, parsed, "show_alliance_armada", GameFunction::ShowAllianceArmada, "CTRL-\\");
+    }
+
     parse_config_shortcut(config, parsed, "show_bookmarks", GameFunction::ShowBookmarks, "B");
+
+    if (this->enable_experimental) {
+      parse_config_shortcut(config, parsed, "show_lookup", GameFunction::ShowLookup, "L");
+    }
+
     parse_config_shortcut(config, parsed, "show_commander", GameFunction::ShowCommander, "O");
     parse_config_shortcut(config, parsed, "show_daily", GameFunction::ShowDaily, "Z");
     parse_config_shortcut(config, parsed, "show_events", GameFunction::ShowEvents, "T");
@@ -340,6 +429,8 @@ void Config::Load()
     parse_config_shortcut(config, parsed, "set_zoom_preset4", GameFunction::SetZoomPreset4, "SHIFT-F4");
     parse_config_shortcut(config, parsed, "set_zoom_preset5", GameFunction::SetZoomPreset5, "SHIFT-F5");
     parse_config_shortcut(config, parsed, "set_zoom_default", GameFunction::SetZoomDefault, "CTRL-=");
+    parse_config_shortcut(config, parsed, "toggle_preview_locate", GameFunction::TogglePreviewLocate, "CTRL-L");
+    parse_config_shortcut(config, parsed, "toggle_preview_locate", GameFunction::TogglePreviewRecall, "CTRL-R");
     parse_config_shortcut(config, parsed, "toggle_cargo_default", GameFunction::ToggleCargoDefault, "ALT-1");
     parse_config_shortcut(config, parsed, "toggle_cargo_player", GameFunction::ToggleCargoPlayer, "ALT-2");
     parse_config_shortcut(config, parsed, "toggle_cargo_station", GameFunction::ToggleCargoStation, "ALT-3");
@@ -366,5 +457,18 @@ void Config::Load()
 
   Config::Save(parsed, CONFIG_FILE_RUNTIME);
 
-  std::cout << message.str() << ":\n-----------------------------\n\n" << parsed << "\n\n-----------------------------\n";
+  std::cout
+      << message.str() << ":\n-----------------------------\n\n"
+      << parsed << "\n\n-----------------------------\nVersion "
+
+#if VERSION_PATCH
+      << "Loaded beta verison " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << " Beta "
+      << VERSION_PATCH << "\n\n"
+      << "NOTE: Beta versions may have unexpected bugs and issues, please visit Ripper's discord\n"
+      << "      for hints and help"
+#else
+      << "Loaded beta verison " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << " (Release)"
+#endif
+
+      << "\n\nPlease see https://github.com/tashcan/bob for latest configuration help, examples and future releases\n";
 }

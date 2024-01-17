@@ -21,11 +21,7 @@ prompt:
 
 ```console
 cd C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game
-<<<<<<< HEAD
 mklink [output folder]\stfc-community-patch.dll version.dll
-=======
-mklink [output folder]\stfc-communty-patch.dll version.dll
->>>>>>> 4f7972cf957addac6e61800c10e4208b6cf1a7a0
 ```
 
 If you do link the file, please note you will need to close the game to recompile.

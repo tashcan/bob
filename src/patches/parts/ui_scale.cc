@@ -32,8 +32,10 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
 
   static auto ref_height = 1080;
   static auto ref_width  = 1920;
-  auto        scr_height = (float)get_height_method();
-  auto        scr_width  = (float)get_width_method();
+
+  auto scr_height = (float)get_height_method();
+  auto scr_width  = (float)get_width_method();
+  auto dpi        = Config::GetDPI();
 
   auto adjustedFactor = scr_height / (float)ref_height;
 
@@ -41,7 +43,7 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
     adjustedFactor = 1.0f;
   }
 
-  auto n = (Config::Get().ui_scale * adjustedFactor);
+  auto n = (Config::Get().ui_scale * adjustedFactor * dpi);
   if (isnan(n)) {
     n = 1.0f;
   }
@@ -49,8 +51,8 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
 
   _this->m_canvasRootScaler->scaleFactor = n;
 
-  spdlog::trace("Setting UI Scale to {} ({} x {} ref height {} scale {} adjustment {})", n, scr_width, scr_height,
-                ref_height, Config::Get().ui_scale, adjustedFactor);
+  spdlog::trace("Setting UI Scale (DPI {}) to {} ({} x {} ref height {} scale {} adjustment {})", dpi, n, scr_width,
+                scr_height, ref_height, Config::Get().ui_scale, adjustedFactor);
 }
 
 BOOL SetWindowPos_Hook(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
@@ -66,8 +68,11 @@ void InstallUiScaleHooks()
   if (!ptr_update_scale) {
     return;
   }
+
   SPUD_STATIC_DETOUR(ptr_update_scale, ScreenManager_UpdateCanvasRootScaleFactor_Hook);
   static auto SetResolution = il2cpp_resolve_icall<void(int, int, int, int)>(
       "UnityEngine.Screen::SetResolution(System.Int32,System.Int32,UnityEngine.FullScreenMode,System.Int32)");
   SPUD_STATIC_DETOUR(SetResolution, SetResolution_Hook);
+
+  Config::RefreshDPI();
 }

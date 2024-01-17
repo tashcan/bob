@@ -53,9 +53,9 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
   const auto dt               = GetDeltaTime();
   auto       zoomDelta        = 0.0f;
   bool       do_absolute_zoom = false;
+  auto       config           = &Config::Get();
 
   if (!Key::IsInputFocused()) {
-    auto config = &Config::Get();
     if (MapKey::IsDown(GameFunction::SetZoomPreset1)) {
       return StoreZoom("System Preset 1", config->system_zoom_preset_1, _this);
     } else if (MapKey::IsDown(GameFunction::SetZoomPreset2)) {
@@ -72,37 +72,36 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 
     do_absolute_zoom = true;
     if (MapKey::IsDown(GameFunction::ZoomPreset1)) {
-      zoomDelta = Config::Get().system_zoom_preset_1;
+      zoomDelta = config->system_zoom_preset_1;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset2)) {
-      zoomDelta = Config::Get().system_zoom_preset_2;
+      zoomDelta = config->system_zoom_preset_2;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset3)) {
-      zoomDelta = Config::Get().system_zoom_preset_3;
+      zoomDelta = config->system_zoom_preset_3;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset4)) {
-      zoomDelta = Config::Get().system_zoom_preset_4;
+      zoomDelta = config->system_zoom_preset_4;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset5)) {
-      zoomDelta = Config::Get().system_zoom_preset_5;
+      zoomDelta = config->system_zoom_preset_5;
     }
 
-    if (Config::Get().hotkeys_extended) {
+    if (config->hotkeys_extended) {
       if (MapKey::IsDown(GameFunction::ZoomReset)) {
         do_absolute_zoom = false;
         do_default_zoom  = true;
       } else if (MapKey::IsDown(GameFunction::ZoomMin)) {
-        zoomDelta = Config::Get().zoom;
+        zoomDelta = config->zoom;
       } else if (MapKey::IsDown(GameFunction::ZoomMax)) {
         zoomDelta = 100;
       }
     }
 
     if (do_default_zoom) {
-      do_default_zoom  = false;
       do_absolute_zoom = true;
-      zoomDelta        = Config::Get().default_system_zoom;
+      zoomDelta        = config->default_system_zoom;
     }
 
     if (zoomDelta == 0.0f) {
       do_absolute_zoom = false;
-      zoomDelta        = Config::Get().keyboard_zoom_speed * dt;
+      zoomDelta        = config->keyboard_zoom_speed * dt;
     }
 
     if (MapKey::IsPressed(GameFunction::ZoomIn) || do_absolute_zoom) {
@@ -110,7 +109,7 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
       GetMousePosition(&mousePos);
       _this->_zoomLocation = vec2{mousePos.x, mousePos.y};
       if (do_absolute_zoom) {
-        auto zoom_distance = _this->_minimum + (_this->_maximum - _this->_minimum) * (zoomDelta / Config::Get().zoom);
+        auto zoom_distance = _this->_minimum + (_this->_maximum - _this->_minimum) * (zoomDelta / config->zoom);
         _this->Distance    = zoom_distance;
       } else {
         _this->_zoomDelta     = zoomDelta;
@@ -130,6 +129,15 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
       _this->ZoomCameraAtWorldPoint();
     }
   }
+
+  if (zoomDelta > 0.0f && config->use_presets_as_default) {
+    if (!do_default_zoom && do_absolute_zoom) {
+      StoreZoom("System Preset Default from Preset", config->default_system_zoom, _this);
+    }
+  }
+
+  do_default_zoom = false;
+
   original(_this);
 }
 

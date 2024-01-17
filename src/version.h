@@ -9,7 +9,14 @@
 #define STRINGIFY_(s)               #s
 #define STRINGIFY(s)                STRINGIFY_(s)
 
-#define VER_FILE_DESCRIPTION_STR    "Star Trek Fleet Command: Community Patch"
+#if VERSION_PATCH
+	#define VERSION_PATCH_STR " (Beta)"
+#else
+	#define VERSION_PATCH_STR ""
+#endif
+
+#define VER_FILE_DESCRIPTION_STR    "Star Trek Fleet Command: Community Patch" VERSION_PATCH_STR
+
 #define VER_FILE_VERSION            VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH
 #define VER_FILE_VERSION_STR        STRINGIFY(VERSION_MAJOR) "." STRINGIFY(VERSION_MINOR) "." STRINGIFY(VERSION_REVISION) "." STRINGIFY(VERSION_PATCH)
 

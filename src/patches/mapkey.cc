@@ -10,6 +10,7 @@
 #include <mapkey.h>
 #include <modifierkey.h>
 #include <prime/TMP_InputField.h>
+#include <sstream>
 #include <stdio.h>
 #include <string>
 #include <string_view>
@@ -17,6 +18,7 @@
 MapKey::MapKey()
 {
   this->Key = KeyCode::None;
+  this->hasModifiers = false;
 }
 
 MapKey MapKey::Parse(std::string_view key)
@@ -55,17 +57,39 @@ MapKey MapKey::Parse(std::string_view key)
   return *mapKey;
 }
 
-void MapKey::SetMappedKey(GameFunction gameFunction, MapKey mappedKey)
+std::string MapKey::GetShortcuts(GameFunction gameFunction)
 {
-  MapKey::mappedKeys[gameFunction] = mappedKey;
+  std::vector<MapKey> mapKeys = MapKey::mappedKeys[gameFunction];
+
+  bool appendPipe = false;
+
+  std::string shortcuts = "";
+  for (MapKey mapKey : mapKeys) {
+    if (appendPipe) {
+      shortcuts.append(" | ");
+    }
+    shortcuts.append(mapKey.GetParsedValues());
+    appendPipe = true;
+  }
+
+  return shortcuts;
+}
+
+void MapKey::AddMappedKey(GameFunction gameFunction, MapKey mappedKey)
+{
+  MapKey::mappedKeys[gameFunction].push_back(mappedKey);
 }
 
 bool MapKey::IsPressed(GameFunction gameFunction)
 {
-  MapKey mapKey = MapKey::mappedKeys[(int)gameFunction];
-  if (mapKey.Key != KeyCode::None) {
-    if (Key::Pressed(mapKey.Key)) {
-      return MapKey::HasCorrectModifiers(mapKey);
+  std::vector<MapKey> mapKeys = MapKey::mappedKeys[gameFunction];
+  for (MapKey mapKey : mapKeys) {
+    if (mapKey.Key != KeyCode::None) {
+      if (Key::Pressed(mapKey.Key)) {
+        if (MapKey::HasCorrectModifiers(mapKey)) {
+          return true;
+        }
+      }
     }
   }
 
@@ -74,11 +98,14 @@ bool MapKey::IsPressed(GameFunction gameFunction)
 
 bool MapKey::IsDown(GameFunction gameFunction)
 {
-  MapKey mapKey = MapKey::mappedKeys[(int)gameFunction];
-
-  if (mapKey.Key != KeyCode::None) {
-    if (Key::Down(mapKey.Key)) {
-      return MapKey::HasCorrectModifiers(mapKey);
+  std::vector<MapKey> mapKeys = MapKey::mappedKeys[(int)gameFunction];
+  for (MapKey mapKey : mapKeys) {
+    if (mapKey.Key != KeyCode::None) {
+      if (Key::Down(mapKey.Key)) {
+        if (MapKey::HasCorrectModifiers(mapKey)) {
+          return true;
+        }
+      }
     }
   }
 
@@ -125,7 +152,7 @@ std::string MapKey::GetParsedValues()
   return output;
 }
 
-std::array<MapKey, (int)GameFunction::Max> MapKey::mappedKeys = {};
+std::array<std::vector<MapKey>, (int)GameFunction::Max> MapKey::mappedKeys = {};
 
 std::vector<std::string> Shortcuts = {};
 std::vector<ModifierKey> Modifiers = {};

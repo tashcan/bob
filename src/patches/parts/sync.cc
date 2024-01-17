@@ -56,6 +56,17 @@ static auto get_client(std::wstring sessionid = L"")
   return httpClient;
 }
 
+static void write_data(std::string file_data)
+{
+  if (!Config::Get().sync_file.empty()) {
+    std::ofstream sync_file;
+    sync_file.open(Config::Get().sync_file, std::ios_base::app);
+
+    sync_file << file_data << "\n\n";
+    sync_file.close();
+  }
+}
+
 static void send_data(std::wstring post_data)
 {
   if (Config::Get().sync_url.empty()) {
@@ -523,7 +534,9 @@ void ship_combat_log_data()
       ship_array.push_back({{"type", "battlelog"}, {"names", names}, {"journal", battle_json["journal"]}});
 
       try {
-        http::send_data(ship_array.dump());
+        auto ship_data = ship_array.dump();
+        http::write_data(ship_data);
+        http::send_data(ship_data);
       } catch (winrt::hresult_error const& ex) {
         spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
       } catch (const std::wstring& sz) {

@@ -55,11 +55,25 @@ bool     DidHideViewers();
 
 void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 {
+  Key::ResetCache();
+
+  if (MapKey::IsDown(GameFunction::DisableHotKeys)) {
+    Config::Get().hotkeys_enabled = false;
+    spdlog::warn("Setting hotkeys to DISABLED");
+    return;
+  } else if (MapKey::IsDown(GameFunction::EnableHotKeys)) {
+    Config::Get().hotkeys_enabled = true;
+    spdlog::warn("Setting hotkeys to ENABLED");
+    return;
+  }
+
   if (Config::Get().use_scopely_hotkeys && Config::Get().hotkeys_enabled) {
     return original(_this);
   }
 
-  Key::ResetCache();
+  if (!Config::Get().hotkeys_enabled) {
+    return;
+  }
 
   static auto il2cpp_string_new =
       (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
@@ -110,9 +124,10 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         DeploymentManger::Instance()->SetTowRequest(towedFleetId, foundDisco->Id);
       }
     } else {
-      auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
+      auto fleet_bar  = ObjectFinder<FleetBarViewController>::Get();
+      auto can_locate = !config->disable_preview_locate || !CanHideViewers();
       if (fleet_bar) {
-        if (!CanHideViewers() && fleet_bar->IsIndexSelected(ship_select_request)) {
+        if (can_locate && fleet_bar->IsIndexSelected(ship_select_request)) {
           auto fleet = fleet_bar->_fleetPanelController->fleet;
           if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
             NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
@@ -160,6 +175,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
           return bookmark_manager->ViewBookmarks();
         }
         return GotoSection(SectionID::Bookmarks_Main);
+      } else if (MapKey::IsDown(GameFunction::ShowLookup)) {
+        return GotoSection(SectionID::Bookmarks_Search_Coordinates);
       } else if (MapKey::IsDown(GameFunction::ShowRefinery)) {
         return GotoSection(SectionID::Shop_Refining_List);
       } else if (MapKey::IsDown(GameFunction::ShowFactions)) {
@@ -201,13 +218,13 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       } else if (MapKey::IsDown(GameFunction::ShowAllianceArmada)) {
         return GotoSection(SectionID::Alliance_Armadas);
       } else if (MapKey::IsPressed(GameFunction::UiScaleUp)) {
-        auto old_scale = config->ui_scale;
-        config->ui_scale -= config->ui_scale_adjust;
-        spdlog::info("UI has ben scaled up, was {}, now {}", old_scale, config->ui_scale);
+        config->AdjustUiScale(true);
       } else if (MapKey::IsPressed(GameFunction::UiScaleDown)) {
-        auto old_scale = config->ui_scale;
-        config->ui_scale += config->ui_scale_adjust;
-        spdlog::info("UI has been scaled down, was {}, now {}", old_scale, config->ui_scale);
+        config->AdjustUiScale(false);
+      } else if (MapKey::IsDown(GameFunction::TogglePreviewLocate)) {
+        config->disable_preview_locate = !config->disable_preview_locate;
+      } else if (MapKey::IsDown(GameFunction::TogglePreviewRecall)) {
+        config->disable_preview_recall = !config->disable_preview_recall;
       } else if (MapKey::IsDown(GameFunction::ToggleCargoDefault)) {
         config->show_cargo_default = !config->show_cargo_default;
       } else if (MapKey::IsDown(GameFunction::ToggleCargoPlayer)) {
@@ -327,6 +344,12 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       show_info_pending -= 1;
     }
   }
+
+  if (config->disable_escape_exit && Key::Pressed(KeyCode::Escape)) {
+    return;
+  }
+
+  return original(_this);
 }
 
 // NOTE: If you change this loop functionality, also change DoHideViewersOfType template
@@ -348,10 +371,11 @@ template <typename T> inline bool CanHideViewersOfType()
 
 bool CanHideViewers()
 {
-  return CanHideViewersOfType<AllianceStarbaseObjectViewerWidget>() || CanHideViewersOfType<ArmadaObjectViewerWidget>()
-         || CanHideViewersOfType<CelestialObjectViewerWidget>() || CanHideViewersOfType<EmbassyObjectViewer>()
-         || CanHideViewersOfType<HousingObjectViewerWidget>() || CanHideViewersOfType<MiningObjectViewerWidget>()
-         || CanHideViewersOfType<MissionsObjectViewerWidget>() || CanHideViewersOfType<PreScanTargetWidget>();
+  return (CanHideViewersOfType<AllianceStarbaseObjectViewerWidget>() || CanHideViewersOfType<ArmadaObjectViewerWidget>()
+          || CanHideViewersOfType<CelestialObjectViewerWidget>() || CanHideViewersOfType<EmbassyObjectViewer>()
+          || CanHideViewersOfType<HousingObjectViewerWidget>() || CanHideViewersOfType<MiningObjectViewerWidget>()
+          || CanHideViewersOfType<MissionsObjectViewerWidget>() || CanHideViewersOfType<PreScanTargetWidget>()
+          || CanHideViewersOfType<HousingObjectViewerWidget>());
 }
 
 // NOTE: If you change this loop functionality, also change CanideViewersOfType template
@@ -416,7 +440,7 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
   auto didAction  = false;
 
   spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
-               canAction, (int)canState, "[start]");
+                canAction, (int)canState, "[start]");
 
   for (auto state : wantedStates) {
     if (fleet_state == state) {
@@ -433,7 +457,7 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
   }
 
   spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
-               canAction, (int)canState, didAction);
+                canAction, (int)canState, didAction);
 
   return didAction;
 }
@@ -443,7 +467,7 @@ bool DidExecuteRecall(FleetBarViewController* fleet_bar)
   static std::vector<FleetState> states = {{FleetState::IdleInSpace, FleetState::Impulsing, FleetState::Mining}};
 
   auto fleet_controller = fleet_bar->_fleetPanelController;
-  auto fleet            = fleet_bar->_fleetPanelController->fleet;
+  auto fleet            = fleet_controller->fleet;
   auto fleet_reqs       = fleet->RecallRequirements;
 
   return DidExecuteFleetAction<RecallRequirement>("Recall", ActionType::Recall, fleet_bar, fleet_reqs, states);
@@ -464,7 +488,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
 {
   auto has_primary   = MapKey::IsDown(GameFunction::ActionPrimary) || force_space_action_next_frame;
   auto has_secondary = MapKey::IsDown(GameFunction::ActionSecondary);
-  auto has_recall    = MapKey::IsDown(GameFunction::ActionRecall);
+  auto has_recall    = MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || CanHideViewers);
   auto has_repair    = MapKey::IsDown(GameFunction::ActionRepair);
 
   auto fleet_controller = fleet_bar->_fleetPanelController;
@@ -652,18 +676,12 @@ void InstallHotkeyHooks()
   }
   SPUD_STATIC_DETOUR(ptr_can_user_shortcuts, InitializeActions_Hook);
 
-  if (Config::Get().hotkeys_enabled == false) {
+  auto screen_manager_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "ScreenManager");
+  auto ptr_update            = screen_manager_helper.GetMethodXor("Update");
+  if (!ptr_update) {
     return;
   }
-
-  if (Config::Get().use_scopely_hotkeys == false) {
-    auto screen_manager_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "ScreenManager");
-    auto ptr_update            = screen_manager_helper.GetMethodXor("Update");
-    if (!ptr_update) {
-      return;
-    }
-    SPUD_STATIC_DETOUR(ptr_update, ScreenManager_Update_Hook);
-  }
+  SPUD_STATIC_DETOUR(ptr_update, ScreenManager_Update_Hook);
 
   static auto rewards_button_widget =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Combat", "RewardsButtonWidget");

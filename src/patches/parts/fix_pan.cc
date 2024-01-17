@@ -4,6 +4,7 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
+#include "MapKey.h"
 #include "utils.h"
 
 #include <prime/NavigationPan.h>
@@ -23,7 +24,10 @@ TKTouch *TKTouch_populateWithPosition_Hook(auto original, TKTouch *_this, uintpt
 bool NavigationPan_LateUpdate_Hook(auto original, NavigationPan *_this)
 {
   auto d = _this->_lastDelta;
-  auto r = original(_this);
+
+  if (!Config::Get().disable_move_keys) {
+    original(_this);
+  }
 
   static auto GetMouseButton =
       il2cpp_resolve_icall<bool(int)>(xorstr_("UnityEngine.Input::GetMouseButton(System.Int32)"));
