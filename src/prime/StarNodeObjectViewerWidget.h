@@ -18,13 +18,14 @@ public:
     InitiateWarp(this);
   }
 
-private:
-  friend class ObjectFinder<StarNodeObjectViewerWidget>;
-  friend struct Widget<void, StarNodeObjectViewerWidget>;
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper =
         il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.ObjectViewer", "StarNodeObjectViewerWidget");
     return class_helper;
   }
+
+private:
+  friend class ObjectFinder<StarNodeObjectViewerWidget>;
+  friend struct Widget<void, StarNodeObjectViewerWidget>;
 };

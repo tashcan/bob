@@ -11,12 +11,13 @@ public:
     OnSetCourseButtonClick(this);
   }
 
-private:
-  friend class ObjectFinder<NavigationInteractionUIViewController>;
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper =
         il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Navigation", "NavigationInteractionUIViewController");
     return class_helper;
   }
+
+private:
+  friend class ObjectFinder<NavigationInteractionUIViewController>;
 };

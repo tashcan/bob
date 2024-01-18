@@ -51,6 +51,8 @@ E | Zoom In
 T | Events
 G | Galaxy
 H | System
+Shift-G | Exterior View
+Shfit-H | Interior View
 R | When ship selected, recall ship
 R | When clicking on mine/player/enemy, perform non-default action (eg, scan)
 V | When clicking on mine/player/enemy, toggle view of cargo or default screen
@@ -137,6 +139,10 @@ The most common problems getting the DLL to work are:
 
    You can verify your configuration by looking at `community_patch_runtime.vars` and/or the
    log file `community_patch.log`.
+
+## Support
+
+Tashcan is now retiring from all things STFC but will still be maintaining [Ripper's Corner](https://discord.gg/NA4r3jKWEX) for other things.  For STFC Community Mod items, please visit the [STFC Community Mod](https://discord.gg/PrpHgs7Vjs) discord server.
 
 ## Disclaimer
 

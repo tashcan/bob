@@ -5,31 +5,17 @@
 #include "config.h"
 #include "utils.h"
 
-#include "prime/BlurController.h"
-#include "prime/CallbackContainer.h"
-#include "prime/ChatManager.h"
-#include "prime/ChatMessageListLocalViewController.h"
-#include "prime/ClientModifierType.h"
-#include "prime/FleetBarViewController.h"
-#include "prime/FleetLocalViewController.h"
-#include "prime/FullScreenChatViewController.h"
-#include "prime/Hub.h"
-#include "prime/InventoryForPopup.h"
-#include "prime/KeyCode.h"
-#include "prime/MiningObjectViewerWidget.h"
-#include "prime/NavigationInteractionUIViewController.h"
-#include "prime/ScanEngageButtonsWidget.h"
-#include "prime/ScreenManager.h"
-#include "prime/AllianceStarbaseObjectViewerWidget.h"
-#include "prime/PreScanTargetWidget.h"
 #include "prime/ActionRequirement.h"
 #include "prime/AllianceStarbaseObjectViewerWidget.h"
 #include "prime/AnimatedRewardsScreenViewController.h"
 #include "prime/ArmadaObjectViewerWidget.h"
+#include "prime/BlurController.h"
 #include "prime/BookmarksManager.h"
+#include "prime/CallbackContainer.h"
 #include "prime/CelestialObjectViewerWidget.h"
 #include "prime/ChatManager.h"
 #include "prime/ChatMessageListLocalViewController.h"
+#include "prime/ClientModifierType.h"
 #include "prime/DeploymentManager.h"
 #include "prime/EmbassyObjectViewer.h"
 #include "prime/FleetBarViewController.h"
@@ -38,6 +24,7 @@
 #include "prime/FullScreenChatViewController.h"
 #include "prime/HousingObjectViewerWidget.h"
 #include "prime/Hub.h"
+#include "prime/InventoryForPopup.h"
 #include "prime/KeyCode.h"
 #include "prime/MiningObjectViewerWidget.h"
 #include "prime/MissionsObjectViewerWidget.h"
@@ -53,11 +40,12 @@
 #include <il2cpp/il2cpp_helper.h>
 
 #include <EASTL/unordered_map.h>
-#include <EASTL/vector.h>
 #include <EASTL/unordered_set.h>
+#include <EASTL/vector.h>
 
 #include <chrono>
 #include <iostream>
+#include <prime/UIBehaviour.h>
 
 static int i = 0;
 
@@ -254,30 +242,52 @@ AppConfig* Model_LoadConfigs(auto original, Model* _this)
   return config;
 }
 
+std::vector<std::string>                                     tracked_classes;
 eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_objects;
 
-void* track_ctor(auto original, void* _this) {
-  auto cls = (Il2CppObject*)_this;
-  auto &tracked_object_vector = tracked_objects[cls->klass];
-  tracked_object_vector.emplace_back(uintptr_t(_this));
+void* track_ctor(auto original, void* _this)
+{
+  if (_this != nullptr) {
+    auto cls     = (Il2CppObject*)_this;
+    auto clsName = std::string(cls->klass->name);
+
+    spdlog::info("Tracking object {} - {}", clsName, (int)_this);
+
+    auto& tracked_object_vector = tracked_objects[cls->klass];
+    tracked_object_vector.emplace_back(uintptr_t(_this));
+
+    if (std::find(tracked_classes.begin(), tracked_classes.end(), clsName) == tracked_classes.end()) {
+      tracked_classes.emplace_back(clsName);
+    }
+  }
+
   return original(_this);
 }
 
 void track_destroy(auto original, void* _this)
 {
-  auto cls = (Il2CppObject*)_this;
-  auto& tracked_object_vector = tracked_objects[cls->klass];
-  tracked_object_vector.erase_first(uintptr_t(_this));
-  original(_this);
+  if (_this != nullptr) {
+    auto cls     = (Il2CppObject*)_this;
+    auto clsName = std::string(cls->klass->name);
+
+    if (std::find(tracked_classes.begin(), tracked_classes.end(), clsName) != tracked_classes.end()) {
+      spdlog::info("Destroying object {} - {}", clsName, (int)_this);
+
+      auto& tracked_object_vector = tracked_objects[cls->klass];
+      tracked_object_vector.erase_first(uintptr_t(_this));
+      original(_this);
+    }
+  }
 }
 
-template<typename T> void TrackObject() {
+template <typename T> void TrackObject()
+{
   static eastl::unordered_set<void*> seen_ctor;
   static eastl::unordered_set<void*> seen_destroy;
 
-  auto &alliance_widget = T::get_class_helper();
-  auto ctor       = alliance_widget.GetMethod(".ctor");
-  auto on_destroy = alliance_widget.GetMethod("OnDestroy");
+  auto& object_class = T::get_class_helper();
+  auto  ctor         = object_class.GetMethod(".ctor");
+  auto  on_destroy   = object_class.GetMethod("OnDestroy");
 
   if (seen_ctor.find(ctor) == eastl::end(seen_ctor)) {
     SPUD_STATIC_DETOUR(ctor, track_ctor);
@@ -289,7 +299,6 @@ template<typename T> void TrackObject() {
     seen_destroy.emplace(on_destroy);
   }
 }
-
 
 void InstallTestPatches()
 {
@@ -305,14 +314,17 @@ void InstallTestPatches()
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Models", "BattleTargetData");
   battle_target_data = battle_target_data;
 
-  TrackObject<HousingObjectViewerWidget>();
+  TrackObject<PreScanTargetWidget>();
+  TrackObject<FleetBarViewController>();
   TrackObject<AllianceStarbaseObjectViewerWidget>();
+  TrackObject<AnimatedRewardsScreenViewController>();
   TrackObject<ArmadaObjectViewerWidget>();
   TrackObject<CelestialObjectViewerWidget>();
   TrackObject<EmbassyObjectViewer>();
+  TrackObject<FullScreenChatViewController>();
+  TrackObject<HousingObjectViewerWidget>();
   TrackObject<MiningObjectViewerWidget>();
   TrackObject<MissionsObjectViewerWidget>();
-  TrackObject<PreScanTargetWidget>();
-  TrackObject<HousingObjectViewerWidget>();
-  TrackObject<FleetBarViewController>();
+  TrackObject<NavigationInteractionUIViewController>();
+  TrackObject<StarNodeObjectViewerWidget>();
 }

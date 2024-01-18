@@ -9,13 +9,14 @@
 - Add show resarch key ('U')
 - Add example configuration file
 - Adjust runtime configuration output:
-	- Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
-	- Add a massive comment to top of community_patch_runtimes.vars
+  - Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
+  - Add a massive comment to top of community_patch_runtimes.vars
 - Add ui_scale_adjust to allow changes to "step" between ui_scale's
 - Make ui_scaleup/ui_scaldown operate like zoom and can now be held
 - Add session-based adjustments that last until game is restarted:
-	- Add toggle cargo views (ALT 1-5)
-	- Add set zoom preset (SHIFT F1-F5) 
+  - Add toggle cargo views (ALT 1-5)
+  - Add set zoom preset (SHIFT F1-F5)
+- Fix speed issues with ObjectFinder by writing our own
 
 ## 0.5.2
 
@@ -37,7 +38,7 @@
 
 ## 0.4.0
 
-- who knows 
+- who knows
 
 ## 0.3.8
 
