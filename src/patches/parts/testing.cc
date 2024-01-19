@@ -244,32 +244,50 @@ AppConfig* Model_LoadConfigs(auto original, Model* _this)
 
 eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_objects;
 
+void add_to_tracking_recursive(Il2CppClass* klass, void* _this)
+{
+  if (!klass) {
+    return;
+  }
+
+  auto& tracked_object_vector = tracked_objects[klass];
+  tracked_object_vector.emplace_back(uintptr_t(_this));
+
+  return add_to_tracking_recursive(klass->parent, _this);
+}
+
+void remove_from_tracking_recursive(Il2CppClass* klass, void* _this)
+{
+  if (!klass) {
+    return;
+  }
+
+  auto& tracked_object_vector = tracked_objects[klass];
+  tracked_object_vector.erase_first(uintptr_t(_this));
+  return remove_from_tracking_recursive(klass->parent, _this);
+}
+
 void* track_ctor(auto original, void* _this)
 {
+  auto obj = original(_this);
   if (_this == nullptr) {
-    return original(_this);
+    return _this;
   }
 
   auto cls = (Il2CppObject*)_this;
-
-  auto& tracked_object_vector = tracked_objects[cls->klass];
-  tracked_object_vector.emplace_back(uintptr_t(_this));
-
-  return original(_this);
+  add_to_tracking_recursive(cls->klass, _this);
+  return obj;
 }
 
 void track_destroy(auto original, void* _this, uint64_t a2, uint64_t a3)
 {
   original(_this, a2, a3);
-
   if (_this == nullptr) {
     return;
   }
 
   auto cls = (Il2CppObject*)_this;
-
-  auto& tracked_object_vector = tracked_objects[cls->klass];
-  tracked_object_vector.erase_first(uintptr_t(_this));
+  remove_from_tracking_recursive(cls->klass, _this);
 }
 
 static eastl::unordered_set<void*> seen_ctor;
@@ -290,6 +308,17 @@ template <typename T> void TrackObject()
     SPUD_STATIC_DETOUR(on_destroy, track_destroy);
     seen_destroy.emplace(on_destroy);
   }
+}
+
+void SetActive_hook(auto original, void* _this, bool active)
+{
+  static auto IsActiveSelf = il2cpp_resolve_icall<bool(void*)>("UnityEngine.GameObject::get_activeSelf()");
+
+  if (active && IsActiveSelf(_this)) {
+    return;
+    // __debugbreak();
+  }
+  return original(_this, active);
 }
 
 void InstallTestPatches()
@@ -319,4 +348,8 @@ void InstallTestPatches()
   TrackObject<MissionsObjectViewerWidget>();
   TrackObject<NavigationInteractionUIViewController>();
   TrackObject<StarNodeObjectViewerWidget>();
+
+
+  static auto SetActive = il2cpp_resolve_icall<void(void*, bool)>("UnityEngine.GameObject::SetActive(System.Boolean)");
+  SPUD_STATIC_DETOUR(SetActive, SetActive_hook);  
 }
