@@ -15,6 +15,7 @@
 #include "Dbghelp.h"
 
 #include "version.h"
+#include <map>
 
 #define DO_API(r, n, p) using n##_t = r(*) p;
 #define DO_API_NO_RETURN(r, n, p) DO_API(r, n, p)
@@ -44,32 +45,34 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::info("Initializing STFC Community Patch ({})", VER_PRODUCT_VERSION_STR);
 
-  spdlog::info("Step 1");
-  InstallUiScaleHooks();
-  spdlog::info("Step 2");
-  InstallZoomHooks();
-  spdlog::info("Step 3");
-  InstallBuffFixHooks();
-  spdlog::info("Step 4");
-  InstallToastBannerHooks();
-  spdlog::info("Step 5");
-  InstallPanHooks();
-  spdlog::info("Step 6");
-  InstallWebRequestHooks();
-  spdlog::info("Step 7");
-  InstallImproveResponsivenessHooks();
-  spdlog::info("Step 8");
-  InstallHotkeyHooks();
-  spdlog::info("Step 9");
-  InstallFreeResizeHooks();
-  spdlog::info("Step 10");
-  InstallTempCrashFixes();
-  InstallTestPatches();
-  InstallMiscPatches();
-  InstallChatPatches();
-  InstallResolutionListFix();
-  InstallSyncPatches();
-  
+  const std::map<std::string, void*> patches = {
+      {"UiScaleHooks", InstallUiScaleHooks},
+      {"ZoomHooks", InstallZoomHooks},
+      {"BuffFixHooks", InstallBuffFixHooks},
+      {"ToastBannerHooks", InstallToastBannerHooks},
+      {"PanHooks", InstallPanHooks},
+      {"WebRequestHooks", InstallWebRequestHooks},
+      {"ImproveResponsivenessHooks", InstallImproveResponsivenessHooks},
+      {"HotkeyHooks", InstallHotkeyHooks},
+      {"FreeResizeHooks", InstallFreeResizeHooks},
+      {"TempCrashFixes", InstallTempCrashFixes},
+      {"TestPatches", InstallTestPatches},
+      {"MiscPatches", InstallMiscPatches},
+      {"ChatPatches", InstallChatPatches},
+      {"ResolutionListFix", InstallResolutionListFix},
+      {"SyncPatches", InstallSyncPatches},
+  };
+
+  auto patch_count = 0;
+  auto patch_total = patches.size();
+  for (auto& kv : patches) {
+    auto patch_name = kv.first;
+    auto patch_func = kv.second;
+    patch_count++;
+    spdlog::info("Patching {:>2} of {} ({})", patch_count, patch_total, patch_name);
+    reinterpret_cast<void (*)()>(patch_func)();
+  }
+
   spdlog::info("");
 #if VERSION_PATCH
   spdlog::info("Loaded beta verison {}.{}.{} Patch {}", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH);
