@@ -3,20 +3,43 @@
 ## 0.6.0
 
 - Add customisable hotkeys
-- Prevent ship 'locate' functionality when viewing nodes
-- Add manage ship key ('N')
-- Add repair ship key ('R')
-- Add show resarch key ('U')
 - Add example configuration file
-- Adjust runtime configuration output:
-  - Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
-  - Add a massive comment to top of community_patch_runtimes.vars
-- Add ui_scale_adjust to allow changes to "step" between ui_scale's
 - Make ui_scaleup/ui_scaldown operate like zoom and can now be held
+- Add ui_scale_adjust to allow changes to "step" between ui_scale's
+- Add option to disable:
+  - Ship locate when preview window open
+  - Ending program via escape
+  - Movement via keyboard
 - Add session-based adjustments that last until game is restarted:
   - Add toggle cargo views (ALT 1-5)
   - Add set zoom preset (SHIFT F1-F5)
 - Fix speed issues with ObjectFinder by writing our own
+- Adjust runtime configuration output:
+  - Rename 'community_patch_settings_parsed.toml' to 'community_patch_runtime.vars' to avoid confusion
+  - Add a massive comment to top of community_patch_runtimes.vars
+  - When possible report bad configuration values
+- Add new key mappings:
+  - N: Manage Ship
+  - R: Repair Ship
+  - U: Show Resarch
+  - CTRL-ALT-MINUS: Disable all hotkeys
+  - CTRL-ALT-EQUAL: Enable all hotkeys
+  - F9: Log level to Debug
+  - F11: Log level to Info
+  - SHIFT-T: Show Away Team
+  - SLASH (Forward): Show Gifts
+  - SLASH (Backward): Show Alliance
+  - CTRL-L: Toggle whether Locate will work when preview popup visible
+  - CTRL-R: Toggle whether Recall will work when preview popup visible
+  - ALT-1: Toggle whether Cargo will show for Default
+  - ALT-2: Toggle whether Cargo will show for Player
+  - ALT-3: Toggle whether Cargo will show for Station
+  - ALT-4: Toggle whether Cargo will show for Hostile
+  - ALT-5: Toggle whether Cargo will show for Armada
+- Add new key mappings (alpha testing only due to implementation issues):
+  - SHIFT-SLASH (Backward): Show Alliance Help
+  - CTRL-SLASH (Backward): Show Alliance Armada
+  - l: Show Lookup
 
 ## 0.5.2
 

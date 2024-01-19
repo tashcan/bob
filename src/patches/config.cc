@@ -272,10 +272,6 @@ void Config::Load()
   this->system_zoom_preset_5   = get_config_or_default(config, parsed, "graphics", "system_zoom_preset_5", 0.0f);
   this->use_presets_as_default = get_config_or_default(config, parsed, "graphics", "use_presets_as_default", false);
 
-  this->hotkeys_enabled       = get_config_or_default(config, parsed, "control", "hotkeys_enabled", true);
-  this->hotkeys_extended      = get_config_or_default(config, parsed, "control", "hotkeys_extended", true);
-  this->use_scopely_hotkeys   = get_config_or_default(config, parsed, "control", "use_scopely_hotkeys", false);
-  this->enable_experimental   = get_config_or_default(config, parsed, "control", "enable_experimental", false);
   this->use_out_of_dock_power = get_config_or_default(config, parsed, "buffs", "use_out_of_dock_power", false);
 
   this->disable_escape_exit        = get_config_or_default(config, parsed, "ui", "disable_escape_exit", false);

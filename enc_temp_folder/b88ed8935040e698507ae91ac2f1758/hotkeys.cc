@@ -444,15 +444,15 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
   auto canState   = 0;
   auto didAction  = false;
 
+  spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
+                canAction, (int)canState, "[start]");
+
   for (auto state : wantedStates) {
     if (fleet_state == state) {
       canState = (int)fleet_state;
       break;
     }
   }
-
-  spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
-                canAction, (int)canState, "[start]");
 
   if (canState && canAction) {
     if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
