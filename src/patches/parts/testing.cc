@@ -242,59 +242,51 @@ AppConfig* Model_LoadConfigs(auto original, Model* _this)
   return config;
 }
 
-std::vector<std::string>                                     tracked_classes;
 eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_objects;
 
 void* track_ctor(auto original, void* _this)
 {
-  if (_this != nullptr) {
-    auto cls     = (Il2CppObject*)_this;
-    auto clsName = std::string(cls->klass->name);
-
-    spdlog::info("Tracking object {} - {}", clsName, (int)_this);
-
-    auto& tracked_object_vector = tracked_objects[cls->klass];
-    tracked_object_vector.emplace_back(uintptr_t(_this));
-
-    if (std::find(tracked_classes.begin(), tracked_classes.end(), clsName) == tracked_classes.end()) {
-      tracked_classes.emplace_back(clsName);
-    }
+  if (_this == nullptr) {
+    return original(_this);
   }
+
+  auto cls = (Il2CppObject*)_this;
+
+  auto& tracked_object_vector = tracked_objects[cls->klass];
+  tracked_object_vector.emplace_back(uintptr_t(_this));
 
   return original(_this);
 }
 
-void track_destroy(auto original, void* _this)
+void track_destroy(auto original, void* _this, uint64_t a2, uint64_t a3)
 {
-  if (_this != nullptr) {
-    auto cls     = (Il2CppObject*)_this;
-    auto clsName = std::string(cls->klass->name);
+  original(_this, a2, a3);
 
-    if (std::find(tracked_classes.begin(), tracked_classes.end(), clsName) != tracked_classes.end()) {
-      spdlog::info("Destroying object {} - {}", clsName, (int)_this);
-
-      auto& tracked_object_vector = tracked_objects[cls->klass];
-      tracked_object_vector.erase_first(uintptr_t(_this));
-      original(_this);
-    }
+  if (_this == nullptr) {
+    return;
   }
+
+  auto cls = (Il2CppObject*)_this;
+
+  auto& tracked_object_vector = tracked_objects[cls->klass];
+  tracked_object_vector.erase_first(uintptr_t(_this));
 }
+
+static eastl::unordered_set<void*> seen_ctor;
+static eastl::unordered_set<void*> seen_destroy;
 
 template <typename T> void TrackObject()
 {
-  static eastl::unordered_set<void*> seen_ctor;
-  static eastl::unordered_set<void*> seen_destroy;
-
   auto& object_class = T::get_class_helper();
   auto  ctor         = object_class.GetMethod(".ctor");
   auto  on_destroy   = object_class.GetMethod("OnDestroy");
 
-  if (seen_ctor.find(ctor) == eastl::end(seen_ctor)) {
+  if (seen_ctor.find(ctor) == seen_ctor.end()) {
     SPUD_STATIC_DETOUR(ctor, track_ctor);
     seen_ctor.emplace(ctor);
   }
 
-  if (seen_destroy.find(ctor) == eastl::end(seen_destroy)) {
+  if (seen_destroy.find(on_destroy) == seen_destroy.end()) {
     SPUD_STATIC_DETOUR(on_destroy, track_destroy);
     seen_destroy.emplace(on_destroy);
   }
