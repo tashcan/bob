@@ -3,25 +3,28 @@
 
 #include <spud/detour.h>
 
-#include "prime/ActionRequirement.h"
+// Object Viewers
 #include "prime/AllianceStarbaseObjectViewerWidget.h"
-#include "prime/AnimatedRewardsScreenViewController.h"
 #include "prime/ArmadaObjectViewerWidget.h"
-#include "prime/BookmarksManager.h"
 #include "prime/CelestialObjectViewerWidget.h"
+#include "prime/EmbassyObjectViewer.h"
+#include "prime/MiningObjectViewerWidget.h"
+#include "prime/MissionsObjectViewerWidget.h"
+#include "prime/HousingObjectViewerWidget.h"
+#include "prime/StarNodeObjectViewerWidget.h"
+
+#include "prime/ActionRequirement.h"
+#include "prime/AnimatedRewardsScreenViewController.h"
+#include "prime/BookmarksManager.h"
 #include "prime/ChatManager.h"
 #include "prime/ChatMessageListLocalViewController.h"
 #include "prime/DeploymentManager.h"
-#include "prime/EmbassyObjectViewer.h"
 #include "prime/FleetBarViewController.h"
 #include "prime/FleetLocalViewController.h"
 #include "prime/FleetsManager.h"
 #include "prime/FullScreenChatViewController.h"
-#include "prime/HousingObjectViewerWidget.h"
 #include "prime/Hub.h"
 #include "prime/KeyCode.h"
-#include "prime/MiningObjectViewerWidget.h"
-#include "prime/MissionsObjectViewerWidget.h"
 #include "prime/NavigationInteractionUIViewController.h"
 #include "prime/NavigationSectionManager.h"
 #include "prime/PreScanTargetWidget.h"
@@ -29,7 +32,6 @@
 #include "prime/ScanTargetViewController.h"
 #include "prime/SceneManager.h"
 #include "prime/ScreenManager.h"
-#include "prime/StarNodeObjectViewerWidget.h"
 
 #include "key.h"
 #include "mapkey.h"
@@ -469,7 +471,7 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
 
 bool DidExecuteRecall(FleetBarViewController* fleet_bar)
 {
-  static std::vector<FleetState> states = {{FleetState::IdleInSpace, FleetState::Impulsing, FleetState::Mining}};
+  static std::vector<FleetState> states = {{FleetState::IdleInSpace, FleetState::Impulsing, FleetState::Mining, FleetState::Capturing}};
 
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_controller->fleet;
