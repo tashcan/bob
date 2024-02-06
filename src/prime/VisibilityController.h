@@ -18,11 +18,11 @@ public:
   void Show(bool instant = false)
   {
     auto Show = get_class_helper().GetMethodSpecial<void(VisibilityController*, bool)>(
-        "Show", [](int param_count, const ParameterInfo* param) -> bool {
+        "Show", [](int param_count, const Il2CppType** param) -> bool {
           if (param_count != 1) {
             return false;
           }
-          return strcmp(param->name, "instant") == 0;
+          return param[0]->type == IL2CPP_TYPE_BOOLEAN;
         });
     return Show(this, instant);
   }
@@ -30,11 +30,11 @@ public:
   void Hide(bool instant = false)
   {
     auto Hide = get_class_helper().GetMethodSpecial<void(VisibilityController*, bool)>(
-        "Hide", [](int param_count, const ParameterInfo* param) -> bool {
+        "Hide", [](int param_count, const Il2CppType** param) -> bool {
           if (param_count != 1) {
             return false;
           }
-          return strcmp(param->name, "instant") == 0;
+          return param[0]->type == IL2CPP_TYPE_BOOLEAN;
         });
     return Hide(this, instant);
   }

@@ -3,3 +3,5 @@
 out/
 build/
 *.code-workspace
+/app/
+/.cache/

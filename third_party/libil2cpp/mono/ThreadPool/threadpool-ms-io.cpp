@@ -46,7 +46,6 @@
 #include "vm/Domain.h"
 #include "vm/Runtime.h"
 #include "vm/Thread.h"
-#include "vm/ThreadPool.h"
 
 #define UPDATES_CAPACITY 128
 
@@ -91,8 +90,16 @@ typedef struct {
 	} data;
 } ThreadPoolIOUpdate;
 
+typedef struct
+{
+    bool(*init)(int wakeup_pipe_fd);
+    void(*register_fd)(int fd, int events, bool is_new);
+    void(*remove_fd)(int fd);
+    int(*event_wait)(void(*callback)(int fd, int events, void* user_data), void* user_data);
+} ThreadPoolIOBackend;
+
 typedef struct {
-	il2cpp::vm::ThreadPool::ThreadPoolIOBackend backend;
+	ThreadPoolIOBackend backend;
 
 	ThreadPoolIOUpdate* updates;
 	int updates_size;
@@ -111,7 +118,7 @@ static bool io_selector_running = false;
 
 static ThreadPoolIO* threadpool_io;
 
-static il2cpp::vm::ThreadPool::ThreadPoolIOBackend backend_poll = { poll_init, poll_register_fd, poll_remove_fd, poll_event_wait };
+static ThreadPoolIOBackend backend_poll = { poll_init, poll_register_fd, poll_remove_fd, poll_event_wait };
 
 static Il2CppIOSelectorJob* get_job_for_event (ManagedList *list, int32_t event)
 {
@@ -657,8 +664,21 @@ void ves_icall_System_IOSelector_Add (intptr_t handle, Il2CppIOSelectorJob *job)
 
 	il2cpp::os::SocketHandleWrapper socketHandle(il2cpp::os::PointerToSocketHandle(reinterpret_cast<void*>(handle)));
 
-	update->type = UPDATE_ADD;
-	update->data.add.fd = (int)socketHandle.GetSocket()->GetDescriptor();
+    // At least one user has seen an intermittent crash where the socket is null. We're unsure what conditions cause
+    // this to happen, but checking for a value of NULL here seems to allow their project to continue without
+    // problems. So let's do the same here. If the value is NULL, we set the update type to be "empty". That will
+    // cause the selector thread to simply skip this update.
+    il2cpp::os::Socket* socket = socketHandle.GetSocket();
+    if (socket != NULL)
+    {
+        update->type = UPDATE_ADD;
+        update->data.add.fd = (int)socket->GetDescriptor();
+    }
+    else
+    {
+        update->type = UPDATE_EMPTY;
+    }
+
 	il2cpp::gc::WriteBarrier::GenericStore(&update->data.add.job, job);
 	il2cpp::os::Atomic::FullMemoryBarrier(); /* Ensure this is safely published before we wake up the selector */
 

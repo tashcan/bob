@@ -13,7 +13,7 @@ public:
       if (count != 1) {
         return false;
       }
-      auto p1 = params[0].parameter_type->type;
+      auto p1 = params[0]->type;
       if (p1 == IL2CPP_TYPE_CLASS) {
         return true;
       }

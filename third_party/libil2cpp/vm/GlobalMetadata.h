@@ -6,9 +6,9 @@
 #include "StackTrace.h"
 #include "il2cpp-class-internals.h"
 #include "il2cpp-config.h"
-#include "metadata/Il2CppTypeVector.h"
 #include "os/Mutex.h"
 #include "utils/dynamic_array.h"
+#include "vm-utils/MethodDefinitionKey.h"
 
 struct MethodInfo;
 struct Il2CppClass;
@@ -46,6 +46,7 @@ namespace vm
         static Il2CppMetadataTypeHandle GetAssemblyExportedTypeHandle(const Il2CppImage* image, AssemblyExportedTypeIndex index);
 
         static Il2CppClass* GetTypeInfoFromType(const Il2CppType* type);
+        static Il2CppClass* GetTypeInfoFromTypeDefinitionIndex(TypeDefinitionIndex index);
         static Il2CppClass* GetTypeInfoFromHandle(Il2CppMetadataTypeHandle handle);
         static const Il2CppType* GetInterfaceFromOffset(const Il2CppClass* klass, TypeInterfaceIndex offset);
         static Il2CppInterfaceOffsetInfo GetInterfaceOffsetInfo(const Il2CppClass* klass, TypeInterfaceOffsetIndex index);
@@ -64,13 +65,14 @@ namespace vm
         static CustomAttributesCache* GenerateCustomAttributesCache(const Il2CppImage* image, uint32_t token);
         static CustomAttributesCache* GenerateCustomAttributesCache(Il2CppMetadataCustomAttributeHandle handle);
         static Il2CppMetadataCustomAttributeHandle GetCustomAttributeTypeToken(const Il2CppImage* image, uint32_t token);
+        static std::tuple<void*, void*> GetCustomAttributeDataRange(const Il2CppImage* image, uint32_t token);
         static bool HasAttribute(Il2CppMetadataCustomAttributeHandle token, Il2CppClass* attribute);
         static bool HasAttribute(const Il2CppImage* image, uint32_t token, Il2CppClass* attribute);
 
         static const MethodInfo* GetMethodInfoFromMethodHandle(Il2CppMetadataMethodDefinitionHandle handle);
         static const MethodInfo* GetMethodInfoFromVTableSlot(const Il2CppClass* klass, int32_t vTableSlot);
 
-        static const uint8_t* GetParameterDefaultValue(const MethodInfo* method, const ParameterInfo* parameter, const Il2CppType** type, bool* isExplicitySetNullDefaultValue);
+        static const uint8_t* GetParameterDefaultValue(const MethodInfo* method, int32_t parameterPosition, const Il2CppType** type, bool* isExplicitySetNullDefaultValue);
         static const uint8_t* GetFieldDefaultValue(const FieldInfo* field, const Il2CppType** type);
         static uint32_t GetFieldOffset(const Il2CppClass* klass, int32_t fieldIndexInType, FieldInfo* field);
         static int GetFieldMarshaledSizeForField(const FieldInfo* field);
@@ -87,6 +89,7 @@ namespace vm
         static const MethodInfo* GetGenericInstanceMethod(const MethodInfo* genericMethodDefinition, const Il2CppGenericContext* context);
         static const Il2CppType* GetTypeFromRgctxDefinition(const Il2CppRGCTXDefinition* rgctxDef);
         static const Il2CppGenericMethod* GetGenericMethodFromRgctxDefinition(const Il2CppRGCTXDefinition* rgctxDef);
+        static std::pair<const Il2CppType*, const MethodInfo*> GetConstrainedCallFromRgctxDefinition(const Il2CppRGCTXDefinition* rgctxDef);
         static Il2CppClass* GetContainerDeclaringType(Il2CppMetadataGenericContainerHandle handle);
         static Il2CppClass* GetParameterDeclaringType(Il2CppMetadataGenericParameterHandle handle);
         static Il2CppMetadataGenericParameterHandle GetGenericParameterFromIndex(Il2CppMetadataGenericContainerHandle handle, GenericContainerParameterIndex index);
@@ -96,7 +99,7 @@ namespace vm
         static bool GetGenericContainerIsMethod(Il2CppMetadataGenericContainerHandle handle);
         static const char* GetGenericParameterName(Il2CppMetadataGenericParameterHandle handle);
         static Il2CppGenericParameterInfo GetGenericParameterInfo(Il2CppMetadataGenericParameterHandle handle);
-        static uint16_t GetGenericParameterFlags(Il2CppMetadataGenericContainerHandle handle, GenericContainerParameterIndex index);
+        static uint16_t GetGenericParameterFlags(Il2CppMetadataGenericParameterHandle handle);
         static int16_t GetGenericConstraintCount(Il2CppMetadataGenericParameterHandle handle);
         static const Il2CppGenericMethod* GetGenericMethodFromTokenMethodTuple(const Il2CppTokenIndexMethodTuple* tuple);
 
@@ -106,13 +109,14 @@ namespace vm
 
         static Il2CppClass* GetTypeInfoFromTypeIndex(TypeIndex index, bool throwOnError = true);
         static const Il2CppType* GetIl2CppTypeFromIndex(TypeIndex index);
+        static const MethodInfo* GetMethodInfoFromMethodDefinitionIndex(MethodIndex index);
 
         template<typename T>
         static inline bool IsRuntimeMetadataInitialized(T item)
         {
             // Runtime metadata items are initialized to an encoded token with the low bit set
-            // on startup and when intialized are a pointer to an runtime metadata item
-            // So we can rely on pointer allignment being > 1 on our supported platforms
+            // on startup and when initialized are a pointer to an runtime metadata item
+            // So we can rely on pointer alignment being > 1 on our supported platforms
             return !((uintptr_t)item & 1);
         }
 

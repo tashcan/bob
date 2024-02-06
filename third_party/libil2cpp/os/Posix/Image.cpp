@@ -1,4 +1,5 @@
 #include "il2cpp-config.h"
+#include "utils/Memory.h"
 
 #if (IL2CPP_TARGET_JAVASCRIPT || IL2CPP_TARGET_LINUX || IL2CPP_TARGET_LUMIN && !RUNTIME_TINY) || IL2CPP_TARGET_ANDROID
 
@@ -71,45 +72,80 @@ namespace Image
 
 #if IL2CPP_ENABLE_NATIVE_INSTRUCTION_POINTER_EMISSION
 #if IL2CPP_TARGET_ANDROID || IL2CPP_TARGET_LINUX
-    void GetELFImageBuildID(char* build_id)
+    char* GetELFImageBuildID()
     {
         size_t imageBase = (size_t)GetImageBase();
         ElfW(Ehdr) * ehdr = (ElfW(Ehdr) *)imageBase;
         ElfW(Phdr) * phdr = (ElfW(Phdr) *)(imageBase + ehdr->e_phoff);
 
+        // Bug fix requires the lowest PT_LOAD address, not the lowest PT_LOAD offset
+        // https://unix.stackexchange.com/questions/669237/how-to-tell-whether-the-p-vaddr-in-elf-program-header-is-the-real-memory-address
+        ElfW(Addr) pt_load_low = SIZE_MAX;          // Set the max value, if it's not changed, assume a zero offset
+        for (int i = 0; i < ehdr->e_phnum; i++)
+        {
+            if (phdr[i].p_type == PT_LOAD && phdr[i].p_vaddr < pt_load_low)
+            {
+                pt_load_low = phdr[i].p_vaddr;
+            }
+        }
+        pt_load_low = (pt_load_low == SIZE_MAX) ? 0 : pt_load_low;
+
         for (int i = 0; i < ehdr->e_phnum; i++)
         {
             if (phdr[i].p_type == PT_NOTE)
             {
-                size_t nhdr_ptr = phdr[i].p_offset + imageBase;
+                size_t nhdr_ptr = phdr[i].p_vaddr + imageBase - pt_load_low;
+                size_t nhdr_end = nhdr_ptr + phdr[i].p_memsz;
                 int j = 0;
-                while (nhdr_ptr < imageBase + phdr[i].p_offset + phdr[i].p_memsz)
+                while (nhdr_ptr < nhdr_end)
                 {
                     ElfW(Nhdr) * nhdr = (ElfW(Nhdr) *)nhdr_ptr;
                     if (nhdr->n_type == NT_GNU_BUILD_ID)
                     {
-                        char* image_build_id = (char *)((size_t)nhdr + sizeof(ElfW(Nhdr)) + nhdr->n_namesz);
+                        uint8_t* image_build_id = (uint8_t *)((size_t)nhdr + sizeof(ElfW(Nhdr)) + nhdr->n_namesz);
+                        char* build_id = static_cast<char*>(IL2CPP_MALLOC(41));
                         for (int j = 0; j < nhdr->n_descsz; j++)
                         {
                             snprintf(&build_id[j * 2], 3, "%02x", image_build_id[j]);
                         }
-                        return;
+                        return build_id;
                     }
                     nhdr_ptr += sizeof(ElfW(Nhdr)) + nhdr->n_descsz + nhdr->n_namesz;
                 }
                 break;
             }
         }
+
+        return NULL;
     }
 
 #endif
 
-    void GetImageUUID(char* uuid)
+    char* GetImageUUID()
     {
 #if IL2CPP_TARGET_ANDROID || IL2CPP_TARGET_LINUX
-        GetELFImageBuildID(uuid);
+        return GetELFImageBuildID();
 #else
 #error Implement GetImageUUID for this platform
+#endif
+    }
+
+    char* GetImageName()
+    {
+#if IL2CPP_TARGET_ANDROID || IL2CPP_TARGET_LINUX
+        Dl_info info;
+        void* const anySymbol = reinterpret_cast<void*>(&GetImageBase);
+        if (dladdr(anySymbol, &info))
+        {
+            size_t nameSize = strlen(info.dli_fname);
+            char* imageName = (char*)IL2CPP_MALLOC(nameSize);
+            strncpy(imageName, info.dli_fname, nameSize);
+            return imageName;
+        }
+        else
+            return NULL;
+#else
+#error Implement GetImageName for this platform
 #endif
     }
 

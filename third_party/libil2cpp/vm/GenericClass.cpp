@@ -1,5 +1,6 @@
 #include "il2cpp-config.h"
 #include "metadata/GenericMetadata.h"
+#include "os/Atomic.h"
 #include "os/Mutex.h"
 #include "utils/Memory.h"
 #include "vm/Class.h"
@@ -152,20 +153,29 @@ namespace vm
         genericInstanceType->fields = fields;
     }
 
-    Il2CppClass* GenericClass::GetClass(Il2CppGenericClass *gclass, bool throwOnError)
+    Il2CppClass* GenericClass::GetClass(Il2CppGenericClass* gclass, bool throwOnError)
     {
-        os::FastAutoLock lock(&g_MetadataLock);
+        Il2CppClass* cachedClass = os::Atomic::LoadPointerRelaxed(&gclass->cached_class);
+        if (cachedClass)
+            return cachedClass;
+        return CreateClass(gclass, throwOnError);
+    }
+
+    Il2CppClass* GenericClass::CreateClass(Il2CppGenericClass *gclass, bool throwOnError)
+    {
         Il2CppClass* definition = GetTypeDefinition(gclass);
         if (definition == NULL)
         {
             if (throwOnError)
-                vm::Exception::Raise(vm::Exception::GetMaxmimumNestedGenericsException());
+                vm::Exception::Raise(vm::Exception::GetMaximumNestedGenericsException());
             return NULL;
         }
 
+        os::FastAutoLock lock(&g_MetadataLock);
+
         if (!gclass->cached_class)
         {
-            Il2CppClass* klass = gclass->cached_class = (Il2CppClass*)MetadataCalloc(1, sizeof(Il2CppClass) + (sizeof(VirtualInvokeData) * definition->vtable_count));
+            Il2CppClass* klass = (Il2CppClass*)MetadataCalloc(1, sizeof(Il2CppClass) + (sizeof(VirtualInvokeData) * definition->vtable_count));
             klass->klass = klass;
 
             klass->name = definition->name;
@@ -188,6 +198,7 @@ namespace vm
             klass->this_arg.type = klass->byval_arg.type = IL2CPP_TYPE_GENERICINST;
             klass->this_arg.data.generic_class = klass->byval_arg.data.generic_class = gclass;
             klass->this_arg.byref = true;
+            klass->byval_arg.valuetype = genericTypeDefinition->byval_arg.valuetype;
 
             klass->event_count = definition->event_count;
             klass->field_count = definition->field_count;
@@ -196,22 +207,30 @@ namespace vm
             klass->property_count = definition->property_count;
 
             klass->enumtype = definition->enumtype;
-            klass->valuetype = definition->valuetype;
             klass->element_class = klass->castClass = klass;
 
             klass->has_cctor = definition->has_cctor;
+            klass->cctor_finished_or_no_cctor = !definition->has_cctor;
+
             klass->has_finalize = definition->has_finalize;
             klass->native_size = klass->thread_static_fields_offset = -1;
             klass->token = definition->token;
             klass->interopData = MetadataCache::GetInteropDataForType(&klass->byval_arg);
 
-            if (Class::IsNullable(klass))
-                klass->element_class = klass->castClass  = Class::GetNullableArgument(klass);
+            if (GenericClass::GetTypeDefinition(klass->generic_class) == il2cpp_defaults.generic_nullable_class)
+            {
+                klass->element_class = klass->castClass = Class::FromIl2CppType(klass->generic_class->context.class_inst->type_argv[0]);
+                klass->nullabletype = true;
+            }
 
             if (klass->enumtype)
-                klass->element_class = klass->castClass =  definition->element_class;
+                klass->element_class = klass->castClass = definition->element_class;
 
             klass->is_import_or_windows_runtime = definition->is_import_or_windows_runtime;
+
+            // Do not update gclass->cached_class until `klass` is fully initialized
+            // And do so with an atomic barrier so no threads observer the writes out of order
+            il2cpp::os::Atomic::ExchangePointer(&gclass->cached_class, klass);
         }
 
         return gclass->cached_class;
@@ -234,7 +253,7 @@ namespace vm
 
     bool GenericClass::IsValueType(Il2CppGenericClass *gclass)
     {
-        return GetTypeDefinition(gclass)->valuetype;
+        return GetTypeDefinition(gclass)->byval_arg.valuetype;
     }
 } /* namespace vm */
 } /* namespace il2cpp */

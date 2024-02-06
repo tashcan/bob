@@ -120,12 +120,12 @@ void InstallBuffFixHooks()
 
   screen_manager_helper =
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Services", "BuffService");
-  ptr = screen_manager_helper.GetMethodSpecial(xorstr_("ApplyBuffModifiersToCostVal"), [](auto count, auto params) {
+  ptr = screen_manager_helper.GetMethodSpecial(xorstr_("ApplyBuffModifiersToCostVal"), [](auto count, const Il2CppType** params) {
     if (count != 2) {
       return false;
     }
-    auto p1 = params[0].parameter_type->type;
-    auto p2 = params[1].parameter_type->type;
+    auto p1 = params[0]->type;
+    auto p2 = params[1]->type;
     if (p2 == IL2CPP_TYPE_VALUETYPE) {
       return true;
     }

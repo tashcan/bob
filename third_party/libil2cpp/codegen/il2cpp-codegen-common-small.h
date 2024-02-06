@@ -1,26 +1,22 @@
 #pragma once
 
+#include "il2cpp-codegen-common.h"
 #include "il2cpp-object-internals.h"
 #include <cmath>
-
-inline void il2cpp_codegen_initobj(void* value, size_t size)
-{
-    memset(value, 0, size);
-}
+#include <limits>
+#include <type_traits>
 
 template<typename TInput, typename TOutput, typename TFloat>
 inline TOutput il2cpp_codegen_cast_floating_point(TFloat value)
 {
-#if IL2CPP_TARGET_ARM64 || IL2CPP_TARGET_ARMV7
-    // On ARM, a cast from a floating point to integer value will use
-    // the min or max value if the cast is out of range (instead of
-    // overflowing like x86/x64). So first do a cast to the output
-    // type (which is signed in .NET - the value stack does not have
-    // unsigned types) to try to get the value into a range that will
-    // actually be cast.
+    // In release builds and on ARM, a cast from a floating point to
+    // integer value will use the min or max value if the cast is out
+    // of range (instead of overflowing like x86/x64 debug builds).
+    // So first do a cast to the output type (which is signed in
+    // .NET - the value stack does not have unsigned types) to try to
+    // get the value into a range that will actually be cast the way .NET does.
     if (value < 0)
         return (TOutput)((TInput)(TOutput)value);
-#endif
     return (TOutput)((TInput)value);
 }
 
@@ -33,8 +29,14 @@ template<typename T>
 inline T il2cpp_codegen_cast_double_to_int(double value)
 {
 #if IL2CPP_TARGET_ARM64 || IL2CPP_TARGET_ARMV7
-    if (value == INFINITY)
-        return (T)-value;
+    if (value == HUGE_VAL)
+    {
+        if (std::is_same<T, int64_t>::value)
+            return INT64_MIN;
+        if (std::is_same<T, int32_t>::value)
+            return INT32_MIN;
+        return 0;
+    }
 #endif
     return (T)value;
 }
@@ -124,4 +126,124 @@ inline intptr_t il2cpp_codegen_marshal_get_function_pointer_for_delegate(const D
     return reinterpret_cast<intptr_t>(reinterpret_cast<const Il2CppDelegate*>(d)->m_ReversePInvokeWrapperPtr);
 }
 
+inline void* il2cpp_codegen_get_reverse_pinvoke_function_ptr(void* d)
+{
+    return d;
+}
+
 #endif // IL2CPP_TINY
+
+template<typename T>
+constexpr bool il2cpp_codegen_is_floating_point_type()
+{
+    return std::is_same<T, float>::value || std::is_same<T, double>::value;
+}
+
+NORETURN void il2cpp_codegen_raise_overflow_exception(const RuntimeMethod* method);
+
+template<typename TDest, typename TSource, typename TILStackType, bool checkOverflow, bool treatInputAsUnsigned, bool destIsFloatingPoint, bool sourceIsFloatingPoint>
+class ConvImpl
+{
+    static TDest Conv(TSource srcValue, const RuntimeMethod* method);
+};
+
+template<typename TDest, typename TSource, typename TILStackType, bool checkOverflow, bool treatInputAsUnsigned>
+struct ConvImpl<TDest, TSource, TILStackType, checkOverflow, treatInputAsUnsigned, false, false>
+{
+    // Integer type to integer type
+    static TDest Conv(TSource srcValue, const RuntimeMethod* method)
+    {
+        IL2CPP_ASSERT(!il2cpp_codegen_is_floating_point_type<TDest>() && !il2cpp_codegen_is_floating_point_type<TSource>());
+        TILStackType ilStackValue = (TILStackType)srcValue;
+
+        if (checkOverflow)
+        {
+            typedef typename pick_bigger<TDest, TILStackType>::type CompType;
+
+            if (!treatInputAsUnsigned && !std::is_unsigned<TDest>::value)
+            {
+                if ((CompType)ilStackValue > (CompType)std::numeric_limits<TDest>::max())
+                    il2cpp_codegen_raise_overflow_exception(method);
+                if ((CompType)ilStackValue < (CompType)std::numeric_limits<TDest>::min())
+                    il2cpp_codegen_raise_overflow_exception(method);
+            }
+            if (treatInputAsUnsigned || std::is_unsigned<TDest>::value)
+            {
+                if ((typename std::make_unsigned<TILStackType>::type)ilStackValue > (typename std::make_unsigned<TDest>::type) std::numeric_limits<TDest>::max())
+                    il2cpp_codegen_raise_overflow_exception(method);
+                if (!treatInputAsUnsigned && ilStackValue < 0)
+                    il2cpp_codegen_raise_overflow_exception(method);
+            }
+        }
+
+        if (std::is_unsigned<TDest>::value)
+            return (TDest)(typename std::make_unsigned<TILStackType>::type)ilStackValue;
+
+    #if __cplusplus < 202022L
+        // Prior to C++ 20 conversion of integer types to smaller types is undefined behavior
+        // In most implementations it works as expected, except the optimizer is allowed to optimize it out
+        if (sizeof(TDest) >= sizeof(TILStackType))
+            return (TDest)ilStackValue;
+        constexpr TILStackType mask = (TILStackType)std::numeric_limits<typename std::make_unsigned<TDest>::type>::max();
+        return (TDest)(ilStackValue & mask);
+    #else
+        return (TDest)ilStackValue;
+    #endif
+    }
+};
+
+template<typename TDest, typename TSource, typename TILStackType, bool checkOverflow, bool treatInputAsUnsigned>
+struct ConvImpl<TDest, TSource, TILStackType, checkOverflow, treatInputAsUnsigned, false, true>
+{
+    // Floating point type to integer type
+    static TDest Conv(TSource srcValue, const RuntimeMethod* method)
+    {
+        IL2CPP_ASSERT(!il2cpp_codegen_is_floating_point_type<TDest>() && il2cpp_codegen_is_floating_point_type<TSource>());
+        TILStackType ilStackValue = (TILStackType)srcValue;
+
+        if (checkOverflow)
+        {
+            if (ilStackValue > (TILStackType)std::numeric_limits<TDest>::max())
+                il2cpp_codegen_raise_overflow_exception(method);
+            if (std::is_signed<TDest>::value && ilStackValue < (TILStackType)std::numeric_limits<TDest>::min())
+                il2cpp_codegen_raise_overflow_exception(method);
+            if (std::is_unsigned<TDest>::value && ilStackValue < 0)
+                il2cpp_codegen_raise_overflow_exception(method);
+        }
+
+        if (std::is_same<TDest, typename std::make_unsigned<TDest>::type>::value)
+            return il2cpp_codegen_cast_floating_point<typename std::make_signed<TDest>::type, TDest, TSource>(ilStackValue);
+        return il2cpp_codegen_cast_double_to_int<TDest>(ilStackValue);
+    }
+};
+
+template<typename TDest, typename TSource, typename TILStackType, bool checkOverflow, bool treatInputAsUnsigned>
+struct ConvImpl<TDest, TSource, TILStackType, checkOverflow, treatInputAsUnsigned, true, false>
+{
+    // Integer type to floating point type
+    static TDest Conv(TSource srcValue, const RuntimeMethod * method)
+    {
+        IL2CPP_ASSERT(il2cpp_codegen_is_floating_point_type<TDest>() && !il2cpp_codegen_is_floating_point_type<TSource>());
+        TILStackType ilStackValue = (TILStackType)srcValue;
+        if (treatInputAsUnsigned)
+            return (TDest)(typename std::make_unsigned<TILStackType>::type)ilStackValue;
+        return (TDest)ilStackValue;
+    }
+};
+
+template<typename TDest, typename TSource, typename TILStackType, bool checkOverflow, bool treatInputAsUnsigned>
+struct ConvImpl<TDest, TSource, TILStackType, checkOverflow, treatInputAsUnsigned, true, true>
+{
+    // Floating point to floating point type
+    static TDest Conv(TSource srcValue, const RuntimeMethod* method)
+    {
+        IL2CPP_ASSERT(il2cpp_codegen_is_floating_point_type<TDest>() && il2cpp_codegen_is_floating_point_type<TSource>());
+        return (TDest)srcValue;
+    }
+};
+
+template<typename TDest, typename TSource, typename TILStackType, bool checkOverflow, bool treatInputAsUnsigned>
+TDest il2cpp_codegen_conv(TSource srcValue, const RuntimeMethod* method)
+{
+    return ConvImpl<TDest, TSource, TILStackType, checkOverflow, treatInputAsUnsigned, il2cpp_codegen_is_floating_point_type<TDest>(), il2cpp_codegen_is_floating_point_type<TSource>()>::Conv(srcValue, method);
+}

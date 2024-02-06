@@ -100,7 +100,7 @@ SET(PATCHES
 
 file(GLOB_RECURSE PRIME src/prime/*.cc src/prime/*.h)
 
-add_library(stfc-communty-patch SHARED ${TARGET_SRC} ${PATCHES} ${PRIME} 
+add_library(stfc-community-patch SHARED ${TARGET_SRC} ${PATCHES} ${PRIME} 
     src/version.def
     "src/il2cpp/il2cpp_helper.h"
     "src/prime/TabBarViewController.h"
@@ -117,14 +117,14 @@ add_library(stfc-communty-patch SHARED ${TARGET_SRC} ${PATCHES} ${PRIME}
     "src/prime/IEnumerator.h"
  "src/prime/LanguageManager.h")
 
-set_property(TARGET stfc-communty-patch PROPERTY CXX_STANDARD 20)
-set_property(TARGET stfc-communty-patch PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET stfc-community-patch PROPERTY CXX_STANDARD 20)
+set_property(TARGET stfc-community-patch PROPERTY CXX_STANDARD_REQUIRED ON)
 
-target_sources(stfc-communty-patch PRIVATE src/version.rc)
+target_sources(stfc-community-patch PRIVATE src/version.rc)
 
-include_directories(stfc-communty-patch third_party src src/patches third_party/xorstr/include ${Protobuf_INCLUDE_DIRS})
+include_directories(stfc-community-patch third_party src src/patches third_party/xorstr/include ${Protobuf_INCLUDE_DIRS})
 
-add_dependencies(stfc-communty-patch EASTL)
-target_link_libraries(stfc-communty-patch PRIVATE spud nlohmann_json::nlohmann_json protobuf::libprotobuf tomlplusplus_tomlplusplus absl::base absl::synchronization absl::strings spdlog EASTL)
+add_dependencies(stfc-community-patch EASTL)
+target_link_libraries(stfc-community-patch PRIVATE spud nlohmann_json::nlohmann_json protobuf::libprotobuf tomlplusplus_tomlplusplus absl::base absl::synchronization absl::strings spdlog EASTL)
 
 add_subdirectory(third_party)

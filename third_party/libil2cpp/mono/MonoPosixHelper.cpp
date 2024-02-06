@@ -5,6 +5,8 @@
 
 #include "../external/zlib/zlib.h"
 
+#include "vm/Exception.h"
+
 #define BUFFER_SIZE 4096
 #define ARGUMENT_ERROR -10
 #define IO_ERROR -11
@@ -19,6 +21,7 @@ struct ZStream
     void *gchandle;
     uint8_t compress;
     uint8_t eof;
+    uint32_t total_in;
 };
 
 static int32_t write_to_managed(ZStream *stream)
@@ -48,7 +51,7 @@ static int32_t flush_internal(ZStream *stream, bool is_final)
     if (!stream->compress)
         return 0;
 
-    if (!is_final)
+    if (!is_final && stream->stream->avail_in != 0)
     {
         status = deflate(stream->stream, Z_PARTIAL_FLUSH);
         if (status != Z_OK && status != Z_STREAM_END)
@@ -109,6 +112,10 @@ intptr_t CreateZStream(int32_t compress, uint8_t gzip, Il2CppMethodPointer func_
     result->gchandle = reinterpret_cast<void*>(gchandle);
     result->compress = compress;
     result->buffer = (uint8_t*)malloc(BUFFER_SIZE * sizeof(uint8_t));
+
+    result->stream->next_out = result->buffer;
+    result->stream->avail_out = BUFFER_SIZE;
+    result->stream->total_in = 0;
 
     result_ptr = reinterpret_cast<intptr_t>(result);
     return result_ptr;
@@ -186,11 +193,14 @@ int32_t ReadZStream(intptr_t zstream, intptr_t zbuffer, int32_t length)
             intptr_t gchandle_ptr = reinterpret_cast<intptr_t>(stream->gchandle);
 
             n = stream->func(buffer_ptr, BUFFER_SIZE, gchandle_ptr);
-            if (n <= 0)
-            {
-                stream->eof = 1;
-                break;
-            }
+            if (n < 0)
+                n = 0;
+
+            // Even if avail_in reports zero, and we have no more data from the stream,
+            // inflate may have more data to return.  So we cannot break here and need to
+            // keep calling inflate until it returns Z_STREAM_END.
+
+            stream->total_in += n;
             zs->next_in = stream->buffer;
             zs->avail_in = n;
         }
@@ -199,6 +209,14 @@ int32_t ReadZStream(intptr_t zstream, intptr_t zbuffer, int32_t length)
         if (status == Z_STREAM_END)
         {
             stream->eof = 1;
+            break;
+        }
+        else if (status == Z_BUF_ERROR && stream->total_in == zs->total_in)
+        {
+            if (zs->avail_in != 0)
+            {
+                stream->eof = 1;
+            }
             break;
         }
         else if (status != Z_OK)
@@ -246,4 +264,30 @@ int32_t WriteZStream(intptr_t zstream, intptr_t zbuffer, int32_t length)
         }
     }
     return length;
+}
+
+// The following methods are used by LinuxNetworkChange
+// Which the implementation for System.Net.NetworkInformation.NetworkChange on linux
+// These are here we throw a NotImplemented exception rather than getting an entry point not found
+// We could probably port this if we hard the time
+
+intptr_t CreateNLSocket()
+{
+    IL2CPP_NOT_IMPLEMENTED(CreateNLSocket);
+    NOT_SUPPORTED_IL2CPP(CreateNLSocket, Not implemented);
+    return 0;
+}
+
+int32_t ReadEvents(intptr_t sock, intptr_t buffer, int32_t count, int32_t size)
+{
+    IL2CPP_NOT_IMPLEMENTED(ReadEvents);
+    NOT_SUPPORTED_IL2CPP(ReadEvents, Not implemented);
+    return 0;
+}
+
+intptr_t CloseNLSocket(intptr_t sock)
+{
+    IL2CPP_NOT_IMPLEMENTED(CloseNLSocket);
+    NOT_SUPPORTED_IL2CPP(CloseNLSocket, Not implemented);
+    return 0;
 }

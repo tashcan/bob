@@ -24,7 +24,7 @@ public:
     static auto RequestAction =
         get_class_helper()
             .GetMethodSpecial<bool(FleetLocalViewController*, IActionData, ActionType, int, ActionBehaviour, void*)>(
-                "RequestAction", [](int param_count, const ParameterInfo* param) {
+                "RequestAction", [](int param_count, auto param) {
                   if (param_count == 5) {
                     return true;
                   }
