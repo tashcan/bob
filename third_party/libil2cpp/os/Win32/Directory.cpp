@@ -13,7 +13,7 @@
 #include "utils/PathUtils.h"
 
 #if IL2CPP_TARGET_WINRT
-#include "os/WinRT/BrokeredFileSystem.h"
+#include "os/BrokeredFileSystem.h"
 #endif
 
 static inline int DirectoryWin32ErrorToErrorCode(DWORD win32ErrorCode)
@@ -238,6 +238,11 @@ namespace os
         *resultFileName = findData.cFileName;
         *resultAttributes = findData.dwFileAttributes;
         return os::kErrorCodeSuccess;
+    }
+
+    int32_t Directory::CloseOSFindHandleDirectly(intptr_t osHandle)
+    {
+        return ::FindClose((HANDLE)osHandle);
     }
 }
 }

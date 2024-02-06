@@ -34,7 +34,7 @@ public:
           if (count != 2) {
             return false;
           }
-          auto p1 = params[0].parameter_type->type;
+          auto p1 = params[0]->type;
           if (p1 == IL2CPP_TYPE_I4) {
             return true;
           }

@@ -9,3 +9,4 @@ version.aps
 *.vars
 debug.log
 enc_temp_folder/
+/app/

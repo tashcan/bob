@@ -244,7 +244,7 @@ public:
 
   const MethodInfo*
   GetMethodInfoSpecial(const char*                                                      name,
-                       std::function<bool(int param_count, const ParameterInfo* param)> arg_filter = nullptr)
+                       std::function<bool(int param_count, const Il2CppType** param)> arg_filter = nullptr)
   {
     if (!this->cls) {
       return nullptr;
@@ -267,7 +267,7 @@ public:
 
   template <typename T = void>
   T* GetMethodSpecial(const char*                                                      name,
-                      std::function<bool(int param_count, const ParameterInfo* param)> arg_filter = nullptr)
+                      std::function<bool(int param_count, const Il2CppType** param)> arg_filter = nullptr)
   {
     if (!this->cls) {
       return nullptr;

@@ -6,7 +6,8 @@
 #include "os/Win32/WindowsHelpers.h"
 
 #if IL2CPP_TARGET_WINRT
-#include "BrokeredFileSystem.h"
+#include "os/BrokeredFileSystem.h"
+#include "os/Locale.h"
 #endif
 
 #include <io.h>
@@ -15,6 +16,7 @@ void il2cpp::os::Uninitialize()
 {
 #if IL2CPP_TARGET_WINRT
     BrokeredFileSystem::CleanupStatics();
+    Locale::UnInitializeWinRT();
 #endif
 
     HANDLE stdoutHandle = reinterpret_cast<HANDLE>(_get_osfhandle(_fileno(stdout)));

@@ -20,7 +20,7 @@
 #if (_MSC_VER >= 1800 )
 
 /* the location of the header defining hash functions */
-#define HASH_FUN_H  <unordered_map>
+#define HASH_FUN_H  <functional>
 
 #else /* Earlier than VSC++ 2013 */ 
 
@@ -30,7 +30,7 @@
 #endif
 
 /* the namespace of the hash<> function */
-#define HASH_NAMESPACE  stdext
+#define HASH_NAMESPACE  std
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -57,7 +57,7 @@
 #define HAVE___UINT16  1
 
 /* The system-provided hash function including the namespace. */
-#define SPARSEHASH_HASH  HASH_NAMESPACE::hash_compare
+#define SPARSEHASH_HASH  HASH_NAMESPACE::hash
 
 /* The system-provided hash function, in namespace HASH_NAMESPACE. */
 #define SPARSEHASH_HASH_NO_NAMESPACE  hash_compare

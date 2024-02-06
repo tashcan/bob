@@ -14,6 +14,7 @@
 #include "utils/ThreadSafeFreeList.h"
 
 #include <limits>
+#include <exception>
 
 #include "Baselib.h"
 #include "Cpp/Atomic.h"
@@ -47,6 +48,8 @@ struct MonitorData : public il2cpp::utils::ThreadSafeFreeListNode
     /// 3) Contains kHasBeenReturnedToFreeList. Means monitor is not attached to any object and can be
     ///    acquired by any thread *but* only through the free list.
     baselib::atomic<il2cpp::os::Thread::ThreadId> owningThreadId;
+
+    baselib::atomic<bool> threadAborted;
 
     /// Number of times the object has been locked on the owning thread. Everything above 1 indicates
     /// a recursive lock.
@@ -124,6 +127,7 @@ struct MonitorData : public il2cpp::utils::ThreadSafeFreeListNode
 
     MonitorData()
         : owningThreadId(kHasBeenReturnedToFreeList)
+        , threadAborted(false)
         , recursiveLockingCount(1)
         , numThreadsWaitingForSemaphore(0)
         , threadsWaitingForPulse(NULL)
@@ -134,6 +138,11 @@ struct MonitorData : public il2cpp::utils::ThreadSafeFreeListNode
     bool IsAcquired() const
     {
         return (owningThreadId != kCanBeAcquiredByOtherThread && owningThreadId != kHasBeenReturnedToFreeList);
+    }
+
+    bool IsOwnedByThread(il2cpp::os::Thread::ThreadId threadId) const
+    {
+        return owningThreadId == threadId;
     }
 
     bool TryAcquire(size_t threadId)
@@ -274,7 +283,7 @@ static MonitorData* GetMonitorAndThrowIfNotLockedByCurrentThread(Il2CppObject* o
     // Throw SynchronizationLockException if we're not holding a lock.
     // NOTE: Unlike .NET, Mono simply ignores this and does not throw.
     uint64_t currentThreadId = il2cpp::os::Thread::CurrentThreadId();
-    if (monitor->owningThreadId != currentThreadId)
+    if (monitor->owningThreadId != currentThreadId && !monitor->threadAborted)
     {
         il2cpp::vm::Exception::Raise(il2cpp::vm::Exception::GetSynchronizationLockException
                 ("Object has not been locked by this thread."));
@@ -412,10 +421,19 @@ namespace vm
                         waitStatus = installedMonitor->semaphore.Wait(true);
                     }
                 }
+                catch (Thread::NativeThreadAbortException&)
+                {
+                    // This signals that the monitor was not entered properly by this thread. Therefore
+                    // a later call to Exit on this monitor should not actually try to exit the monitor,
+                    // because it is not owned by this thread.
+                    installedMonitor->threadAborted = true;
+                    throw;
+                }
                 catch (...)
                 {
-                    // This is paranoid but in theory a user APC could throw an exception from within Wait().
-                    // Just make sure we clean up properly.
+                    // A user APC could throw an exception from within Wait(). This can commonly happen
+                    // during shutdown, when vm::Thread::AbortAllThreads() causes an APC that throws a
+                    // NativeThreadAbortException. Just make sure we clean up properly.
                     installedMonitor->RemoveCurrentThreadFromReadyList();
                     throw;
                 }
@@ -611,8 +629,8 @@ namespace vm
 
         // Wait for pulse (if we either have a timeout or are supposed to
         // wait infinitely).
-        il2cpp::os::WaitStatus pulseWaitStatus = kWaitStatusSuccess;
-        Il2CppException* exceptionThrownDuringWait = NULL;
+        il2cpp::os::WaitStatus pulseWaitStatus = kWaitStatusTimeout;
+        std::exception_ptr exceptionThrownDuringWait = NULL;
         if (timeoutMilliseconds != 0)
         {
             pulseWaitStatus = kWaitStatusFailure;
@@ -621,16 +639,15 @@ namespace vm
                 il2cpp::vm::ThreadStateSetter state(il2cpp::vm::kThreadStateWaitSleepJoin);
                 pulseWaitStatus = waitNode->signalWaitingThread.Wait(timeoutMilliseconds, true);
             }
-            catch (Il2CppExceptionWrapper& exception)
+            catch (...)
             {
                 // Exception occurred during wait. Remember exception but continue with reacquisition
                 // and cleanup. We re-throw later.
-                exceptionThrownDuringWait = exception.ex;
+                exceptionThrownDuringWait = std::current_exception();
                 pulseWaitStatus = kWaitStatusFailure;
             }
         }
 
-        ////TODO: deal with exception here
         // Reacquire the monitor.
         Enter(object);
 
@@ -660,7 +677,7 @@ namespace vm
         //  still holds a lock. Otherwise a lock() statement around the Wait() will throw an exception,
         //  for example.
         if (exceptionThrownDuringWait)
-            il2cpp::vm::Exception::Raise(exceptionThrownDuringWait);
+            std::rethrow_exception(exceptionThrownDuringWait);
 
         ////TODO: According to MSDN, the timeout indicates whether we reacquired the lock in time
         ////    and not just whether the pulse came in time. Thus the current code is imprecise.
@@ -674,6 +691,15 @@ namespace vm
             return false;
 
         return monitor->IsAcquired();
+    }
+
+    bool Monitor::IsOwnedByCurrentThread(Il2CppObject* object)
+    {
+        MonitorData* monitor = object->monitor;
+        if (!monitor)
+            return false;
+
+        return monitor->IsOwnedByThread(il2cpp::os::Thread::CurrentThreadId());
     }
 } /* namespace vm */
 } /* namespace il2cpp */

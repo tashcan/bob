@@ -113,6 +113,9 @@ typedef struct Il2CppStackFrameInfo
 {
     const MethodInfo *method;
     uintptr_t raw_ip;
+    int sourceCodeLineNumber;
+    int ilOffset;
+    const char* filePath;
 } Il2CppStackFrameInfo;
 
 typedef void(*Il2CppMethodPointer)();
@@ -169,7 +172,7 @@ typedef char Il2CppNativeChar;
 #endif
 
 typedef void (*il2cpp_register_object_callback)(Il2CppObject** arr, int size, void* userdata);
-typedef void (*il2cpp_WorldChangedCallback)();
+typedef void* (*il2cpp_liveness_reallocate_callback)(void* ptr, size_t size, void* userdata);
 typedef void (*Il2CppFrameWalkFunc) (const Il2CppStackFrameInfo *info, void *user_data);
 typedef void (*Il2CppProfileFunc) (Il2CppProfiler* prof);
 typedef void (*Il2CppProfileMethodFunc) (Il2CppProfiler* prof, const MethodInfo *method);
@@ -188,3 +191,5 @@ struct Il2CppManagedMemorySnapshot;
 
 typedef uintptr_t il2cpp_array_size_t;
 #define ARRAY_LENGTH_AS_INT32(a) ((int32_t)a)
+
+typedef uint8_t (*Il2CppAndroidUpStateFunc)(const char* ifName, uint8_t* is_up);

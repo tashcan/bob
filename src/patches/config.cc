@@ -310,6 +310,9 @@ void Config::Load()
   std::string disabled_banner_types_str =
       get_config_or_default<std::string>(config, parsed, "ui", "disabled_banner_types", "");
 
+  this->config_settings_url = get_config_or_default<std::string>(config, parsed, "config", "settings_url", "");
+  this->config_assets_url_override = get_config_or_default<std::string>(config, parsed, "config", "assets_url_override", "");
+
   std::vector<std::string> types = absl::StrSplit(disabled_banner_types_str, ",", absl::SkipWhitespace());
 
   std::string       bannerString = "";
