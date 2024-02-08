@@ -41,7 +41,7 @@ jobs:
 
       - name: Package
         run: |
-          tar -caf stfc-community-patch.zip --format=zip -C stfc-community-patch version.dll
+          (cd stfc-community-patch && zip -r - .) > stfc-community-patch.zip
 
       - name: Upload Community Patch
         id: upload-patch
