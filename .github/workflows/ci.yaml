@@ -16,6 +16,9 @@ jobs:
           submodules: 'recursive'
 
       - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
 
       - name: Configure CMake
         run: cmake -G Ninja -B build -S ${{ github.workspace }}
