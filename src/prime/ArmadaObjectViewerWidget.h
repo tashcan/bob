@@ -11,19 +11,19 @@ public:
   void SetCourseToArmada()
   {
     static auto SetCourseToArmada =
-        get_class_helper().GetMethod<void(ArmadaObjectViewerWidget*)>(xorstr_("SetCourseToArmada"));
+        get_class_helper().GetMethod<void(ArmadaObjectViewerWidget*)>("SetCourseToArmada");
     SetCourseToArmada(this);
   }
   void ValidateThenJoinArmada()
   {
     static auto ValidateThenJoinArmada =
-        get_class_helper().GetMethod<void(ArmadaObjectViewerWidget*)>(xorstr_("ValidateThenJoinArmada"));
+        get_class_helper().GetMethod<void(ArmadaObjectViewerWidget*)>("ValidateThenJoinArmada");
     ValidateThenJoinArmada(this);
   }
 
   void JoinArmada()
   {
-    static auto JoinArmada = get_class_helper().GetMethod<void(ArmadaObjectViewerWidget*)>(xorstr_("JoinArmada"));
+    static auto JoinArmada = get_class_helper().GetMethod<void(ArmadaObjectViewerWidget*)>("JoinArmada");
     JoinArmada(this);
   }
 
@@ -47,7 +47,7 @@ public:
 public:
   GenericButtonContext* __get__joinContext()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_joinContext")).offset();
+    static auto field = get_class_helper().GetField("_joinContext").offset();
     return *(GenericButtonContext**)((char*)this + field);
   }
 };

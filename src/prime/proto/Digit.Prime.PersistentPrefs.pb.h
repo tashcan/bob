@@ -27,11 +27,10 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
 // Must be included last.
@@ -51,8 +50,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2ePrime_2ePersistentPrefs_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto;
 namespace Digit {
 namespace Prime {
 namespace PersistentPrefs {
@@ -83,7 +80,7 @@ namespace PersistentPrefs {
 // -------------------------------------------------------------------
 
 class StringListPrefsData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.PersistentPrefs.StringListPrefsData) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.PersistentPrefs.StringListPrefsData) */ {
  public:
   inline StringListPrefsData() : StringListPrefsData(nullptr) {}
   ~StringListPrefsData() override;
@@ -114,22 +111,13 @@ class StringListPrefsData final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const StringListPrefsData& default_instance() {
     return *internal_default_instance();
   }
@@ -167,15 +155,9 @@ class StringListPrefsData final :
   StringListPrefsData* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<StringListPrefsData>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const StringListPrefsData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const StringListPrefsData& from) {
-    StringListPrefsData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const StringListPrefsData& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -188,7 +170,7 @@ class StringListPrefsData final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(StringListPrefsData* other);
 
   private:
@@ -200,10 +182,7 @@ class StringListPrefsData final :
   explicit StringListPrefsData(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -259,7 +238,7 @@ class StringListPrefsData final :
 };// -------------------------------------------------------------------
 
 class PersistentPref final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.PersistentPrefs.PersistentPref) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.PersistentPrefs.PersistentPref) */ {
  public:
   inline PersistentPref() : PersistentPref(nullptr) {}
   ~PersistentPref() override;
@@ -290,22 +269,13 @@ class PersistentPref final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PersistentPref& default_instance() {
     return *internal_default_instance();
   }
@@ -343,15 +313,9 @@ class PersistentPref final :
   PersistentPref* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PersistentPref>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PersistentPref& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PersistentPref& from) {
-    PersistentPref::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PersistentPref& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -364,7 +328,7 @@ class PersistentPref final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PersistentPref* other);
 
   private:
@@ -376,10 +340,7 @@ class PersistentPref final :
   explicit PersistentPref(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -435,7 +396,7 @@ class PersistentPref final :
 };// -------------------------------------------------------------------
 
 class PersistentPrefsData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.PersistentPrefs.PersistentPrefsData) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.PersistentPrefs.PersistentPrefsData) */ {
  public:
   inline PersistentPrefsData() : PersistentPrefsData(nullptr) {}
   ~PersistentPrefsData() override;
@@ -466,22 +427,13 @@ class PersistentPrefsData final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PersistentPrefsData& default_instance() {
     return *internal_default_instance();
   }
@@ -519,15 +471,9 @@ class PersistentPrefsData final :
   PersistentPrefsData* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PersistentPrefsData>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PersistentPrefsData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PersistentPrefsData& from) {
-    PersistentPrefsData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PersistentPrefsData& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -540,7 +486,7 @@ class PersistentPrefsData final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PersistentPrefsData* other);
 
   private:
@@ -552,10 +498,7 @@ class PersistentPrefsData final :
   explicit PersistentPrefsData(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 

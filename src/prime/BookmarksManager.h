@@ -10,7 +10,7 @@ struct BookmarksManager : MonoSingleton<BookmarksManager> {
 public:
   void ViewBookmarks()
   {
-    static auto ViewBookmarksMethod = get_class_helper().GetMethod<void(BookmarksManager*)>(xorstr_("ViewBookmarks"));
+    static auto ViewBookmarksMethod = get_class_helper().GetMethod<void(BookmarksManager*)>("ViewBookmarks");
     ViewBookmarksMethod(this);
   }
 

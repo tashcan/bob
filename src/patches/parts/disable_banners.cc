@@ -32,14 +32,14 @@ void ToastObserver_EnqueueOrCombineToast_Hook(auto original, ToastObserver *_thi
 void InstallToastBannerHooks()
 {
   auto helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.HUD", "ToastObserver");
-  auto ptr    = helper.GetMethodXor("EnqueueToast");
+  auto ptr    = helper.GetMethod("EnqueueToast");
   if (!ptr) {
     return;
   }
   SPUD_STATIC_DETOUR(ptr, ToastObserver_EnqueueToast_Hook);
 
   helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.HUD", "ToastObserver");
-  ptr    = helper.GetMethodXor("EnqueueOrCombineToast");
+  ptr    = helper.GetMethod("EnqueueOrCombineToast");
   if (!ptr) {
     return;
   }

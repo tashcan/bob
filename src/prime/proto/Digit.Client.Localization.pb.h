@@ -27,15 +27,13 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
 #include "google/protobuf/map.h"  // IWYU pragma: export
-#include "google/protobuf/map_entry.h"
-#include "google/protobuf/map_field_inl.h"
-#include "google/protobuf/generated_enum_reflection.h"
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/map_entry_lite.h"
+#include "google/protobuf/map_field_lite.h"
+#include "google/protobuf/generated_enum_util.h"
 #include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
@@ -56,8 +54,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2eClient_2eLocalization_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2eClient_2eLocalization_2eproto;
 namespace Digit {
 namespace Client {
 namespace Localization {
@@ -104,8 +100,7 @@ bool ContentIdStatus_IsValid(int value);
 constexpr ContentIdStatus ContentIdStatus_MIN = static_cast<ContentIdStatus>(0);
 constexpr ContentIdStatus ContentIdStatus_MAX = static_cast<ContentIdStatus>(2);
 constexpr int ContentIdStatus_ARRAYSIZE = 2 + 1;
-const ::google::protobuf::EnumDescriptor*
-ContentIdStatus_descriptor();
+const std::string& ContentIdStatus_Name(ContentIdStatus value);
 template <typename T>
 const std::string& ContentIdStatus_Name(T value) {
   static_assert(std::is_same<T, ContentIdStatus>::value ||
@@ -113,28 +108,20 @@ const std::string& ContentIdStatus_Name(T value) {
                 "Incorrect type passed to ContentIdStatus_Name().");
   return ContentIdStatus_Name(static_cast<ContentIdStatus>(value));
 }
-template <>
-inline const std::string& ContentIdStatus_Name(ContentIdStatus value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<ContentIdStatus_descriptor,
-                                                 0, 2>(
-      static_cast<int>(value));
-}
-inline bool ContentIdStatus_Parse(absl::string_view name, ContentIdStatus* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<ContentIdStatus>(
-      ContentIdStatus_descriptor(), name, value);
-}
+const std::string& ContentIdStatus_Name(ContentIdStatus value);
+bool ContentIdStatus_Parse(absl::string_view name, ContentIdStatus* value);
 
 // ===================================================================
 
 
 // -------------------------------------------------------------------
 
-class CachedCategory_TranslationsEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<CachedCategory_TranslationsEntry_DoNotUse, 
+class CachedCategory_TranslationsEntry_DoNotUse final : public ::google::protobuf::internal::MapEntryLite<CachedCategory_TranslationsEntry_DoNotUse, 
     ::int64_t, ::Digit::Client::Localization::CachedTranslation,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> {
 public:
-  typedef ::google::protobuf::internal::MapEntry<CachedCategory_TranslationsEntry_DoNotUse, 
+  typedef ::google::protobuf::internal::MapEntryLite<CachedCategory_TranslationsEntry_DoNotUse, 
     ::int64_t, ::Digit::Client::Localization::CachedTranslation,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> SuperType;
@@ -147,14 +134,12 @@ public:
   static const CachedCategory_TranslationsEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const CachedCategory_TranslationsEntry_DoNotUse*>(&_CachedCategory_TranslationsEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(void*) { return true; }
   static bool ValidateValue(void*) { return true; }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
   friend struct ::TableStruct_Digit_2eClient_2eLocalization_2eproto;
 };
 // -------------------------------------------------------------------
 
 class CachedCategory final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.CachedCategory) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.CachedCategory) */ {
  public:
   inline CachedCategory() : CachedCategory(nullptr) {}
   ~CachedCategory() override;
@@ -185,22 +170,13 @@ class CachedCategory final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CachedCategory& default_instance() {
     return *internal_default_instance();
   }
@@ -238,15 +214,9 @@ class CachedCategory final :
   CachedCategory* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CachedCategory>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CachedCategory& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CachedCategory& from) {
-    CachedCategory::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CachedCategory& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -259,7 +229,7 @@ class CachedCategory final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CachedCategory* other);
 
   private:
@@ -271,10 +241,7 @@ class CachedCategory final :
   explicit CachedCategory(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -327,7 +294,7 @@ class CachedCategory final :
   struct Impl_ {
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
-    ::google::protobuf::internal::MapField<CachedCategory_TranslationsEntry_DoNotUse, ::int64_t, ::Digit::Client::Localization::CachedTranslation,
+    ::google::protobuf::internal::MapFieldLite<CachedCategory_TranslationsEntry_DoNotUse, ::int64_t, ::Digit::Client::Localization::CachedTranslation,
                       ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
                       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE>
         translations_;
@@ -339,7 +306,7 @@ class CachedCategory final :
 };// -------------------------------------------------------------------
 
 class CachedTranslation final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.CachedTranslation) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.CachedTranslation) */ {
  public:
   inline CachedTranslation() : CachedTranslation(nullptr) {}
   ~CachedTranslation() override;
@@ -370,22 +337,13 @@ class CachedTranslation final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CachedTranslation& default_instance() {
     return *internal_default_instance();
   }
@@ -423,15 +381,9 @@ class CachedTranslation final :
   CachedTranslation* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CachedTranslation>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CachedTranslation& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CachedTranslation& from) {
-    CachedTranslation::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CachedTranslation& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -444,7 +396,7 @@ class CachedTranslation final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CachedTranslation* other);
 
   private:
@@ -456,10 +408,7 @@ class CachedTranslation final :
   explicit CachedTranslation(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -545,7 +494,7 @@ class CachedTranslation final :
 };// -------------------------------------------------------------------
 
 class CategoryInfo final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.CategoryInfo) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.CategoryInfo) */ {
  public:
   inline CategoryInfo() : CategoryInfo(nullptr) {}
   ~CategoryInfo() override;
@@ -576,22 +525,13 @@ class CategoryInfo final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CategoryInfo& default_instance() {
     return *internal_default_instance();
   }
@@ -629,15 +569,9 @@ class CategoryInfo final :
   CategoryInfo* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CategoryInfo>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CategoryInfo& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CategoryInfo& from) {
-    CategoryInfo::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CategoryInfo& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -650,7 +584,7 @@ class CategoryInfo final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CategoryInfo* other);
 
   private:
@@ -662,10 +596,7 @@ class CategoryInfo final :
   explicit CategoryInfo(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -750,12 +681,12 @@ class CategoryInfo final :
   friend struct ::TableStruct_Digit_2eClient_2eLocalization_2eproto;
 };// -------------------------------------------------------------------
 
-class LocalizationCacheData_CategoriesEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<LocalizationCacheData_CategoriesEntry_DoNotUse, 
+class LocalizationCacheData_CategoriesEntry_DoNotUse final : public ::google::protobuf::internal::MapEntryLite<LocalizationCacheData_CategoriesEntry_DoNotUse, 
     ::int64_t, ::Digit::Client::Localization::CachedCategory,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> {
 public:
-  typedef ::google::protobuf::internal::MapEntry<LocalizationCacheData_CategoriesEntry_DoNotUse, 
+  typedef ::google::protobuf::internal::MapEntryLite<LocalizationCacheData_CategoriesEntry_DoNotUse, 
     ::int64_t, ::Digit::Client::Localization::CachedCategory,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> SuperType;
@@ -768,14 +699,12 @@ public:
   static const LocalizationCacheData_CategoriesEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const LocalizationCacheData_CategoriesEntry_DoNotUse*>(&_LocalizationCacheData_CategoriesEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(void*) { return true; }
   static bool ValidateValue(void*) { return true; }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
   friend struct ::TableStruct_Digit_2eClient_2eLocalization_2eproto;
 };
 // -------------------------------------------------------------------
 
 class LocalizationCacheData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.LocalizationCacheData) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.Localization.LocalizationCacheData) */ {
  public:
   inline LocalizationCacheData() : LocalizationCacheData(nullptr) {}
   ~LocalizationCacheData() override;
@@ -806,22 +735,13 @@ class LocalizationCacheData final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const LocalizationCacheData& default_instance() {
     return *internal_default_instance();
   }
@@ -859,15 +779,9 @@ class LocalizationCacheData final :
   LocalizationCacheData* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<LocalizationCacheData>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const LocalizationCacheData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const LocalizationCacheData& from) {
-    LocalizationCacheData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const LocalizationCacheData& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -880,7 +794,7 @@ class LocalizationCacheData final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(LocalizationCacheData* other);
 
   private:
@@ -892,10 +806,7 @@ class LocalizationCacheData final :
   explicit LocalizationCacheData(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -947,7 +858,7 @@ class LocalizationCacheData final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::google::protobuf::internal::MapField<LocalizationCacheData_CategoriesEntry_DoNotUse, ::int64_t, ::Digit::Client::Localization::CachedCategory,
+    ::google::protobuf::internal::MapFieldLite<LocalizationCacheData_CategoriesEntry_DoNotUse, ::int64_t, ::Digit::Client::Localization::CachedCategory,
                       ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
                       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE>
         categories_;
@@ -1540,10 +1451,6 @@ namespace protobuf {
 
 template <>
 struct is_proto_enum<::Digit::Client::Localization::ContentIdStatus> : std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::Client::Localization::ContentIdStatus>() {
-  return ::Digit::Client::Localization::ContentIdStatus_descriptor();
-}
 
 }  // namespace protobuf
 }  // namespace google

@@ -1,5 +1,8 @@
 #include "config.h"
 #include "version.h"
+#include "str_utils.h"
+#include "mapkey.h"
+#include "prime/KeyCode.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -9,10 +12,6 @@
 #include <string_view>
 
 #include <spdlog/spdlog.h>
-
-#include <absl/strings/str_split.h>
-#include <mapkey.h>
-#include <prime/KeyCode.h>
 
 std::map<std::string, int> bannerTypes{
     {"Standard", ToastState::Standard},
@@ -193,9 +192,9 @@ void parse_config_shortcut(toml::table config, toml::table& new_config, std::str
   auto sectionTable = new_config[section];
   auto config_value = config[section][item].value_or(default_value);
 
-  auto valueTrimmed = absl::StripTrailingAsciiWhitespace(config_value);
-  auto valueLowered = absl::AsciiStrToUpper(valueTrimmed);
-  auto wantedKeys   = absl::StrSplit(valueLowered, "|", absl::SkipWhitespace());
+  auto valueTrimmed = StripTrailingAsciiWhitespace(config_value);
+  auto valueLowered = AsciiStrToUpper(valueTrimmed);
+  auto wantedKeys   = StrSplit(valueLowered, '|');
 
   bool keyAdded = false;
   for (std::string_view wantedKey : wantedKeys) {
@@ -313,7 +312,7 @@ void Config::Load()
   this->config_settings_url = get_config_or_default<std::string>(config, parsed, "config", "settings_url", "");
   this->config_assets_url_override = get_config_or_default<std::string>(config, parsed, "config", "assets_url_override", "");
 
-  std::vector<std::string> types = absl::StrSplit(disabled_banner_types_str, ",", absl::SkipWhitespace());
+  std::vector<std::string> types = StrSplit(disabled_banner_types_str, ',');
 
   std::string       bannerString = "";
   std::stringstream message;
@@ -322,13 +321,13 @@ void Config::Load()
   spdlog::info(message.str());
 
   for (const auto& [key, value] : bannerTypes) {
-    auto lower_key = absl::AsciiStrToLower(key);
+    auto upper_key = AsciiStrToUpper(key);
 
     for (const std::string_view _type : types) {
-      auto stripped_type = absl::StripLeadingAsciiWhitespace(_type);
-      auto lower_type    = absl::AsciiStrToLower(stripped_type);
+      auto stripped_type = StripLeadingAsciiWhitespace(_type);
+      auto upper_type    = AsciiStrToUpper(stripped_type);
 
-      if (lower_key == lower_type) {
+      if (upper_key == upper_type) {
         this->disabled_banner_types.emplace_back(value);
         if (bannerString.length() != 0) {
           bannerString.append(", ");

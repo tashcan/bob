@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -78,100 +75,6 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace PersistentPrefs
 }  // namespace Prime
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrime_2ePersistentPrefs_2eproto[3];
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_Digit_2ePrime_2ePersistentPrefs_2eproto = nullptr;
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrime_2ePersistentPrefs_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrime_2ePersistentPrefs_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::PersistentPrefs::StringListPrefsData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::PersistentPrefs::StringListPrefsData, _impl_.list_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::PersistentPrefs::PersistentPref, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::PersistentPrefs::PersistentPref, _impl_.key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::PersistentPrefs::PersistentPref, _impl_.data_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::PersistentPrefs::PersistentPrefsData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::PersistentPrefs::PersistentPrefsData, _impl_.preferences_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::Digit::Prime::PersistentPrefs::StringListPrefsData)},
-        {9, -1, -1, sizeof(::Digit::Prime::PersistentPrefs::PersistentPref)},
-        {19, -1, -1, sizeof(::Digit::Prime::PersistentPrefs::PersistentPrefsData)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Prime::PersistentPrefs::_StringListPrefsData_default_instance_._instance,
-    &::Digit::Prime::PersistentPrefs::_PersistentPref_default_instance_._instance,
-    &::Digit::Prime::PersistentPrefs::_PersistentPrefsData_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrime_2ePersistentPrefs_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n!Digit.Prime.PersistentPrefs.proto\022\033Dig"
-    "it.Prime.PersistentPrefs\"#\n\023StringListPr"
-    "efsData\022\014\n\004list\030\001 \003(\t\"+\n\016PersistentPref\022"
-    "\013\n\003key\030\001 \001(\003\022\014\n\004data\030\002 \001(\014\"W\n\023Persistent"
-    "PrefsData\022@\n\013preferences\030\002 \003(\0132+.Digit.P"
-    "rime.PersistentPrefs.PersistentPrefb\006pro"
-    "to3"
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto = {
-    false,
-    false,
-    243,
-    descriptor_table_protodef_Digit_2ePrime_2ePersistentPrefs_2eproto,
-    "Digit.Prime.PersistentPrefs.proto",
-    &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_once,
-    nullptr,
-    0,
-    3,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrime_2ePersistentPrefs_2eproto::offsets,
-    file_level_metadata_Digit_2ePrime_2ePersistentPrefs_2eproto,
-    file_level_enum_descriptors_Digit_2ePrime_2ePersistentPrefs_2eproto,
-    file_level_service_descriptors_Digit_2ePrime_2ePersistentPrefs_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrime_2ePersistentPrefs_2eproto(&descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto);
 namespace Digit {
 namespace Prime {
 namespace PersistentPrefs {
@@ -182,18 +85,18 @@ class StringListPrefsData::_Internal {
 };
 
 StringListPrefsData::StringListPrefsData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.PersistentPrefs.StringListPrefsData)
 }
-StringListPrefsData::StringListPrefsData(const StringListPrefsData& from) : ::google::protobuf::Message() {
+StringListPrefsData::StringListPrefsData(const StringListPrefsData& from) : ::google::protobuf::MessageLite() {
   StringListPrefsData* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.list_){from._impl_.list_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.Prime.PersistentPrefs.StringListPrefsData)
@@ -207,7 +110,7 @@ inline void StringListPrefsData::SharedCtor(::_pb::Arena* arena) {
 }
 StringListPrefsData::~StringListPrefsData() {
   // @@protoc_insertion_point(destructor:Digit.Prime.PersistentPrefs.StringListPrefsData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void StringListPrefsData::SharedDtor() {
@@ -225,7 +128,7 @@ PROTOBUF_NOINLINE void StringListPrefsData::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_list()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* StringListPrefsData::_InternalParse(
@@ -248,7 +151,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 60, 2> StringListPrefsData::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_StringListPrefsData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated string list = 1;
     {::_pbi::TcParser::FastUR1,
@@ -284,9 +187,9 @@ const ::_pbi::TcParseTable<0, 1, 0, 60, 2> StringListPrefsData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.PersistentPrefs.StringListPrefsData)
   return target;
@@ -306,26 +209,29 @@ const ::_pbi::TcParseTable<0, 1, 0, 60, 2> StringListPrefsData::_table_ = {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
         _internal_list().Get(i));
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData StringListPrefsData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    StringListPrefsData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*StringListPrefsData::GetClassData() const { return &_class_data_; }
+void StringListPrefsData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const StringListPrefsData*>(
+      &from));
+}
 
-
-void StringListPrefsData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<StringListPrefsData*>(&to_msg);
-  auto& from = static_cast<const StringListPrefsData&>(from_msg);
+void StringListPrefsData::MergeFrom(const StringListPrefsData& from) {
+  StringListPrefsData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.PersistentPrefs.StringListPrefsData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_list()->MergeFrom(from._internal_list());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void StringListPrefsData::CopyFrom(const StringListPrefsData& from) {
@@ -345,11 +251,10 @@ void StringListPrefsData::InternalSwap(StringListPrefsData* other) {
   _impl_.list_.InternalSwap(&other->_impl_.list_);
 }
 
-::google::protobuf::Metadata StringListPrefsData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_getter, &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2ePersistentPrefs_2eproto[0]);
+std::string StringListPrefsData::GetTypeName() const {
+  return "Digit.Prime.PersistentPrefs.StringListPrefsData";
 }
+
 // ===================================================================
 
 class PersistentPref::_Internal {
@@ -357,11 +262,11 @@ class PersistentPref::_Internal {
 };
 
 PersistentPref::PersistentPref(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.PersistentPrefs.PersistentPref)
 }
-PersistentPref::PersistentPref(const PersistentPref& from) : ::google::protobuf::Message() {
+PersistentPref::PersistentPref(const PersistentPref& from) : ::google::protobuf::MessageLite() {
   PersistentPref* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -369,7 +274,7 @@ PersistentPref::PersistentPref(const PersistentPref& from) : ::google::protobuf:
       decltype(_impl_.key_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.data_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -396,7 +301,7 @@ inline void PersistentPref::SharedCtor(::_pb::Arena* arena) {
 }
 PersistentPref::~PersistentPref() {
   // @@protoc_insertion_point(destructor:Digit.Prime.PersistentPrefs.PersistentPref)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PersistentPref::SharedDtor() {
@@ -415,7 +320,7 @@ PROTOBUF_NOINLINE void PersistentPref::Clear() {
 
   _impl_.data_.ClearToEmpty();
   _impl_.key_ = ::int64_t{0};
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PersistentPref::_InternalParse(
@@ -438,13 +343,13 @@ const ::_pbi::TcParseTable<1, 2, 0, 0, 2> PersistentPref::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_PersistentPref_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // bytes data = 2;
     {::_pbi::TcParser::FastBS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(PersistentPref, _impl_.data_)}},
     // int64 key = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(PersistentPref, _impl_.key_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(PersistentPref, _impl_.key_)}},
   }}, {{
     65535, 65535
@@ -482,9 +387,9 @@ const ::_pbi::TcParseTable<1, 2, 0, 0, 2> PersistentPref::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.PersistentPrefs.PersistentPref)
   return target;
@@ -510,19 +415,22 @@ const ::_pbi::TcParseTable<1, 2, 0, 0, 2> PersistentPref::_table_ = {
         this->_internal_key());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PersistentPref::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PersistentPref::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PersistentPref::GetClassData() const { return &_class_data_; }
+void PersistentPref::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PersistentPref*>(
+      &from));
+}
 
-
-void PersistentPref::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PersistentPref*>(&to_msg);
-  auto& from = static_cast<const PersistentPref&>(from_msg);
+void PersistentPref::MergeFrom(const PersistentPref& from) {
+  PersistentPref* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.PersistentPrefs.PersistentPref)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -534,7 +442,7 @@ void PersistentPref::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
   if (from._internal_key() != 0) {
     _this->_internal_set_key(from._internal_key());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PersistentPref::CopyFrom(const PersistentPref& from) {
@@ -558,11 +466,10 @@ void PersistentPref::InternalSwap(PersistentPref* other) {
         swap(_impl_.key_, other->_impl_.key_);
 }
 
-::google::protobuf::Metadata PersistentPref::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_getter, &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2ePersistentPrefs_2eproto[1]);
+std::string PersistentPref::GetTypeName() const {
+  return "Digit.Prime.PersistentPrefs.PersistentPref";
 }
+
 // ===================================================================
 
 class PersistentPrefsData::_Internal {
@@ -570,18 +477,18 @@ class PersistentPrefsData::_Internal {
 };
 
 PersistentPrefsData::PersistentPrefsData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.PersistentPrefs.PersistentPrefsData)
 }
-PersistentPrefsData::PersistentPrefsData(const PersistentPrefsData& from) : ::google::protobuf::Message() {
+PersistentPrefsData::PersistentPrefsData(const PersistentPrefsData& from) : ::google::protobuf::MessageLite() {
   PersistentPrefsData* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.preferences_){from._impl_.preferences_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.Prime.PersistentPrefs.PersistentPrefsData)
@@ -595,7 +502,7 @@ inline void PersistentPrefsData::SharedCtor(::_pb::Arena* arena) {
 }
 PersistentPrefsData::~PersistentPrefsData() {
   // @@protoc_insertion_point(destructor:Digit.Prime.PersistentPrefs.PersistentPrefsData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PersistentPrefsData::SharedDtor() {
@@ -613,7 +520,7 @@ PROTOBUF_NOINLINE void PersistentPrefsData::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_preferences()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PersistentPrefsData::_InternalParse(
@@ -636,7 +543,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> PersistentPrefsData::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_PersistentPrefsData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.Prime.PersistentPrefs.PersistentPref preferences = 2;
     {::_pbi::TcParser::FastMtR1,
@@ -669,9 +576,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> PersistentPrefsData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.PersistentPrefs.PersistentPrefsData)
   return target;
@@ -691,26 +598,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> PersistentPrefsData::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PersistentPrefsData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PersistentPrefsData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PersistentPrefsData::GetClassData() const { return &_class_data_; }
+void PersistentPrefsData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PersistentPrefsData*>(
+      &from));
+}
 
-
-void PersistentPrefsData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PersistentPrefsData*>(&to_msg);
-  auto& from = static_cast<const PersistentPrefsData&>(from_msg);
+void PersistentPrefsData::MergeFrom(const PersistentPrefsData& from) {
+  PersistentPrefsData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.PersistentPrefs.PersistentPrefsData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_preferences()->MergeFrom(from._internal_preferences());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PersistentPrefsData::CopyFrom(const PersistentPrefsData& from) {
@@ -730,11 +640,10 @@ void PersistentPrefsData::InternalSwap(PersistentPrefsData* other) {
   _impl_.preferences_.InternalSwap(&other->_impl_.preferences_);
 }
 
-::google::protobuf::Metadata PersistentPrefsData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_getter, &descriptor_table_Digit_2ePrime_2ePersistentPrefs_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2ePersistentPrefs_2eproto[2]);
+std::string PersistentPrefsData::GetTypeName() const {
+  return "Digit.Prime.PersistentPrefs.PersistentPrefsData";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace PersistentPrefs
 }  // namespace Prime

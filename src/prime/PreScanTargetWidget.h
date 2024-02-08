@@ -33,19 +33,19 @@ private:
 public:
   BattleTargetData* __get__battleTargetData()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_battleTargetData")).offset();
+    static auto field = get_class_helper().GetField("_battleTargetData").offset();
     return *(BattleTargetData**)((char*)this + field);
   }
 
   ScanEngageButtonsWidget* __get__scanEngageButtonsWidget()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_scanEngageButtonsWidget")).offset();
+    static auto field = get_class_helper().GetField("_scanEngageButtonsWidget").offset();
     return *(ScanEngageButtonsWidget**)((char*)this + field);
   }
 
   RewardsButtonWidget* __get__rewardsButtonWidget()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_rewardsButtonWidget")).offset();
+    static auto field = get_class_helper().GetField("_rewardsButtonWidget").offset();
     return *(RewardsButtonWidget**)((char*)this + field);
   }
 };

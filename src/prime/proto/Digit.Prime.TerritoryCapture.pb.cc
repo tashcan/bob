@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -42,74 +39,6 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace TerritoryCapture
 }  // namespace Prime
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrime_2eTerritoryCapture_2eproto[1];
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_Digit_2ePrime_2eTerritoryCapture_2eproto = nullptr;
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrime_2eTerritoryCapture_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrime_2eTerritoryCapture_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::TerritoryCapture::TCSlideshowFlag, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::TerritoryCapture::TCSlideshowFlag, _impl_.hasseentcslideshow_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::Digit::Prime::TerritoryCapture::TCSlideshowFlag)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Prime::TerritoryCapture::_TCSlideshowFlag_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrime_2eTerritoryCapture_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\"Digit.Prime.TerritoryCapture.proto\022\034Di"
-    "git.Prime.TerritoryCapture\"-\n\017TCSlidesho"
-    "wFlag\022\032\n\022hasSeenTCSlideshow\030\001 \001(\010b\006proto"
-    "3"
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto = {
-    false,
-    false,
-    121,
-    descriptor_table_protodef_Digit_2ePrime_2eTerritoryCapture_2eproto,
-    "Digit.Prime.TerritoryCapture.proto",
-    &descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto_once,
-    nullptr,
-    0,
-    1,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrime_2eTerritoryCapture_2eproto::offsets,
-    file_level_metadata_Digit_2ePrime_2eTerritoryCapture_2eproto,
-    file_level_enum_descriptors_Digit_2ePrime_2eTerritoryCapture_2eproto,
-    file_level_service_descriptors_Digit_2ePrime_2eTerritoryCapture_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrime_2eTerritoryCapture_2eproto(&descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto);
 namespace Digit {
 namespace Prime {
 namespace TerritoryCapture {
@@ -120,13 +49,13 @@ class TCSlideshowFlag::_Internal {
 };
 
 TCSlideshowFlag::TCSlideshowFlag(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.TerritoryCapture.TCSlideshowFlag)
 }
 TCSlideshowFlag::TCSlideshowFlag(const TCSlideshowFlag& from)
-    : ::google::protobuf::Message(), _impl_(from._impl_) {
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+    : ::google::protobuf::MessageLite(), _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:Digit.Prime.TerritoryCapture.TCSlideshowFlag)
 }
@@ -139,7 +68,7 @@ inline void TCSlideshowFlag::SharedCtor(::_pb::Arena* arena) {
 }
 TCSlideshowFlag::~TCSlideshowFlag() {
   // @@protoc_insertion_point(destructor:Digit.Prime.TerritoryCapture.TCSlideshowFlag)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void TCSlideshowFlag::SharedDtor() {
@@ -156,7 +85,7 @@ PROTOBUF_NOINLINE void TCSlideshowFlag::Clear() {
   (void) cached_has_bits;
 
   _impl_.hasseentcslideshow_ = false;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* TCSlideshowFlag::_InternalParse(
@@ -179,10 +108,10 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> TCSlideshowFlag::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_TCSlideshowFlag_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // bool hasSeenTCSlideshow = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(TCSlideshowFlag, _impl_.hasseentcslideshow_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(TCSlideshowFlag, _impl_.hasseentcslideshow_)}},
   }}, {{
     65535, 65535
@@ -211,9 +140,9 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> TCSlideshowFlag::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.TerritoryCapture.TCSlideshowFlag)
   return target;
@@ -232,19 +161,22 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> TCSlideshowFlag::_table_ = {
     total_size += 2;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData TCSlideshowFlag::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    TCSlideshowFlag::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*TCSlideshowFlag::GetClassData() const { return &_class_data_; }
+void TCSlideshowFlag::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const TCSlideshowFlag*>(
+      &from));
+}
 
-
-void TCSlideshowFlag::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<TCSlideshowFlag*>(&to_msg);
-  auto& from = static_cast<const TCSlideshowFlag&>(from_msg);
+void TCSlideshowFlag::MergeFrom(const TCSlideshowFlag& from) {
+  TCSlideshowFlag* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.TerritoryCapture.TCSlideshowFlag)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -253,7 +185,7 @@ void TCSlideshowFlag::MergeImpl(::google::protobuf::Message& to_msg, const ::goo
   if (from._internal_hasseentcslideshow() != 0) {
     _this->_internal_set_hasseentcslideshow(from._internal_hasseentcslideshow());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void TCSlideshowFlag::CopyFrom(const TCSlideshowFlag& from) {
@@ -273,11 +205,10 @@ void TCSlideshowFlag::InternalSwap(TCSlideshowFlag* other) {
         swap(_impl_.hasseentcslideshow_, other->_impl_.hasseentcslideshow_);
 }
 
-::google::protobuf::Metadata TCSlideshowFlag::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto_getter, &descriptor_table_Digit_2ePrime_2eTerritoryCapture_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eTerritoryCapture_2eproto[0]);
+std::string TCSlideshowFlag::GetTypeName() const {
+  return "Digit.Prime.TerritoryCapture.TCSlideshowFlag";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace TerritoryCapture
 }  // namespace Prime

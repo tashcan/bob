@@ -27,11 +27,10 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
 // Must be included last.
@@ -51,8 +50,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2ePrime_2eMissions_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2ePrime_2eMissions_2eproto;
 namespace Digit {
 namespace Prime {
 namespace Missions {
@@ -80,7 +77,7 @@ namespace Missions {
 // -------------------------------------------------------------------
 
 class ArchivedMissions final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.Missions.ArchivedMissions) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.Missions.ArchivedMissions) */ {
  public:
   inline ArchivedMissions() : ArchivedMissions(nullptr) {}
   ~ArchivedMissions() override;
@@ -111,22 +108,13 @@ class ArchivedMissions final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const ArchivedMissions& default_instance() {
     return *internal_default_instance();
   }
@@ -164,15 +152,9 @@ class ArchivedMissions final :
   ArchivedMissions* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<ArchivedMissions>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const ArchivedMissions& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const ArchivedMissions& from) {
-    ArchivedMissions::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const ArchivedMissions& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -185,7 +167,7 @@ class ArchivedMissions final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(ArchivedMissions* other);
 
   private:
@@ -197,10 +179,7 @@ class ArchivedMissions final :
   explicit ArchivedMissions(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -247,7 +226,7 @@ class ArchivedMissions final :
 };// -------------------------------------------------------------------
 
 class FavouritedMissions final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.Missions.FavouritedMissions) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.Missions.FavouritedMissions) */ {
  public:
   inline FavouritedMissions() : FavouritedMissions(nullptr) {}
   ~FavouritedMissions() override;
@@ -278,22 +257,13 @@ class FavouritedMissions final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const FavouritedMissions& default_instance() {
     return *internal_default_instance();
   }
@@ -331,15 +301,9 @@ class FavouritedMissions final :
   FavouritedMissions* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<FavouritedMissions>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const FavouritedMissions& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const FavouritedMissions& from) {
-    FavouritedMissions::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const FavouritedMissions& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -352,7 +316,7 @@ class FavouritedMissions final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(FavouritedMissions* other);
 
   private:
@@ -364,10 +328,7 @@ class FavouritedMissions final :
   explicit FavouritedMissions(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 

@@ -676,14 +676,14 @@ void InstallHotkeyHooks()
 {
   auto shortcuts_manager_helper =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameInput", "ShortcutsManager");
-  auto ptr_can_user_shortcuts = shortcuts_manager_helper.GetMethodXor("InitializeActions");
+  auto ptr_can_user_shortcuts = shortcuts_manager_helper.GetMethod("InitializeActions");
   if (!ptr_can_user_shortcuts) {
     return;
   }
   SPUD_STATIC_DETOUR(ptr_can_user_shortcuts, InitializeActions_Hook);
 
   auto screen_manager_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "ScreenManager");
-  auto ptr_update            = screen_manager_helper.GetMethodXor("Update");
+  auto ptr_update            = screen_manager_helper.GetMethod("Update");
   if (!ptr_update) {
     return;
   }

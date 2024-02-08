@@ -37,13 +37,13 @@ private:
 public:
   long __get_Id()
   {
-    static auto field = get_class_helper().GetField(xorstr_("id_")).offset();
+    static auto field = get_class_helper().GetField("id_").offset();
     return *(long*)((char*)this + field);
   }
 
   HullType __get_Type()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Type"));
+    static auto field = get_class_helper().GetProperty("Type");
     return *field.Get<HullType>(this);
   }
 };
@@ -64,13 +64,13 @@ private:
 public:
   HullSpec* __get_Hull()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Hull"));
+    static auto field = get_class_helper().GetProperty("Hull");
     return field.GetRaw<HullSpec>(this);
   }
 
   DeployedFleetType __get_FleetType()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("FleetType"));
+    static auto field = get_class_helper().GetProperty("FleetType");
     return *field.Get<DeployedFleetType>(this);
   }
 };
@@ -90,7 +90,7 @@ private:
 public:
   FleetDeployedData* __get_TargetFleetDeployedData()
   {
-    static auto field = get_class_helper().GetField(xorstr_("TargetFleetDeployedData")).offset();
+    static auto field = get_class_helper().GetField("TargetFleetDeployedData").offset();
     return *(FleetDeployedData**)((char*)this + field);
   }
 };

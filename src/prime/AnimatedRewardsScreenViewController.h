@@ -12,13 +12,13 @@ public:
 
   void GoBackToLastSection()
   {
-    static auto GoBackToLastSectionMethod = get_class_helper().GetMethod<void(AnimatedRewardsScreenViewController*)>(xorstr_("GoBackToLastSection"));
+    static auto GoBackToLastSectionMethod = get_class_helper().GetMethod<void(AnimatedRewardsScreenViewController*)>("GoBackToLastSection");
     GoBackToLastSectionMethod(this);
   }
 
   void OnCollectClicked()
   {
-    static auto OnCollectClickedMethod = get_class_helper().GetMethod<void(AnimatedRewardsScreenViewController*)>(xorstr_("OnCollectClicked"));
+    static auto OnCollectClickedMethod = get_class_helper().GetMethod<void(AnimatedRewardsScreenViewController*)>("OnCollectClicked");
     OnCollectClickedMethod(this);
   }
 

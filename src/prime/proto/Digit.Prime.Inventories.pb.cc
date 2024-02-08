@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -93,167 +90,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace Inventories
 }  // namespace Prime
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrime_2eInventories_2eproto[4];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2ePrime_2eInventories_2eproto[2];
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrime_2eInventories_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrime_2eInventories_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _impl_.groupid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _impl_.supportedsubtypes_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _impl_.sortingorder_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _impl_.grade_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _impl_.idrefs_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroup, _impl_.tab_),
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    ~0u,
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGrouping_GroupingEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGrouping_GroupingEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGrouping_GroupingEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGrouping_GroupingEntry_DoNotUse, value_),
-    0,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGrouping, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGrouping, _impl_.grouping_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroupList, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Inventories::InventoryGroupList, _impl_.groups_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 14, -1, sizeof(::Digit::Prime::Inventories::InventoryGroup)},
-        {20, 30, -1, sizeof(::Digit::Prime::Inventories::InventoryGrouping_GroupingEntry_DoNotUse)},
-        {32, -1, -1, sizeof(::Digit::Prime::Inventories::InventoryGrouping)},
-        {41, -1, -1, sizeof(::Digit::Prime::Inventories::InventoryGroupList)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Prime::Inventories::_InventoryGroup_default_instance_._instance,
-    &::Digit::Prime::Inventories::_InventoryGrouping_GroupingEntry_DoNotUse_default_instance_._instance,
-    &::Digit::Prime::Inventories::_InventoryGrouping_default_instance_._instance,
-    &::Digit::Prime::Inventories::_InventoryGroupList_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrime_2eInventories_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\035Digit.Prime.Inventories.proto\022\027Digit.P"
-    "rime.Inventories\032\036Digit.PrimeServer.Mode"
-    "ls.proto\"\370\001\n\016InventoryGroup\022\017\n\007groupId\030\001"
-    " \001(\005\022C\n\021supportedSubtypes\030\002 \003(\0162(.Digit."
-    "Prime.Inventories.ResourceSubtype\022\024\n\014sor"
-    "tingOrder\030\003 \001(\005\022\r\n\005grade\030\004 \001(\005\0220\n\006idRefs"
-    "\030\005 \001(\0132 .Digit.PrimeServer.Models.IdRefs"
-    "\0229\n\003tab\030\006 \001(\0162,.Digit.Prime.Inventories."
-    "InventoryTabOptions\"\275\001\n\021InventoryGroupin"
-    "g\022J\n\010grouping\030\001 \003(\01328.Digit.Prime.Invent"
-    "ories.InventoryGrouping.GroupingEntry\032\\\n"
-    "\rGroupingEntry\022\013\n\003key\030\001 \001(\005\022:\n\005value\030\002 \001"
-    "(\0132+.Digit.Prime.Inventories.InventoryGr"
-    "oupList:\0028\001\"M\n\022InventoryGroupList\0227\n\006gro"
-    "ups\030\001 \003(\0132\'.Digit.Prime.Inventories.Inve"
-    "ntoryGroup*\223\003\n\023InventoryTabOptions\022\034\n\030IN"
-    "VENTORYTABOPTIONS_NONE\020\000\022(\n\033INVENTORYTAB"
-    "OPTIONS_INVALID\020\377\377\377\377\377\377\377\377\377\001\022&\n\036INVENTORYT"
-    "ABOPTIONS_LOOTCRATES\020\370\213\340\331\004\022)\n\034INVENTORYT"
-    "ABOPTIONS_SPEEDUPS\020\261\337\315\246\370\377\377\377\377\001\022*\n\035INVENTO"
-    "RYTABOPTIONS_MATERIALS\020\214\300\255\200\372\377\377\377\377\001\022(\n\033INV"
-    "ENTORYTABOPTIONS_SPECIAL\020\231\261\207\334\376\377\377\377\377\001\0220\n#I"
-    "NVENTORYTABOPTIONS_RESOURCEBATCHES\020\332\372\225\265\375"
-    "\377\377\377\377\001\022+\n$INVENTORYTABOPTIONS_TERRITORYCA"
-    "PTURE\020\214\344\336u\022,\n\037INVENTORYTABOPTIONS_CONSUM"
-    "ABLES\020\302\356\335\361\372\377\377\377\377\001*\262\004\n\017ResourceSubtype\022\030\n\024"
-    "RESOURCESUBTYPE_NONE\020\000\022\030\n\024RESOURCESUBTYP"
-    "E_SOFT\020\001\022\030\n\024RESOURCESUBTYPE_HARD\020\002\022\037\n\033RE"
-    "SOURCESUBTYPE_RAWMATERIAL\020\003\022#\n\037RESOURCES"
-    "UBTYPE_REFINEDMATERIAL\020\004\022\031\n\025RESOURCESUBT"
-    "YPE_TOKEN\020\005\022\031\n\025RESOURCESUBTYPE_INTEL\020\006\022 "
-    "\n\034RESOURCESUBTYPE_FACTIONPOINT\020\007\022 \n\034RESO"
-    "URCESUBTYPE_SPEEDUPTOKEN\020\010\022!\n\035RESOURCESU"
-    "BTYPE_RESOURCEBATCH\020\t\022\031\n\025RESOURCESUBTYPE"
-    "_DAILY\020\n\022\034\n\030RESOURCESUBTYPE_MATERIAL\020\013\022$"
-    "\n RESOURCESUBTYPE_PEACESHIELDTOKEN\020\014\022\037\n\033"
-    "RESOURCESUBTYPE_PEACESHIELD\020\r\022$\n RESOURC"
-    "ESUBTYPE_SCRAPPEDMATERIAL\020\016\022$\n RESOURCES"
-    "UBTYPE_TERRITORYCAPTURE\020\017\022\"\n\036RESOURCESUB"
-    "TYPE_COSMETICSSHARD\020\020b\006proto3"
-};
-static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2ePrime_2eInventories_2eproto_deps[1] =
-    {
-        &::descriptor_table_Digit_2ePrimeServer_2eModels_2eproto,
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrime_2eInventories_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrime_2eInventories_2eproto = {
-    false,
-    false,
-    1589,
-    descriptor_table_protodef_Digit_2ePrime_2eInventories_2eproto,
-    "Digit.Prime.Inventories.proto",
-    &descriptor_table_Digit_2ePrime_2eInventories_2eproto_once,
-    descriptor_table_Digit_2ePrime_2eInventories_2eproto_deps,
-    1,
-    4,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrime_2eInventories_2eproto::offsets,
-    file_level_metadata_Digit_2ePrime_2eInventories_2eproto,
-    file_level_enum_descriptors_Digit_2ePrime_2eInventories_2eproto,
-    file_level_service_descriptors_Digit_2ePrime_2eInventories_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrime_2eInventories_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrime_2eInventories_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrime_2eInventories_2eproto(&descriptor_table_Digit_2ePrime_2eInventories_2eproto);
 namespace Digit {
 namespace Prime {
 namespace Inventories {
-const ::google::protobuf::EnumDescriptor* InventoryTabOptions_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrime_2eInventories_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrime_2eInventories_2eproto[0];
-}
 bool InventoryTabOptions_IsValid(int value) {
   switch (value) {
     case -2066518095:
@@ -270,9 +109,68 @@ bool InventoryTabOptions_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* ResourceSubtype_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrime_2eInventories_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrime_2eInventories_2eproto[1];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    InventoryTabOptions_strings[9] = {};
+
+static const char InventoryTabOptions_names[] = {
+    "INVENTORYTABOPTIONS_CONSUMABLES"
+    "INVENTORYTABOPTIONS_INVALID"
+    "INVENTORYTABOPTIONS_LOOTCRATES"
+    "INVENTORYTABOPTIONS_MATERIALS"
+    "INVENTORYTABOPTIONS_NONE"
+    "INVENTORYTABOPTIONS_RESOURCEBATCHES"
+    "INVENTORYTABOPTIONS_SPECIAL"
+    "INVENTORYTABOPTIONS_SPEEDUPS"
+    "INVENTORYTABOPTIONS_TERRITORYCAPTURE"
+};
+
+static const ::google::protobuf::internal::EnumEntry InventoryTabOptions_entries[] =
+    {
+        {{&InventoryTabOptions_names[0], 31}, -1372096702},
+        {{&InventoryTabOptions_names[31], 27}, -1},
+        {{&InventoryTabOptions_names[58], 30}, 1261962744},
+        {{&InventoryTabOptions_names[88], 29}, -1609867252},
+        {{&InventoryTabOptions_names[117], 24}, 0},
+        {{&InventoryTabOptions_names[141], 35}, -693797542},
+        {{&InventoryTabOptions_names[176], 27}, -343811943},
+        {{&InventoryTabOptions_names[203], 28}, -2066518095},
+        {{&InventoryTabOptions_names[231], 36}, 246919692},
+};
+
+static const int InventoryTabOptions_entries_by_number[] = {
+    7,  // -2066518095 -> INVENTORYTABOPTIONS_SPEEDUPS
+    3,  // -1609867252 -> INVENTORYTABOPTIONS_MATERIALS
+    0,  // -1372096702 -> INVENTORYTABOPTIONS_CONSUMABLES
+    5,  // -693797542 -> INVENTORYTABOPTIONS_RESOURCEBATCHES
+    6,  // -343811943 -> INVENTORYTABOPTIONS_SPECIAL
+    1,  // -1 -> INVENTORYTABOPTIONS_INVALID
+    4,  // 0 -> INVENTORYTABOPTIONS_NONE
+    8,  // 246919692 -> INVENTORYTABOPTIONS_TERRITORYCAPTURE
+    2,  // 1261962744 -> INVENTORYTABOPTIONS_LOOTCRATES
+};
+
+const std::string& InventoryTabOptions_Name(InventoryTabOptions value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          InventoryTabOptions_entries, InventoryTabOptions_entries_by_number,
+          9, InventoryTabOptions_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      InventoryTabOptions_entries, InventoryTabOptions_entries_by_number, 9,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : InventoryTabOptions_strings[idx].get();
+}
+
+bool InventoryTabOptions_Parse(absl::string_view name, InventoryTabOptions* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      InventoryTabOptions_entries, 9, name, &int_value);
+  if (success) {
+    *value = static_cast<InventoryTabOptions>(int_value);
+  }
+  return success;
 }
 bool ResourceSubtype_IsValid(int value) {
   switch (value) {
@@ -298,6 +196,93 @@ bool ResourceSubtype_IsValid(int value) {
       return false;
   }
 }
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    ResourceSubtype_strings[17] = {};
+
+static const char ResourceSubtype_names[] = {
+    "RESOURCESUBTYPE_COSMETICSSHARD"
+    "RESOURCESUBTYPE_DAILY"
+    "RESOURCESUBTYPE_FACTIONPOINT"
+    "RESOURCESUBTYPE_HARD"
+    "RESOURCESUBTYPE_INTEL"
+    "RESOURCESUBTYPE_MATERIAL"
+    "RESOURCESUBTYPE_NONE"
+    "RESOURCESUBTYPE_PEACESHIELD"
+    "RESOURCESUBTYPE_PEACESHIELDTOKEN"
+    "RESOURCESUBTYPE_RAWMATERIAL"
+    "RESOURCESUBTYPE_REFINEDMATERIAL"
+    "RESOURCESUBTYPE_RESOURCEBATCH"
+    "RESOURCESUBTYPE_SCRAPPEDMATERIAL"
+    "RESOURCESUBTYPE_SOFT"
+    "RESOURCESUBTYPE_SPEEDUPTOKEN"
+    "RESOURCESUBTYPE_TERRITORYCAPTURE"
+    "RESOURCESUBTYPE_TOKEN"
+};
+
+static const ::google::protobuf::internal::EnumEntry ResourceSubtype_entries[] =
+    {
+        {{&ResourceSubtype_names[0], 30}, 16},
+        {{&ResourceSubtype_names[30], 21}, 10},
+        {{&ResourceSubtype_names[51], 28}, 7},
+        {{&ResourceSubtype_names[79], 20}, 2},
+        {{&ResourceSubtype_names[99], 21}, 6},
+        {{&ResourceSubtype_names[120], 24}, 11},
+        {{&ResourceSubtype_names[144], 20}, 0},
+        {{&ResourceSubtype_names[164], 27}, 13},
+        {{&ResourceSubtype_names[191], 32}, 12},
+        {{&ResourceSubtype_names[223], 27}, 3},
+        {{&ResourceSubtype_names[250], 31}, 4},
+        {{&ResourceSubtype_names[281], 29}, 9},
+        {{&ResourceSubtype_names[310], 32}, 14},
+        {{&ResourceSubtype_names[342], 20}, 1},
+        {{&ResourceSubtype_names[362], 28}, 8},
+        {{&ResourceSubtype_names[390], 32}, 15},
+        {{&ResourceSubtype_names[422], 21}, 5},
+};
+
+static const int ResourceSubtype_entries_by_number[] = {
+    6,  // 0 -> RESOURCESUBTYPE_NONE
+    13,  // 1 -> RESOURCESUBTYPE_SOFT
+    3,  // 2 -> RESOURCESUBTYPE_HARD
+    9,  // 3 -> RESOURCESUBTYPE_RAWMATERIAL
+    10,  // 4 -> RESOURCESUBTYPE_REFINEDMATERIAL
+    16,  // 5 -> RESOURCESUBTYPE_TOKEN
+    4,  // 6 -> RESOURCESUBTYPE_INTEL
+    2,  // 7 -> RESOURCESUBTYPE_FACTIONPOINT
+    14,  // 8 -> RESOURCESUBTYPE_SPEEDUPTOKEN
+    11,  // 9 -> RESOURCESUBTYPE_RESOURCEBATCH
+    1,  // 10 -> RESOURCESUBTYPE_DAILY
+    5,  // 11 -> RESOURCESUBTYPE_MATERIAL
+    8,  // 12 -> RESOURCESUBTYPE_PEACESHIELDTOKEN
+    7,  // 13 -> RESOURCESUBTYPE_PEACESHIELD
+    12,  // 14 -> RESOURCESUBTYPE_SCRAPPEDMATERIAL
+    15,  // 15 -> RESOURCESUBTYPE_TERRITORYCAPTURE
+    0,  // 16 -> RESOURCESUBTYPE_COSMETICSSHARD
+};
+
+const std::string& ResourceSubtype_Name(ResourceSubtype value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          ResourceSubtype_entries, ResourceSubtype_entries_by_number,
+          17, ResourceSubtype_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      ResourceSubtype_entries, ResourceSubtype_entries_by_number, 17,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : ResourceSubtype_strings[idx].get();
+}
+
+bool ResourceSubtype_Parse(absl::string_view name, ResourceSubtype* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      ResourceSubtype_entries, 17, name, &int_value);
+  if (success) {
+    *value = static_cast<ResourceSubtype>(int_value);
+  }
+  return success;
+}
 // ===================================================================
 
 class InventoryGroup::_Internal {
@@ -319,11 +304,11 @@ void InventoryGroup::clear_idrefs() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 InventoryGroup::InventoryGroup(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.Inventories.InventoryGroup)
 }
-InventoryGroup::InventoryGroup(const InventoryGroup& from) : ::google::protobuf::Message() {
+InventoryGroup::InventoryGroup(const InventoryGroup& from) : ::google::protobuf::MessageLite() {
   InventoryGroup* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -337,7 +322,7 @@ InventoryGroup::InventoryGroup(const InventoryGroup& from) : ::google::protobuf:
       decltype(_impl_.grade_){},
       decltype(_impl_.tab_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.idrefs_ = new ::Digit::PrimeServer::Models::IdRefs(*from._impl_.idrefs_);
@@ -364,7 +349,7 @@ inline void InventoryGroup::SharedCtor(::_pb::Arena* arena) {
 }
 InventoryGroup::~InventoryGroup() {
   // @@protoc_insertion_point(destructor:Digit.Prime.Inventories.InventoryGroup)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void InventoryGroup::SharedDtor() {
@@ -392,7 +377,7 @@ PROTOBUF_NOINLINE void InventoryGroup::Clear() {
       reinterpret_cast<char*>(&_impl_.tab_) -
       reinterpret_cast<char*>(&_impl_.groupid_)) + sizeof(_impl_.tab_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* InventoryGroup::_InternalParse(
@@ -415,26 +400,26 @@ const ::_pbi::TcParseTable<3, 6, 1, 0, 2> InventoryGroup::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_InventoryGroup_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // int32 groupId = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(InventoryGroup, _impl_.groupid_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(InventoryGroup, _impl_.groupid_)}},
     // repeated .Digit.Prime.Inventories.ResourceSubtype supportedSubtypes = 2;
     {::_pbi::TcParser::FastV32P1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(InventoryGroup, _impl_.supportedsubtypes_)}},
     // int32 sortingOrder = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(InventoryGroup, _impl_.sortingorder_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(InventoryGroup, _impl_.sortingorder_)}},
     // int32 grade = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(InventoryGroup, _impl_.grade_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(InventoryGroup, _impl_.grade_)}},
     // .Digit.PrimeServer.Models.IdRefs idRefs = 5;
     {::_pbi::TcParser::FastMtS1,
      {42, 0, 0, PROTOBUF_FIELD_OFFSET(InventoryGroup, _impl_.idrefs_)}},
     // .Digit.Prime.Inventories.InventoryTabOptions tab = 6;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(InventoryGroup, _impl_.tab_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {48, 63, 0, PROTOBUF_FIELD_OFFSET(InventoryGroup, _impl_.tab_)}},
     {::_pbi::TcParser::MiniParse, {}},
   }}, {{
@@ -517,9 +502,9 @@ const ::_pbi::TcParseTable<3, 6, 1, 0, 2> InventoryGroup::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.Inventories.InventoryGroup)
   return target;
@@ -582,19 +567,22 @@ const ::_pbi::TcParseTable<3, 6, 1, 0, 2> InventoryGroup::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_tab());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData InventoryGroup::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    InventoryGroup::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*InventoryGroup::GetClassData() const { return &_class_data_; }
+void InventoryGroup::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const InventoryGroup*>(
+      &from));
+}
 
-
-void InventoryGroup::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<InventoryGroup*>(&to_msg);
-  auto& from = static_cast<const InventoryGroup&>(from_msg);
+void InventoryGroup::MergeFrom(const InventoryGroup& from) {
+  InventoryGroup* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.Inventories.InventoryGroup)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -617,7 +605,7 @@ void InventoryGroup::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
   if (from._internal_tab() != 0) {
     _this->_internal_set_tab(from._internal_tab());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void InventoryGroup::CopyFrom(const InventoryGroup& from) {
@@ -644,11 +632,10 @@ void InventoryGroup::InternalSwap(InventoryGroup* other) {
           reinterpret_cast<char*>(&other->_impl_.idrefs_));
 }
 
-::google::protobuf::Metadata InventoryGroup::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eInventories_2eproto_getter, &descriptor_table_Digit_2ePrime_2eInventories_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eInventories_2eproto[0]);
+std::string InventoryGroup::GetTypeName() const {
+  return "Digit.Prime.Inventories.InventoryGroup";
 }
+
 // ===================================================================
 
 InventoryGrouping_GroupingEntry_DoNotUse::InventoryGrouping_GroupingEntry_DoNotUse() {}
@@ -657,11 +644,6 @@ InventoryGrouping_GroupingEntry_DoNotUse::InventoryGrouping_GroupingEntry_DoNotU
 void InventoryGrouping_GroupingEntry_DoNotUse::MergeFrom(const InventoryGrouping_GroupingEntry_DoNotUse& other) {
   MergeFromInternal(other);
 }
-::google::protobuf::Metadata InventoryGrouping_GroupingEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eInventories_2eproto_getter, &descriptor_table_Digit_2ePrime_2eInventories_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eInventories_2eproto[1]);
-}
 // ===================================================================
 
 class InventoryGrouping::_Internal {
@@ -669,18 +651,18 @@ class InventoryGrouping::_Internal {
 };
 
 InventoryGrouping::InventoryGrouping(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.Inventories.InventoryGrouping)
 }
-InventoryGrouping::InventoryGrouping(const InventoryGrouping& from) : ::google::protobuf::Message() {
+InventoryGrouping::InventoryGrouping(const InventoryGrouping& from) : ::google::protobuf::MessageLite() {
   InventoryGrouping* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       /* decltype(_impl_.grouping_) */ {},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _this->_impl_.grouping_.MergeFrom(from._impl_.grouping_);
 
@@ -695,12 +677,12 @@ inline void InventoryGrouping::SharedCtor(::_pb::Arena* arena) {
 }
 InventoryGrouping::~InventoryGrouping() {
   // @@protoc_insertion_point(destructor:Digit.Prime.Inventories.InventoryGrouping)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void InventoryGrouping::SharedDtor() {
   ABSL_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.grouping_.~MapField();
+  _impl_.grouping_.~MapFieldLite();
 }
 void InventoryGrouping::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
@@ -713,7 +695,7 @@ PROTOBUF_NOINLINE void InventoryGrouping::Clear() {
   (void) cached_has_bits;
 
   _impl_.grouping_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* InventoryGrouping::_InternalParse(
@@ -736,7 +718,7 @@ const ::_pbi::TcParseTable<0, 1, 2, 0, 2> InventoryGrouping::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_InventoryGrouping_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
   }}, {{
@@ -779,9 +761,9 @@ const ::_pbi::TcParseTable<0, 1, 2, 0, 2> InventoryGrouping::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.Inventories.InventoryGrouping)
   return target;
@@ -800,26 +782,29 @@ const ::_pbi::TcParseTable<0, 1, 2, 0, 2> InventoryGrouping::_table_ = {
   for (const auto& entry : _internal_grouping()) {
     total_size += InventoryGrouping_GroupingEntry_DoNotUse::Funcs::ByteSizeLong(entry.first, entry.second);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData InventoryGrouping::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    InventoryGrouping::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*InventoryGrouping::GetClassData() const { return &_class_data_; }
+void InventoryGrouping::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const InventoryGrouping*>(
+      &from));
+}
 
-
-void InventoryGrouping::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<InventoryGrouping*>(&to_msg);
-  auto& from = static_cast<const InventoryGrouping&>(from_msg);
+void InventoryGrouping::MergeFrom(const InventoryGrouping& from) {
+  InventoryGrouping* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.Inventories.InventoryGrouping)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_impl_.grouping_.MergeFrom(from._impl_.grouping_);
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void InventoryGrouping::CopyFrom(const InventoryGrouping& from) {
@@ -839,11 +824,10 @@ void InventoryGrouping::InternalSwap(InventoryGrouping* other) {
   _impl_.grouping_.InternalSwap(&other->_impl_.grouping_);
 }
 
-::google::protobuf::Metadata InventoryGrouping::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eInventories_2eproto_getter, &descriptor_table_Digit_2ePrime_2eInventories_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eInventories_2eproto[2]);
+std::string InventoryGrouping::GetTypeName() const {
+  return "Digit.Prime.Inventories.InventoryGrouping";
 }
+
 // ===================================================================
 
 class InventoryGroupList::_Internal {
@@ -851,18 +835,18 @@ class InventoryGroupList::_Internal {
 };
 
 InventoryGroupList::InventoryGroupList(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.Inventories.InventoryGroupList)
 }
-InventoryGroupList::InventoryGroupList(const InventoryGroupList& from) : ::google::protobuf::Message() {
+InventoryGroupList::InventoryGroupList(const InventoryGroupList& from) : ::google::protobuf::MessageLite() {
   InventoryGroupList* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.groups_){from._impl_.groups_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.Prime.Inventories.InventoryGroupList)
@@ -876,7 +860,7 @@ inline void InventoryGroupList::SharedCtor(::_pb::Arena* arena) {
 }
 InventoryGroupList::~InventoryGroupList() {
   // @@protoc_insertion_point(destructor:Digit.Prime.Inventories.InventoryGroupList)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void InventoryGroupList::SharedDtor() {
@@ -894,7 +878,7 @@ PROTOBUF_NOINLINE void InventoryGroupList::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_groups()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* InventoryGroupList::_InternalParse(
@@ -917,7 +901,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> InventoryGroupList::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_InventoryGroupList_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.Prime.Inventories.InventoryGroup groups = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -950,9 +934,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> InventoryGroupList::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.Inventories.InventoryGroupList)
   return target;
@@ -972,26 +956,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> InventoryGroupList::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData InventoryGroupList::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    InventoryGroupList::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*InventoryGroupList::GetClassData() const { return &_class_data_; }
+void InventoryGroupList::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const InventoryGroupList*>(
+      &from));
+}
 
-
-void InventoryGroupList::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<InventoryGroupList*>(&to_msg);
-  auto& from = static_cast<const InventoryGroupList&>(from_msg);
+void InventoryGroupList::MergeFrom(const InventoryGroupList& from) {
+  InventoryGroupList* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.Inventories.InventoryGroupList)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_groups()->MergeFrom(from._internal_groups());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void InventoryGroupList::CopyFrom(const InventoryGroupList& from) {
@@ -1011,11 +998,10 @@ void InventoryGroupList::InternalSwap(InventoryGroupList* other) {
   _impl_.groups_.InternalSwap(&other->_impl_.groups_);
 }
 
-::google::protobuf::Metadata InventoryGroupList::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eInventories_2eproto_getter, &descriptor_table_Digit_2ePrime_2eInventories_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eInventories_2eproto[3]);
+std::string InventoryGroupList::GetTypeName() const {
+  return "Digit.Prime.Inventories.InventoryGroupList";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Inventories
 }  // namespace Prime

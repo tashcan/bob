@@ -10,17 +10,15 @@
 #include <libil2cpp/il2cpp-object-internals.h>
 #include <libil2cpp/utils/Il2CppHashMap.h>
 
-#include <xorstr.hpp>
-
 #define DO_API(r, n, p) using n##_t = r(*) p;
 #define DO_API_NO_RETURN(r, n, p) DO_API(r, n, p)
 #include <libil2cpp/il2cpp-api-functions.h>
 #undef DO_API
 #undef DO_API_NO_RETURN
 
+#include <EASTL/span.h>
 #include <EASTL/unordered_map.h>
 #include <EASTL/vector.h>
-#include <EASTL/span.h>
 
 class IL2CppPropertyHelper
 {
@@ -37,14 +35,14 @@ public:
       return;
     }
 
-    static auto il2cpp_property_get_set_method   = (il2cpp_property_get_set_method_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_property_get_set_method")));
-    static auto il2cpp_runtime_invoke            = (il2cpp_runtime_invoke_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_runtime_invoke")));
-    static auto il2cpp_object_unbox              = (il2cpp_object_unbox_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_unbox")));
+    static auto il2cpp_property_get_set_method = (il2cpp_property_get_set_method_t)(GetProcAddress(
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_property_get_set_method"));
+    static auto il2cpp_runtime_invoke =
+        (il2cpp_runtime_invoke_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_runtime_invoke"));
+    static auto il2cpp_object_unbox =
+        (il2cpp_object_unbox_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_object_unbox"));
     static auto il2cpp_object_get_virtual_method = (il2cpp_object_get_virtual_method_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_get_virtual_method")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_object_get_virtual_method"));
 
     auto set_method         = il2cpp_property_get_set_method((PropertyInfo*)this->propInfo);
     auto set_method_virtual = il2cpp_object_get_virtual_method((Il2CppObject*)_this, set_method);
@@ -61,12 +59,12 @@ public:
       return nullptr;
     }
 
-    static auto il2cpp_property_get_get_method   = (il2cpp_property_get_get_method_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_property_get_get_method")));
-    static auto il2cpp_runtime_invoke            = (il2cpp_runtime_invoke_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_runtime_invoke")));
+    static auto il2cpp_property_get_get_method = (il2cpp_property_get_get_method_t)(GetProcAddress(
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_property_get_get_method"));
+    static auto il2cpp_runtime_invoke =
+        (il2cpp_runtime_invoke_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_runtime_invoke"));
     static auto il2cpp_object_get_virtual_method = (il2cpp_object_get_virtual_method_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_get_virtual_method")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_object_get_virtual_method"));
 
     auto get_method         = il2cpp_property_get_get_method((PropertyInfo*)this->propInfo);
     auto get_method_virtual = il2cpp_object_get_virtual_method((Il2CppObject*)_this, get_method);
@@ -83,17 +81,17 @@ public:
 
   template <typename T> T* Get(void* _this)
   {
-    static auto il2cpp_object_unbox = (il2cpp_object_unbox_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_unbox")));
-    auto        r                   = GetRaw<Il2CppObject>(_this);
+    static auto il2cpp_object_unbox =
+        (il2cpp_object_unbox_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_object_unbox"));
+    auto r = GetRaw<Il2CppObject>(_this);
     return !r ? nullptr : (T*)(il2cpp_object_unbox(r));
   }
 
   template <typename T> T* GetUnboxedSelf(void* _this)
   {
-    static auto il2cpp_object_unbox = (il2cpp_object_unbox_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_unbox")));
-    auto        r                   = GetRaw<Il2CppObject>(il2cpp_object_unbox((Il2CppObject*)_this));
+    static auto il2cpp_object_unbox =
+        (il2cpp_object_unbox_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_object_unbox"));
+    auto r = GetRaw<Il2CppObject>(il2cpp_object_unbox((Il2CppObject*)_this));
     return !r ? nullptr : (T*)(il2cpp_object_unbox(r));
   }
 
@@ -133,7 +131,7 @@ public:
   template <typename T> inline T Get() const
   {
     static auto il2cpp_field_static_get_value = (il2cpp_field_static_get_value_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_field_static_get_value")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_field_static_get_value"));
     T           v;
     il2cpp_field_static_get_value(this->fieldInfo, &v);
     return v;
@@ -143,8 +141,6 @@ private:
   Il2CppClass* cls;
   FieldInfo*   fieldInfo;
 };
-
-#define GetMethodXor(name) GetMethod(xorstr_(name))
 
 class IL2CppClassHelper
 {
@@ -156,16 +152,16 @@ public:
 
   template <typename T> T* New()
   {
-    static auto il2cpp_object_new = (il2cpp_object_new_t)(GetProcAddress(GetModuleHandle(xorstr_("GameAssembly.dll")),
-                                                                         xorstr_("il2cpp_object_new")));
+    static auto il2cpp_object_new =
+        (il2cpp_object_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_object_new"));
     return (T*)il2cpp_object_new(this->cls);
   }
 
   void* GetType()
   {
-    static auto il2cpp_type_get_object = (il2cpp_type_get_object_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_type_get_object")));
-    auto        obj                    = il2cpp_type_get_object(&this->cls->byval_arg);
+    static auto il2cpp_type_get_object =
+        (il2cpp_type_get_object_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_type_get_object"));
+    auto obj = il2cpp_type_get_object(&this->cls->byval_arg);
     return obj;
   }
 
@@ -176,7 +172,7 @@ public:
     }
 
     static auto il2cpp_class_get_method_from_name = (il2cpp_class_get_method_from_name_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_method_from_name")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_method_from_name"));
 
     auto fn = il2cpp_class_get_method_from_name(this->cls, name, arg_count);
 
@@ -190,9 +186,9 @@ public:
     }
 
     static auto il2cpp_class_get_method_from_name = (il2cpp_class_get_method_from_name_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_method_from_name")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_method_from_name"));
     static auto il2cpp_object_get_virtual_method  = (il2cpp_object_get_virtual_method_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_get_virtual_method")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_object_get_virtual_method"));
 
     auto fn = il2cpp_class_get_method_from_name(this->cls, name, arg_count);
 
@@ -212,10 +208,10 @@ public:
 
     R Invoke(void* _this, Args... args)
     {
-      static auto il2cpp_runtime_invoke = (il2cpp_runtime_invoke_t)(GetProcAddress(
-          GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_runtime_invoke")));
-      static auto il2cpp_object_unbox   = (il2cpp_object_unbox_t)(GetProcAddress(
-          GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_object_unbox")));
+      static auto il2cpp_runtime_invoke =
+          (il2cpp_runtime_invoke_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_runtime_invoke"));
+      static auto il2cpp_object_unbox =
+          (il2cpp_object_unbox_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_object_unbox"));
 
       Il2CppException* exception = nullptr;
       void*            params    = {};
@@ -235,7 +231,7 @@ public:
     }
 
     static auto il2cpp_class_get_method_from_name = (il2cpp_class_get_method_from_name_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_method_from_name")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_method_from_name"));
 
     auto fn = il2cpp_class_get_method_from_name(this->cls, name, arg_count);
 
@@ -243,15 +239,15 @@ public:
   }
 
   const MethodInfo*
-  GetMethodInfoSpecial(const char*                                                      name,
+  GetMethodInfoSpecial(const char*                                                    name,
                        std::function<bool(int param_count, const Il2CppType** param)> arg_filter = nullptr)
   {
     if (!this->cls) {
       return nullptr;
     }
 
-    static auto il2cpp_class_get_methods = (il2cpp_class_get_methods_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_methods")));
+    static auto il2cpp_class_get_methods =
+        (il2cpp_class_get_methods_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_methods"));
 
     auto  flags = 0;
     void* iter  = NULL;
@@ -266,7 +262,7 @@ public:
   }
 
   template <typename T = void>
-  T* GetMethodSpecial(const char*                                                      name,
+  T* GetMethodSpecial(const char*                                                    name,
                       std::function<bool(int param_count, const Il2CppType** param)> arg_filter = nullptr)
   {
     if (!this->cls) {
@@ -301,7 +297,7 @@ public:
     }
 
     static auto il2cpp_class_get_method_from_name = (il2cpp_class_get_method_from_name_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_method_from_name")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_method_from_name"));
 
     return il2cpp_class_get_method_from_name(this->cls, name, arg_count);
   }
@@ -309,29 +305,29 @@ public:
   inline IL2CppPropertyHelper GetProperty(const char* name)
   {
     static auto il2cpp_class_get_property_from_name = (il2cpp_class_get_property_from_name_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_property_from_name")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_property_from_name"));
     return IL2CppPropertyHelper{this->cls, il2cpp_class_get_property_from_name(this->cls, name)};
   }
 
   inline IL2CppFieldHelper GetField(const char* name)
   {
     static auto il2cpp_class_get_field_from_name = (il2cpp_class_get_field_from_name_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_field_from_name")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_field_from_name"));
     return IL2CppFieldHelper{this->cls, il2cpp_class_get_field_from_name(this->cls, name)};
   }
 
   inline IL2CppStaticFieldHelper GetStaticField(const char* name)
   {
     static auto il2cpp_class_get_field_from_name = (il2cpp_class_get_field_from_name_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_field_from_name")));
+        GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_field_from_name"));
     return IL2CppStaticFieldHelper{this->cls, il2cpp_class_get_field_from_name(this->cls, name)};
   }
 
   inline IL2CppClassHelper GetParent(const char* name)
   {
-    static auto  il2cpp_class_get_parent = (il2cpp_class_get_parent_t)(GetProcAddress(
-        GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_get_parent")));
-    Il2CppClass* pcls                    = this->cls;
+    static auto il2cpp_class_get_parent =
+        (il2cpp_class_get_parent_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_parent"));
+    Il2CppClass* pcls = this->cls;
     if (pcls) {
       do {
         if (pcls->name[0] == name[0] && !strcmp(name, pcls->name)) {
@@ -356,7 +352,8 @@ public:
     return nullptr;
   }
 
-  Il2CppClass* get_cls() {
+  Il2CppClass* get_cls()
+  {
     return this->cls;
   }
 
@@ -364,21 +361,20 @@ private:
   Il2CppClass* cls;
 };
 
-#define il2cpp_get_class_helper(assembly, namespacez, name)                                                            \
-  il2cpp_get_class_helper_impl(xorstr_(assembly), xorstr_(namespacez), xorstr_(name))
+#define il2cpp_get_class_helper(assembly, namespacez, name) il2cpp_get_class_helper_impl(assembly, namespacez, name)
 
 inline IL2CppClassHelper il2cpp_get_class_helper_impl(const char* assembly, const char* namespacez, const char* name)
 {
   static auto il2cpp_domain_get =
-      (il2cpp_domain_get_t)(GetProcAddress(GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_domain_get")));
+      (il2cpp_domain_get_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_domain_get"));
   static auto il2cpp_domain_assembly_open  = (il2cpp_domain_assembly_open_t)(GetProcAddress(
-      GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_domain_assembly_open")));
+      GetModuleHandle("GameAssembly.dll"), "il2cpp_domain_assembly_open"));
   static auto il2cpp_domain_get_assemblies = (il2cpp_domain_get_assemblies_t)(GetProcAddress(
-      GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_domain_get_assemblies")));
-  static auto il2cpp_class_from_name       = (il2cpp_class_from_name_t)(GetProcAddress(
-      GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_class_from_name")));
-  static auto il2cpp_assembly_get_image    = (il2cpp_assembly_get_image_t)(GetProcAddress(
-      GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_assembly_get_image")));
+      GetModuleHandle("GameAssembly.dll"), "il2cpp_domain_get_assemblies"));
+  static auto il2cpp_class_from_name =
+      (il2cpp_class_from_name_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_class_from_name"));
+  static auto il2cpp_assembly_get_image =
+      (il2cpp_assembly_get_image_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_assembly_get_image"));
 
   auto domain    = il2cpp_domain_get();
   auto assemblyT = il2cpp_domain_assembly_open(domain, assembly);
@@ -413,9 +409,6 @@ public:
   static eastl::span<T*> GetAll()
   {
     auto& objects = tracked_objects[T::get_class_helper().get_cls()];
-    return {
-      reinterpret_cast<T**>(objects.data()),
-      reinterpret_cast<T**>(objects.data()) + objects.size()
-    };
+    return {reinterpret_cast<T**>(objects.data()), reinterpret_cast<T**>(objects.data()) + objects.size()};
   }
 };

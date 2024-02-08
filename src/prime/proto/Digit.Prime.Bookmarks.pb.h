@@ -27,11 +27,10 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
 // Must be included last.
@@ -51,8 +50,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2ePrime_2eBookmarks_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2ePrime_2eBookmarks_2eproto;
 namespace Digit {
 namespace Prime {
 namespace Bookmarks {
@@ -80,7 +77,7 @@ namespace Bookmarks {
 // -------------------------------------------------------------------
 
 class Bookmark final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.Bookmarks.Bookmark) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.Bookmarks.Bookmark) */ {
  public:
   inline Bookmark() : Bookmark(nullptr) {}
   ~Bookmark() override;
@@ -111,22 +108,13 @@ class Bookmark final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const Bookmark& default_instance() {
     return *internal_default_instance();
   }
@@ -164,15 +152,9 @@ class Bookmark final :
   Bookmark* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<Bookmark>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const Bookmark& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const Bookmark& from) {
-    Bookmark::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const Bookmark& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -185,7 +167,7 @@ class Bookmark final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(Bookmark* other);
 
   private:
@@ -197,10 +179,7 @@ class Bookmark final :
   explicit Bookmark(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -382,7 +361,7 @@ class Bookmark final :
 };// -------------------------------------------------------------------
 
 class BookmarksSaveData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.Bookmarks.BookmarksSaveData) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.Bookmarks.BookmarksSaveData) */ {
  public:
   inline BookmarksSaveData() : BookmarksSaveData(nullptr) {}
   ~BookmarksSaveData() override;
@@ -413,22 +392,13 @@ class BookmarksSaveData final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const BookmarksSaveData& default_instance() {
     return *internal_default_instance();
   }
@@ -466,15 +436,9 @@ class BookmarksSaveData final :
   BookmarksSaveData* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<BookmarksSaveData>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const BookmarksSaveData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const BookmarksSaveData& from) {
-    BookmarksSaveData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const BookmarksSaveData& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -487,7 +451,7 @@ class BookmarksSaveData final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(BookmarksSaveData* other);
 
   private:
@@ -499,10 +463,7 @@ class BookmarksSaveData final :
   explicit BookmarksSaveData(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 

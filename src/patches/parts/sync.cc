@@ -28,8 +28,6 @@
 #include <EASTL/algorithm.h>
 #include <EASTL/bonus/ring_buffer.h>
 
-#include <absl/strings/str_join.h>
-
 namespace http
 {
 using namespace winrt;
@@ -522,7 +520,10 @@ void ship_combat_log_data()
         }
       }
 
-      std::string profiles_joined = absl::StrJoin(profiles_to_fetch, ",");
+      std::string profiles_joined = std::accumulate(profiles_to_fetch.begin(), profiles_to_fetch.end(), std::string(),
+                                                    [](const std::string& a, const std::string& b) -> std::string {
+                                                      return a + (a.length() > 0 ? "," : "") + b;
+                                                    });
       auto        profiles_body   = std::format("{{\"user_ids\":[{}]}}", profiles_joined);
       auto        profiles        = http::get_data_data(instanceSessionId, gameServerUrl, L"/user_profile/profiles",
                                                         winrt::to_hstring(profiles_body).c_str());

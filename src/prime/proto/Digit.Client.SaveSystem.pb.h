@@ -27,12 +27,10 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/generated_enum_reflection.h"
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/generated_enum_util.h"
 #include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
@@ -53,8 +51,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2eClient_2eSaveSystem_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2eClient_2eSaveSystem_2eproto;
 namespace Digit {
 namespace Client {
 namespace SaveSystem {
@@ -99,8 +95,7 @@ bool CloudSectionType_IsValid(int value);
 constexpr CloudSectionType CloudSectionType_MIN = static_cast<CloudSectionType>(0);
 constexpr CloudSectionType CloudSectionType_MAX = static_cast<CloudSectionType>(6);
 constexpr int CloudSectionType_ARRAYSIZE = 6 + 1;
-const ::google::protobuf::EnumDescriptor*
-CloudSectionType_descriptor();
+const std::string& CloudSectionType_Name(CloudSectionType value);
 template <typename T>
 const std::string& CloudSectionType_Name(T value) {
   static_assert(std::is_same<T, CloudSectionType>::value ||
@@ -108,16 +103,8 @@ const std::string& CloudSectionType_Name(T value) {
                 "Incorrect type passed to CloudSectionType_Name().");
   return CloudSectionType_Name(static_cast<CloudSectionType>(value));
 }
-template <>
-inline const std::string& CloudSectionType_Name(CloudSectionType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<CloudSectionType_descriptor,
-                                                 0, 6>(
-      static_cast<int>(value));
-}
-inline bool CloudSectionType_Parse(absl::string_view name, CloudSectionType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<CloudSectionType>(
-      CloudSectionType_descriptor(), name, value);
-}
+const std::string& CloudSectionType_Name(CloudSectionType value);
+bool CloudSectionType_Parse(absl::string_view name, CloudSectionType* value);
 enum CloudFileType : int {
   CLOUDFILETYPE_STARTUP = 0,
   CLOUDFILETYPE_NORMAL = 1,
@@ -131,8 +118,7 @@ bool CloudFileType_IsValid(int value);
 constexpr CloudFileType CloudFileType_MIN = static_cast<CloudFileType>(0);
 constexpr CloudFileType CloudFileType_MAX = static_cast<CloudFileType>(1);
 constexpr int CloudFileType_ARRAYSIZE = 1 + 1;
-const ::google::protobuf::EnumDescriptor*
-CloudFileType_descriptor();
+const std::string& CloudFileType_Name(CloudFileType value);
 template <typename T>
 const std::string& CloudFileType_Name(T value) {
   static_assert(std::is_same<T, CloudFileType>::value ||
@@ -140,16 +126,8 @@ const std::string& CloudFileType_Name(T value) {
                 "Incorrect type passed to CloudFileType_Name().");
   return CloudFileType_Name(static_cast<CloudFileType>(value));
 }
-template <>
-inline const std::string& CloudFileType_Name(CloudFileType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<CloudFileType_descriptor,
-                                                 0, 1>(
-      static_cast<int>(value));
-}
-inline bool CloudFileType_Parse(absl::string_view name, CloudFileType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<CloudFileType>(
-      CloudFileType_descriptor(), name, value);
-}
+const std::string& CloudFileType_Name(CloudFileType value);
+bool CloudFileType_Parse(absl::string_view name, CloudFileType* value);
 
 // ===================================================================
 
@@ -157,7 +135,7 @@ inline bool CloudFileType_Parse(absl::string_view name, CloudFileType* value) {
 // -------------------------------------------------------------------
 
 class CloudBlob final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudBlob) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudBlob) */ {
  public:
   inline CloudBlob() : CloudBlob(nullptr) {}
   ~CloudBlob() override;
@@ -188,22 +166,13 @@ class CloudBlob final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CloudBlob& default_instance() {
     return *internal_default_instance();
   }
@@ -241,15 +210,9 @@ class CloudBlob final :
   CloudBlob* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CloudBlob>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CloudBlob& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CloudBlob& from) {
-    CloudBlob::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CloudBlob& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -262,7 +225,7 @@ class CloudBlob final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CloudBlob* other);
 
   private:
@@ -274,10 +237,7 @@ class CloudBlob final :
   explicit CloudBlob(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -341,7 +301,7 @@ class CloudBlob final :
 };// -------------------------------------------------------------------
 
 class CloudSection final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudSection) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudSection) */ {
  public:
   inline CloudSection() : CloudSection(nullptr) {}
   ~CloudSection() override;
@@ -372,22 +332,13 @@ class CloudSection final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CloudSection& default_instance() {
     return *internal_default_instance();
   }
@@ -425,15 +376,9 @@ class CloudSection final :
   CloudSection* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CloudSection>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CloudSection& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CloudSection& from) {
-    CloudSection::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CloudSection& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -446,7 +391,7 @@ class CloudSection final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CloudSection* other);
 
   private:
@@ -458,10 +403,7 @@ class CloudSection final :
   explicit CloudSection(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -523,7 +465,7 @@ class CloudSection final :
 };// -------------------------------------------------------------------
 
 class CloudSectionMetaData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudSectionMetaData) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudSectionMetaData) */ {
  public:
   inline CloudSectionMetaData() : CloudSectionMetaData(nullptr) {}
   ~CloudSectionMetaData() override;
@@ -554,22 +496,13 @@ class CloudSectionMetaData final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CloudSectionMetaData& default_instance() {
     return *internal_default_instance();
   }
@@ -607,15 +540,9 @@ class CloudSectionMetaData final :
   CloudSectionMetaData* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CloudSectionMetaData>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CloudSectionMetaData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CloudSectionMetaData& from) {
-    CloudSectionMetaData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CloudSectionMetaData& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -628,7 +555,7 @@ class CloudSectionMetaData final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CloudSectionMetaData* other);
 
   private:
@@ -640,10 +567,7 @@ class CloudSectionMetaData final :
   explicit CloudSectionMetaData(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -699,7 +623,7 @@ class CloudSectionMetaData final :
 };// -------------------------------------------------------------------
 
 class CloudBlobMetaData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudBlobMetaData) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Client.SaveSystem.CloudBlobMetaData) */ {
  public:
   inline CloudBlobMetaData() : CloudBlobMetaData(nullptr) {}
   ~CloudBlobMetaData() override;
@@ -730,22 +654,13 @@ class CloudBlobMetaData final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CloudBlobMetaData& default_instance() {
     return *internal_default_instance();
   }
@@ -783,15 +698,9 @@ class CloudBlobMetaData final :
   CloudBlobMetaData* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CloudBlobMetaData>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CloudBlobMetaData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CloudBlobMetaData& from) {
-    CloudBlobMetaData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CloudBlobMetaData& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -804,7 +713,7 @@ class CloudBlobMetaData final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CloudBlobMetaData* other);
 
   private:
@@ -816,10 +725,7 @@ class CloudBlobMetaData final :
   explicit CloudBlobMetaData(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1325,15 +1231,7 @@ namespace protobuf {
 template <>
 struct is_proto_enum<::Digit::Client::SaveSystem::CloudSectionType> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::Client::SaveSystem::CloudSectionType>() {
-  return ::Digit::Client::SaveSystem::CloudSectionType_descriptor();
-}
-template <>
 struct is_proto_enum<::Digit::Client::SaveSystem::CloudFileType> : std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::Client::SaveSystem::CloudFileType>() {
-  return ::Digit::Client::SaveSystem::CloudFileType_descriptor();
-}
 
 }  // namespace protobuf
 }  // namespace google

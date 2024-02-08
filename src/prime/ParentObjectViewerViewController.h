@@ -53,13 +53,7 @@ public:
 
   bool __get_IsShowing()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("IsShowing"));
+    static auto field = get_class_helper().GetProperty("IsShowing");
     return *field.GetRaw<bool>(this);
   }
-
-  // void __set_IsInfoShown(bool v)
-  // {
-  //   static auto field = get_class_helper().GetProperty(xorstr_("IsInfoShown"));
-  //   field.SetRaw(this, v);
-  // }
 };

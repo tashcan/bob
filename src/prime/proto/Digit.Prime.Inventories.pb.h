@@ -27,15 +27,14 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
 #include "google/protobuf/map.h"  // IWYU pragma: export
-#include "google/protobuf/map_entry.h"
-#include "google/protobuf/map_field_inl.h"
-#include "google/protobuf/generated_enum_reflection.h"
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/map_entry_lite.h"
+#include "google/protobuf/map_field_lite.h"
+#include "google/protobuf/generated_enum_util.h"
+#include "google/protobuf/timestamp.pb.h"
 #include "Digit.PrimeServer.Models.pb.h"
 // @@protoc_insertion_point(includes)
 
@@ -56,8 +55,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2ePrime_2eInventories_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2ePrime_2eInventories_2eproto;
 namespace Digit {
 namespace Prime {
 namespace Inventories {
@@ -104,19 +101,16 @@ bool InventoryTabOptions_IsValid(int value);
 constexpr InventoryTabOptions InventoryTabOptions_MIN = static_cast<InventoryTabOptions>(-2066518095);
 constexpr InventoryTabOptions InventoryTabOptions_MAX = static_cast<InventoryTabOptions>(1261962744);
 constexpr int InventoryTabOptions_ARRAYSIZE = 1261962744 + 1;
-const ::google::protobuf::EnumDescriptor*
-InventoryTabOptions_descriptor();
+const std::string& InventoryTabOptions_Name(InventoryTabOptions value);
 template <typename T>
 const std::string& InventoryTabOptions_Name(T value) {
   static_assert(std::is_same<T, InventoryTabOptions>::value ||
                     std::is_integral<T>::value,
                 "Incorrect type passed to InventoryTabOptions_Name().");
-  return ::google::protobuf::internal::NameOfEnum(InventoryTabOptions_descriptor(), value);
+  return InventoryTabOptions_Name(static_cast<InventoryTabOptions>(value));
 }
-inline bool InventoryTabOptions_Parse(absl::string_view name, InventoryTabOptions* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<InventoryTabOptions>(
-      InventoryTabOptions_descriptor(), name, value);
-}
+const std::string& InventoryTabOptions_Name(InventoryTabOptions value);
+bool InventoryTabOptions_Parse(absl::string_view name, InventoryTabOptions* value);
 enum ResourceSubtype : int {
   RESOURCESUBTYPE_NONE = 0,
   RESOURCESUBTYPE_SOFT = 1,
@@ -145,8 +139,7 @@ bool ResourceSubtype_IsValid(int value);
 constexpr ResourceSubtype ResourceSubtype_MIN = static_cast<ResourceSubtype>(0);
 constexpr ResourceSubtype ResourceSubtype_MAX = static_cast<ResourceSubtype>(16);
 constexpr int ResourceSubtype_ARRAYSIZE = 16 + 1;
-const ::google::protobuf::EnumDescriptor*
-ResourceSubtype_descriptor();
+const std::string& ResourceSubtype_Name(ResourceSubtype value);
 template <typename T>
 const std::string& ResourceSubtype_Name(T value) {
   static_assert(std::is_same<T, ResourceSubtype>::value ||
@@ -154,16 +147,8 @@ const std::string& ResourceSubtype_Name(T value) {
                 "Incorrect type passed to ResourceSubtype_Name().");
   return ResourceSubtype_Name(static_cast<ResourceSubtype>(value));
 }
-template <>
-inline const std::string& ResourceSubtype_Name(ResourceSubtype value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<ResourceSubtype_descriptor,
-                                                 0, 16>(
-      static_cast<int>(value));
-}
-inline bool ResourceSubtype_Parse(absl::string_view name, ResourceSubtype* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<ResourceSubtype>(
-      ResourceSubtype_descriptor(), name, value);
-}
+const std::string& ResourceSubtype_Name(ResourceSubtype value);
+bool ResourceSubtype_Parse(absl::string_view name, ResourceSubtype* value);
 
 // ===================================================================
 
@@ -171,7 +156,7 @@ inline bool ResourceSubtype_Parse(absl::string_view name, ResourceSubtype* value
 // -------------------------------------------------------------------
 
 class InventoryGroup final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.Inventories.InventoryGroup) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.Inventories.InventoryGroup) */ {
  public:
   inline InventoryGroup() : InventoryGroup(nullptr) {}
   ~InventoryGroup() override;
@@ -202,22 +187,13 @@ class InventoryGroup final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const InventoryGroup& default_instance() {
     return *internal_default_instance();
   }
@@ -255,15 +231,9 @@ class InventoryGroup final :
   InventoryGroup* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<InventoryGroup>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const InventoryGroup& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const InventoryGroup& from) {
-    InventoryGroup::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const InventoryGroup& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -276,7 +246,7 @@ class InventoryGroup final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(InventoryGroup* other);
 
   private:
@@ -288,10 +258,7 @@ class InventoryGroup final :
   explicit InventoryGroup(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -404,12 +371,12 @@ class InventoryGroup final :
   friend struct ::TableStruct_Digit_2ePrime_2eInventories_2eproto;
 };// -------------------------------------------------------------------
 
-class InventoryGrouping_GroupingEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<InventoryGrouping_GroupingEntry_DoNotUse, 
+class InventoryGrouping_GroupingEntry_DoNotUse final : public ::google::protobuf::internal::MapEntryLite<InventoryGrouping_GroupingEntry_DoNotUse, 
     ::int32_t, ::Digit::Prime::Inventories::InventoryGroupList,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> {
 public:
-  typedef ::google::protobuf::internal::MapEntry<InventoryGrouping_GroupingEntry_DoNotUse, 
+  typedef ::google::protobuf::internal::MapEntryLite<InventoryGrouping_GroupingEntry_DoNotUse, 
     ::int32_t, ::Digit::Prime::Inventories::InventoryGroupList,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> SuperType;
@@ -422,14 +389,12 @@ public:
   static const InventoryGrouping_GroupingEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const InventoryGrouping_GroupingEntry_DoNotUse*>(&_InventoryGrouping_GroupingEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(void*) { return true; }
   static bool ValidateValue(void*) { return true; }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
   friend struct ::TableStruct_Digit_2ePrime_2eInventories_2eproto;
 };
 // -------------------------------------------------------------------
 
 class InventoryGrouping final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.Inventories.InventoryGrouping) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.Inventories.InventoryGrouping) */ {
  public:
   inline InventoryGrouping() : InventoryGrouping(nullptr) {}
   ~InventoryGrouping() override;
@@ -460,22 +425,13 @@ class InventoryGrouping final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const InventoryGrouping& default_instance() {
     return *internal_default_instance();
   }
@@ -513,15 +469,9 @@ class InventoryGrouping final :
   InventoryGrouping* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<InventoryGrouping>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const InventoryGrouping& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const InventoryGrouping& from) {
-    InventoryGrouping::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const InventoryGrouping& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -534,7 +484,7 @@ class InventoryGrouping final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(InventoryGrouping* other);
 
   private:
@@ -546,10 +496,7 @@ class InventoryGrouping final :
   explicit InventoryGrouping(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -584,7 +531,7 @@ class InventoryGrouping final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::google::protobuf::internal::MapField<InventoryGrouping_GroupingEntry_DoNotUse, ::int32_t, ::Digit::Prime::Inventories::InventoryGroupList,
+    ::google::protobuf::internal::MapFieldLite<InventoryGrouping_GroupingEntry_DoNotUse, ::int32_t, ::Digit::Prime::Inventories::InventoryGroupList,
                       ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
                       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE>
         grouping_;
@@ -596,7 +543,7 @@ class InventoryGrouping final :
 };// -------------------------------------------------------------------
 
 class InventoryGroupList final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.Inventories.InventoryGroupList) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.Inventories.InventoryGroupList) */ {
  public:
   inline InventoryGroupList() : InventoryGroupList(nullptr) {}
   ~InventoryGroupList() override;
@@ -627,22 +574,13 @@ class InventoryGroupList final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const InventoryGroupList& default_instance() {
     return *internal_default_instance();
   }
@@ -680,15 +618,9 @@ class InventoryGroupList final :
   InventoryGroupList* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<InventoryGroupList>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const InventoryGroupList& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const InventoryGroupList& from) {
-    InventoryGroupList::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const InventoryGroupList& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -701,7 +633,7 @@ class InventoryGroupList final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(InventoryGroupList* other);
 
   private:
@@ -713,10 +645,7 @@ class InventoryGroupList final :
   explicit InventoryGroupList(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1097,15 +1026,7 @@ namespace protobuf {
 template <>
 struct is_proto_enum<::Digit::Prime::Inventories::InventoryTabOptions> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::Prime::Inventories::InventoryTabOptions>() {
-  return ::Digit::Prime::Inventories::InventoryTabOptions_descriptor();
-}
-template <>
 struct is_proto_enum<::Digit::Prime::Inventories::ResourceSubtype> : std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::Prime::Inventories::ResourceSubtype>() {
-  return ::Digit::Prime::Inventories::ResourceSubtype_descriptor();
-}
 
 }  // namespace protobuf
 }  // namespace google

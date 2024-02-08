@@ -1,6 +1,5 @@
 #pragma once
 
-#include <absl/strings/ascii.h>
 #include <array>
 #include <key.h>
 #include <modifierkey.h>

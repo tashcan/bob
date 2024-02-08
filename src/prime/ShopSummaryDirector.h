@@ -22,13 +22,13 @@ private:
 public:
   Il2CppArraySize* __get__backLogicSkipSectionIds()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_backLogicSkipSectionIds")).offset();
+    static auto field = get_class_helper().GetField("_backLogicSkipSectionIds").offset();
     return *(Il2CppArraySize**)((char*)this + field);
   }
 
   Il2CppArraySize* __get_backlogicCache()
   {
-    static auto field = get_class_helper().GetField(xorstr_("backlogicCache")).offset();
+    static auto field = get_class_helper().GetField("backlogicCache").offset();
     return *(Il2CppArraySize**)((char*)this + field);
   }
 };

@@ -40,7 +40,7 @@ void BundleDataWidget_OnActionButtonPressedCallback(auto original, BundleDataWid
 void InstallMiscPatches()
 {
   auto h   = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Inventories", "InventoryForPopup");
-  auto ptr = h.GetMethodXor("set_MaxItemsToUse");
+  auto ptr = h.GetMethod("set_MaxItemsToUse");
   if (!ptr) {
     return;
   }

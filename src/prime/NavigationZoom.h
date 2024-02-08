@@ -64,13 +64,13 @@ private:
 public:
   float __get_Distance()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Distance"));
+    static auto field = get_class_helper().GetProperty("Distance");
     return *field.Get<float>(this);
   }
 
   void __set_Distance(float depth)
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Distance"));
+    static auto field = get_class_helper().GetProperty("Distance");
     return field.SetRaw(this, depth);
   }
 

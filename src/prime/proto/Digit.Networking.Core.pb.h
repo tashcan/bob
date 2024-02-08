@@ -27,14 +27,9 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/map.h"  // IWYU pragma: export
-#include "google/protobuf/map_entry.h"
-#include "google/protobuf/map_field_inl.h"
-#include "google/protobuf/unknown_field_set.h"
 #include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
@@ -55,17 +50,12 @@ class AnyMetadata;
 struct TableStruct_Digit_2eNetworking_2eCore_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2eNetworking_2eCore_2eproto;
 namespace Digit {
 namespace Networking {
 namespace Core {
 class CacheMap;
 struct CacheMapDefaultTypeInternal;
 extern CacheMapDefaultTypeInternal _CacheMap_default_instance_;
-class CacheMap_CacheIndexEntry_DoNotUse;
-struct CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal;
-extern CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal _CacheMap_CacheIndexEntry_DoNotUse_default_instance_;
 }  // namespace Core
 }  // namespace Networking
 }  // namespace Digit
@@ -83,36 +73,8 @@ namespace Core {
 
 // -------------------------------------------------------------------
 
-class CacheMap_CacheIndexEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<CacheMap_CacheIndexEntry_DoNotUse, 
-    std::string, std::string,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING> {
-public:
-  typedef ::google::protobuf::internal::MapEntry<CacheMap_CacheIndexEntry_DoNotUse, 
-    std::string, std::string,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-    ::google::protobuf::internal::WireFormatLite::TYPE_STRING> SuperType;
-  CacheMap_CacheIndexEntry_DoNotUse();
-  template <typename = void>
-  explicit PROTOBUF_CONSTEXPR CacheMap_CacheIndexEntry_DoNotUse(
-      ::google::protobuf::internal::ConstantInitialized);
-  explicit CacheMap_CacheIndexEntry_DoNotUse(::google::protobuf::Arena* arena);
-  void MergeFrom(const CacheMap_CacheIndexEntry_DoNotUse& other);
-  static const CacheMap_CacheIndexEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const CacheMap_CacheIndexEntry_DoNotUse*>(&_CacheMap_CacheIndexEntry_DoNotUse_default_instance_); }
-  static bool ValidateKey(std::string* s) {
-    return ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::google::protobuf::internal::WireFormatLite::PARSE, "Digit.Networking.Core.CacheMap.CacheIndexEntry.key");
- }
-  static bool ValidateValue(std::string* s) {
-    return ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(s->data(), static_cast<int>(s->size()), ::google::protobuf::internal::WireFormatLite::PARSE, "Digit.Networking.Core.CacheMap.CacheIndexEntry.value");
- }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
-  friend struct ::TableStruct_Digit_2eNetworking_2eCore_2eproto;
-};
-// -------------------------------------------------------------------
-
 class CacheMap final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Networking.Core.CacheMap) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Networking.Core.CacheMap) */ {
  public:
   inline CacheMap() : CacheMap(nullptr) {}
   ~CacheMap() override;
@@ -143,22 +105,13 @@ class CacheMap final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CacheMap& default_instance() {
     return *internal_default_instance();
   }
@@ -167,7 +120,7 @@ class CacheMap final :
                &_CacheMap_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    1;
+    0;
 
   friend void swap(CacheMap& a, CacheMap& b) {
     a.Swap(&b);
@@ -196,15 +149,9 @@ class CacheMap final :
   CacheMap* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CacheMap>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CacheMap& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CacheMap& from) {
-    CacheMap::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CacheMap& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -217,7 +164,7 @@ class CacheMap final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CacheMap* other);
 
   private:
@@ -229,48 +176,22 @@ class CacheMap final :
   explicit CacheMap(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
-
   // accessors -------------------------------------------------------
 
-  enum : int {
-    kCacheIndexFieldNumber = 1,
-  };
-  // map<string, string> cacheIndex = 1;
-  int cacheindex_size() const;
-  private:
-  int _internal_cacheindex_size() const;
-
-  public:
-  void clear_cacheindex() ;
-  const ::google::protobuf::Map<std::string, std::string>& cacheindex() const;
-  ::google::protobuf::Map<std::string, std::string>* mutable_cacheindex();
-
-  private:
-  const ::google::protobuf::Map<std::string, std::string>& _internal_cacheindex() const;
-  ::google::protobuf::Map<std::string, std::string>* _internal_mutable_cacheindex();
-
-  public:
   // @@protoc_insertion_point(class_scope:Digit.Networking.Core.CacheMap)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<0, 1, 1, 49, 2> _table_;
+  static const ::google::protobuf::internal::TcParseTable<0, 0, 0, 0, 2> _table_;
   template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::google::protobuf::internal::MapField<CacheMap_CacheIndexEntry_DoNotUse, std::string, std::string,
-                      ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
-                      ::google::protobuf::internal::WireFormatLite::TYPE_STRING>
-        cacheindex_;
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -292,36 +213,7 @@ class CacheMap final :
 #endif  // __GNUC__
 // -------------------------------------------------------------------
 
-// -------------------------------------------------------------------
-
 // CacheMap
-
-// map<string, string> cacheIndex = 1;
-inline int CacheMap::_internal_cacheindex_size() const {
-  return _internal_cacheindex().size();
-}
-inline int CacheMap::cacheindex_size() const {
-  return _internal_cacheindex_size();
-}
-inline void CacheMap::clear_cacheindex() {
-  _impl_.cacheindex_.Clear();
-}
-inline const ::google::protobuf::Map<std::string, std::string>& CacheMap::_internal_cacheindex() const {
-  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
-  return _impl_.cacheindex_.GetMap();
-}
-inline const ::google::protobuf::Map<std::string, std::string>& CacheMap::cacheindex() const {
-  // @@protoc_insertion_point(field_map:Digit.Networking.Core.CacheMap.cacheIndex)
-  return _internal_cacheindex();
-}
-inline ::google::protobuf::Map<std::string, std::string>* CacheMap::_internal_mutable_cacheindex() {
-  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
-  return _impl_.cacheindex_.MutableMap();
-}
-inline ::google::protobuf::Map<std::string, std::string>* CacheMap::mutable_cacheindex() {
-  // @@protoc_insertion_point(field_mutable_map:Digit.Networking.Core.CacheMap.cacheIndex)
-  return _internal_mutable_cacheindex();
-}
 
 #ifdef __GNUC__
 #pragma GCC diagnostic pop

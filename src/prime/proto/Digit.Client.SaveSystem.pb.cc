@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -99,145 +96,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace SaveSystem
 }  // namespace Client
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2eClient_2eSaveSystem_2eproto[4];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2eClient_2eSaveSystem_2eproto[2];
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2eClient_2eSaveSystem_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2eClient_2eSaveSystem_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudBlob, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudBlob, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudBlob, _impl_.metadata_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudBlob, _impl_.sections_),
-    0,
-    ~0u,
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSection, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSection, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSection, _impl_.metadata_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSection, _impl_.group_),
-    0,
-    ~0u,
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSectionMetaData, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSectionMetaData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSectionMetaData, _impl_.timestamp_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudSectionMetaData, _impl_.sectiontype_),
-    0,
-    ~0u,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudBlobMetaData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::SaveSystem::CloudBlobMetaData, _impl_.filetype_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 10, -1, sizeof(::Digit::Client::SaveSystem::CloudBlob)},
-        {12, 22, -1, sizeof(::Digit::Client::SaveSystem::CloudSection)},
-        {24, 34, -1, sizeof(::Digit::Client::SaveSystem::CloudSectionMetaData)},
-        {36, -1, -1, sizeof(::Digit::Client::SaveSystem::CloudBlobMetaData)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Client::SaveSystem::_CloudBlob_default_instance_._instance,
-    &::Digit::Client::SaveSystem::_CloudSection_default_instance_._instance,
-    &::Digit::Client::SaveSystem::_CloudSectionMetaData_default_instance_._instance,
-    &::Digit::Client::SaveSystem::_CloudBlobMetaData_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2eClient_2eSaveSystem_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\035Digit.Client.SaveSystem.proto\022\027Digit.C"
-    "lient.SaveSystem\032\037google/protobuf/timest"
-    "amp.proto\"\202\001\n\tCloudBlob\022<\n\010metadata\030\001 \001("
-    "\0132*.Digit.Client.SaveSystem.CloudBlobMet"
-    "aData\0227\n\010sections\030\002 \003(\0132%.Digit.Client.S"
-    "aveSystem.CloudSection\"^\n\014CloudSection\022\?"
-    "\n\010metadata\030\001 \001(\0132-.Digit.Client.SaveSyst"
-    "em.CloudSectionMetaData\022\r\n\005group\030\002 \001(\014\"\205"
-    "\001\n\024CloudSectionMetaData\022-\n\ttimestamp\030\001 \001"
-    "(\0132\032.google.protobuf.Timestamp\022>\n\013sectio"
-    "nType\030\002 \001(\0162).Digit.Client.SaveSystem.Cl"
-    "oudSectionType\"M\n\021CloudBlobMetaData\0228\n\010f"
-    "iletype\030\001 \001(\0162&.Digit.Client.SaveSystem."
-    "CloudFileType*\215\002\n\020CloudSectionType\022\036\n\032CL"
-    "OUDSECTIONTYPE_BOOKMARKS\020\000\022 \n\034CLOUDSECTI"
-    "ONTYPE_PLAYERPREFS\020\001\022\"\n\036CLOUDSECTIONTYPE"
-    "_TUTORIALSTATE\020\002\022\035\n\031CLOUDSECTIONTYPE_NEW"
-    "FLAGS\020\003\022\'\n#CLOUDSECTIONTYPE_FAVOURITEDMI"
-    "SSIONS\020\004\022%\n!CLOUDSECTIONTYPE_ARCHIVEDMIS"
-    "SIONS\020\005\022$\n CLOUDSECTIONTYPE_TCSLIDESHOWF"
-    "LAG\020\006*D\n\rCloudFileType\022\031\n\025CLOUDFILETYPE_"
-    "STARTUP\020\000\022\030\n\024CLOUDFILETYPE_NORMAL\020\001b\006pro"
-    "to3"
-};
-static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_deps[1] =
-    {
-        &::descriptor_table_google_2fprotobuf_2ftimestamp_2eproto,
-};
-static ::absl::once_flag descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2eClient_2eSaveSystem_2eproto = {
-    false,
-    false,
-    883,
-    descriptor_table_protodef_Digit_2eClient_2eSaveSystem_2eproto,
-    "Digit.Client.SaveSystem.proto",
-    &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_once,
-    descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_deps,
-    1,
-    4,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2eClient_2eSaveSystem_2eproto::offsets,
-    file_level_metadata_Digit_2eClient_2eSaveSystem_2eproto,
-    file_level_enum_descriptors_Digit_2eClient_2eSaveSystem_2eproto,
-    file_level_service_descriptors_Digit_2eClient_2eSaveSystem_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_getter() {
-  return &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2eClient_2eSaveSystem_2eproto(&descriptor_table_Digit_2eClient_2eSaveSystem_2eproto);
 namespace Digit {
 namespace Client {
 namespace SaveSystem {
-const ::google::protobuf::EnumDescriptor* CloudSectionType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2eClient_2eSaveSystem_2eproto);
-  return file_level_enum_descriptors_Digit_2eClient_2eSaveSystem_2eproto[0];
-}
 bool CloudSectionType_IsValid(int value) {
   switch (value) {
     case 0:
@@ -252,9 +113,62 @@ bool CloudSectionType_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* CloudFileType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2eClient_2eSaveSystem_2eproto);
-  return file_level_enum_descriptors_Digit_2eClient_2eSaveSystem_2eproto[1];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    CloudSectionType_strings[7] = {};
+
+static const char CloudSectionType_names[] = {
+    "CLOUDSECTIONTYPE_ARCHIVEDMISSIONS"
+    "CLOUDSECTIONTYPE_BOOKMARKS"
+    "CLOUDSECTIONTYPE_FAVOURITEDMISSIONS"
+    "CLOUDSECTIONTYPE_NEWFLAGS"
+    "CLOUDSECTIONTYPE_PLAYERPREFS"
+    "CLOUDSECTIONTYPE_TCSLIDESHOWFLAG"
+    "CLOUDSECTIONTYPE_TUTORIALSTATE"
+};
+
+static const ::google::protobuf::internal::EnumEntry CloudSectionType_entries[] =
+    {
+        {{&CloudSectionType_names[0], 33}, 5},
+        {{&CloudSectionType_names[33], 26}, 0},
+        {{&CloudSectionType_names[59], 35}, 4},
+        {{&CloudSectionType_names[94], 25}, 3},
+        {{&CloudSectionType_names[119], 28}, 1},
+        {{&CloudSectionType_names[147], 32}, 6},
+        {{&CloudSectionType_names[179], 30}, 2},
+};
+
+static const int CloudSectionType_entries_by_number[] = {
+    1,  // 0 -> CLOUDSECTIONTYPE_BOOKMARKS
+    4,  // 1 -> CLOUDSECTIONTYPE_PLAYERPREFS
+    6,  // 2 -> CLOUDSECTIONTYPE_TUTORIALSTATE
+    3,  // 3 -> CLOUDSECTIONTYPE_NEWFLAGS
+    2,  // 4 -> CLOUDSECTIONTYPE_FAVOURITEDMISSIONS
+    0,  // 5 -> CLOUDSECTIONTYPE_ARCHIVEDMISSIONS
+    5,  // 6 -> CLOUDSECTIONTYPE_TCSLIDESHOWFLAG
+};
+
+const std::string& CloudSectionType_Name(CloudSectionType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          CloudSectionType_entries, CloudSectionType_entries_by_number,
+          7, CloudSectionType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      CloudSectionType_entries, CloudSectionType_entries_by_number, 7,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : CloudSectionType_strings[idx].get();
+}
+
+bool CloudSectionType_Parse(absl::string_view name, CloudSectionType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      CloudSectionType_entries, 7, name, &int_value);
+  if (success) {
+    *value = static_cast<CloudSectionType>(int_value);
+  }
+  return success;
 }
 bool CloudFileType_IsValid(int value) {
   switch (value) {
@@ -264,6 +178,48 @@ bool CloudFileType_IsValid(int value) {
     default:
       return false;
   }
+}
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    CloudFileType_strings[2] = {};
+
+static const char CloudFileType_names[] = {
+    "CLOUDFILETYPE_NORMAL"
+    "CLOUDFILETYPE_STARTUP"
+};
+
+static const ::google::protobuf::internal::EnumEntry CloudFileType_entries[] =
+    {
+        {{&CloudFileType_names[0], 20}, 1},
+        {{&CloudFileType_names[20], 21}, 0},
+};
+
+static const int CloudFileType_entries_by_number[] = {
+    1,  // 0 -> CLOUDFILETYPE_STARTUP
+    0,  // 1 -> CLOUDFILETYPE_NORMAL
+};
+
+const std::string& CloudFileType_Name(CloudFileType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          CloudFileType_entries, CloudFileType_entries_by_number,
+          2, CloudFileType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      CloudFileType_entries, CloudFileType_entries_by_number, 2,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : CloudFileType_strings[idx].get();
+}
+
+bool CloudFileType_Parse(absl::string_view name, CloudFileType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      CloudFileType_entries, 2, name, &int_value);
+  if (success) {
+    *value = static_cast<CloudFileType>(int_value);
+  }
+  return success;
 }
 // ===================================================================
 
@@ -282,11 +238,11 @@ const ::Digit::Client::SaveSystem::CloudBlobMetaData& CloudBlob::_Internal::meta
   return *msg->_impl_.metadata_;
 }
 CloudBlob::CloudBlob(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.SaveSystem.CloudBlob)
 }
-CloudBlob::CloudBlob(const CloudBlob& from) : ::google::protobuf::Message() {
+CloudBlob::CloudBlob(const CloudBlob& from) : ::google::protobuf::MessageLite() {
   CloudBlob* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -295,7 +251,7 @@ CloudBlob::CloudBlob(const CloudBlob& from) : ::google::protobuf::Message() {
       decltype(_impl_.sections_){from._impl_.sections_},
       decltype(_impl_.metadata_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.metadata_ = new ::Digit::Client::SaveSystem::CloudBlobMetaData(*from._impl_.metadata_);
@@ -314,7 +270,7 @@ inline void CloudBlob::SharedCtor(::_pb::Arena* arena) {
 }
 CloudBlob::~CloudBlob() {
   // @@protoc_insertion_point(destructor:Digit.Client.SaveSystem.CloudBlob)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CloudBlob::SharedDtor() {
@@ -339,7 +295,7 @@ PROTOBUF_NOINLINE void CloudBlob::Clear() {
     _impl_.metadata_->Clear();
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CloudBlob::_InternalParse(
@@ -362,7 +318,7 @@ const ::_pbi::TcParseTable<1, 2, 2, 0, 2> CloudBlob::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_CloudBlob_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.Client.SaveSystem.CloudSection sections = 2;
     {::_pbi::TcParser::FastMtR1,
@@ -410,9 +366,9 @@ const ::_pbi::TcParseTable<1, 2, 2, 0, 2> CloudBlob::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.SaveSystem.CloudBlob)
   return target;
@@ -440,19 +396,22 @@ const ::_pbi::TcParseTable<1, 2, 2, 0, 2> CloudBlob::_table_ = {
         *_impl_.metadata_);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CloudBlob::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CloudBlob::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CloudBlob::GetClassData() const { return &_class_data_; }
+void CloudBlob::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CloudBlob*>(
+      &from));
+}
 
-
-void CloudBlob::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CloudBlob*>(&to_msg);
-  auto& from = static_cast<const CloudBlob&>(from_msg);
+void CloudBlob::MergeFrom(const CloudBlob& from) {
+  CloudBlob* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.SaveSystem.CloudBlob)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -463,7 +422,7 @@ void CloudBlob::MergeImpl(::google::protobuf::Message& to_msg, const ::google::p
     _this->_internal_mutable_metadata()->::Digit::Client::SaveSystem::CloudBlobMetaData::MergeFrom(
         from._internal_metadata());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CloudBlob::CopyFrom(const CloudBlob& from) {
@@ -485,11 +444,10 @@ void CloudBlob::InternalSwap(CloudBlob* other) {
   swap(_impl_.metadata_, other->_impl_.metadata_);
 }
 
-::google::protobuf::Metadata CloudBlob::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_getter, &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eSaveSystem_2eproto[0]);
+std::string CloudBlob::GetTypeName() const {
+  return "Digit.Client.SaveSystem.CloudBlob";
 }
+
 // ===================================================================
 
 class CloudSection::_Internal {
@@ -507,11 +465,11 @@ const ::Digit::Client::SaveSystem::CloudSectionMetaData& CloudSection::_Internal
   return *msg->_impl_.metadata_;
 }
 CloudSection::CloudSection(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.SaveSystem.CloudSection)
 }
-CloudSection::CloudSection(const CloudSection& from) : ::google::protobuf::Message() {
+CloudSection::CloudSection(const CloudSection& from) : ::google::protobuf::MessageLite() {
   CloudSection* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -520,7 +478,7 @@ CloudSection::CloudSection(const CloudSection& from) : ::google::protobuf::Messa
       decltype(_impl_.group_){},
       decltype(_impl_.metadata_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.group_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -550,7 +508,7 @@ inline void CloudSection::SharedCtor(::_pb::Arena* arena) {
 }
 CloudSection::~CloudSection() {
   // @@protoc_insertion_point(destructor:Digit.Client.SaveSystem.CloudSection)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CloudSection::SharedDtor() {
@@ -575,7 +533,7 @@ PROTOBUF_NOINLINE void CloudSection::Clear() {
     _impl_.metadata_->Clear();
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CloudSection::_InternalParse(
@@ -598,7 +556,7 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> CloudSection::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_CloudSection_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // bytes group = 2;
     {::_pbi::TcParser::FastBS1,
@@ -643,9 +601,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> CloudSection::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.SaveSystem.CloudSection)
   return target;
@@ -673,19 +631,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> CloudSection::_table_ = {
         *_impl_.metadata_);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CloudSection::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CloudSection::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CloudSection::GetClassData() const { return &_class_data_; }
+void CloudSection::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CloudSection*>(
+      &from));
+}
 
-
-void CloudSection::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CloudSection*>(&to_msg);
-  auto& from = static_cast<const CloudSection&>(from_msg);
+void CloudSection::MergeFrom(const CloudSection& from) {
+  CloudSection* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.SaveSystem.CloudSection)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -698,7 +659,7 @@ void CloudSection::MergeImpl(::google::protobuf::Message& to_msg, const ::google
     _this->_internal_mutable_metadata()->::Digit::Client::SaveSystem::CloudSectionMetaData::MergeFrom(
         from._internal_metadata());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CloudSection::CopyFrom(const CloudSection& from) {
@@ -723,11 +684,10 @@ void CloudSection::InternalSwap(CloudSection* other) {
   swap(_impl_.metadata_, other->_impl_.metadata_);
 }
 
-::google::protobuf::Metadata CloudSection::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_getter, &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eSaveSystem_2eproto[1]);
+std::string CloudSection::GetTypeName() const {
+  return "Digit.Client.SaveSystem.CloudSection";
 }
+
 // ===================================================================
 
 class CloudSectionMetaData::_Internal {
@@ -749,11 +709,11 @@ void CloudSectionMetaData::clear_timestamp() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 CloudSectionMetaData::CloudSectionMetaData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.SaveSystem.CloudSectionMetaData)
 }
-CloudSectionMetaData::CloudSectionMetaData(const CloudSectionMetaData& from) : ::google::protobuf::Message() {
+CloudSectionMetaData::CloudSectionMetaData(const CloudSectionMetaData& from) : ::google::protobuf::MessageLite() {
   CloudSectionMetaData* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -762,7 +722,7 @@ CloudSectionMetaData::CloudSectionMetaData(const CloudSectionMetaData& from) : :
       decltype(_impl_.timestamp_){nullptr},
       decltype(_impl_.sectiontype_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.timestamp_ = new ::google::protobuf::Timestamp(*from._impl_.timestamp_);
@@ -782,7 +742,7 @@ inline void CloudSectionMetaData::SharedCtor(::_pb::Arena* arena) {
 }
 CloudSectionMetaData::~CloudSectionMetaData() {
   // @@protoc_insertion_point(destructor:Digit.Client.SaveSystem.CloudSectionMetaData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CloudSectionMetaData::SharedDtor() {
@@ -806,7 +766,7 @@ PROTOBUF_NOINLINE void CloudSectionMetaData::Clear() {
   }
   _impl_.sectiontype_ = 0;
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CloudSectionMetaData::_InternalParse(
@@ -829,10 +789,10 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> CloudSectionMetaData::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_CloudSectionMetaData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .Digit.Client.SaveSystem.CloudSectionType sectionType = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CloudSectionMetaData, _impl_.sectiontype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(CloudSectionMetaData, _impl_.sectiontype_)}},
     // .google.protobuf.Timestamp timestamp = 1;
     {::_pbi::TcParser::FastMtS1,
@@ -875,9 +835,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> CloudSectionMetaData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.SaveSystem.CloudSectionMetaData)
   return target;
@@ -905,19 +865,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> CloudSectionMetaData::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_sectiontype());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CloudSectionMetaData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CloudSectionMetaData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CloudSectionMetaData::GetClassData() const { return &_class_data_; }
+void CloudSectionMetaData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CloudSectionMetaData*>(
+      &from));
+}
 
-
-void CloudSectionMetaData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CloudSectionMetaData*>(&to_msg);
-  auto& from = static_cast<const CloudSectionMetaData&>(from_msg);
+void CloudSectionMetaData::MergeFrom(const CloudSectionMetaData& from) {
+  CloudSectionMetaData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.SaveSystem.CloudSectionMetaData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -930,7 +893,7 @@ void CloudSectionMetaData::MergeImpl(::google::protobuf::Message& to_msg, const 
   if (from._internal_sectiontype() != 0) {
     _this->_internal_set_sectiontype(from._internal_sectiontype());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CloudSectionMetaData::CopyFrom(const CloudSectionMetaData& from) {
@@ -956,11 +919,10 @@ void CloudSectionMetaData::InternalSwap(CloudSectionMetaData* other) {
           reinterpret_cast<char*>(&other->_impl_.timestamp_));
 }
 
-::google::protobuf::Metadata CloudSectionMetaData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_getter, &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eSaveSystem_2eproto[2]);
+std::string CloudSectionMetaData::GetTypeName() const {
+  return "Digit.Client.SaveSystem.CloudSectionMetaData";
 }
+
 // ===================================================================
 
 class CloudBlobMetaData::_Internal {
@@ -968,13 +930,13 @@ class CloudBlobMetaData::_Internal {
 };
 
 CloudBlobMetaData::CloudBlobMetaData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.SaveSystem.CloudBlobMetaData)
 }
 CloudBlobMetaData::CloudBlobMetaData(const CloudBlobMetaData& from)
-    : ::google::protobuf::Message(), _impl_(from._impl_) {
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+    : ::google::protobuf::MessageLite(), _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:Digit.Client.SaveSystem.CloudBlobMetaData)
 }
@@ -987,7 +949,7 @@ inline void CloudBlobMetaData::SharedCtor(::_pb::Arena* arena) {
 }
 CloudBlobMetaData::~CloudBlobMetaData() {
   // @@protoc_insertion_point(destructor:Digit.Client.SaveSystem.CloudBlobMetaData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CloudBlobMetaData::SharedDtor() {
@@ -1004,7 +966,7 @@ PROTOBUF_NOINLINE void CloudBlobMetaData::Clear() {
   (void) cached_has_bits;
 
   _impl_.filetype_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CloudBlobMetaData::_InternalParse(
@@ -1027,10 +989,10 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> CloudBlobMetaData::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_CloudBlobMetaData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .Digit.Client.SaveSystem.CloudFileType filetype = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CloudBlobMetaData, _impl_.filetype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(CloudBlobMetaData, _impl_.filetype_)}},
   }}, {{
     65535, 65535
@@ -1059,9 +1021,9 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> CloudBlobMetaData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.SaveSystem.CloudBlobMetaData)
   return target;
@@ -1081,19 +1043,22 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> CloudBlobMetaData::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_filetype());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CloudBlobMetaData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CloudBlobMetaData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CloudBlobMetaData::GetClassData() const { return &_class_data_; }
+void CloudBlobMetaData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CloudBlobMetaData*>(
+      &from));
+}
 
-
-void CloudBlobMetaData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CloudBlobMetaData*>(&to_msg);
-  auto& from = static_cast<const CloudBlobMetaData&>(from_msg);
+void CloudBlobMetaData::MergeFrom(const CloudBlobMetaData& from) {
+  CloudBlobMetaData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.SaveSystem.CloudBlobMetaData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1102,7 +1067,7 @@ void CloudBlobMetaData::MergeImpl(::google::protobuf::Message& to_msg, const ::g
   if (from._internal_filetype() != 0) {
     _this->_internal_set_filetype(from._internal_filetype());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CloudBlobMetaData::CopyFrom(const CloudBlobMetaData& from) {
@@ -1122,11 +1087,10 @@ void CloudBlobMetaData::InternalSwap(CloudBlobMetaData* other) {
   swap(_impl_.filetype_, other->_impl_.filetype_);
 }
 
-::google::protobuf::Metadata CloudBlobMetaData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_getter, &descriptor_table_Digit_2eClient_2eSaveSystem_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eSaveSystem_2eproto[3]);
+std::string CloudBlobMetaData::GetTypeName() const {
+  return "Digit.Client.SaveSystem.CloudBlobMetaData";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace SaveSystem
 }  // namespace Client

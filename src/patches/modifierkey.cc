@@ -2,16 +2,19 @@
 
 #include "config.h"
 #include "utils.h"
-#include <abseil-cpp/absl/strings/str_split.h>
+#include "str_utils.h"
+#include "key.h"
+#include "modifierkey.h"
+
 #include <iostream>
-#include <key.h>
-#include <modifierkey.h>
 #include <string>
 #include <string_view>
 
+
 bool hasModifier = false;
 
-bool ModifierKey::HasModifiers() {
+bool ModifierKey::HasModifiers()
+{
   return this->hasModifier;
 }
 
@@ -22,9 +25,9 @@ ModifierKey::ModifierKey()
 
 ModifierKey ModifierKey::Parse(std::string_view key)
 {
-  auto strippedKey = absl::StripTrailingAsciiWhitespace(key);
-  auto upperKey    = absl::AsciiStrToUpper(strippedKey);
-  auto wantedKeys  = absl::StrSplit(upperKey, "-", absl::SkipWhitespace());
+  auto strippedKey = StripTrailingAsciiWhitespace(key);
+  auto upperKey    = AsciiStrToUpper(strippedKey);
+  auto wantedKeys  = StrSplit(upperKey, '-');
 
   ModifierKey modifierKey;
   for (std::string_view wantedKey : wantedKeys) {
@@ -50,7 +53,7 @@ ModifierKey ModifierKey::Parse(std::string_view key)
   }
 
   return modifierKey;
- }
+}
 
 bool ModifierKey::Contains(KeyCode modifier)
 {

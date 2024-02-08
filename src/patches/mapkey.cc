@@ -1,15 +1,15 @@
 #include "config.h"
 #include "prime/EventSystem.h"
 #include "utils.h"
-#include <absl/strings/ascii.h>
-#include <absl/strings/str_split.h>
+#include "str_utils.h"
+#include "key.h"
+#include "mapkey.h"
+#include "modifierkey.h"
+#include "prime/TMP_InputField.h"
+
 #include <cstdint>
 #include <iostream>
-#include <key.h>
 #include <map>
-#include <mapkey.h>
-#include <modifierkey.h>
-#include <prime/TMP_InputField.h>
 #include <sstream>
 #include <stdio.h>
 #include <string>
@@ -23,9 +23,9 @@ MapKey::MapKey()
 
 MapKey MapKey::Parse(std::string_view key)
 {
-  auto strippedKey = absl::StripTrailingAsciiWhitespace(key);
-  auto lowerKey    = absl::AsciiStrToUpper(strippedKey);
-  auto wantedKeys  = absl::StrSplit(lowerKey, "-", absl::SkipWhitespace());
+  auto strippedKey = StripTrailingAsciiWhitespace(key);
+  auto lowerKey    = AsciiStrToUpper(strippedKey);
+  auto wantedKeys  = StrSplit(lowerKey, '-');
 
   auto mapKey = new MapKey();
   for (std::string_view wantedKey : wantedKeys) {

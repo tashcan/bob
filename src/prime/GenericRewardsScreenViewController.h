@@ -12,7 +12,7 @@ public:
 
   void OnCollectClicked()
   {
-    static auto OnCollectClickedMethod = get_class_helper().GetMethod<void(GenericRewardsScreenViewController*)>(xorstr_("OnCollectClicked"));
+    static auto OnCollectClickedMethod = get_class_helper().GetMethod<void(GenericRewardsScreenViewController*)>("OnCollectClicked");
     OnCollectClickedMethod(this);
   }
 

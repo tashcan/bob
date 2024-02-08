@@ -18,23 +18,23 @@ private:
 public:
   float __get__blurTime()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_blurTime"));
+    static auto field = get_class_helper().GetField("_blurTime");
     return *(float*)((ptrdiff_t)this + field.offset());
   }
   void __set__blurTime(float v)
   {
-    static auto field                           = get_class_helper().GetField(xorstr_("_blurTime"));
+    static auto field                           = get_class_helper().GetField("_blurTime");
     *(float*)((ptrdiff_t)this + field.offset()) = v;
   }
 
   float __get__waitFrames()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_waitFrames"));
+    static auto field = get_class_helper().GetField("_waitFrames");
     return *(float*)((ptrdiff_t)this + field.offset());
   }
   void __set__waitFrames(float v)
   {
-    static auto field                           = get_class_helper().GetField(xorstr_("_waitFrames"));
+    static auto field                           = get_class_helper().GetField("_waitFrames");
     *(float*)((ptrdiff_t)this + field.offset()) = v;
   }
 };

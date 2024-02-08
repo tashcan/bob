@@ -23,7 +23,7 @@ private:
 public:
   bool __get_IsMet()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("IsMet"));
+    static auto field = get_class_helper().GetProperty("IsMet");
     return field.GetRaw<bool>(this);
   }
 };

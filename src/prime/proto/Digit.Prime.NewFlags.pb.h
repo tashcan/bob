@@ -27,14 +27,13 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
 #include "google/protobuf/map.h"  // IWYU pragma: export
-#include "google/protobuf/map_entry.h"
-#include "google/protobuf/map_field_inl.h"
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/map_entry_lite.h"
+#include "google/protobuf/map_field_lite.h"
+#include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
 // Must be included last.
@@ -54,8 +53,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2ePrime_2eNewFlags_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2ePrime_2eNewFlags_2eproto;
 namespace Digit {
 namespace Prime {
 namespace NewFlags {
@@ -91,12 +88,12 @@ namespace NewFlags {
 
 // -------------------------------------------------------------------
 
-class NewFlagCacheMap_ItemsEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<NewFlagCacheMap_ItemsEntry_DoNotUse, 
+class NewFlagCacheMap_ItemsEntry_DoNotUse final : public ::google::protobuf::internal::MapEntryLite<NewFlagCacheMap_ItemsEntry_DoNotUse, 
     ::int64_t, bool,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_BOOL> {
 public:
-  typedef ::google::protobuf::internal::MapEntry<NewFlagCacheMap_ItemsEntry_DoNotUse, 
+  typedef ::google::protobuf::internal::MapEntryLite<NewFlagCacheMap_ItemsEntry_DoNotUse, 
     ::int64_t, bool,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_BOOL> SuperType;
@@ -109,18 +106,16 @@ public:
   static const NewFlagCacheMap_ItemsEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const NewFlagCacheMap_ItemsEntry_DoNotUse*>(&_NewFlagCacheMap_ItemsEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(void*) { return true; }
   static bool ValidateValue(void*) { return true; }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
   friend struct ::TableStruct_Digit_2ePrime_2eNewFlags_2eproto;
 };
 // -------------------------------------------------------------------
 
-class NewFlagCacheMap_ItemFlagsEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<NewFlagCacheMap_ItemFlagsEntry_DoNotUse, 
+class NewFlagCacheMap_ItemFlagsEntry_DoNotUse final : public ::google::protobuf::internal::MapEntryLite<NewFlagCacheMap_ItemFlagsEntry_DoNotUse, 
     ::int64_t, ::int32_t,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT32> {
 public:
-  typedef ::google::protobuf::internal::MapEntry<NewFlagCacheMap_ItemFlagsEntry_DoNotUse, 
+  typedef ::google::protobuf::internal::MapEntryLite<NewFlagCacheMap_ItemFlagsEntry_DoNotUse, 
     ::int64_t, ::int32_t,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT32> SuperType;
@@ -133,14 +128,12 @@ public:
   static const NewFlagCacheMap_ItemFlagsEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const NewFlagCacheMap_ItemFlagsEntry_DoNotUse*>(&_NewFlagCacheMap_ItemFlagsEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(void*) { return true; }
   static bool ValidateValue(void*) { return true; }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
   friend struct ::TableStruct_Digit_2ePrime_2eNewFlags_2eproto;
 };
 // -------------------------------------------------------------------
 
 class NewFlagCacheMap final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.NewFlags.NewFlagCacheMap) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.NewFlags.NewFlagCacheMap) */ {
  public:
   inline NewFlagCacheMap() : NewFlagCacheMap(nullptr) {}
   ~NewFlagCacheMap() override;
@@ -171,22 +164,13 @@ class NewFlagCacheMap final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const NewFlagCacheMap& default_instance() {
     return *internal_default_instance();
   }
@@ -224,15 +208,9 @@ class NewFlagCacheMap final :
   NewFlagCacheMap* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<NewFlagCacheMap>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const NewFlagCacheMap& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const NewFlagCacheMap& from) {
-    NewFlagCacheMap::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const NewFlagCacheMap& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -245,7 +223,7 @@ class NewFlagCacheMap final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(NewFlagCacheMap* other);
 
   private:
@@ -257,10 +235,7 @@ class NewFlagCacheMap final :
   explicit NewFlagCacheMap(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -311,11 +286,11 @@ class NewFlagCacheMap final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::google::protobuf::internal::MapField<NewFlagCacheMap_ItemsEntry_DoNotUse, ::int64_t, bool,
+    ::google::protobuf::internal::MapFieldLite<NewFlagCacheMap_ItemsEntry_DoNotUse, ::int64_t, bool,
                       ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
                       ::google::protobuf::internal::WireFormatLite::TYPE_BOOL>
         items_;
-    ::google::protobuf::internal::MapField<NewFlagCacheMap_ItemFlagsEntry_DoNotUse, ::int64_t, ::int32_t,
+    ::google::protobuf::internal::MapFieldLite<NewFlagCacheMap_ItemFlagsEntry_DoNotUse, ::int64_t, ::int32_t,
                       ::google::protobuf::internal::WireFormatLite::TYPE_INT64,
                       ::google::protobuf::internal::WireFormatLite::TYPE_INT32>
         itemflags_;
@@ -326,12 +301,12 @@ class NewFlagCacheMap final :
   friend struct ::TableStruct_Digit_2ePrime_2eNewFlags_2eproto;
 };// -------------------------------------------------------------------
 
-class NewFlagDataCache_CategoriesEntry_DoNotUse final : public ::google::protobuf::internal::MapEntry<NewFlagDataCache_CategoriesEntry_DoNotUse, 
+class NewFlagDataCache_CategoriesEntry_DoNotUse final : public ::google::protobuf::internal::MapEntryLite<NewFlagDataCache_CategoriesEntry_DoNotUse, 
     ::int32_t, ::Digit::Prime::NewFlags::NewFlagCacheMap,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> {
 public:
-  typedef ::google::protobuf::internal::MapEntry<NewFlagDataCache_CategoriesEntry_DoNotUse, 
+  typedef ::google::protobuf::internal::MapEntryLite<NewFlagDataCache_CategoriesEntry_DoNotUse, 
     ::int32_t, ::Digit::Prime::NewFlags::NewFlagCacheMap,
     ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
     ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE> SuperType;
@@ -344,14 +319,12 @@ public:
   static const NewFlagDataCache_CategoriesEntry_DoNotUse* internal_default_instance() { return reinterpret_cast<const NewFlagDataCache_CategoriesEntry_DoNotUse*>(&_NewFlagDataCache_CategoriesEntry_DoNotUse_default_instance_); }
   static bool ValidateKey(void*) { return true; }
   static bool ValidateValue(void*) { return true; }
-  using ::google::protobuf::Message::MergeFrom;
-  ::google::protobuf::Metadata GetMetadata() const final;
   friend struct ::TableStruct_Digit_2ePrime_2eNewFlags_2eproto;
 };
 // -------------------------------------------------------------------
 
 class NewFlagDataCache final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.Prime.NewFlags.NewFlagDataCache) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.Prime.NewFlags.NewFlagDataCache) */ {
  public:
   inline NewFlagDataCache() : NewFlagDataCache(nullptr) {}
   ~NewFlagDataCache() override;
@@ -382,22 +355,13 @@ class NewFlagDataCache final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const NewFlagDataCache& default_instance() {
     return *internal_default_instance();
   }
@@ -435,15 +399,9 @@ class NewFlagDataCache final :
   NewFlagDataCache* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<NewFlagDataCache>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const NewFlagDataCache& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const NewFlagDataCache& from) {
-    NewFlagDataCache::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const NewFlagDataCache& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -456,7 +414,7 @@ class NewFlagDataCache final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(NewFlagDataCache* other);
 
   private:
@@ -468,10 +426,7 @@ class NewFlagDataCache final :
   explicit NewFlagDataCache(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -517,7 +472,7 @@ class NewFlagDataCache final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::google::protobuf::internal::MapField<NewFlagDataCache_CategoriesEntry_DoNotUse, ::int32_t, ::Digit::Prime::NewFlags::NewFlagCacheMap,
+    ::google::protobuf::internal::MapFieldLite<NewFlagDataCache_CategoriesEntry_DoNotUse, ::int32_t, ::Digit::Prime::NewFlags::NewFlagCacheMap,
                       ::google::protobuf::internal::WireFormatLite::TYPE_INT32,
                       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE>
         categories_;

@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -60,85 +57,6 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace Missions
 }  // namespace Prime
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrime_2eMissions_2eproto[2];
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_Digit_2ePrime_2eMissions_2eproto = nullptr;
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrime_2eMissions_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrime_2eMissions_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Missions::ArchivedMissions, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Missions::ArchivedMissions, _impl_.missionids_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Missions::FavouritedMissions, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Missions::FavouritedMissions, _impl_.missionids_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::Digit::Prime::Missions::ArchivedMissions)},
-        {9, -1, -1, sizeof(::Digit::Prime::Missions::FavouritedMissions)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Prime::Missions::_ArchivedMissions_default_instance_._instance,
-    &::Digit::Prime::Missions::_FavouritedMissions_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrime_2eMissions_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\032Digit.Prime.Missions.proto\022\024Digit.Prim"
-    "e.Missions\"&\n\020ArchivedMissions\022\022\n\nmissio"
-    "nIds\030\001 \003(\003\"(\n\022FavouritedMissions\022\022\n\nmiss"
-    "ionIds\030\001 \003(\003b\006proto3"
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrime_2eMissions_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrime_2eMissions_2eproto = {
-    false,
-    false,
-    140,
-    descriptor_table_protodef_Digit_2ePrime_2eMissions_2eproto,
-    "Digit.Prime.Missions.proto",
-    &descriptor_table_Digit_2ePrime_2eMissions_2eproto_once,
-    nullptr,
-    0,
-    2,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrime_2eMissions_2eproto::offsets,
-    file_level_metadata_Digit_2ePrime_2eMissions_2eproto,
-    file_level_enum_descriptors_Digit_2ePrime_2eMissions_2eproto,
-    file_level_service_descriptors_Digit_2ePrime_2eMissions_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrime_2eMissions_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrime_2eMissions_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrime_2eMissions_2eproto(&descriptor_table_Digit_2ePrime_2eMissions_2eproto);
 namespace Digit {
 namespace Prime {
 namespace Missions {
@@ -149,11 +67,11 @@ class ArchivedMissions::_Internal {
 };
 
 ArchivedMissions::ArchivedMissions(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.Missions.ArchivedMissions)
 }
-ArchivedMissions::ArchivedMissions(const ArchivedMissions& from) : ::google::protobuf::Message() {
+ArchivedMissions::ArchivedMissions(const ArchivedMissions& from) : ::google::protobuf::MessageLite() {
   ArchivedMissions* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -161,7 +79,7 @@ ArchivedMissions::ArchivedMissions(const ArchivedMissions& from) : ::google::pro
       /* _impl_._missionids_cached_byte_size_ = */ {0},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.Prime.Missions.ArchivedMissions)
@@ -176,7 +94,7 @@ inline void ArchivedMissions::SharedCtor(::_pb::Arena* arena) {
 }
 ArchivedMissions::~ArchivedMissions() {
   // @@protoc_insertion_point(destructor:Digit.Prime.Missions.ArchivedMissions)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void ArchivedMissions::SharedDtor() {
@@ -194,7 +112,7 @@ PROTOBUF_NOINLINE void ArchivedMissions::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_missionids()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* ArchivedMissions::_InternalParse(
@@ -217,7 +135,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> ArchivedMissions::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_ArchivedMissions_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated int64 missionIds = 1;
     {::_pbi::TcParser::FastV64P1,
@@ -251,9 +169,9 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> ArchivedMissions::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.Missions.ArchivedMissions)
   return target;
@@ -280,26 +198,29 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> ArchivedMissions::_table_ = {
     ;
     total_size += tag_size + data_size;
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData ArchivedMissions::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    ArchivedMissions::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*ArchivedMissions::GetClassData() const { return &_class_data_; }
+void ArchivedMissions::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const ArchivedMissions*>(
+      &from));
+}
 
-
-void ArchivedMissions::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<ArchivedMissions*>(&to_msg);
-  auto& from = static_cast<const ArchivedMissions&>(from_msg);
+void ArchivedMissions::MergeFrom(const ArchivedMissions& from) {
+  ArchivedMissions* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.Missions.ArchivedMissions)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_missionids()->MergeFrom(from._internal_missionids());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void ArchivedMissions::CopyFrom(const ArchivedMissions& from) {
@@ -319,11 +240,10 @@ void ArchivedMissions::InternalSwap(ArchivedMissions* other) {
   _impl_.missionids_.InternalSwap(&other->_impl_.missionids_);
 }
 
-::google::protobuf::Metadata ArchivedMissions::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eMissions_2eproto_getter, &descriptor_table_Digit_2ePrime_2eMissions_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eMissions_2eproto[0]);
+std::string ArchivedMissions::GetTypeName() const {
+  return "Digit.Prime.Missions.ArchivedMissions";
 }
+
 // ===================================================================
 
 class FavouritedMissions::_Internal {
@@ -331,11 +251,11 @@ class FavouritedMissions::_Internal {
 };
 
 FavouritedMissions::FavouritedMissions(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.Missions.FavouritedMissions)
 }
-FavouritedMissions::FavouritedMissions(const FavouritedMissions& from) : ::google::protobuf::Message() {
+FavouritedMissions::FavouritedMissions(const FavouritedMissions& from) : ::google::protobuf::MessageLite() {
   FavouritedMissions* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -343,7 +263,7 @@ FavouritedMissions::FavouritedMissions(const FavouritedMissions& from) : ::googl
       /* _impl_._missionids_cached_byte_size_ = */ {0},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.Prime.Missions.FavouritedMissions)
@@ -358,7 +278,7 @@ inline void FavouritedMissions::SharedCtor(::_pb::Arena* arena) {
 }
 FavouritedMissions::~FavouritedMissions() {
   // @@protoc_insertion_point(destructor:Digit.Prime.Missions.FavouritedMissions)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void FavouritedMissions::SharedDtor() {
@@ -376,7 +296,7 @@ PROTOBUF_NOINLINE void FavouritedMissions::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_missionids()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* FavouritedMissions::_InternalParse(
@@ -399,7 +319,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> FavouritedMissions::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_FavouritedMissions_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated int64 missionIds = 1;
     {::_pbi::TcParser::FastV64P1,
@@ -433,9 +353,9 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> FavouritedMissions::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.Missions.FavouritedMissions)
   return target;
@@ -462,26 +382,29 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> FavouritedMissions::_table_ = {
     ;
     total_size += tag_size + data_size;
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData FavouritedMissions::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    FavouritedMissions::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*FavouritedMissions::GetClassData() const { return &_class_data_; }
+void FavouritedMissions::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const FavouritedMissions*>(
+      &from));
+}
 
-
-void FavouritedMissions::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<FavouritedMissions*>(&to_msg);
-  auto& from = static_cast<const FavouritedMissions&>(from_msg);
+void FavouritedMissions::MergeFrom(const FavouritedMissions& from) {
+  FavouritedMissions* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.Missions.FavouritedMissions)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_missionids()->MergeFrom(from._internal_missionids());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void FavouritedMissions::CopyFrom(const FavouritedMissions& from) {
@@ -501,11 +424,10 @@ void FavouritedMissions::InternalSwap(FavouritedMissions* other) {
   _impl_.missionids_.InternalSwap(&other->_impl_.missionids_);
 }
 
-::google::protobuf::Metadata FavouritedMissions::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eMissions_2eproto_getter, &descriptor_table_Digit_2ePrime_2eMissions_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eMissions_2eproto[1]);
+std::string FavouritedMissions::GetTypeName() const {
+  return "Digit.Prime.Missions.FavouritedMissions";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Missions
 }  // namespace Prime

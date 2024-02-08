@@ -27,12 +27,11 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/generated_enum_reflection.h"
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/generated_enum_util.h"
+#include "google/protobuf/timestamp.pb.h"
 // @@protoc_insertion_point(includes)
 
 // Must be included last.
@@ -52,8 +51,6 @@ class AnyMetadata;
 struct TableStruct_stfc_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_stfc_2eproto;
 class CommanderSkillSpec;
 struct CommanderSkillSpecDefaultTypeInternal;
 extern CommanderSkillSpecDefaultTypeInternal _CommanderSkillSpec_default_instance_;
@@ -86,8 +83,7 @@ bool OfficerSkillType_IsValid(int value);
 constexpr OfficerSkillType OfficerSkillType_MIN = static_cast<OfficerSkillType>(0);
 constexpr OfficerSkillType OfficerSkillType_MAX = static_cast<OfficerSkillType>(3);
 constexpr int OfficerSkillType_ARRAYSIZE = 3 + 1;
-const ::google::protobuf::EnumDescriptor*
-OfficerSkillType_descriptor();
+const std::string& OfficerSkillType_Name(OfficerSkillType value);
 template <typename T>
 const std::string& OfficerSkillType_Name(T value) {
   static_assert(std::is_same<T, OfficerSkillType>::value ||
@@ -95,16 +91,8 @@ const std::string& OfficerSkillType_Name(T value) {
                 "Incorrect type passed to OfficerSkillType_Name().");
   return OfficerSkillType_Name(static_cast<OfficerSkillType>(value));
 }
-template <>
-inline const std::string& OfficerSkillType_Name(OfficerSkillType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<OfficerSkillType_descriptor,
-                                                 0, 3>(
-      static_cast<int>(value));
-}
-inline bool OfficerSkillType_Parse(absl::string_view name, OfficerSkillType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<OfficerSkillType>(
-      OfficerSkillType_descriptor(), name, value);
-}
+const std::string& OfficerSkillType_Name(OfficerSkillType value);
+bool OfficerSkillType_Parse(absl::string_view name, OfficerSkillType* value);
 enum EntityType : int {
   ENTITYTYPE_INVALID = 0,
   ENTITYTYPE_PLAYER = 859804212,
@@ -113,6 +101,7 @@ enum EntityType : int {
   ENTITYTYPE_NPC = 2100681965,
   ENTITYTYPE_OFFICER = 1211023646,
   ENTITYTYPE_SHIP = 73015892,
+  ENTITYTYPE_SYSTEM = 232004982,
   EntityType_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   EntityType_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -123,19 +112,16 @@ bool EntityType_IsValid(int value);
 constexpr EntityType EntityType_MIN = static_cast<EntityType>(0);
 constexpr EntityType EntityType_MAX = static_cast<EntityType>(2129559302);
 constexpr int EntityType_ARRAYSIZE = 2129559302 + 1;
-const ::google::protobuf::EnumDescriptor*
-EntityType_descriptor();
+const std::string& EntityType_Name(EntityType value);
 template <typename T>
 const std::string& EntityType_Name(T value) {
   static_assert(std::is_same<T, EntityType>::value ||
                     std::is_integral<T>::value,
                 "Incorrect type passed to EntityType_Name().");
-  return ::google::protobuf::internal::NameOfEnum(EntityType_descriptor(), value);
+  return EntityType_Name(static_cast<EntityType>(value));
 }
-inline bool EntityType_Parse(absl::string_view name, EntityType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<EntityType>(
-      EntityType_descriptor(), name, value);
-}
+const std::string& EntityType_Name(EntityType value);
+bool EntityType_Parse(absl::string_view name, EntityType* value);
 enum OfficerProgressType : int {
   OFFICERPROGRESSTYPE_UNKNOWN = 0,
   OFFICERPROGRESSTYPE_LEVELUP = 1,
@@ -150,8 +136,7 @@ bool OfficerProgressType_IsValid(int value);
 constexpr OfficerProgressType OfficerProgressType_MIN = static_cast<OfficerProgressType>(0);
 constexpr OfficerProgressType OfficerProgressType_MAX = static_cast<OfficerProgressType>(2);
 constexpr int OfficerProgressType_ARRAYSIZE = 2 + 1;
-const ::google::protobuf::EnumDescriptor*
-OfficerProgressType_descriptor();
+const std::string& OfficerProgressType_Name(OfficerProgressType value);
 template <typename T>
 const std::string& OfficerProgressType_Name(T value) {
   static_assert(std::is_same<T, OfficerProgressType>::value ||
@@ -159,16 +144,8 @@ const std::string& OfficerProgressType_Name(T value) {
                 "Incorrect type passed to OfficerProgressType_Name().");
   return OfficerProgressType_Name(static_cast<OfficerProgressType>(value));
 }
-template <>
-inline const std::string& OfficerProgressType_Name(OfficerProgressType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<OfficerProgressType_descriptor,
-                                                 0, 2>(
-      static_cast<int>(value));
-}
-inline bool OfficerProgressType_Parse(absl::string_view name, OfficerProgressType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<OfficerProgressType>(
-      OfficerProgressType_descriptor(), name, value);
-}
+const std::string& OfficerProgressType_Name(OfficerProgressType value);
+bool OfficerProgressType_Parse(absl::string_view name, OfficerProgressType* value);
 
 // ===================================================================
 
@@ -176,7 +153,7 @@ inline bool OfficerProgressType_Parse(absl::string_view name, OfficerProgressTyp
 // -------------------------------------------------------------------
 
 class CommanderSkillSpec final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:CommanderSkillSpec) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CommanderSkillSpec) */ {
  public:
   inline CommanderSkillSpec() : CommanderSkillSpec(nullptr) {}
   ~CommanderSkillSpec() override;
@@ -207,22 +184,13 @@ class CommanderSkillSpec final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CommanderSkillSpec& default_instance() {
     return *internal_default_instance();
   }
@@ -260,15 +228,9 @@ class CommanderSkillSpec final :
   CommanderSkillSpec* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CommanderSkillSpec>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CommanderSkillSpec& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CommanderSkillSpec& from) {
-    CommanderSkillSpec::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CommanderSkillSpec& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -281,7 +243,7 @@ class CommanderSkillSpec final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CommanderSkillSpec* other);
 
   private:
@@ -293,10 +255,7 @@ class CommanderSkillSpec final :
   explicit CommanderSkillSpec(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -370,7 +329,7 @@ class CommanderSkillSpec final :
 };// -------------------------------------------------------------------
 
 class EntityRef final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:EntityRef) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:EntityRef) */ {
  public:
   inline EntityRef() : EntityRef(nullptr) {}
   ~EntityRef() override;
@@ -401,22 +360,13 @@ class EntityRef final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EntityRef& default_instance() {
     return *internal_default_instance();
   }
@@ -454,15 +404,9 @@ class EntityRef final :
   EntityRef* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EntityRef>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EntityRef& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EntityRef& from) {
-    EntityRef::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EntityRef& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -475,7 +419,7 @@ class EntityRef final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EntityRef* other);
 
   private:
@@ -487,10 +431,7 @@ class EntityRef final :
   explicit EntityRef(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -576,7 +517,7 @@ class EntityRef final :
 };// -------------------------------------------------------------------
 
 class OfficerLevelRewardsSpec final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OfficerLevelRewardsSpec) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:OfficerLevelRewardsSpec) */ {
  public:
   inline OfficerLevelRewardsSpec() : OfficerLevelRewardsSpec(nullptr) {}
   ~OfficerLevelRewardsSpec() override;
@@ -607,22 +548,13 @@ class OfficerLevelRewardsSpec final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const OfficerLevelRewardsSpec& default_instance() {
     return *internal_default_instance();
   }
@@ -660,15 +592,9 @@ class OfficerLevelRewardsSpec final :
   OfficerLevelRewardsSpec* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<OfficerLevelRewardsSpec>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const OfficerLevelRewardsSpec& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const OfficerLevelRewardsSpec& from) {
-    OfficerLevelRewardsSpec::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const OfficerLevelRewardsSpec& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -681,7 +607,7 @@ class OfficerLevelRewardsSpec final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(OfficerLevelRewardsSpec* other);
 
   private:
@@ -693,10 +619,7 @@ class OfficerLevelRewardsSpec final :
   explicit OfficerLevelRewardsSpec(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -776,7 +699,7 @@ class OfficerLevelRewardsSpec final :
 };// -------------------------------------------------------------------
 
 class OfficerProgressRewardSpec final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:OfficerProgressRewardSpec) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:OfficerProgressRewardSpec) */ {
  public:
   inline OfficerProgressRewardSpec() : OfficerProgressRewardSpec(nullptr) {}
   ~OfficerProgressRewardSpec() override;
@@ -807,22 +730,13 @@ class OfficerProgressRewardSpec final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const OfficerProgressRewardSpec& default_instance() {
     return *internal_default_instance();
   }
@@ -860,15 +774,9 @@ class OfficerProgressRewardSpec final :
   OfficerProgressRewardSpec* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<OfficerProgressRewardSpec>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const OfficerProgressRewardSpec& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const OfficerProgressRewardSpec& from) {
-    OfficerProgressRewardSpec::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const OfficerProgressRewardSpec& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -881,7 +789,7 @@ class OfficerProgressRewardSpec final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(OfficerProgressRewardSpec* other);
 
   private:
@@ -893,10 +801,7 @@ class OfficerProgressRewardSpec final :
   explicit OfficerProgressRewardSpec(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1523,21 +1428,9 @@ namespace protobuf {
 template <>
 struct is_proto_enum<::OfficerSkillType> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::OfficerSkillType>() {
-  return ::OfficerSkillType_descriptor();
-}
-template <>
 struct is_proto_enum<::EntityType> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::EntityType>() {
-  return ::EntityType_descriptor();
-}
-template <>
 struct is_proto_enum<::OfficerProgressType> : std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor<::OfficerProgressType>() {
-  return ::OfficerProgressType_descriptor();
-}
 
 }  // namespace protobuf
 }  // namespace google

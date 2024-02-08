@@ -50,12 +50,12 @@ private:
 public:
   HullSpec* __get_Hull()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Hull"));
+    static auto field = get_class_helper().GetProperty("Hull");
     return field.GetRaw<HullSpec>(this);
   }
   void* __get_Address()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Address"));
+    static auto field = get_class_helper().GetProperty("Address");
     return field.GetRaw<void>(this);
   }
   FleetState __get_CurrentState()

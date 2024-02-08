@@ -225,9 +225,9 @@ AppConfig* Model_LoadConfigs(auto original, Model* _this)
   auto config = _this->AppConfig_;
 
   static auto il2cpp_string_new_utf16 = (il2cpp_string_new_utf16_t)(GetProcAddress(
-      GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_string_new_utf16")));
+      GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new_utf16"));
   static auto il2cpp_string_new =
-      (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_string_new")));
+      (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
 
   if (!Config::Get().config_settings_url.empty()) {
     auto new_settings_url       = il2cpp_string_new(Config::Get().config_settings_url.c_str());

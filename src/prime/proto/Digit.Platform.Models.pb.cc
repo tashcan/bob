@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -180,198 +177,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace Models
 }  // namespace Platform
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePlatform_2eModels_2eproto[7];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2ePlatform_2eModels_2eproto[1];
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePlatform_2eModels_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePlatform_2eModels_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLsHolder, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLsHolder, _impl_.expirein_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLsHolder, _impl_.files_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLsHolder, _impl_.maxfilesize_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLsHolder, _impl_.code_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::SignedPOSTData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::SignedPOSTData, _impl_.url_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::SignedPOSTData, _impl_.formfields_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::Error, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::Error, _impl_.code_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::Error, _impl_.type_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::Error, _impl_.error__),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLData, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLData, _impl_.name_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLData, _impl_.geturl_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLData, _impl_.postdata_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FileSignedURLData, _impl_.deleteurl_),
-    ~0u,
-    ~0u,
-    0,
-    ~0u,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FormFieldEntry, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FormFieldEntry, _impl_.name_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::FormFieldEntry, _impl_.value_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::EntityGroup, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::EntityGroup, _impl_.type_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::EntityGroup, _impl_.group_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::ServiceResponse, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::ServiceResponse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::ServiceResponse, _impl_.entitygroups_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::ServiceResponse, _impl_.servertime_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Platform::Models::ServiceResponse, _impl_.error_),
-    ~0u,
-    0,
-    1,
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::Digit::Platform::Models::FileSignedURLsHolder)},
-        {12, -1, -1, sizeof(::Digit::Platform::Models::SignedPOSTData)},
-        {22, -1, -1, sizeof(::Digit::Platform::Models::Error)},
-        {33, 45, -1, sizeof(::Digit::Platform::Models::FileSignedURLData)},
-        {49, -1, -1, sizeof(::Digit::Platform::Models::FormFieldEntry)},
-        {59, -1, -1, sizeof(::Digit::Platform::Models::EntityGroup)},
-        {69, 80, -1, sizeof(::Digit::Platform::Models::ServiceResponse)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Platform::Models::_FileSignedURLsHolder_default_instance_._instance,
-    &::Digit::Platform::Models::_SignedPOSTData_default_instance_._instance,
-    &::Digit::Platform::Models::_Error_default_instance_._instance,
-    &::Digit::Platform::Models::_FileSignedURLData_default_instance_._instance,
-    &::Digit::Platform::Models::_FormFieldEntry_default_instance_._instance,
-    &::Digit::Platform::Models::_EntityGroup_default_instance_._instance,
-    &::Digit::Platform::Models::_ServiceResponse_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePlatform_2eModels_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\033Digit.Platform.Models.proto\022\025Digit.Pla"
-    "tform.Models\032\037google/protobuf/timestamp."
-    "proto\"\204\001\n\024FileSignedURLsHolder\022\020\n\010expire"
-    "In\030\001 \001(\003\0227\n\005files\030\002 \003(\0132(.Digit.Platform"
-    ".Models.FileSignedURLData\022\023\n\013maxFileSize"
-    "\030\003 \001(\r\022\014\n\004code\030\004 \001(\r\"X\n\016SignedPOSTData\022\013"
-    "\n\003url\030\001 \001(\t\0229\n\nformFields\030\002 \003(\0132%.Digit."
-    "Platform.Models.FormFieldEntry\"3\n\005Error\022"
-    "\014\n\004code\030\001 \001(\005\022\014\n\004type\030\002 \001(\t\022\016\n\006error_\030\003 "
-    "\001(\t\"}\n\021FileSignedURLData\022\014\n\004name\030\001 \001(\t\022\016"
-    "\n\006getUrl\030\002 \001(\t\0227\n\010postData\030\003 \001(\0132%.Digit"
-    ".Platform.Models.SignedPOSTData\022\021\n\tdelet"
-    "eUrl\030\004 \001(\t\"-\n\016FormFieldEntry\022\014\n\004name\030\001 \001"
-    "(\t\022\r\n\005value\030\002 \001(\t\"\241\004\n\013EntityGroup\0225\n\004typ"
-    "e\030\001 \001(\0162\'.Digit.Platform.Models.EntityGr"
-    "oup.Type\022\r\n\005group\030\002 \001(\014\"\313\003\n\004Type\022\033\n\027TYPE"
-    "_STATICTRANSLATIONS\020\000\022\034\n\030TYPE_DYNAMICTRA"
-    "NSLATIONS\020\001\022\024\n\020TYPE_STOREOFFERS\020\002\022\031\n\025TYP"
-    "E_ORDERVIRTUALGOOD\020\003\022\r\n\tTYPE_JSON\020\004\022\032\n\026T"
-    "YPE_TOURNAMENTBUNDLES\020\005\022\025\n\021TYPE_EVENTRAN"
-    "KING\020\006\022\024\n\020TYPE_EVENTSMODEL\020\007\022\033\n\027TYPE_LEA"
-    "DERBOARDRANKING\020\010\022\032\n\026TYPE_LEADERBOARDSMO"
-    "DEL\020\t\022\032\n\026TYPE_EVENTNOTIFICATION\020\n\022\024\n\020TYP"
-    "E_PLAYERSTATS\020\013\022\021\n\rTYPE_GAMENEWS\020\014\022\027\n\023TY"
-    "PE_FILESIGNEDURLS\020\r\022\021\n\rTYPE_GAMEINFO\020\016\022\027"
-    "\n\023TYPE_PLAYERPROFILES\020\017\022$\n TYPE_PLAYERLI"
-    "FECYCLENOTIFICATION\020\020\022\026\n\022TYPE_MINIGAMESL"
-    "IST\020\021\"\250\001\n\017ServiceResponse\0228\n\014entityGroup"
-    "s\030\001 \003(\0132\".Digit.Platform.Models.EntityGr"
-    "oup\022.\n\nserverTime\030\002 \001(\0132\032.google.protobu"
-    "f.Timestamp\022+\n\005error\030\003 \001(\0132\034.Digit.Platf"
-    "orm.Models.Errorb\006proto3"
-};
-static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2ePlatform_2eModels_2eproto_deps[1] =
-    {
-        &::descriptor_table_google_2fprotobuf_2ftimestamp_2eproto,
-};
-static ::absl::once_flag descriptor_table_Digit_2ePlatform_2eModels_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePlatform_2eModels_2eproto = {
-    false,
-    false,
-    1264,
-    descriptor_table_protodef_Digit_2ePlatform_2eModels_2eproto,
-    "Digit.Platform.Models.proto",
-    &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-    descriptor_table_Digit_2ePlatform_2eModels_2eproto_deps,
-    1,
-    7,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePlatform_2eModels_2eproto::offsets,
-    file_level_metadata_Digit_2ePlatform_2eModels_2eproto,
-    file_level_enum_descriptors_Digit_2ePlatform_2eModels_2eproto,
-    file_level_service_descriptors_Digit_2ePlatform_2eModels_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter() {
-  return &descriptor_table_Digit_2ePlatform_2eModels_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePlatform_2eModels_2eproto(&descriptor_table_Digit_2ePlatform_2eModels_2eproto);
 namespace Digit {
 namespace Platform {
 namespace Models {
-const ::google::protobuf::EnumDescriptor* EntityGroup_Type_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePlatform_2eModels_2eproto[0];
-}
 bool EntityGroup_Type_IsValid(int value) {
   switch (value) {
     case 0:
@@ -396,6 +204,96 @@ bool EntityGroup_Type_IsValid(int value) {
     default:
       return false;
   }
+}
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    EntityGroup_Type_strings[18] = {};
+
+static const char EntityGroup_Type_names[] = {
+    "TYPE_DYNAMICTRANSLATIONS"
+    "TYPE_EVENTNOTIFICATION"
+    "TYPE_EVENTRANKING"
+    "TYPE_EVENTSMODEL"
+    "TYPE_FILESIGNEDURLS"
+    "TYPE_GAMEINFO"
+    "TYPE_GAMENEWS"
+    "TYPE_JSON"
+    "TYPE_LEADERBOARDRANKING"
+    "TYPE_LEADERBOARDSMODEL"
+    "TYPE_MINIGAMESLIST"
+    "TYPE_ORDERVIRTUALGOOD"
+    "TYPE_PLAYERLIFECYCLENOTIFICATION"
+    "TYPE_PLAYERPROFILES"
+    "TYPE_PLAYERSTATS"
+    "TYPE_STATICTRANSLATIONS"
+    "TYPE_STOREOFFERS"
+    "TYPE_TOURNAMENTBUNDLES"
+};
+
+static const ::google::protobuf::internal::EnumEntry EntityGroup_Type_entries[] =
+    {
+        {{&EntityGroup_Type_names[0], 24}, 1},
+        {{&EntityGroup_Type_names[24], 22}, 10},
+        {{&EntityGroup_Type_names[46], 17}, 6},
+        {{&EntityGroup_Type_names[63], 16}, 7},
+        {{&EntityGroup_Type_names[79], 19}, 13},
+        {{&EntityGroup_Type_names[98], 13}, 14},
+        {{&EntityGroup_Type_names[111], 13}, 12},
+        {{&EntityGroup_Type_names[124], 9}, 4},
+        {{&EntityGroup_Type_names[133], 23}, 8},
+        {{&EntityGroup_Type_names[156], 22}, 9},
+        {{&EntityGroup_Type_names[178], 18}, 17},
+        {{&EntityGroup_Type_names[196], 21}, 3},
+        {{&EntityGroup_Type_names[217], 32}, 16},
+        {{&EntityGroup_Type_names[249], 19}, 15},
+        {{&EntityGroup_Type_names[268], 16}, 11},
+        {{&EntityGroup_Type_names[284], 23}, 0},
+        {{&EntityGroup_Type_names[307], 16}, 2},
+        {{&EntityGroup_Type_names[323], 22}, 5},
+};
+
+static const int EntityGroup_Type_entries_by_number[] = {
+    15,  // 0 -> TYPE_STATICTRANSLATIONS
+    0,  // 1 -> TYPE_DYNAMICTRANSLATIONS
+    16,  // 2 -> TYPE_STOREOFFERS
+    11,  // 3 -> TYPE_ORDERVIRTUALGOOD
+    7,  // 4 -> TYPE_JSON
+    17,  // 5 -> TYPE_TOURNAMENTBUNDLES
+    2,  // 6 -> TYPE_EVENTRANKING
+    3,  // 7 -> TYPE_EVENTSMODEL
+    8,  // 8 -> TYPE_LEADERBOARDRANKING
+    9,  // 9 -> TYPE_LEADERBOARDSMODEL
+    1,  // 10 -> TYPE_EVENTNOTIFICATION
+    14,  // 11 -> TYPE_PLAYERSTATS
+    6,  // 12 -> TYPE_GAMENEWS
+    4,  // 13 -> TYPE_FILESIGNEDURLS
+    5,  // 14 -> TYPE_GAMEINFO
+    13,  // 15 -> TYPE_PLAYERPROFILES
+    12,  // 16 -> TYPE_PLAYERLIFECYCLENOTIFICATION
+    10,  // 17 -> TYPE_MINIGAMESLIST
+};
+
+const std::string& EntityGroup_Type_Name(EntityGroup_Type value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          EntityGroup_Type_entries, EntityGroup_Type_entries_by_number,
+          18, EntityGroup_Type_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      EntityGroup_Type_entries, EntityGroup_Type_entries_by_number, 18,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : EntityGroup_Type_strings[idx].get();
+}
+
+bool EntityGroup_Type_Parse(absl::string_view name, EntityGroup_Type* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      EntityGroup_Type_entries, 18, name, &int_value);
+  if (success) {
+    *value = static_cast<EntityGroup_Type>(int_value);
+  }
+  return success;
 }
 #if (__cplusplus < 201703) && \
   (!defined(_MSC_VER) || (_MSC_VER >= 1900 && _MSC_VER < 1912))
@@ -431,11 +329,11 @@ class FileSignedURLsHolder::_Internal {
 };
 
 FileSignedURLsHolder::FileSignedURLsHolder(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Platform.Models.FileSignedURLsHolder)
 }
-FileSignedURLsHolder::FileSignedURLsHolder(const FileSignedURLsHolder& from) : ::google::protobuf::Message() {
+FileSignedURLsHolder::FileSignedURLsHolder(const FileSignedURLsHolder& from) : ::google::protobuf::MessageLite() {
   FileSignedURLsHolder* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -445,7 +343,7 @@ FileSignedURLsHolder::FileSignedURLsHolder(const FileSignedURLsHolder& from) : :
       decltype(_impl_.code_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   ::memcpy(&_impl_.expirein_, &from._impl_.expirein_,
     static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.code_) -
@@ -465,7 +363,7 @@ inline void FileSignedURLsHolder::SharedCtor(::_pb::Arena* arena) {
 }
 FileSignedURLsHolder::~FileSignedURLsHolder() {
   // @@protoc_insertion_point(destructor:Digit.Platform.Models.FileSignedURLsHolder)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void FileSignedURLsHolder::SharedDtor() {
@@ -486,7 +384,7 @@ PROTOBUF_NOINLINE void FileSignedURLsHolder::Clear() {
   ::memset(&_impl_.expirein_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.code_) -
       reinterpret_cast<char*>(&_impl_.expirein_)) + sizeof(_impl_.code_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* FileSignedURLsHolder::_InternalParse(
@@ -509,19 +407,19 @@ const ::_pbi::TcParseTable<2, 4, 1, 0, 2> FileSignedURLsHolder::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_FileSignedURLsHolder_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // uint32 code = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(FileSignedURLsHolder, _impl_.code_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(FileSignedURLsHolder, _impl_.code_)}},
     // int64 expireIn = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(FileSignedURLsHolder, _impl_.expirein_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(FileSignedURLsHolder, _impl_.expirein_)}},
     // repeated .Digit.Platform.Models.FileSignedURLData files = 2;
     {::_pbi::TcParser::FastMtR1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(FileSignedURLsHolder, _impl_.files_)}},
     // uint32 maxFileSize = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(FileSignedURLsHolder, _impl_.maxfilesize_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(FileSignedURLsHolder, _impl_.maxfilesize_)}},
   }}, {{
     65535, 65535
@@ -581,9 +479,9 @@ const ::_pbi::TcParseTable<2, 4, 1, 0, 2> FileSignedURLsHolder::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Platform.Models.FileSignedURLsHolder)
   return target;
@@ -621,19 +519,22 @@ const ::_pbi::TcParseTable<2, 4, 1, 0, 2> FileSignedURLsHolder::_table_ = {
         this->_internal_code());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData FileSignedURLsHolder::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    FileSignedURLsHolder::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*FileSignedURLsHolder::GetClassData() const { return &_class_data_; }
+void FileSignedURLsHolder::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const FileSignedURLsHolder*>(
+      &from));
+}
 
-
-void FileSignedURLsHolder::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<FileSignedURLsHolder*>(&to_msg);
-  auto& from = static_cast<const FileSignedURLsHolder&>(from_msg);
+void FileSignedURLsHolder::MergeFrom(const FileSignedURLsHolder& from) {
+  FileSignedURLsHolder* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Platform.Models.FileSignedURLsHolder)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -649,7 +550,7 @@ void FileSignedURLsHolder::MergeImpl(::google::protobuf::Message& to_msg, const 
   if (from._internal_code() != 0) {
     _this->_internal_set_code(from._internal_code());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void FileSignedURLsHolder::CopyFrom(const FileSignedURLsHolder& from) {
@@ -675,11 +576,10 @@ void FileSignedURLsHolder::InternalSwap(FileSignedURLsHolder* other) {
           reinterpret_cast<char*>(&other->_impl_.expirein_));
 }
 
-::google::protobuf::Metadata FileSignedURLsHolder::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePlatform_2eModels_2eproto[0]);
+std::string FileSignedURLsHolder::GetTypeName() const {
+  return "Digit.Platform.Models.FileSignedURLsHolder";
 }
+
 // ===================================================================
 
 class SignedPOSTData::_Internal {
@@ -687,11 +587,11 @@ class SignedPOSTData::_Internal {
 };
 
 SignedPOSTData::SignedPOSTData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Platform.Models.SignedPOSTData)
 }
-SignedPOSTData::SignedPOSTData(const SignedPOSTData& from) : ::google::protobuf::Message() {
+SignedPOSTData::SignedPOSTData(const SignedPOSTData& from) : ::google::protobuf::MessageLite() {
   SignedPOSTData* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -699,7 +599,7 @@ SignedPOSTData::SignedPOSTData(const SignedPOSTData& from) : ::google::protobuf:
       decltype(_impl_.url_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.url_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -725,7 +625,7 @@ inline void SignedPOSTData::SharedCtor(::_pb::Arena* arena) {
 }
 SignedPOSTData::~SignedPOSTData() {
   // @@protoc_insertion_point(destructor:Digit.Platform.Models.SignedPOSTData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void SignedPOSTData::SharedDtor() {
@@ -745,7 +645,7 @@ PROTOBUF_NOINLINE void SignedPOSTData::Clear() {
 
   _internal_mutable_formfields()->Clear();
   _impl_.url_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* SignedPOSTData::_InternalParse(
@@ -768,7 +668,7 @@ const ::_pbi::TcParseTable<1, 2, 1, 48, 2> SignedPOSTData::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_SignedPOSTData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.Platform.Models.FormFieldEntry formFields = 2;
     {::_pbi::TcParser::FastMtR1,
@@ -818,9 +718,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 48, 2> SignedPOSTData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Platform.Models.SignedPOSTData)
   return target;
@@ -846,19 +746,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 48, 2> SignedPOSTData::_table_ = {
                                     this->_internal_url());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData SignedPOSTData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    SignedPOSTData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*SignedPOSTData::GetClassData() const { return &_class_data_; }
+void SignedPOSTData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const SignedPOSTData*>(
+      &from));
+}
 
-
-void SignedPOSTData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<SignedPOSTData*>(&to_msg);
-  auto& from = static_cast<const SignedPOSTData&>(from_msg);
+void SignedPOSTData::MergeFrom(const SignedPOSTData& from) {
+  SignedPOSTData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Platform.Models.SignedPOSTData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -868,7 +771,7 @@ void SignedPOSTData::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
   if (!from._internal_url().empty()) {
     _this->_internal_set_url(from._internal_url());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void SignedPOSTData::CopyFrom(const SignedPOSTData& from) {
@@ -892,11 +795,10 @@ void SignedPOSTData::InternalSwap(SignedPOSTData* other) {
                                        &other->_impl_.url_, rhs_arena);
 }
 
-::google::protobuf::Metadata SignedPOSTData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePlatform_2eModels_2eproto[1]);
+std::string SignedPOSTData::GetTypeName() const {
+  return "Digit.Platform.Models.SignedPOSTData";
 }
+
 // ===================================================================
 
 class Error::_Internal {
@@ -904,11 +806,11 @@ class Error::_Internal {
 };
 
 Error::Error(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Platform.Models.Error)
 }
-Error::Error(const Error& from) : ::google::protobuf::Message() {
+Error::Error(const Error& from) : ::google::protobuf::MessageLite() {
   Error* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -917,7 +819,7 @@ Error::Error(const Error& from) : ::google::protobuf::Message() {
       decltype(_impl_.code_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.type_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -956,7 +858,7 @@ inline void Error::SharedCtor(::_pb::Arena* arena) {
 }
 Error::~Error() {
   // @@protoc_insertion_point(destructor:Digit.Platform.Models.Error)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Error::SharedDtor() {
@@ -977,7 +879,7 @@ PROTOBUF_NOINLINE void Error::Clear() {
   _impl_.type_.ClearToEmpty();
   _impl_.error__.ClearToEmpty();
   _impl_.code_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Error::_InternalParse(
@@ -1000,11 +902,11 @@ const ::_pbi::TcParseTable<2, 3, 0, 46, 2> Error::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Error_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // int32 code = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Error, _impl_.code_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(Error, _impl_.code_)}},
     // string type = 2;
     {::_pbi::TcParser::FastUS1,
@@ -1065,9 +967,9 @@ const ::_pbi::TcParseTable<2, 3, 0, 46, 2> Error::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Platform.Models.Error)
   return target;
@@ -1099,19 +1001,22 @@ const ::_pbi::TcParseTable<2, 3, 0, 46, 2> Error::_table_ = {
         this->_internal_code());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Error::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Error::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Error::GetClassData() const { return &_class_data_; }
+void Error::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Error*>(
+      &from));
+}
 
-
-void Error::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Error*>(&to_msg);
-  auto& from = static_cast<const Error&>(from_msg);
+void Error::MergeFrom(const Error& from) {
+  Error* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Platform.Models.Error)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1126,7 +1031,7 @@ void Error::MergeImpl(::google::protobuf::Message& to_msg, const ::google::proto
   if (from._internal_code() != 0) {
     _this->_internal_set_code(from._internal_code());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Error::CopyFrom(const Error& from) {
@@ -1152,11 +1057,10 @@ void Error::InternalSwap(Error* other) {
         swap(_impl_.code_, other->_impl_.code_);
 }
 
-::google::protobuf::Metadata Error::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePlatform_2eModels_2eproto[2]);
+std::string Error::GetTypeName() const {
+  return "Digit.Platform.Models.Error";
 }
+
 // ===================================================================
 
 class FileSignedURLData::_Internal {
@@ -1174,11 +1078,11 @@ const ::Digit::Platform::Models::SignedPOSTData& FileSignedURLData::_Internal::p
   return *msg->_impl_.postdata_;
 }
 FileSignedURLData::FileSignedURLData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Platform.Models.FileSignedURLData)
 }
-FileSignedURLData::FileSignedURLData(const FileSignedURLData& from) : ::google::protobuf::Message() {
+FileSignedURLData::FileSignedURLData(const FileSignedURLData& from) : ::google::protobuf::MessageLite() {
   FileSignedURLData* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1189,7 +1093,7 @@ FileSignedURLData::FileSignedURLData(const FileSignedURLData& from) : ::google::
       decltype(_impl_.deleteurl_){},
       decltype(_impl_.postdata_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1243,7 +1147,7 @@ inline void FileSignedURLData::SharedCtor(::_pb::Arena* arena) {
 }
 FileSignedURLData::~FileSignedURLData() {
   // @@protoc_insertion_point(destructor:Digit.Platform.Models.FileSignedURLData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void FileSignedURLData::SharedDtor() {
@@ -1272,7 +1176,7 @@ PROTOBUF_NOINLINE void FileSignedURLData::Clear() {
     _impl_.postdata_->Clear();
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* FileSignedURLData::_InternalParse(
@@ -1295,7 +1199,7 @@ const ::_pbi::TcParseTable<2, 4, 1, 67, 2> FileSignedURLData::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_FileSignedURLData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string deleteUrl = 4;
     {::_pbi::TcParser::FastUS1,
@@ -1375,9 +1279,9 @@ const ::_pbi::TcParseTable<2, 4, 1, 67, 2> FileSignedURLData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Platform.Models.FileSignedURLData)
   return target;
@@ -1417,19 +1321,22 @@ const ::_pbi::TcParseTable<2, 4, 1, 67, 2> FileSignedURLData::_table_ = {
         *_impl_.postdata_);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData FileSignedURLData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    FileSignedURLData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*FileSignedURLData::GetClassData() const { return &_class_data_; }
+void FileSignedURLData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const FileSignedURLData*>(
+      &from));
+}
 
-
-void FileSignedURLData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<FileSignedURLData*>(&to_msg);
-  auto& from = static_cast<const FileSignedURLData&>(from_msg);
+void FileSignedURLData::MergeFrom(const FileSignedURLData& from) {
+  FileSignedURLData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Platform.Models.FileSignedURLData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1448,7 +1355,7 @@ void FileSignedURLData::MergeImpl(::google::protobuf::Message& to_msg, const ::g
     _this->_internal_mutable_postdata()->::Digit::Platform::Models::SignedPOSTData::MergeFrom(
         from._internal_postdata());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void FileSignedURLData::CopyFrom(const FileSignedURLData& from) {
@@ -1477,11 +1384,10 @@ void FileSignedURLData::InternalSwap(FileSignedURLData* other) {
   swap(_impl_.postdata_, other->_impl_.postdata_);
 }
 
-::google::protobuf::Metadata FileSignedURLData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePlatform_2eModels_2eproto[3]);
+std::string FileSignedURLData::GetTypeName() const {
+  return "Digit.Platform.Models.FileSignedURLData";
 }
+
 // ===================================================================
 
 class FormFieldEntry::_Internal {
@@ -1489,11 +1395,11 @@ class FormFieldEntry::_Internal {
 };
 
 FormFieldEntry::FormFieldEntry(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Platform.Models.FormFieldEntry)
 }
-FormFieldEntry::FormFieldEntry(const FormFieldEntry& from) : ::google::protobuf::Message() {
+FormFieldEntry::FormFieldEntry(const FormFieldEntry& from) : ::google::protobuf::MessageLite() {
   FormFieldEntry* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1501,7 +1407,7 @@ FormFieldEntry::FormFieldEntry(const FormFieldEntry& from) : ::google::protobuf:
       decltype(_impl_.value_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1538,7 +1444,7 @@ inline void FormFieldEntry::SharedCtor(::_pb::Arena* arena) {
 }
 FormFieldEntry::~FormFieldEntry() {
   // @@protoc_insertion_point(destructor:Digit.Platform.Models.FormFieldEntry)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void FormFieldEntry::SharedDtor() {
@@ -1558,7 +1464,7 @@ PROTOBUF_NOINLINE void FormFieldEntry::Clear() {
 
   _impl_.name_.ClearToEmpty();
   _impl_.value_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* FormFieldEntry::_InternalParse(
@@ -1581,7 +1487,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 54, 2> FormFieldEntry::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_FormFieldEntry_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string value = 2;
     {::_pbi::TcParser::FastUS1,
@@ -1632,9 +1538,9 @@ const ::_pbi::TcParseTable<1, 2, 0, 54, 2> FormFieldEntry::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Platform.Models.FormFieldEntry)
   return target;
@@ -1660,19 +1566,22 @@ const ::_pbi::TcParseTable<1, 2, 0, 54, 2> FormFieldEntry::_table_ = {
                                     this->_internal_value());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData FormFieldEntry::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    FormFieldEntry::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*FormFieldEntry::GetClassData() const { return &_class_data_; }
+void FormFieldEntry::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const FormFieldEntry*>(
+      &from));
+}
 
-
-void FormFieldEntry::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<FormFieldEntry*>(&to_msg);
-  auto& from = static_cast<const FormFieldEntry&>(from_msg);
+void FormFieldEntry::MergeFrom(const FormFieldEntry& from) {
+  FormFieldEntry* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Platform.Models.FormFieldEntry)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1684,7 +1593,7 @@ void FormFieldEntry::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
   if (!from._internal_value().empty()) {
     _this->_internal_set_value(from._internal_value());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void FormFieldEntry::CopyFrom(const FormFieldEntry& from) {
@@ -1709,11 +1618,10 @@ void FormFieldEntry::InternalSwap(FormFieldEntry* other) {
                                        &other->_impl_.value_, rhs_arena);
 }
 
-::google::protobuf::Metadata FormFieldEntry::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePlatform_2eModels_2eproto[4]);
+std::string FormFieldEntry::GetTypeName() const {
+  return "Digit.Platform.Models.FormFieldEntry";
 }
+
 // ===================================================================
 
 class EntityGroup::_Internal {
@@ -1721,11 +1629,11 @@ class EntityGroup::_Internal {
 };
 
 EntityGroup::EntityGroup(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Platform.Models.EntityGroup)
 }
-EntityGroup::EntityGroup(const EntityGroup& from) : ::google::protobuf::Message() {
+EntityGroup::EntityGroup(const EntityGroup& from) : ::google::protobuf::MessageLite() {
   EntityGroup* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1733,7 +1641,7 @@ EntityGroup::EntityGroup(const EntityGroup& from) : ::google::protobuf::Message(
       decltype(_impl_.type_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.group_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1760,7 +1668,7 @@ inline void EntityGroup::SharedCtor(::_pb::Arena* arena) {
 }
 EntityGroup::~EntityGroup() {
   // @@protoc_insertion_point(destructor:Digit.Platform.Models.EntityGroup)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EntityGroup::SharedDtor() {
@@ -1779,7 +1687,7 @@ PROTOBUF_NOINLINE void EntityGroup::Clear() {
 
   _impl_.group_.ClearToEmpty();
   _impl_.type_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EntityGroup::_InternalParse(
@@ -1802,13 +1710,13 @@ const ::_pbi::TcParseTable<1, 2, 0, 0, 2> EntityGroup::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_EntityGroup_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // bytes group = 2;
     {::_pbi::TcParser::FastBS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(EntityGroup, _impl_.group_)}},
     // .Digit.Platform.Models.EntityGroup.Type type = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityGroup, _impl_.type_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(EntityGroup, _impl_.type_)}},
   }}, {{
     65535, 65535
@@ -1846,9 +1754,9 @@ const ::_pbi::TcParseTable<1, 2, 0, 0, 2> EntityGroup::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Platform.Models.EntityGroup)
   return target;
@@ -1874,19 +1782,22 @@ const ::_pbi::TcParseTable<1, 2, 0, 0, 2> EntityGroup::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_type());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EntityGroup::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EntityGroup::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EntityGroup::GetClassData() const { return &_class_data_; }
+void EntityGroup::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EntityGroup*>(
+      &from));
+}
 
-
-void EntityGroup::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EntityGroup*>(&to_msg);
-  auto& from = static_cast<const EntityGroup&>(from_msg);
+void EntityGroup::MergeFrom(const EntityGroup& from) {
+  EntityGroup* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Platform.Models.EntityGroup)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1898,7 +1809,7 @@ void EntityGroup::MergeImpl(::google::protobuf::Message& to_msg, const ::google:
   if (from._internal_type() != 0) {
     _this->_internal_set_type(from._internal_type());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EntityGroup::CopyFrom(const EntityGroup& from) {
@@ -1922,11 +1833,10 @@ void EntityGroup::InternalSwap(EntityGroup* other) {
   swap(_impl_.type_, other->_impl_.type_);
 }
 
-::google::protobuf::Metadata EntityGroup::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePlatform_2eModels_2eproto[5]);
+std::string EntityGroup::GetTypeName() const {
+  return "Digit.Platform.Models.EntityGroup";
 }
+
 // ===================================================================
 
 class ServiceResponse::_Internal {
@@ -1955,11 +1865,11 @@ void ServiceResponse::clear_servertime() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 ServiceResponse::ServiceResponse(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Platform.Models.ServiceResponse)
 }
-ServiceResponse::ServiceResponse(const ServiceResponse& from) : ::google::protobuf::Message() {
+ServiceResponse::ServiceResponse(const ServiceResponse& from) : ::google::protobuf::MessageLite() {
   ServiceResponse* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1969,7 +1879,7 @@ ServiceResponse::ServiceResponse(const ServiceResponse& from) : ::google::protob
       decltype(_impl_.servertime_){nullptr},
       decltype(_impl_.error_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.servertime_ = new ::google::protobuf::Timestamp(*from._impl_.servertime_);
@@ -1992,7 +1902,7 @@ inline void ServiceResponse::SharedCtor(::_pb::Arena* arena) {
 }
 ServiceResponse::~ServiceResponse() {
   // @@protoc_insertion_point(destructor:Digit.Platform.Models.ServiceResponse)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void ServiceResponse::SharedDtor() {
@@ -2024,7 +1934,7 @@ PROTOBUF_NOINLINE void ServiceResponse::Clear() {
     }
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* ServiceResponse::_InternalParse(
@@ -2047,7 +1957,7 @@ const ::_pbi::TcParseTable<2, 3, 3, 0, 2> ServiceResponse::_table_ = {
     3,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_ServiceResponse_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // repeated .Digit.Platform.Models.EntityGroup entityGroups = 1;
@@ -2110,9 +2020,9 @@ const ::_pbi::TcParseTable<2, 3, 3, 0, 2> ServiceResponse::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Platform.Models.ServiceResponse)
   return target;
@@ -2149,19 +2059,22 @@ const ::_pbi::TcParseTable<2, 3, 3, 0, 2> ServiceResponse::_table_ = {
     }
 
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData ServiceResponse::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    ServiceResponse::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*ServiceResponse::GetClassData() const { return &_class_data_; }
+void ServiceResponse::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const ServiceResponse*>(
+      &from));
+}
 
-
-void ServiceResponse::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<ServiceResponse*>(&to_msg);
-  auto& from = static_cast<const ServiceResponse&>(from_msg);
+void ServiceResponse::MergeFrom(const ServiceResponse& from) {
+  ServiceResponse* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Platform.Models.ServiceResponse)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -2179,7 +2092,7 @@ void ServiceResponse::MergeImpl(::google::protobuf::Message& to_msg, const ::goo
           from._internal_error());
     }
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void ServiceResponse::CopyFrom(const ServiceResponse& from) {
@@ -2206,11 +2119,10 @@ void ServiceResponse::InternalSwap(ServiceResponse* other) {
           reinterpret_cast<char*>(&other->_impl_.servertime_));
 }
 
-::google::protobuf::Metadata ServiceResponse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePlatform_2eModels_2eproto[6]);
+std::string ServiceResponse::GetTypeName() const {
+  return "Digit.Platform.Models.ServiceResponse";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Models
 }  // namespace Platform

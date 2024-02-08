@@ -2,12 +2,14 @@
 #include "config.h"
 #include "prime/EventSystem.h"
 #include "utils.h"
-#include <absl/strings/ascii.h>
+#include "str_utils.h"
+#include <prime/TMP_InputField.h>
+
+#include <spdlog/spdlog.h>
+
+#include <unordered_map>
 #include <cstdint>
 #include <iostream>
-#include <unordered_map>
-#include <prime/TMP_InputField.h>
-#include <spdlog/spdlog.h>
 #include <string>
 #include <string_view>
 
@@ -167,7 +169,7 @@ const std::unordered_map<std::string, KeyCode> Key::mappedKeys = {
 
 KeyCode Key::Parse(std::string_view key)
 {
-  auto wantedKey = absl::AsciiStrToUpper(key);
+  auto wantedKey = AsciiStrToUpper(key);
   for (const auto& [value, keycode] : mappedKeys) {
     if (wantedKey == value) {
       return (KeyCode)keycode;
