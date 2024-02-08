@@ -21,14 +21,14 @@ jobs:
           arch: amd64
 
       - name: Configure CMake
-        run: cmake -G Ninja -B build -S ${{ github.workspace }}
+        run: cmake -G "Ninja Multi-Config" -B build -S ${{ github.workspace }}
 
       - name: Build
         run: cmake --build build --target stfc-community-patch -j --config Release
   
       - name: Package
         run: |
-          mv build/x64-Release/stfc-community-patch.dll version.dll
+          mv build/Release/stfc-community-patch.dll version.dll
   
       - uses: actions/upload-artifact@v2
         with:
