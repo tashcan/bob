@@ -36,7 +36,6 @@ jobs:
       - name: Download artifact
         uses: dawidd6/action-download-artifact@v3
         with:
-          github_token: ${{secrets.GH_TOKEN}}
           commit: ${{env.GITHUB_SHA}}
           workflow: ci.yaml
           workflow_conclusion: success
