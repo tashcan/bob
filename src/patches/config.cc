@@ -11,9 +11,11 @@
 #include <string>
 #include <string_view>
 
+#include <EASTL/tuple.h>
+
 #include <spdlog/spdlog.h>
 
-std::map<std::string, int> bannerTypes{
+static const eastl::tuple<const char*, int> bannerTypes[] = {
     {"Standard", ToastState::Standard},
     {"FactionWarning", ToastState::FactionWarning},
     {"FactionLevelUp", ToastState::FactionLevelUp},

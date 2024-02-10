@@ -59,12 +59,12 @@ MapKey MapKey::Parse(std::string_view key)
 
 std::string MapKey::GetShortcuts(GameFunction gameFunction)
 {
-  std::vector<MapKey> mapKeys = MapKey::mappedKeys[gameFunction];
+  const auto &mapKeys = MapKey::mappedKeys[gameFunction];
 
   bool appendPipe = false;
 
   std::string shortcuts = "";
-  for (MapKey mapKey : mapKeys) {
+  for (const MapKey &mapKey : mapKeys) {
     if (appendPipe) {
       shortcuts.append(" | ");
     }
@@ -77,13 +77,13 @@ std::string MapKey::GetShortcuts(GameFunction gameFunction)
 
 void MapKey::AddMappedKey(GameFunction gameFunction, MapKey mappedKey)
 {
-  MapKey::mappedKeys[gameFunction].push_back(mappedKey);
+  MapKey::mappedKeys[gameFunction].emplace_back(mappedKey);
 }
 
 bool MapKey::IsPressed(GameFunction gameFunction)
 {
-  std::vector<MapKey> mapKeys = MapKey::mappedKeys[gameFunction];
-  for (MapKey mapKey : mapKeys) {
+  const auto &mapKeys = MapKey::mappedKeys[(int)gameFunction];
+  for (const MapKey &mapKey : mapKeys) {
     if (mapKey.Key != KeyCode::None) {
       if (Key::Pressed(mapKey.Key)) {
         if (MapKey::HasCorrectModifiers(mapKey)) {
@@ -98,8 +98,8 @@ bool MapKey::IsPressed(GameFunction gameFunction)
 
 bool MapKey::IsDown(GameFunction gameFunction)
 {
-  std::vector<MapKey> mapKeys = MapKey::mappedKeys[(int)gameFunction];
-  for (MapKey mapKey : mapKeys) {
+  const auto &mapKeys = MapKey::mappedKeys[(int)gameFunction];
+  for (const MapKey &mapKey : mapKeys) {
     if (mapKey.Key != KeyCode::None) {
       if (Key::Down(mapKey.Key)) {
         if (MapKey::HasCorrectModifiers(mapKey)) {
@@ -139,7 +139,7 @@ bool MapKey::HasCorrectModifiers(MapKey mapKey)
   return result;
 }
 
-std::string MapKey::GetParsedValues()
+std::string MapKey::GetParsedValues() const
 {
   std::string output = "";
   for (const std::string_view key : this->Shortcuts) {

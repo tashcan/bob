@@ -27,7 +27,7 @@ public:
 
   static std::string GetShortcuts(GameFunction gameFunction);
 
-  std::string GetParsedValues();
+  std::string GetParsedValues() const;
 
   std::vector<ModifierKey> Modifiers;
   std::vector<std::string> Shortcuts;

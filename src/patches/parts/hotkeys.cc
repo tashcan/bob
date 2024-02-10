@@ -8,9 +8,9 @@
 #include "prime/ArmadaObjectViewerWidget.h"
 #include "prime/CelestialObjectViewerWidget.h"
 #include "prime/EmbassyObjectViewer.h"
+#include "prime/HousingObjectViewerWidget.h"
 #include "prime/MiningObjectViewerWidget.h"
 #include "prime/MissionsObjectViewerWidget.h"
-#include "prime/HousingObjectViewerWidget.h"
 #include "prime/StarNodeObjectViewerWidget.h"
 
 #include "prime/ActionRequirement.h"
@@ -41,6 +41,7 @@
 #include <EASTL/vector.h>
 
 #include <iostream>
+#include <span>
 
 extern HWND unityWindow;
 
@@ -363,7 +364,6 @@ extern eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_obje
 template <typename T> inline bool CanHideViewersOfType()
 {
   auto& objects = tracked_objects[T::get_class_helper().get_cls()];
-  auto  didHide = false;
   for (auto object : objects) {
     auto       widget  = (T*)object;
     const auto visible = widget
@@ -434,29 +434,26 @@ void ChangeNavigationSection(SectionID sectionID)
 
 template <typename T>
 inline bool DidExecuteFleetAction(std::string_view actionText, ActionType actionType, FleetBarViewController* fleet_bar,
-                                  ActionRequirement<T>* actionRequired, std::vector<FleetState> wantedStates)
+                                  const std::span<const FleetState> wantedStates)
 {
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_bar->_fleetPanelController->fleet;
   auto fleet_state      = fleet->CurrentState;
 
-  auto fleet_id   = fleet->Id;
-  auto prev_state = fleet->PreviousState;
-  auto canAction  = true; // actionRequired->CheckIsMet();
-  auto canState   = 0;
-  auto didAction  = false;
+  auto       fleet_id   = fleet->Id;
+  auto       prev_state = fleet->PreviousState;
+  auto       canAction  = true; // actionRequired->CheckIsMet();
+  FleetState canState   = FleetState::Unknown;
+  auto       didAction  = false;
 
-  for (auto state : wantedStates) {
-    if (fleet_state == state) {
-      canState = (int)fleet_state;
-      break;
-    }
+  if (std::find(std::begin(wantedStates), std::end(wantedStates), fleet_state) != std::end(wantedStates)) {
+    canState = fleet_state;
   }
 
   spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
                 canAction, (int)canState, "[start]");
 
-  if (canState && canAction) {
+  if (canState != FleetState::Unknown && canAction) {
     if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
       NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
     }
@@ -471,24 +468,19 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
 
 bool DidExecuteRecall(FleetBarViewController* fleet_bar)
 {
-  static std::vector<FleetState> states = {{FleetState::IdleInSpace, FleetState::Impulsing, FleetState::Mining, FleetState::Capturing}};
+  static constexpr FleetState states[] = {FleetState::IdleInSpace, FleetState::Impulsing, FleetState::Mining,
+                                          FleetState::Capturing};
 
   auto fleet_controller = fleet_bar->_fleetPanelController;
-  auto fleet            = fleet_controller->fleet;
-  auto fleet_reqs       = fleet->RecallRequirements;
 
-  return DidExecuteFleetAction<RecallRequirement>("Recall", ActionType::Recall, fleet_bar, fleet_reqs, states);
+  return DidExecuteFleetAction<RecallRequirement>("Recall", ActionType::Recall, fleet_bar, states);
 }
 
 bool DidExecuteRepair(FleetBarViewController* fleet_bar)
 {
-  static std::vector<FleetState> states = {{FleetState::Docked, FleetState::Destroyed}};
+  static constexpr FleetState states[] = {FleetState::Docked, FleetState::Destroyed};
 
-  auto fleet_controller = fleet_bar->_fleetPanelController;
-  auto fleet            = fleet_bar->_fleetPanelController->fleet;
-  auto fleet_reqs       = fleet->CanRepairRequirements;
-
-  return DidExecuteFleetAction<CanRepairRequirement>("Repair", ActionType::Repair, fleet_bar, fleet_reqs, states);
+  return DidExecuteFleetAction<CanRepairRequirement>("Repair", ActionType::Repair, fleet_bar, states);
 }
 
 void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
@@ -496,7 +488,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
   auto has_primary   = MapKey::IsDown(GameFunction::ActionPrimary) || force_space_action_next_frame;
   auto has_secondary = MapKey::IsDown(GameFunction::ActionSecondary);
   auto has_recall =
-      MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || CanHideViewers);
+      MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || CanHideViewers());
   auto has_repair = MapKey::IsDown(GameFunction::ActionRepair);
 
   auto fleet_controller = fleet_bar->_fleetPanelController;

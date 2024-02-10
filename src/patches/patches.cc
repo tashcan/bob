@@ -127,25 +127,16 @@ LONG WINAPI CrashHandler(struct _EXCEPTION_POINTERS* ExceptionInfo)
 
 void Patches::Apply()
 {
-  TCHAR szFileName[MAX_PATH];
-  GetModuleFileName(NULL, szFileName, MAX_PATH);
-
-  std::filesystem::path game_path = szFileName;
-
-  if (!game_path.filename().generic_wstring().starts_with(L"prime")) {
-    return;
-  }
-
   auto assembly = LoadLibraryA("GameAssembly.dll");
 
   try {
     auto file_logger = spdlog::basic_logger_mt("default", "community_patch.log", true);
     spdlog::set_default_logger(file_logger);
-
-    file_logger->sinks().push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
+    auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    file_logger->sinks().push_back(sink);
 
 #ifndef NDEBUG
-    const auto log_level = spdlog::level::debug;
+    const auto log_level = spdlog::level::trace;
     const auto str_level = "DEBUG";
 #else
     const auto log_level = spdlog::level::info;

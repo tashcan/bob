@@ -3,14 +3,27 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <filesystem>
+
 #include "patches/patches.h"
 
 void VersionDllInit();
 
 BOOL WINAPI DllMain(HINSTANCE /*hinstDLL*/, DWORD fdwReason, LPVOID /*lpReserved*/)
 {
+  std::filesystem::path game_path;
+
   switch (fdwReason) {
     case DLL_PROCESS_ATTACH:
+      TCHAR szFileName[MAX_PATH];
+      GetModuleFileName(NULL, szFileName, MAX_PATH);
+
+      game_path = szFileName;
+
+      if (!game_path.filename().generic_wstring().starts_with(L"prime")) {
+        return TRUE;
+      }
+
       // This is just for debugging
 #ifndef NDEBUG
       AllocConsole();
