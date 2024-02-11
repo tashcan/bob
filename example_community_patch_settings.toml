@@ -166,6 +166,7 @@ action_primary = 'SPACE'
 
 # Recall ship action
 action_recall = 'R'
+action_recall_cancel = 'SPACE'
 
 # Repair ship action
 action_repair = 'R'

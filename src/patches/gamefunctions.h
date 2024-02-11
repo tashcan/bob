@@ -60,6 +60,7 @@ enum GameFunction {
   ActionSecondary,
   ActionView,
   ActionRecall,
+  ActionRecallCancel,
   ActionRepair,
   SetZoomPreset1,
   SetZoomPreset2,

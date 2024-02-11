@@ -371,6 +371,7 @@ void Config::Load()
   parse_config_shortcut(config, parsed, "action_secondary", GameFunction::ActionSecondary, "R");
   parse_config_shortcut(config, parsed, "action_view", GameFunction::ActionView, "V");
   parse_config_shortcut(config, parsed, "action_recall", GameFunction::ActionRecall, "R");
+  parse_config_shortcut(config, parsed, "action_recall_cancel", GameFunction::ActionRecallCancel, "SPACE");
   parse_config_shortcut(config, parsed, "action_repair", GameFunction::ActionRepair, "R");
   parse_config_shortcut(config, parsed, "show_chat", GameFunction::ShowChat, "C");
   parse_config_shortcut(config, parsed, "show_chatside1", GameFunction::ShowChatSide1, "ALT-C");

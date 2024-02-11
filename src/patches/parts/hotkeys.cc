@@ -434,7 +434,7 @@ void ChangeNavigationSection(SectionID sectionID)
 
 template <typename T>
 inline bool DidExecuteFleetAction(std::string_view actionText, ActionType actionType, FleetBarViewController* fleet_bar,
-                                  const std::span<const FleetState> wantedStates)
+                                  const std::span<const FleetState> wantedStates, FleetState helpState = FleetState::Unknown)
 {
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_bar->_fleetPanelController->fleet;
@@ -457,7 +457,12 @@ inline bool DidExecuteFleetAction(std::string_view actionText, ActionType action
     if (NavigationSectionManager::Instance() && NavigationSectionManager::Instance()->SNavigationManager) {
       NavigationSectionManager::Instance()->SNavigationManager->HideInteraction();
     }
+
     didAction = fleet_controller->RequestAction(fleet, actionType, 0, ActionBehaviour::Default);
+  }
+
+  if (helpState != FleetState::Unknown && (didAction || helpState == fleet->CurrentState)) {
+    didAction = didAction || fleet_controller->RequestAction(fleet, actionType, 0, ActionBehaviour::AskHelp);
   }
 
   spdlog::trace(FleetAction_Format, actionText, (int)actionType, (int)fleet_id, (int)fleet_state, (int)prev_state,
@@ -480,21 +485,22 @@ bool DidExecuteRepair(FleetBarViewController* fleet_bar)
 {
   static constexpr FleetState states[] = {FleetState::Docked, FleetState::Destroyed};
 
-  return DidExecuteFleetAction<CanRepairRequirement>("Repair", ActionType::Repair, fleet_bar, states);
+  return DidExecuteFleetAction<CanRepairRequirement>("Repair", ActionType::Repair, fleet_bar, states, FleetState::Repairing);
 }
 
 void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
 {
-  auto has_primary   = MapKey::IsDown(GameFunction::ActionPrimary) || force_space_action_next_frame;
-  auto has_secondary = MapKey::IsDown(GameFunction::ActionSecondary);
+  auto has_primary       = MapKey::IsDown(GameFunction::ActionPrimary) || force_space_action_next_frame;
+  auto has_repair        = MapKey::IsDown(GameFunction::ActionRepair);
+  auto has_recall_cancel = MapKey::IsDown(GameFunction::ActionRecallCancel);
+  auto has_secondary     = MapKey::IsDown(GameFunction::ActionSecondary);
   auto has_recall =
-      MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || CanHideViewers());
-  auto has_repair = MapKey::IsDown(GameFunction::ActionRepair);
+      MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || !CanHideViewers());
 
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_controller->fleet;
 
-  if (has_primary && fleet->CurrentState == FleetState::WarpCharging) {
+  if (has_recall_cancel && (fleet->CurrentState == FleetState::WarpCharging || fleet->CurrentState == FleetState::Warping)) {
     fleet_controller->CancelWarpClicked();
   } else {
     auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();

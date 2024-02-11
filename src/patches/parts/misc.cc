@@ -133,7 +133,6 @@ IList* ExtractBuffsOfType_Hook(auto original, ClientModifierType modifier, IList
 bool ShouldShowRevealHook(auto original, void* _this, bool ignore)
 {
   auto result = original(_this, ignore);
-  spdlog::trace("ShouldShowRevealHook({}): returned {}", ignore, result);
 
   if (Config::Get().always_skip_reveal_sequence) {
     result = false;
@@ -254,17 +253,12 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
     }
 
     if (suppress_go_back) {
-      spdlog::trace("ShopShowCaseID: {}, Navigation_Combat_Debug: {}", (int)SectionID::Shop_Showcase,
-                   (int)SectionID::Navigation_Combat_Debug);
-
       if (auto id_array = _this->_backLogicSkipSectionIds) {
         auto ids     = (SectionID*)id_array->vector;
         auto ids_len = id_array->max_length;
         for (size_t i = 0; i < ids_len; ++i) {
           auto id = ids[i];
-          spdlog::trace("backLogicSkip[{} / {}]: {}", (int)i, (int)ids_len, (int)id);
           if (id == SectionID::Shop_Showcase) {
-            spdlog::trace("   +--> Replaced with NavCombat");
             ids[i] = SectionID::Navigation_Combat_Debug;
           }
         }
@@ -275,20 +269,13 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
         auto cache_len = cache_id_array->max_length;
         for (size_t i = 0; i < cache_len; ++i) {
           auto id = cache_ids[i];
-          spdlog::trace("backLogicCache[{} / {}]: {}", (int)i, (int)cache_len, (int)id);
           if (id == SectionID::Shop_Showcase) {
-            spdlog::trace("   +--> Replaced with NavCombat");
             cache_ids[i] = SectionID::Navigation_Combat_Debug;
           }
         }
       }
 
-      spdlog::trace("");
-      spdlog::trace("Calling Original ... ");
-      spdlog::trace("");
       auto sectionID = original(_this, status, history);
-      spdlog::trace("returned: {}", (int)sectionID);
-      spdlog::trace("");
 
       if (auto id_array = _this->_backLogicSkipSectionIds) {
         auto ids     = (SectionID*)id_array->vector;
@@ -296,9 +283,7 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
 
         for (size_t i = 0; i < ids_len; ++i) {
           auto id = ids[i];
-          spdlog::trace("backLogicSkip(2)[{} / {}]: {}", (int)i, (int)ids_len, (int)id);
           if (id == SectionID::Navigation_Combat_Debug) {
-            spdlog::trace("   +--> Replaced with Shop_Showcase");
             ids[i] = SectionID::Shop_Showcase;
           }
         }
@@ -310,17 +295,12 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
 
         for (size_t i = 0; i < cache_len; ++i) {
           auto id = cache_ids[i];
-          spdlog::trace("backLogicSkip(2)[{} / {}]: {}", (int)i, (int)cache_len, (int)id);
           if (id == SectionID::Navigation_Combat_Debug) {
-            spdlog::trace("   +--> Replaced with Shop_Showcase");
             cache_ids[i] = SectionID::Shop_Showcase;
           }
         }
       }
 
-      spdlog::trace("");
-      spdlog::trace("SectionID returned: {}", (int)sectionID);
-      spdlog::trace("");
       return sectionID;
     }
   }

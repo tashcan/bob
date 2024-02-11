@@ -50,9 +50,6 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
   n = std::clamp(n, 0.1f, 5.0f);
 
   _this->m_canvasRootScaler->scaleFactor = n;
-
-  spdlog::trace("Setting UI Scale (DPI {}) to {} ({} x {} ref height {} scale {} adjustment {})", dpi, n, scr_width,
-                scr_height, ref_height, Config::Get().ui_scale, adjustedFactor);
 }
 
 BOOL SetWindowPos_Hook(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
