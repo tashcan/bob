@@ -3,7 +3,7 @@ project(STFC-Community-Patch)
 set(CMAKE_CXX_STANDARD 20)
 set(CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++20 /W3 /permissive- /bigobj /await")
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "") 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "")
 
 # Windows' math include does not define constants by default.
 # Set this definition so it does.
@@ -29,7 +29,7 @@ FetchContent_MakeAvailable(tomlplusplus)
 FetchContent_Declare(
       spud
       GIT_REPOSITORY "https://github.com/tashcan/spud.git"
-      GIT_TAG 741278d44a9cb72ca01149ec45e4a92a8db5d5a4
+      GIT_TAG 43f9d645401d8e014502af67cc59160cb46a6b3e
       GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(spud)
@@ -113,15 +113,15 @@ function(enable_unity_build UB_SUFFIX SOURCE_VARIABLE_NAME)
     FILE( APPEND ${unit_build_file} "#include <${CMAKE_CURRENT_SOURCE_DIR}/${source_file}>\n")
   endforeach(source_file)
   # Complement list of translation units with the name of ub
-  set(${SOURCE_VARIABLE_NAME} ${unit_build_file} PARENT_SCOPE) 
+  set(${SOURCE_VARIABLE_NAME} ${unit_build_file} PARENT_SCOPE)
 endfunction(enable_unity_build)
 
 enable_unity_build(prime_unity ${PRIME_SRC})
 
-add_library(stfc-community-patch SHARED 
+add_library(stfc-community-patch SHARED
     ${TARGET_SRC}
     ${PATCHES_PARTS}
-    ${PRIME_SRC} 
+    ${PRIME_SRC}
     ${PRIME_HDRS}
     src/version.def
     "src/il2cpp/il2cpp_helper.h"
