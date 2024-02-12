@@ -21,7 +21,7 @@ enum GameFunction {
   ShowAlliance,
   ShowAllianceArmada,
   ShowAllianceHelp,
-  ShowArtifcats,
+  ShowArtifacts,
   ShowOfficers,	
   ShowCommander,
   ShowRefinery,

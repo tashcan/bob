@@ -195,7 +195,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         return GotoSection(SectionID::Starbase_Interior);
       } else if (MapKey::IsDown(GameFunction::ShowSystem)) {
         return ChangeNavigationSection(SectionID::Navigation_System);
-      } else if (MapKey::IsDown(GameFunction::ShowArtifcats)) {
+      } else if (MapKey::IsDown(GameFunction::ShowArtifacts)) {
         return GotoSection(SectionID::ArtifactHall_Inventory);
       } else if (MapKey::IsDown(GameFunction::ShowInventory)) {
         return GotoSection(SectionID::InventoryList);
