@@ -410,6 +410,7 @@ void Config::Load()
       parse_config_shortcut(config, parsed, "show_lookup", GameFunction::ShowLookup, "L");
     }
 
+    parse_config_shortcut(config, parsed, "show_artificates", GameFunction::ShowArtifcats, "SHIFT-I");
     parse_config_shortcut(config, parsed, "show_commander", GameFunction::ShowCommander, "O");
     parse_config_shortcut(config, parsed, "show_daily", GameFunction::ShowDaily, "Z");
     parse_config_shortcut(config, parsed, "show_events", GameFunction::ShowEvents, "T");
