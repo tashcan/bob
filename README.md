@@ -84,7 +84,7 @@ First clone and initialise the repository:
 ```bash
 git clone https://github.com/tashcan/bob.git
 cd bob
-git submodules update --recursive --init
+git submodule update --recursive --init
 ```
 
 This will download three submodules and further submodules that they have, so this will take some time to complete.
