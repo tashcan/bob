@@ -106,7 +106,7 @@ Please note that when this project compiles, it will create a DLL called `stfc-c
 
 ```console
 cd C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game
-mklink C:\Source\tashcan\debug\stfc-communty-patch.dll version.dll
+mklink version.dll C:\Source\tashcan\debug\stfc-communty-patch.dll
 ```
 
 If you do link the file, please note you will need to close the game to recompile.
