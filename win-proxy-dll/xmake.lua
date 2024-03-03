@@ -3,6 +3,7 @@ target("stfc-community-patch")
     add_files("src/*.cc")
     add_files("src/*.rc")
     add_deps("mods")
+    set_exceptions("cxx")
     if is_plat("windows") then
         add_cxflags("/bigobj")
     end

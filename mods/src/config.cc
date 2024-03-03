@@ -228,7 +228,7 @@ void Config::Load()
   toml::table parsed;
   bool        write_config = false;
   try {
-    config       = toml::parse_file("community_patch_settings.toml");
+    config       = std::move(toml::parse_file("community_patch_settings.toml"));
     write_config = true;
   } catch (const toml::parse_error& e) {
     spdlog::warn("Failed to load config file, falling back to default settings: {}", e.description());
