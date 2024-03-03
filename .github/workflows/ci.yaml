@@ -32,7 +32,7 @@ jobs:
   
       - name: Package
         run: |
-          mv build/windows/releasedbg/stfc-community-patch.dll version.dll
+          mv build/windows/x64/releasedbg/stfc-community-patch.dll version.dll
   
       - uses: actions/upload-artifact@v2
         with:
