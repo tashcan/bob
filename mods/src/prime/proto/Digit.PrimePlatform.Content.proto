@@ -1,0 +1,137 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.PrimePlatform.Content;
+
+enum AnimationOnClaimType {
+  ANIMATIONONCLAIMTYPE_UNSPECIFIED = 0;
+  ANIMATIONONCLAIMTYPE_FLYOUT = 1;
+}
+
+message Bundle {
+  int64 bundleId = 1;
+  string bundleTypeString = 2;
+  uint32 priority = 3;
+  uint32 sortOrder = 4;
+  bool isSpecial = 5;
+  repeated Cost cost = 6;
+  repeated Resource requirements = 7;
+  string category = 8;
+  Metadata metadata = 9;
+  BundleContent content = 10;
+  Hinting hinting = 11;
+  string externalId = 12;
+  string oldExternalId = 13;
+  OfferDetails offerDetails = 14;
+  bool isPlayerlifecycle = 15;
+  bool allowCustomQuantity = 16;
+}
+
+message TranslationsContainer {
+  repeated TranslationSection sections = 1;
+}
+
+message TranslationSection {
+  string section = 1;
+  int32 sectionHash = 2;
+  repeated Translation translations = 3;
+  google.protobuf.Timestamp modified = 4;
+}
+
+message Translation {
+  string key = 1;
+  int32 keyHash = 2;
+  string text = 3;
+  string id = 4;
+}
+
+message ContentItem {
+  string id = 1;
+  int64 quantity = 2;
+  string type = 3;
+  uint32 level = 4;
+}
+
+message Bucket {
+  int64 id = 1;
+  string transId = 2;
+  string artId = 3;
+  int64 sortOrder = 4;
+}
+
+message BundleContent {
+  repeated ContentItemList dynamic = 1;
+  ContentItemList gifts = 2;
+  ContentItemList showcase = 3;
+  ContentItemList static = 4;
+  ContentItemList multiplied = 5;
+}
+
+message ContentItemList {
+  repeated ContentItem items = 1;
+}
+
+message Order {
+  string orderId = 1;
+  google.protobuf.Timestamp created = 2;
+  repeated OrderItem orderItems = 3;
+}
+
+message OrderItem {
+  uint32 bundleId = 1;
+  uint32 bundleVersion = 2;
+  BundleContent content = 3;
+}
+
+message Bundles {
+  repeated Bundle bundles_ = 1;
+}
+
+message Cost {
+  repeated Resource cost_ = 1;
+  uint32 quantity = 2;
+}
+
+message Resource {
+  uint32 amount = 1;
+  uint32 amountOld = 2;
+  string id = 3;
+  string type = 4;
+  int32 unavailableDisplayMode = 5;
+  uint64 amountUlong = 6;
+}
+
+message Metadata {
+  string color = 1;
+  string assetId = 2;
+  string assetFilename = 3;
+  string iconAssetFilename = 4;
+  Bucket bucket = 5;
+  string bundleMultiplier = 6;
+  int64 secondaryBundleId = 7;
+  AnimationOnClaimType animationOnClaimType = 8;
+  bool skipOnClaimAll = 9;
+}
+
+message Hinting {
+message TranslationKey {
+  string field = 1;
+  bool isTranslated = 2;
+}
+
+  repeated TranslationKey translationKeys = 1;
+}
+
+message OfferDetails {
+  string bonusLabel = 1;
+  string bonusValue = 2;
+  int32 validCount = 3;
+  google.protobuf.Timestamp validFromTimestamp = 4;
+  google.protobuf.Timestamp validUntilTimestamp = 5;
+  int32 sameRemainingCount = 6;
+  bool sameRemainingCountVisible = 7;
+}
+

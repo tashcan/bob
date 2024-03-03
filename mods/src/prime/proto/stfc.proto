@@ -1,0 +1,58 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+enum OfficerSkillType {
+  OFFICERSKILLTYPE_UNKNOWN = 0;
+  OFFICERSKILLTYPE_ALWAYSON = 1;
+  OFFICERSKILLTYPE_ONDUTY = 2;
+  OFFICERSKILLTYPE_SELECTABLE = 3;
+}
+
+enum EntityType {
+  ENTITYTYPE_INVALID = 0;
+  ENTITYTYPE_PLAYER = 859804212;
+  ENTITYTYPE_ALLIANCE = 1794481137;
+  ENTITYTYPE_DEPLOYEDFLEET = 2129559302;
+  ENTITYTYPE_NPC = 2100681965;
+  ENTITYTYPE_OFFICER = 1211023646;
+  ENTITYTYPE_SHIP = 73015892;
+  ENTITYTYPE_SYSTEM = 232004982;
+}
+
+enum OfficerProgressType {
+  OFFICERPROGRESSTYPE_UNKNOWN = 0;
+  OFFICERPROGRESSTYPE_LEVELUP = 1;
+  OFFICERPROGRESSTYPE_RANKUP = 2;
+}
+
+message CommanderSkillSpec {
+  int64 researchId = 1;
+  int32 groupId = 2;
+  int32 sortOrder = 3;
+  OfficerSkillType skillType = 4;
+}
+
+message EntityRef {
+  int64 entityId = 1;
+  string entityIdStr = 2;
+  EntityType entityType = 3;
+  EntityRef parentEntity = 4;
+}
+
+message OfficerLevelRewardsSpec {
+  int32 amount = 1;
+  int64 id = 2;
+  int32 level = 3;
+  string schemaId = 4;
+}
+
+message OfficerProgressRewardSpec {
+  OfficerProgressType progressType = 1;
+  int32 rank = 2;
+  int32 schemaId = 3;
+  repeated int32 amount = 4;
+}
+

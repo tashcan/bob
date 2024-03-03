@@ -1,0 +1,16 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.Prime.Missions;
+
+message ArchivedMissions {
+  repeated int64 missionIds = 1;
+}
+
+message FavouritedMissions {
+  repeated int64 missionIds = 1;
+}
+

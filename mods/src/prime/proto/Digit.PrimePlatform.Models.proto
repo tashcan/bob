@@ -1,0 +1,317 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+import "Digit.PrimePlatform.Content.proto";
+package Digit.PrimePlatform.Models;
+
+enum EventCategories {
+  EVENTCATEGORIES_STANDARD = 0;
+  EVENTCATEGORIES_DAILYGOALS = 1;
+  EVENTCATEGORIES_DAILYMILESTONE = 2;
+  EVENTCATEGORIES_LEADERBOARD = 3;
+  EVENTCATEGORIES_STAT = 4;
+  EVENTCATEGORIES_BATTLEPASSSEASON = 5;
+  EVENTCATEGORIES_BATTLEPASSEVENT = 6;
+  EVENTCATEGORIES_TREASURYPROGRESS = 7;
+  EVENTCATEGORIES_TREASURYREWARD = 8;
+  EVENTCATEGORIES_SERVERCLASHEVENT = 9;
+  EVENTCATEGORIES_WEBSTOREEVENT = 10;
+  EVENTCATEGORIES_PLAYERLIFECYCLE = 11;
+  EVENTCATEGORIES_FIELDTRAINING = 12;
+  EVENTCATEGORIES_FTCATEGORY = 13;
+  EVENTCATEGORIES_CUTSCENES = 14;
+  EVENTCATEGORIES_MINIGAMECATEGORY = 15;
+  EVENTCATEGORIES_MINIGAMESTAGE = 16;
+}
+
+enum JoinForbidden {
+  JOINFORBIDDEN_NONE = 0;
+  JOINFORBIDDEN_EVENTINPROGRESS = 1;
+}
+
+enum BattlePassType {
+  BATTLEPASSTYPE_STANDARD = 0;
+  BATTLEPASSTYPE_TERRITORYCAPTURE = 1;
+}
+
+enum PlacementType {
+  PLACEMENTTYPE_POSITION = 0;
+  PLACEMENTTYPE_MILESTONE = 1;
+}
+
+enum SegmentType {
+  SEGMENTTYPE_ALL = 0;
+  SEGMENTTYPE_RANGE = 1;
+  SEGMENTTYPE_EACH = 2;
+  SEGMENTTYPE_MATCH = 3;
+  SEGMENTTYPE_GROUP = 4;
+  SEGMENTTYPE_VOID = 5;
+  SEGMENTTYPE_EACHAND = 6;
+  SEGMENTTYPE_RANGEMULTI = 7;
+}
+
+enum PlayerlifecycleContentType {
+  PLAYERLIFECYCLECONTENTTYPE_NEWS = 0;
+  PLAYERLIFECYCLECONTENTTYPE_BUNDLES = 1;
+  PLAYERLIFECYCLECONTENTTYPE_EVENTS = 2;
+}
+
+message EventEntryData {
+  bool isRegistered = 1;
+  bool canClaim = 2;
+  int32 lastClaimedRewardIndex = 3;
+  JoinForbidden joinForbidden = 4;
+}
+
+message EventHighlights {
+  int32 type = 1;
+  repeated int64 nodeIds = 2;
+  repeated int64 specialIds = 3;
+  string calloutAssetId = 4;
+}
+
+message EventMetadata {
+  bool isAutoRegister = 1;
+  bool autoReward = 2;
+  bool immediateReward = 3;
+  bool canShowcase = 4;
+  string iconAssetId = 5;
+  string iconAssetFilename = 6;
+  string visualAsset = 7;
+  string visualAssetFilename = 8;
+  repeated EventScoringInfo scoringInfo = 9;
+  int64 cta = 10;
+  int64 priority = 11;
+  repeated EventHighlights highlights = 12;
+  Digit.PrimePlatform.Content.Bucket bucket = 13;
+  string unlockItemId = 14;
+  bool isUniqueWinner = 15;
+  bool isCrossServer = 16;
+  Digit.PrimePlatform.Content.Resource serverTransferCost = 17;
+  repeated RepeatedInt32 groupInstances = 18;
+  bool respectPriority = 19;
+  string visualVideoId = 20;
+  EventVideoAssets visualVideoAssets = 21;
+  string battlePassLink = 22;
+  string battlePassResourceId = 23;
+  BattlePassType battlePassType = 24;
+  bool minigameLock = 25;
+  uint32 minigameLevelMin = 26;
+  uint32 minigameLevelMax = 27;
+}
+
+message EventModel {
+  EventRank ranks = 12;
+  string configId = 1;
+  string source = 2;
+  string eventType = 3;
+  EventCategories category = 4;
+  PlacementType placementType = 5;
+  EventSchedule schedule = 6;
+  EventMetadata metaData = 7;
+  string groupName = 8;
+  repeated EventSegment segments = 9;
+  EventRank ranking = 10;
+  EventEntryData entryData = 11;
+  repeated Digit.PrimePlatform.Content.Resource joinCost = 13;
+  string categoryGroupId = 14;
+}
+
+message EventRank {
+  string id = 1;
+  int32 position = 2;
+  int32 rank = 3;
+  float score = 4;
+  int32 delta = 5;
+  int32 instanceId = 6;
+  double scoreDouble = 7;
+}
+
+message EventRanking {
+  repeated EventRank ranks = 1;
+  string configId = 2;
+}
+
+message EventReward {
+  repeated int64 position = 1;
+  int64 amount = 2;
+  string type = 3;
+  string level = 4;
+}
+
+message Events {
+  repeated EventModel tournaments = 1;
+  repeated int32 categories = 2;
+}
+
+message EventSchedule {
+  string term = 1;
+  int32 roundNumber = 2;
+  google.protobuf.Timestamp announce = 3;
+  google.protobuf.Timestamp start = 4;
+  google.protobuf.Timestamp display = 5;
+  google.protobuf.Timestamp delay = 6;
+  google.protobuf.Timestamp end = 7;
+  google.protobuf.Timestamp nextStart = 8;
+}
+
+message EventScoringInfo {
+  int32 id = 1;
+  string icon = 2;
+}
+
+message EventNotification {
+  string configId = 1;
+  google.protobuf.Timestamp modified = 2;
+  EventRank playerRank = 3;
+  EventEntryData entryData = 4;
+}
+
+message EventSegment {
+  SegmentType type = 1;
+  repeated int64 values = 2;
+  repeated EventReward rewards = 3;
+  EventReward uniqueWinner = 4;
+}
+
+message EventVideoAssets {
+  string en = 1;
+  string es = 2;
+  string fr = 3;
+  string de = 4;
+  string it = 5;
+  string ja = 6;
+  string pt = 7;
+  string ru = 8;
+  string cn = 9;
+  string ko = 10;
+  string hk = 11;
+  string tr = 12;
+}
+
+message RepeatedInt32 {
+  repeated int32 values = 1;
+}
+
+message PlayerlifecycleNotification {
+  PlayerlifecycleContentType contentType = 1;
+  string playgamiId = 2;
+  string category = 3;
+}
+
+message GameNewsModel {
+  int32 newsId = 1;
+  int32 priority = 2;
+  bool pinned = 3;
+  bool important = 4;
+  google.protobuf.Timestamp startDate = 5;
+  google.protobuf.Timestamp endDate = 6;
+  GameNewsMetadata metadata = 7;
+  bool isPlayerlifecycle = 8;
+}
+
+message GameNewsHolder {
+  repeated GameNewsModel newsItems = 1;
+}
+
+message GameNewsMetadata {
+  string assetId = 1;
+  string assetFilename = 2;
+}
+
+message Notifications {
+  repeated EventNotification tournamentNotifications = 1;
+  repeated EventNotification leaderboardNotifications = 2;
+  repeated PlayerlifecycleNotification playerlifecycleNotifications = 3;
+}
+
+message PlatformUserProfile {
+  string accountId = 1;
+  string name = 2;
+}
+
+message PlatformUserProfileResponse {
+  repeated PlatformUserProfile playerProfiles = 1;
+}
+
+message PlayerStats {
+  string accountId = 1;
+  repeated PlayerStatsGroup groups = 2;
+}
+
+message PlayerStatsGroup {
+  string name = 1;
+  repeated PlayerStatsEntry entries = 2;
+}
+
+message PlayerStatsEntry {
+  string statId = 1;
+  int32 priority = 2;
+  float value = 3;
+}
+
+message CacheHints {
+  repeated TranslationCacheUpdate translationCacheUpdate = 1;
+}
+
+message Product {
+  uint32 id = 1;
+  string name = 2;
+  string code = 3;
+  uint32 status = 4;
+  repeated Instance instances = 5;
+}
+
+message ProductInfoHolder {
+  string version = 1;
+  Product product = 2;
+  CacheHints cacheHints = 3;
+}
+
+message Region {
+  string id = 1;
+  string description = 2;
+  uint32 num = 3;
+}
+
+message Instance {
+  uint32 id = 1;
+  string name = 2;
+  uint32 priority = 3;
+  Region region = 4;
+  int32 status = 5;
+  int64 maintenance = 6;
+  PlayerTransferState playerTransferState = 7;
+}
+
+message PlayerTransferState {
+  bool transferIn = 1;
+  bool transferOut = 2;
+  bool authenticated = 3;
+}
+
+message TranslationCacheUpdate {
+  string section = 1;
+  google.protobuf.Timestamp updatedAt = 2;
+}
+
+message MinigameHolder {
+  repeated Minigame games = 1;
+}
+
+message Minigame {
+  string configId = 1;
+  repeated MinigameStage stages = 2;
+}
+
+message MinigameStage {
+  string configId = 1;
+  bool locked = 2;
+  repeated uint32 rewards = 3;
+  uint32 score = 4;
+  uint32 priority = 5;
+}
+

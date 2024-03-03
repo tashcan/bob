@@ -1,0 +1,17 @@
+target("mods")
+    set_kind("static")
+    add_files("src/**.cc")
+    add_includedirs("src", {public = true})
+    add_packages("spud")
+    add_packages("protobuf-cpp")
+    add_packages("libil2cpp")
+    add_packages("eastl")
+    add_packages("toml++")
+    add_packages("spdlog")
+    add_packages("nlohmann_json")
+    add_rules("protobuf.cpp")
+    add_files("src/prime/proto/*.proto")
+    if is_plat("windows") then
+        add_cxflags("/bigobj")
+    end
+    set_policy("build.optimization.lto", true)

@@ -1,0 +1,27 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.Prime.Bookmarks;
+
+message Bookmark {
+  string name = 1;
+  int32 category = 2;
+  int64 systemID = 3;
+  float xCoordinate = 4;
+  float yCoordinate = 5;
+  int64 modifiedAt = 6;
+  int32 locationType = 7;
+  int32 planetType = 8;
+  string userProfileId = 9;
+  int64 planetLocaId = 10;
+  int64 resourceLocaId = 11;
+  int64 missionLocaId = 12;
+}
+
+message BookmarksSaveData {
+  repeated Bookmark bookmarks = 1;
+}
+

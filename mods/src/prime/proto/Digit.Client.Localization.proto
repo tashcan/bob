@@ -1,0 +1,38 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.Client.Localization;
+
+enum ContentIdStatus {
+  CONTENTIDSTATUS_OK = 0;
+  CONTENTIDSTATUS_REQUESTFAILED = 1;
+  CONTENTIDSTATUS_MISSINGDATA = 2;
+}
+
+message CachedCategory {
+  CategoryInfo info = 1;
+  map<int64, CachedTranslation> translations = 2;
+}
+
+message CachedTranslation {
+  string id = 1;
+  int64 key = 2;
+  string text = 3;
+  ContentIdStatus status = 4;
+}
+
+message CategoryInfo {
+  int64 id = 1;
+  string name = 2;
+  bool dynamic = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+message LocalizationCacheData {
+  string language = 1;
+  map<int64, CachedCategory> categories = 2;
+}
+

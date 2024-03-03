@@ -10,3 +10,4 @@ version.aps
 debug.log
 enc_temp_folder/
 /app/
+/.xmake/
