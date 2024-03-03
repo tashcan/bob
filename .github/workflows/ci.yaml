@@ -25,10 +25,10 @@ jobs:
           xmake-version: latest
 
       - name: Configure
-        run: xmake f -m releasedbg
+        run: xmake f -m releasedbg -y
 
       - name: Build
-        run: xmake
+        run: xmake -y
   
       - name: Package
         run: |
