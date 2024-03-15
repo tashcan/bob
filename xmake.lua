@@ -42,9 +42,6 @@ package("spud")
 package_end()
 
 package("libil2cpp")
-    -- add_urls("https://github.com/tashcan/spud/archive/refs/tags/$(version).tar.gz",
-    --          "https://github.com/tashcan/spud.git")
-    -- add_versions("v0.1.0", "3d8e9945a30e82eacd1ee81124cdf3f03d31e1f235d77e02682c418c3bae1c2e")
     on_fetch(function (package, opt)
         return {includedirs = path.join(os.scriptdir(), "third_party/libil2cpp")}
     end)
