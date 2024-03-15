@@ -9,12 +9,14 @@
 
 void VersionDllInit();
 
-BOOL WINAPI DllMain(HINSTANCE /*hinstDLL*/, DWORD fdwReason, LPVOID /*lpReserved*/)
+BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID /*lpReserved*/)
 {
   std::filesystem::path game_path;
 
   switch (fdwReason) {
     case DLL_PROCESS_ATTACH:
+      DisableThreadLibraryCalls(hinstDLL);
+
       TCHAR szFileName[MAX_PATH];
       GetModuleFileName(NULL, szFileName, MAX_PATH);
 
@@ -23,6 +25,7 @@ BOOL WINAPI DllMain(HINSTANCE /*hinstDLL*/, DWORD fdwReason, LPVOID /*lpReserved
       if (!game_path.filename().generic_wstring().starts_with(L"prime")) {
         return TRUE;
       }
+
       // Since we are replacing version.dll, need the proper forwards
       VersionDllInit();
       Patches::Apply();

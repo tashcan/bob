@@ -15,6 +15,7 @@ if is_plat("macosx") then
     includes("macos-loader")
 end
 
+add_rules("mode.debug")
 add_rules("mode.releasedbg")
 
 package("spud")

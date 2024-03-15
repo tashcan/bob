@@ -2,6 +2,8 @@ target("stfc-community-patch")
     set_kind("shared")
     add_files("src/*.cc")
     add_files("src/*.rc")
+    add_files("src/version.def")
+    add_shflags("/DEF:src/version.def")
     add_deps("mods")
     set_exceptions("cxx")
     if is_plat("windows") then
