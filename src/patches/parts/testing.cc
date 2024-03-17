@@ -224,8 +224,8 @@ AppConfig* Model_LoadConfigs(auto original, Model* _this)
   original(_this);
   auto config = _this->AppConfig_;
 
-  static auto il2cpp_string_new_utf16 = (il2cpp_string_new_utf16_t)(GetProcAddress(
-      GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new_utf16"));
+  static auto il2cpp_string_new_utf16 =
+      (il2cpp_string_new_utf16_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new_utf16"));
   static auto il2cpp_string_new =
       (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
 
@@ -262,6 +262,10 @@ void remove_from_tracking_recursive(Il2CppClass* klass, void* _this)
     return;
   }
 
+  if (tracked_objects.find(klass) == tracked_objects.end()) {
+    return;
+  }
+
   auto& tracked_object_vector = tracked_objects[klass];
   tracked_object_vector.erase_first(uintptr_t(_this));
   return remove_from_tracking_recursive(klass->parent, _this);
@@ -281,13 +285,41 @@ void* track_ctor(auto original, void* _this)
 
 void track_destroy(auto original, void* _this, uint64_t a2, uint64_t a3)
 {
-  original(_this, a2, a3);
-  if (_this == nullptr) {
-    return;
+  if (_this != nullptr) {
+    auto cls = (Il2CppObject*)_this;
+    remove_from_tracking_recursive(cls->klass, _this);
+  }
+  return original(_this, a2, a3);
+}
+
+void track_free(auto original, void* _this)
+{
+  if (_this != nullptr) {
+    auto cls = (Il2CppObject*)_this;
+    remove_from_tracking_recursive(cls->klass, _this);
+    return original(_this);
+  }
+}
+
+void calc_liveness_hook(auto original, void* state)
+{
+  original(state);
+
+  eastl::vector<eastl::pair<Il2CppClass*, uintptr_t>> objects_to_free;
+#define IS_MARKED(obj) (((size_t)(obj)->klass) & (size_t)1)
+  for (auto &[klass, objects] : tracked_objects) {
+    for (auto object : objects) {
+      if (IS_MARKED((Il2CppObject*)object)) {
+        objects_to_free.emplace_back(klass, object);
+      }
+    }
   }
 
-  auto cls = (Il2CppObject*)_this;
-  remove_from_tracking_recursive(cls->klass, _this);
+#undef IS_MARKED
+
+  for (auto &[klass, object] : objects_to_free) {
+    remove_from_tracking_recursive(klass, (void*)object);
+  }
 }
 
 static eastl::unordered_set<void*> seen_ctor;
@@ -349,7 +381,10 @@ void InstallTestPatches()
   TrackObject<NavigationInteractionUIViewController>();
   TrackObject<StarNodeObjectViewerWidget>();
 
+  auto calc_liveness = (il2cpp_unity_liveness_calculation_from_root_t)(GetProcAddress(
+      GetModuleHandle("GameAssembly.dll"), "il2cpp_unity_liveness_finalize"));
+  SPUD_STATIC_DETOUR(calc_liveness, calc_liveness_hook);
 
   static auto SetActive = il2cpp_resolve_icall<void(void*, bool)>("UnityEngine.GameObject::SetActive(System.Boolean)");
-  SPUD_STATIC_DETOUR(SetActive, SetActive_hook);  
+  SPUD_STATIC_DETOUR(SetActive, SetActive_hook);
 }

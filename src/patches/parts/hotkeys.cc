@@ -391,13 +391,19 @@ bool CanHideViewers()
 // NOTE: If you change this loop functionality, also change CanideViewersOfType template
 template <typename T> inline bool DidHideViewersOfType()
 {
-  auto& objects = tracked_objects[T::get_class_helper().get_cls()];
-  auto  didHide = false;
+  const auto& objects = tracked_objects[T::get_class_helper().get_cls()];
+  auto        didHide = false;
   for (auto object : objects) {
-    auto       widget  = (T*)object;
-    const auto visible = widget
-                         && (widget->_visibilityController->_state == VisibilityState::Visible
-                             || widget->_visibilityController->_state == VisibilityState::Show);
+    auto widget = (T*)object;
+    if (!widget) {
+      continue;
+    }
+    auto visbility_controller = widget->_visibilityController;
+    if (!visbility_controller) {
+      continue;
+    }
+    const auto visible = (visbility_controller->_state == VisibilityState::Visible
+                          || visbility_controller->_state == VisibilityState::Show);
     if (visible) {
       widget->HideAllViewers();
       didHide = true;
@@ -436,7 +442,8 @@ void ChangeNavigationSection(SectionID sectionID)
 
 template <typename T>
 inline bool DidExecuteFleetAction(std::string_view actionText, ActionType actionType, FleetBarViewController* fleet_bar,
-                                  const std::span<const FleetState> wantedStates, FleetState helpState = FleetState::Unknown)
+                                  const std::span<const FleetState> wantedStates,
+                                  FleetState                        helpState = FleetState::Unknown)
 {
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_bar->_fleetPanelController->fleet;
@@ -487,7 +494,8 @@ bool DidExecuteRepair(FleetBarViewController* fleet_bar)
 {
   static constexpr FleetState states[] = {FleetState::Docked, FleetState::Destroyed};
 
-  return DidExecuteFleetAction<CanRepairRequirement>("Repair", ActionType::Repair, fleet_bar, states, FleetState::Repairing);
+  return DidExecuteFleetAction<CanRepairRequirement>("Repair", ActionType::Repair, fleet_bar, states,
+                                                     FleetState::Repairing);
 }
 
 void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
@@ -502,7 +510,8 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
   auto fleet_controller = fleet_bar->_fleetPanelController;
   auto fleet            = fleet_controller->fleet;
 
-  if (has_recall_cancel && (fleet->CurrentState == FleetState::WarpCharging || fleet->CurrentState == FleetState::Warping)) {
+  if (has_recall_cancel
+      && (fleet->CurrentState == FleetState::WarpCharging || fleet->CurrentState == FleetState::Warping)) {
     fleet_controller->CancelWarpClicked();
   } else {
     auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
