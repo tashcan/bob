@@ -23,13 +23,6 @@ BOOL WINAPI DllMain(HINSTANCE /*hinstDLL*/, DWORD fdwReason, LPVOID /*lpReserved
       if (!game_path.filename().generic_wstring().starts_with(L"prime")) {
         return TRUE;
       }
-
-      // This is just for debugging
-#ifndef NDEBUG
-      AllocConsole();
-      FILE* fp;
-      freopen_s(&fp, "CONOUT$", "w", stdout);
-#endif
       // Since we are replacing version.dll, need the proper forwards
       VersionDllInit();
       Patches::Apply();

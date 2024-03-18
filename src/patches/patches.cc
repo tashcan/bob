@@ -43,6 +43,17 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 {
   auto r = original(domain_name);
 
+#ifndef NDEBUG
+  AllocConsole();
+  FILE* fp;
+  freopen_s(&fp, "CONOUT$", "w", stdout);
+#endif
+
+  auto file_logger = spdlog::basic_logger_mt("default", "community_patch.log", true);
+  auto sink        = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+  file_logger->sinks().push_back(sink);
+  spdlog::set_default_logger(file_logger);
+
   spdlog::info("Initializing STFC Community Patch ({})", VER_PRODUCT_VERSION_STR);
 
   const std::map<std::string, void*> patches = {
@@ -130,26 +141,17 @@ void Patches::Apply()
   auto assembly = LoadLibraryA("GameAssembly.dll");
 
   try {
-    auto file_logger = spdlog::basic_logger_mt("default", "community_patch.log", true);
-    spdlog::set_default_logger(file_logger);
-    auto sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    file_logger->sinks().push_back(sink);
-
 #ifndef NDEBUG
     const auto log_level = spdlog::level::trace;
-    const auto str_level = "DEBUG";
 #else
     const auto log_level = spdlog::level::info;
-    const auto str_level = "info";
 #endif
 
     spdlog::set_level(log_level);
     spdlog::flush_on(log_level);
-    spdlog::warn("Setting log level to {}", str_level);
 
     auto n = GetProcAddress(assembly, "il2cpp_init");
     SPUD_STATIC_DETOUR(n, il2cpp_init_hook);
-    ;
   } catch (...) {
     // Failed to Apply at least some patches
   }

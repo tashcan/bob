@@ -60,6 +60,15 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(eastl)
 
+# FetchContent_Declare(
+#     eathread
+#     GIT_REPOSITORY https://github.com/RedSkittleFox/EAThread.git
+#     GIT_TAG origin/patch-1
+#     GIT_PROGRESS TRUE
+#     GIT_SUBMODULES ""
+# )
+# FetchContent_MakeAvailable(eathread)
+
 SET(TARGET_H
     Header.h
     Plugin.h

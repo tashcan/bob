@@ -360,14 +360,10 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   return original(_this);
 }
 
-extern eastl::unordered_map<Il2CppClass*, eastl::vector<uintptr_t>> tracked_objects;
-
 // NOTE: If you change this loop functionality, also change DoHideViewersOfType template
 template <typename T> inline bool CanHideViewersOfType()
 {
-  auto& objects = tracked_objects[T::get_class_helper().get_cls()];
-  for (auto object : objects) {
-    auto       widget  = (T*)object;
+  for (auto widget : ObjectFinder<T>::GetAll()) {
     const auto visible = widget
                          && (widget->_visibilityController->_state == VisibilityState::Visible
                              || widget->_visibilityController->_state == VisibilityState::Show);
@@ -391,10 +387,9 @@ bool CanHideViewers()
 // NOTE: If you change this loop functionality, also change CanideViewersOfType template
 template <typename T> inline bool DidHideViewersOfType()
 {
-  const auto& objects = tracked_objects[T::get_class_helper().get_cls()];
-  auto        didHide = false;
-  for (auto object : objects) {
-    auto widget = (T*)object;
+  const auto objects = ObjectFinder<T>::GetAll();
+  auto       didHide = false;
+  for (auto widget : objects) {
     if (!widget) {
       continue;
     }
