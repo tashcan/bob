@@ -95,7 +95,7 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::info("");
   spdlog::info("Please see https://github.com/tashcan/bob for latest configuration help, examples and future releases");
-  spdlog::inof("or visit the STFC Community Mod discord server at https://discord.gg/PrpHgs7Vjs");
+  spdlog::info("or visit the STFC Community Mod discord server at https://discord.gg/PrpHgs7Vjs");
   spdlog::info("");
 
   return r;
