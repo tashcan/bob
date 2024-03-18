@@ -86,16 +86,16 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::info("");
 #if VERSION_PATCH
-  spdlog::info("Loaded beta verison {}.{}.{} Patch {}", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH);
+  spdlog::info("Loaded beta version {}.{}.{} (Patch {})", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH);
   spdlog::info("");
-  spdlog::info("NOTE: Beta versions may have unexpected bugs and issues, please visit Ripper's discord");
-  spdlog::info("      for hints and help");
+  spdlog::info("NOTE: Beta versions may have unexpected bugs and issues");
 #else
-  spdlog::info("Loaded release verison {}.{}.{}", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION);
+  spdlog::info("Loaded release version {}.{}.{}", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION);
 #endif
 
   spdlog::info("");
   spdlog::info("Please see https://github.com/tashcan/bob for latest configuration help, examples and future releases");
+  spdlog::inof("or visit the STFC Community Mod discord server at https://discord.gg/PrpHgs7Vjs");
   spdlog::info("");
 
   return r;

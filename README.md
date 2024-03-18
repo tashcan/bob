@@ -142,7 +142,9 @@ The most common problems getting the DLL to work are:
 
 ## Support
 
-Tashcan is now retiring from all things STFC but will still be maintaining [Ripper's Corner](https://discord.gg/gPuQ5sPYM9) for other things.  For STFC Community Mod items, please visit the [STFC Community Mod](https://discord.gg/PrpHgs7Vjs) discord server.
+Tashcan has now retired all things STFC from [Ripper's Corner](https://discord.gg/gPuQ5sPYM9) but still swing by to say hello to the wonderful man.  
+
+For STFC Community Mod items, please visit the [STFC Community Mod](https://discord.gg/PrpHgs7Vjs) discord server.
 
 ## Disclaimer
 

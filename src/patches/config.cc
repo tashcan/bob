@@ -464,13 +464,13 @@ void Config::Load()
       << parsed << "\n\n-----------------------------\nVersion "
 
 #if VERSION_PATCH
-      << "Loaded beta verison " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << " Beta "
-      << VERSION_PATCH << "\n\n"
-      << "NOTE: Beta versions may have unexpected bugs and issues, please visit Ripper's discord\n"
-      << "      for hints and help"
+      << "Loaded beta version " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << " (Patch "
+      << VERSION_PATCH << ")\n\n"
+      << "NOTE: Beta versions may have unexpected bugs and issues.\n\n"
 #else
-      << "Loaded beta verison " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << " (Release)"
+      << "Loaded beta version " << VERSION_MAJOR << "." << VERSION_MINOR << "." << VERSION_REVISION << " (Release)"
 #endif
 
-      << "\n\nPlease see https://github.com/tashcan/bob for latest configuration help, examples and future releases\n";
+      << "\n\nPlease see https://github.com/tashcan/bob for latest configuration help, examples and future releases\n"
+      << "or visit the STFC Community Mod discord server at https://discord.gg/PrpHgs7Vjs\n\n";
 }
