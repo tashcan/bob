@@ -2,9 +2,9 @@
 #include "prime/FullScreenChatViewController.h"
 #include "prime/GenericButtonContext.h"
 
-#include <spud/detour.h>
-
 #include "config.h"
+
+#include <spud/detour.h>
 
 bool FullScreenChatViewController_AboutToShow(auto original, FullScreenChatViewController* _this3)
 {

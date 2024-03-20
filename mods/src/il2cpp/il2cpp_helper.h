@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Windows.h>
-
-#include "utils.h"
 #include "il2cpp-functions.h"
 
 #include <il2cpp-api-types.h>
@@ -340,3 +337,9 @@ public:
     return {reinterpret_cast<T**>(objects.data()), reinterpret_cast<T**>(objects.data()) + objects.size()};
   }
 };
+
+
+template<typename T>
+T *il2cpp_resolve_icall(const char* name) {
+    return (T*)il2cpp_resolve_icall(name);
+}

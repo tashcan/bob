@@ -1,8 +1,5 @@
 #include <Windows.h>
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <filesystem>
 
 #include "patches/patches.h"
@@ -28,7 +25,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID /*lpReserved*/)
 
       // Since we are replacing version.dll, need the proper forwards
       VersionDllInit();
-      Patches::Apply();
+      ApplyPatches();
       break;
     case DLL_THREAD_ATTACH:
       break;

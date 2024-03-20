@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdint>
-
 enum GameFunction {
   MoveLeft,
   MoveRight,

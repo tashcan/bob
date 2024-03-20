@@ -1,21 +1,12 @@
 #include "config.h"
-#include "prime_types.h"
-#include "utils.h"
-
-#include <Windows.h>
-
-#include <iostream>
-
-#include <spud/detour.h>
 
 #include <il2cpp/il2cpp_helper.h>
 
-#include "prime/CanvasScaler.h"
-#include "prime/ScreenManager.h"
+#include <prime/CanvasScaler.h>
+#include <prime/ScreenManager.h>
 
-#include <algorithm>
-
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
+#include <spud/detour.h>
 
 void SetResolution_Hook(auto original, int x, int y, int mode, int unk)
 {
@@ -52,12 +43,6 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
 
     _this->m_canvasRootScaler->scaleFactor = n;
   }
-}
-
-BOOL SetWindowPos_Hook(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
-{
-  spdlog::trace("Window size/position {} (x) {} (y) {} (cx) {} (cy)", X, Y, cx, cy);
-  return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
 }
 
 void InstallUiScaleHooks()

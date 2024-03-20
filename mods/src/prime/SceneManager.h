@@ -2,8 +2,6 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
-#include "utils.h"
-
 struct SceneManager {
 public:
   static const wchar_t* GetSceneName(void* scene)

@@ -1,11 +1,11 @@
 #include "config.h"
 #include "prime_types.h"
 
-#include <spud/detour.h>
-
 #include <il2cpp/il2cpp_helper.h>
 #include <prime/IBuffComparer.h>
 #include <prime/IBuffData.h>
+
+#include <spud/detour.h>
 
 static bool IsImportantFactionBuffThatNeedsFix(auto original, ClientModifierType modifierType)
 {
@@ -119,16 +119,17 @@ void InstallBuffFixHooks()
 
   screen_manager_helper =
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Services", "BuffService");
-  ptr = screen_manager_helper.GetMethodSpecial("ApplyBuffModifiersToCostVal", [](auto count, const Il2CppType** params) {
-    if (count != 2) {
-      return false;
-    }
-    auto p2 = params[1]->type;
-    if (p2 == IL2CPP_TYPE_VALUETYPE) {
-      return true;
-    }
-    return false;
-  });
+  ptr =
+      screen_manager_helper.GetMethodSpecial("ApplyBuffModifiersToCostVal", [](auto count, const Il2CppType **params) {
+        if (count != 2) {
+          return false;
+        }
+        auto p2 = params[1]->type;
+        if (p2 == IL2CPP_TYPE_VALUETYPE) {
+          return true;
+        }
+        return false;
+      });
   if (!ptr) {
     return;
   }

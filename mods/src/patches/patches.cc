@@ -1,22 +1,17 @@
 #include "patches.h"
-
-#include <Windows.h>
-
-#include <filesystem>
+#include "version.h"
 
 #include <spud/detour.h>
 
-#include "il2cpp/il2cpp_helper.h"
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/spdlog.h>
 
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/spdlog.h"
+#if _WIN32
+#include <Windows.h>
+#endif
 
-#include "Dbghelp.h"
-
-#include "version.h"
-
-#include <map>
+#include <array>
 
 void InstallUiScaleHooks();
 void InstallZoomHooks();
@@ -24,7 +19,6 @@ void InstallBuffFixHooks();
 void InstallFreeResizeHooks();
 void InstallToastBannerHooks();
 void InstallPanHooks();
-void InstallWebRequestHooks();
 void InstallImproveResponsivenessHooks();
 void InstallHotkeyHooks();
 void InstallTestPatches();
@@ -38,7 +32,7 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 {
   auto r = original(domain_name);
 
-#ifndef NDEBUG
+#ifndef NDEBUG && _WIN32
   AllocConsole();
   FILE* fp;
   freopen_s(&fp, "CONOUT$", "w", stdout);
@@ -51,13 +45,12 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::info("Initializing STFC Community Patch ({})", VER_PRODUCT_VERSION_STR);
 
-  const std::map<std::string, void*> patches = {
+  const std::pair<std::string, void (*)()> patches[] = {
       {"UiScaleHooks", InstallUiScaleHooks},
       {"ZoomHooks", InstallZoomHooks},
       {"BuffFixHooks", InstallBuffFixHooks},
       {"ToastBannerHooks", InstallToastBannerHooks},
       {"PanHooks", InstallPanHooks},
-      {"WebRequestHooks", InstallWebRequestHooks},
       {"ImproveResponsivenessHooks", InstallImproveResponsivenessHooks},
       {"HotkeyHooks", InstallHotkeyHooks},
       {"FreeResizeHooks", InstallFreeResizeHooks},
@@ -70,18 +63,17 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
   };
 
   auto patch_count = 0;
-  auto patch_total = patches.size();
-  for (auto& kv : patches) {
-    auto patch_name = kv.first;
-    auto patch_func = kv.second;
+  auto patch_total = sizeof(patches) / sizeof(patches[0]);
+  for (const auto& [patch_name, patch_func] : patches) {
     patch_count++;
     spdlog::info("Patching {:>2} of {} ({})", patch_count, patch_total, patch_name);
-    reinterpret_cast<void (*)()>(patch_func)();
+    patch_func();
   }
 
   spdlog::info("");
 #if VERSION_PATCH
-  spdlog::info("Loaded beta version {}.{}.{} (Patch {})", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH);
+  spdlog::info("Loaded beta version {}.{}.{} (Patch {})", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION,
+               VERSION_PATCH);
   spdlog::info("");
   spdlog::info("NOTE: Beta versions may have unexpected bugs and issues");
 #else
@@ -96,42 +88,7 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
   return r;
 }
 
-void CreateMiniDump(EXCEPTION_POINTERS* pep)
-{
-  // Open the file
-  typedef BOOL (*PDUMPFN)(HANDLE hProcess, DWORD ProcessId, HANDLE hFile, MINIDUMP_TYPE DumpType,
-                          PMINIDUMP_EXCEPTION_INFORMATION   ExceptionParam,
-                          PMINIDUMP_USER_STREAM_INFORMATION UserStreamParam,
-                          PMINIDUMP_CALLBACK_INFORMATION    CallbackParam);
-
-  HANDLE hFile =
-      CreateFileW(L"Minidump.dmp", GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
-
-  HMODULE h   = ::LoadLibraryW(L"DbgHelp.dll");
-  PDUMPFN pFn = (PDUMPFN)GetProcAddress(h, "MiniDumpWriteDump");
-
-  if ((hFile != NULL) && (hFile != INVALID_HANDLE_VALUE)) {
-    MINIDUMP_EXCEPTION_INFORMATION mdei;
-
-    mdei.ThreadId          = GetCurrentThreadId();
-    mdei.ExceptionPointers = pep;
-    mdei.ClientPointers    = TRUE;
-
-    MINIDUMP_TYPE mdt = MiniDumpNormal;
-
-    (*pFn)(GetCurrentProcess(), GetCurrentProcessId(), hFile, mdt, (pep != 0) ? &mdei : 0, 0, 0);
-
-    CloseHandle(hFile);
-  }
-}
-
-LONG WINAPI CrashHandler(struct _EXCEPTION_POINTERS* ExceptionInfo)
-{
-  CreateMiniDump(ExceptionInfo);
-  return EXCEPTION_EXECUTE_HANDLER;
-}
-
-void Patches::Apply()
+void ApplyPatches()
 {
   auto assembly = LoadLibraryA("GameAssembly.dll");
 

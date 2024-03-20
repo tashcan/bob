@@ -1,7 +1,7 @@
+#if _WIN32
 #include <Windows.h>
 
 #include "config.h"
-#include "utils.h"
 
 #include <spud/detour.h>
 
@@ -157,3 +157,4 @@ void InstallFreeResizeHooks()
   SPUD_STATIC_DETOUR(ptr_update, AspectRatioConstraintHandler_Update);
   SPUD_STATIC_DETOUR(ptr_wndproc, AspectRatioConstraintHandler_WndProc);
 }
+#endif

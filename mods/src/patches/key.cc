@@ -1,17 +1,11 @@
 #include "key.h"
-#include "config.h"
 #include "prime/EventSystem.h"
-#include "utils.h"
 #include "str_utils.h"
 #include <prime/TMP_InputField.h>
 
-#include <spdlog/spdlog.h>
-
-#include <unordered_map>
-#include <cstdint>
-#include <iostream>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 
 int Key::cacheInputFocused  = 0;
 int Key::cacheInputModified = 0;

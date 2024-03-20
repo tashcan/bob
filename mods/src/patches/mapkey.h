@@ -1,10 +1,10 @@
 #pragma once
 
-#include <array>
-#include "key.h"
 #include "modifierkey.h"
 #include <patches/gamefunctions.h>
 #include <prime/KeyCode.h>
+
+#include <array>
 #include <string>
 #include <vector>
 
@@ -13,12 +13,6 @@ class MapKey
 public:
   MapKey();
 
-private:
-  static std::array<std::vector<MapKey>, (int)GameFunction::Max> mappedKeys;
-
-  bool hasModifiers;
-
-public:
   static MapKey Parse(std::string_view key);
   static void   AddMappedKey(GameFunction gameFunction, MapKey mappedKey);
   static bool   IsPressed(GameFunction gameFunction);
@@ -33,4 +27,9 @@ public:
   std::vector<std::string> Shortcuts;
 
   KeyCode Key;
+
+private:
+  static std::array<std::vector<MapKey>, (int)GameFunction::Max> mappedKeys;
+
+  bool hasModifiers;
 };

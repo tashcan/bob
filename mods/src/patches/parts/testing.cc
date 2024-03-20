@@ -1,10 +1,4 @@
-#include "prime_types.h"
-
-#include <spud/detour.h>
-#include <spud/signature.h>
-
 #include "config.h"
-#include "utils.h"
 
 #include "prime/ActionRequirement.h"
 #include "prime/AllianceStarbaseObjectViewerWidget.h"
@@ -37,8 +31,11 @@
 #include "prime/SceneManager.h"
 #include "prime/ScreenManager.h"
 #include "prime/StarNodeObjectViewerWidget.h"
+#include <prime/UIBehaviour.h>
 
 #include <il2cpp/il2cpp_helper.h>
+#include <spud/detour.h>
+#include <spud/signature.h>
 
 #include <EASTL/unordered_map.h>
 #include <EASTL/unordered_set.h>
@@ -46,7 +43,6 @@
 
 #include <chrono>
 #include <iostream>
-#include <prime/UIBehaviour.h>
 
 static int i = 0;
 

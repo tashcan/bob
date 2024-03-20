@@ -1,5 +1,3 @@
 #pragma once
 
-struct Patches {
-  static void Apply();
-};
+void ApplyPatches();

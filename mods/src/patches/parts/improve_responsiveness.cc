@@ -1,19 +1,10 @@
 #include "config.h"
-#include "prime_types.h"
-
-#include <spud/detour.h>
-
 #include "prime/TransitionManager.h"
-
-#include "utils.h"
 
 #include <il2cpp/il2cpp_helper.h>
 
-#include <algorithm>
-#include <chrono>
-#include <iostream>
-
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
+#include <spud/detour.h>
 
 int64_t TransitionManager_Awake(auto original, TransitionManager* a1)
 {

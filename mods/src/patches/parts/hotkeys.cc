@@ -35,7 +35,6 @@
 
 #include "patches/key.h"
 #include "patches/mapkey.h"
-#include "utils.h"
 
 #include <EASTL/unordered_map.h>
 #include <EASTL/vector.h>

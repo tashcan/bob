@@ -1,25 +1,19 @@
 #include "config.h"
-#include "prime_types.h"
 
-#include "patches/mapkey.h"
-#include "utils.h"
-#include <spdlog/spdlog.h>
-#include <spud/detour.h>
+#include <patches/mapkey.h>
 
 #include <il2cpp/il2cpp_helper.h>
 
-#include "prime/EventSystem.h"
-#include "prime/Hub.h"
-#include "prime/KeyCode.h"
-#include "prime/NavigationPan.h"
-#include "prime/NavigationZoom.h"
-#include "prime/ScreenManager.h"
-#include "prime/TMP_InputField.h"
+#include <prime/NavigationPan.h>
+#include <prime/NavigationZoom.h>
+
+#include <spdlog/spdlog.h>
+#include <spud/detour.h>
 
 vec3 GetMouseWorldPos(void *cam, vec3 *pos)
 {
   static auto class_helper = il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.Client.Core", "MathUtils");
-  static auto fn                                = class_helper.GetMethodInfo("GetMouseWorldPos");
+  static auto fn           = class_helper.GetMethodInfo("GetMouseWorldPos");
 
   void            *args[2]   = {cam, (void *)pos};
   Il2CppException *exception = NULL;

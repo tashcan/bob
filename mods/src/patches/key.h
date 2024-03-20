@@ -1,9 +1,10 @@
 #pragma once
 
-#include <unordered_map>
 #include <prime/KeyCode.h>
-#include <string>
+
 #include <array>
+#include <string>
+#include <unordered_map>
 
 class Key
 {

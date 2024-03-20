@@ -7,6 +7,7 @@ target("mods")
     add_rules("protobuf.cpp")
     add_files("src/prime/proto/*.proto")
     set_exceptions("cxx")
+    add_defines("NOMINMAX")
     if is_plat("windows") then
         add_cxflags("/bigobj")
         add_linkdirs("src/il2cpp")

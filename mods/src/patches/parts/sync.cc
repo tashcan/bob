@@ -1,4 +1,4 @@
-#include <spud/detour.h>
+#include "config.h"
 
 #include <il2cpp/il2cpp_helper.h>
 
@@ -10,10 +10,12 @@
 
 #include <Digit.PrimeServer.Models.pb.h>
 
-#include "config.h"
-
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
+#include <spud/detour.h>
+
+#include <EASTL/algorithm.h>
+#include <EASTL/bonus/ring_buffer.h>
 
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Web.Http.Headers.h>
@@ -24,9 +26,6 @@
 #include <ostream>
 #include <queue>
 #include <string>
-
-#include <EASTL/algorithm.h>
-#include <EASTL/bonus/ring_buffer.h>
 
 namespace http
 {

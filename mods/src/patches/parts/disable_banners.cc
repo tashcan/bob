@@ -1,10 +1,9 @@
 #include "config.h"
 
-#include <spud/detour.h>
-
 #include <il2cpp/il2cpp_helper.h>
+#include <prime/Toast.h>
 
-#include "prime/Toast.h"
+#include <spud/detour.h>
 
 struct ToastObserver {
 };

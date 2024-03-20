@@ -1,19 +1,19 @@
 #include "config.h"
-#include "version.h"
-#include "str_utils.h"
 #include "patches/mapkey.h"
 #include "prime/KeyCode.h"
+#include "str_utils.h"
+#include "version.h"
+#include <prime\Toast.h>
+
+#include <EASTL/tuple.h>
+#include <spdlog/spdlog.h>
 
 #include <algorithm>
-#include <cstdint>
+#include <cstdio>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <string_view>
-
-#include <EASTL/tuple.h>
-
-#include <spdlog/spdlog.h>
 
 static const eastl::tuple<const char*, int> bannerTypes[] = {
     {"Standard", ToastState::Standard},
@@ -51,7 +51,7 @@ void Config::Save(toml::table config, std::string_view filename, bool apply_warn
   if (apply_warning) {
     char buff[44];
     snprintf(buff, 44, "%-44s", CONFIG_FILE_DEFAULT);
- 
+
     config_file << "#######################################################################\n";
     config_file << "#######################################################################\n";
     config_file << "####                                                               ####\n";
@@ -277,18 +277,18 @@ void Config::Load()
 
   this->use_out_of_dock_power = get_config_or_default(config, parsed, "buffs", "use_out_of_dock_power", false);
 
-  this->disable_escape_exit        = get_config_or_default(config, parsed, "ui", "disable_escape_exit", false);
-  this->disable_preview_locate     = get_config_or_default(config, parsed, "ui", "disable_preview_locate", false);
-  this->disable_preview_recall     = get_config_or_default(config, parsed, "ui", "disable_preview_recall", false);
-  this->disable_move_keys          = get_config_or_default(config, parsed, "ui", "disable_move_keys", false);
-  this->disable_toast_banners      = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
-  this->extend_donation_slider     = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);
-  this->disable_galaxy_chat        = get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", false);
-  this->show_cargo_default         = get_config_or_default(config, parsed, "ui", "show_cargo_default", false);
-  this->show_player_cargo          = get_config_or_default(config, parsed, "ui", "show_player_cargo", false);
-  this->show_station_cargo         = get_config_or_default(config, parsed, "ui", "show_station_cargo", true);
-  this->show_hostile_cargo         = get_config_or_default(config, parsed, "ui", "show_hostile_cargo", true);
-  this->show_armada_cargo          = get_config_or_default(config, parsed, "ui", "show_armada_cargo", true);
+  this->disable_escape_exit    = get_config_or_default(config, parsed, "ui", "disable_escape_exit", false);
+  this->disable_preview_locate = get_config_or_default(config, parsed, "ui", "disable_preview_locate", false);
+  this->disable_preview_recall = get_config_or_default(config, parsed, "ui", "disable_preview_recall", false);
+  this->disable_move_keys      = get_config_or_default(config, parsed, "ui", "disable_move_keys", false);
+  this->disable_toast_banners  = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
+  this->extend_donation_slider = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);
+  this->disable_galaxy_chat    = get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", false);
+  this->show_cargo_default     = get_config_or_default(config, parsed, "ui", "show_cargo_default", false);
+  this->show_player_cargo      = get_config_or_default(config, parsed, "ui", "show_player_cargo", false);
+  this->show_station_cargo     = get_config_or_default(config, parsed, "ui", "show_station_cargo", true);
+  this->show_hostile_cargo     = get_config_or_default(config, parsed, "ui", "show_hostile_cargo", true);
+  this->show_armada_cargo      = get_config_or_default(config, parsed, "ui", "show_armada_cargo", true);
 
   this->always_skip_reveal_sequence = get_config_or_default(config, parsed, "ui", "always_skip_reveal_sequence", false);
   this->stay_in_bundle_after_summary =
@@ -314,7 +314,8 @@ void Config::Load()
       get_config_or_default<std::string>(config, parsed, "ui", "disabled_banner_types", "");
 
   this->config_settings_url = get_config_or_default<std::string>(config, parsed, "config", "settings_url", "");
-  this->config_assets_url_override = get_config_or_default<std::string>(config, parsed, "config", "assets_url_override", "");
+  this->config_assets_url_override =
+      get_config_or_default<std::string>(config, parsed, "config", "assets_url_override", "");
 
   std::vector<std::string> types = StrSplit(disabled_banner_types_str, ',');
 
