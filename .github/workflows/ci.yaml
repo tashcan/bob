@@ -8,7 +8,7 @@ on:
     branches: [ "main", "dev" ]
 
 jobs:
-  build:
+  build-win:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
@@ -38,3 +38,21 @@ jobs:
         with:
           name: stfc-community-patch
           path: version.dll
+
+  build-mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+  
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Configure
+        run: xmake f -m releasedbg -y
+
+      - name: Build
+        run: xmake -y
+  
