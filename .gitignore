@@ -12,3 +12,4 @@ debug.log
 /app/
 /.xmake/
 /vsxmake*/
+.DS_Store

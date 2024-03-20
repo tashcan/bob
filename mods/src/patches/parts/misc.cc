@@ -112,7 +112,7 @@ ResolutionArray* GetResolutions_Hook(auto original)
 
 void InstallResolutionListFix()
 {
-  SPUD_STATIC_DETOUR(il2cpp_resolve_icall<ResolutionArray*()>("UnityEngine.Screen::get_resolutions()"),
+  SPUD_STATIC_DETOUR(il2cpp_resolve_icall_typed<ResolutionArray*()>("UnityEngine.Screen::get_resolutions()"),
                      GetResolutions_Hook);
 }
 

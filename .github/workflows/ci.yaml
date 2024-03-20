@@ -5,7 +5,7 @@ on:
     branches:
       - "**"
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
 
 jobs:
   build-win:
@@ -13,13 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
 
       - uses: seanmiddleditch/gha-setup-ninja@master
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
-  
+
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
@@ -29,11 +29,11 @@ jobs:
 
       - name: Build
         run: xmake -y
-  
+
       - name: Package
         run: |
           mv build/windows/x64/releasedbg/stfc-community-patch.dll version.dll
-  
+
       - uses: actions/upload-artifact@v2
         with:
           name: stfc-community-patch
@@ -44,8 +44,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
-  
+          submodules: "recursive"
+
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
@@ -55,4 +55,8 @@ jobs:
 
       - name: Build
         run: xmake -y
-  
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: stfc-community-patch
+          path: build/macosx/

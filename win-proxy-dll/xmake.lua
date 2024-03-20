@@ -1,4 +1,5 @@
 target("stfc-community-patch")
+do
     set_kind("shared")
     add_files("src/*.cc")
     add_files("src/*.rc")
@@ -11,3 +12,4 @@ target("stfc-community-patch")
     end
     set_policy("build.optimization.lto", true)
     add_links("User32.lib", "Ole32.lib", "OleAut32.lib")
+end

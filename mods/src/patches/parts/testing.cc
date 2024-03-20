@@ -112,12 +112,6 @@ void                                 FactionsListDirector_Hook(void* _this, void
 //	}
 //}
 
-LPTOP_LEVEL_EXCEPTION_FILTER SetUnhandledExceptionFilter_Hook(LPTOP_LEVEL_EXCEPTION_FILTER lpTopLevelExceptionFilter)
-{
-  return nullptr;
-  return SetUnhandledExceptionFilter(lpTopLevelExceptionFilter);
-}
-
 void RequestDispatcherBase_SetDefaultHeader(void* _this, Il2CppString* key, Il2CppString* value);
 decltype(RequestDispatcherBase_SetDefaultHeader)* oRequestDispatcherBase_SetDefaultHeader = nullptr;
 void RequestDispatcherBase_SetDefaultHeader(void* _this, Il2CppString* key, Il2CppString* value)
@@ -208,12 +202,6 @@ public:
   }
 };
 
-void* AppConfig_LoadConfig(auto original)
-{
-  auto app_config = original();
-  return app_config;
-}
-
 AppConfig* Model_LoadConfigs(auto original, Model* _this)
 {
   original(_this);
@@ -294,7 +282,7 @@ void* track_ctor(auto original, void* _this)
   std::scoped_lock lk{tracked_objects_mutex};
   auto             cls = (Il2CppObject*)_this;
   spdlog::trace("Tracking {}({})", _this, cls->klass->name);
-  typedef void      (*FinalizerCallback)(void* object, void* client_data);
+  typedef void (*FinalizerCallback)(void* object, void* client_data);
   FinalizerCallback oldCallback = nullptr;
   void*             oldData     = nullptr;
   GC_register_finalizer_inner((intptr_t)_this, track_finalizer, nullptr, &oldCallback, &oldData);
@@ -377,7 +365,7 @@ template <typename T> void TrackObject()
 
 void SetActive_hook(auto original, void* _this, bool active)
 {
-  static auto IsActiveSelf = il2cpp_resolve_icall<bool(void*)>("UnityEngine.GameObject::get_activeSelf()");
+  static auto IsActiveSelf = il2cpp_resolve_icall_typed<bool(void*)>("UnityEngine.GameObject::get_activeSelf()");
 
   if (active && IsActiveSelf(_this)) {
     return;
@@ -388,10 +376,6 @@ void SetActive_hook(auto original, void* _this, bool active)
 
 void InstallTestPatches()
 {
-  auto app_config      = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "AppConfig");
-  auto load_config_ptr = app_config.GetMethod("LoadConfig");
-  SPUD_STATIC_DETOUR(load_config_ptr, AppConfig_LoadConfig);
-
   auto model            = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "Model");
   auto load_configs_ptr = model.GetMethod("LoadConfigs");
   SPUD_STATIC_DETOUR(load_configs_ptr, Model_LoadConfigs);
@@ -416,12 +400,17 @@ void InstallTestPatches()
 
   SPUD_STATIC_DETOUR(il2cpp_unity_liveness_finalize, calc_liveness_hook);
 
-  static auto SetActive = il2cpp_resolve_icall<void(void*, bool)>("UnityEngine.GameObject::SetActive(System.Boolean)");
+  static auto SetActive =
+      il2cpp_resolve_icall_typed<void(void*, bool)>("UnityEngine.GameObject::SetActive(System.Boolean)");
   SPUD_STATIC_DETOUR(SetActive, SetActive_hook);
 
+#if _WIN32
   auto GC_register_finalizer_inner_matches =
       spud::find_in_module("40 56 57 41 57 48 83 EC ? 83 3D", "GameAssembly.dll");
-
+#else
+  auto GC_register_finalizer_inner_matches = spud::find_in_module(
+      "55 48 89 E5 41 57 41 56 41 55 41 54 53 48 83 EC ? 4C 89 45 ? 48 89 4D ? 83 3D", "GameAssembly.dylib");
+#endif
   auto GC_register_finalizer_inner_matche = GC_register_finalizer_inner_matches.get(0);
   GC_register_finalizer_inner = (decltype(GC_register_finalizer_inner))GC_register_finalizer_inner_matche.address();
 }

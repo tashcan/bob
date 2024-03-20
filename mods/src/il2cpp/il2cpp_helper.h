@@ -12,6 +12,11 @@
 #include <EASTL/unordered_map.h>
 #include <EASTL/vector.h>
 
+#if !_WIN32
+#include <syslog.h>
+#include <unistd.h>
+#endif
+
 class IL2CppPropertyHelper
 {
 public:
@@ -102,7 +107,7 @@ public:
 
   template <typename T> inline T Get() const
   {
-    T           v;
+    T v;
     il2cpp_field_static_get_value(this->fieldInfo, &v);
     return v;
   }
@@ -338,8 +343,7 @@ public:
   }
 };
 
-
-template<typename T>
-T *il2cpp_resolve_icall(const char* name) {
-    return (T*)il2cpp_resolve_icall(name);
+template <typename T> T* il2cpp_resolve_icall_typed(const char* name)
+{
+  return (T*)il2cpp_resolve_icall(name);
 }

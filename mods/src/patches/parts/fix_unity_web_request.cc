@@ -12,20 +12,20 @@
 static void ProcessSending_Hook(auto original, void *_this, HttpJob *item)
 {
 
-  static auto get_downloadedBytes = il2cpp_resolve_icall<uint64_t(UnityWebRequest *)>(
+  static auto get_downloadedBytes = il2cpp_resolve_icall_typed<uint64_t(UnityWebRequest *)>(
       "UnityEngine.Networking.UnityWebRequest::get_downloadedBytes()");
-  static auto get_uploadedBytes =
-      il2cpp_resolve_icall<uint64_t(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::get_uploadedBytes()");
-  static auto get_uploadHandler =
-      il2cpp_resolve_icall<uint64_t(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::get_uploadHandler()");
+  static auto get_uploadedBytes = il2cpp_resolve_icall_typed<uint64_t(UnityWebRequest *)>(
+      "UnityEngine.Networking.UnityWebRequest::get_uploadedBytes()");
+  static auto get_uploadHandler = il2cpp_resolve_icall_typed<uint64_t(UnityWebRequest *)>(
+      "UnityEngine.Networking.UnityWebRequest::get_uploadHandler()");
   static auto get_uploadProgress =
-      il2cpp_resolve_icall<float(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::GetUploadProgress");
+      il2cpp_resolve_icall_typed<float(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::GetUploadProgress");
   static auto get_IsExecuting =
-      il2cpp_resolve_icall<bool(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::IsExecuting()");
-  static auto get_isNetworkError =
-      il2cpp_resolve_icall<bool(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::get_isNetworkError()");
-  static auto get_ResponseCode =
-      il2cpp_resolve_icall<int32_t(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::get_responseCode()");
+      il2cpp_resolve_icall_typed<bool(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::IsExecuting()");
+  static auto get_isNetworkError = il2cpp_resolve_icall_typed<bool(UnityWebRequest *)>(
+      "UnityEngine.Networking.UnityWebRequest::get_isNetworkError()");
+  static auto get_ResponseCode = il2cpp_resolve_icall_typed<int32_t(UnityWebRequest *)>(
+      "UnityEngine.Networking.UnityWebRequest::get_responseCode()");
 
   if (!get_IsExecuting || !get_ResponseCode || !get_uploadProgress) {
     return original(_this, item);
@@ -50,9 +50,9 @@ static void ProcessSending_Hook(auto original, void *_this, HttpJob *item)
 static void SendWebRequest_Hook(auto original, UnityWebRequest *_this)
 {
   static auto get_use100Continue =
-      il2cpp_resolve_icall<bool(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::get_use100Continue");
-  static auto set_use100Continue =
-      il2cpp_resolve_icall<void(UnityWebRequest *, bool)>("UnityEngine.Networking.UnityWebRequest::set_use100Continue");
+      il2cpp_resolve_icall_typed<bool(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::get_use100Continue");
+  static auto set_use100Continue = il2cpp_resolve_icall_typed<void(UnityWebRequest *, bool)>(
+      "UnityEngine.Networking.UnityWebRequest::set_use100Continue");
   set_use100Continue(_this, false);
   original(_this);
 }

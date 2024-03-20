@@ -42,8 +42,6 @@
 #include <iostream>
 #include <span>
 
-extern HWND unityWindow;
-
 static bool reset_focus_next_frame = false;
 static int  show_info_pending      = 0;
 
@@ -80,7 +78,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     return;
   }
 
-  static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
+  static auto GetDeltaTime = il2cpp_resolve_icall_typed<float()>("UnityEngine.Time::get_deltaTime()");
 
   const auto is_in_chat = Hub::IsInChat();
   const auto config     = &Config::Get();
@@ -353,6 +351,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   if (config->disable_escape_exit && Key::Pressed(KeyCode::Escape)) {
     return;
   }
+
+  // config->Load();
 
   return original(_this);
 }

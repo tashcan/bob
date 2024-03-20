@@ -74,6 +74,7 @@ Config& Config::Get()
   return config;
 }
 
+#if _WIN32
 static HMONITOR lastMonitor = (HMONITOR)-1;
 static float    dpi         = 1.0f;
 
@@ -118,6 +119,17 @@ float Config::GetDPI()
 
   return dpi;
 }
+#else
+float Config::RefreshDPI()
+{
+  return Config::GetDPI();
+}
+
+float Config::GetDPI()
+{
+  return 1.0f;
+}
+#endif
 
 void Config::AdjustUiScale(bool scaleUp)
 {

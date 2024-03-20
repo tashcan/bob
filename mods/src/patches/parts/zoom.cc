@@ -33,8 +33,8 @@ inline void StoreZoom(std::string label, float &zoom, NavigationZoom *_this)
 void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 {
   static auto GetMousePosition =
-      il2cpp_resolve_icall<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
-  static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
+      il2cpp_resolve_icall_typed<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
+  static auto GetDeltaTime = il2cpp_resolve_icall_typed<float()>("UnityEngine.Time::get_deltaTime()");
 
   const auto dt               = GetDeltaTime();
   auto       zoomDelta        = 0.0f;

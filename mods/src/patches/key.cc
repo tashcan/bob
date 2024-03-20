@@ -220,7 +220,7 @@ void Key::ResetCache()
 bool Key::Down(KeyCode key)
 {
   static auto GetKeyDownInt =
-      il2cpp_resolve_icall<bool(KeyCode)>("UnityEngine.Input::GetKeyDownInt(UnityEngine.KeyCode)");
+      il2cpp_resolve_icall_typed<bool(KeyCode)>("UnityEngine.Input::GetKeyDownInt(UnityEngine.KeyCode)");
 
   if (cacheKeyDown[(int)key] == 0) {
     cacheKeyDown[(int)key] = GetKeyDownInt(key) ? 1 : -1;
@@ -231,7 +231,8 @@ bool Key::Down(KeyCode key)
 
 bool Key::Pressed(KeyCode key)
 {
-  static auto GetKeyInt = il2cpp_resolve_icall<bool(KeyCode)>("UnityEngine.Input::GetKeyInt(UnityEngine.KeyCode)");
+  static auto GetKeyInt =
+      il2cpp_resolve_icall_typed<bool(KeyCode)>("UnityEngine.Input::GetKeyInt(UnityEngine.KeyCode)");
 
   if (cacheKeyPressed[(int)key] == 0) {
     cacheKeyPressed[(int)key] = GetKeyInt(key) ? 1 : -1;

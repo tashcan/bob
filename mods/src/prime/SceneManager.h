@@ -4,17 +4,17 @@
 
 struct SceneManager {
 public:
-  static const wchar_t* GetSceneName(void* scene)
+  static const Il2CppChar* GetSceneName(void* scene)
   {
-    static auto GetSceneName =
-        il2cpp_resolve_icall<Il2CppString*(void*)>("UnityEngine.SceneManagement.Scene::GetNameInternal(System.Int32)");
+    static auto GetSceneName = il2cpp_resolve_icall_typed<Il2CppString*(void*)>(
+        "UnityEngine.SceneManagement.Scene::GetNameInternal(System.Int32)");
     auto name = GetSceneName(scene);
     return il2cpp_string_chars(name);
   }
 
   static void* GetActiveScene()
   {
-    static auto GetActiveScene_Injected = il2cpp_resolve_icall<void(void*)>(
+    static auto GetActiveScene_Injected = il2cpp_resolve_icall_typed<void(void*)>(
         "UnityEngine.SceneManagement.SceneManager::GetActiveScene_Injected(UnityEngine.SceneManagement.Scene&)");
     void* scene = nullptr;
     GetActiveScene_Injected(&scene);

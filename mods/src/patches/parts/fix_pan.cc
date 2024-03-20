@@ -24,8 +24,8 @@ bool NavigationPan_LateUpdate_Hook(auto original, NavigationPan *_this)
     original(_this);
   }
 
-  static auto GetMouseButton = il2cpp_resolve_icall<bool(int)>("UnityEngine.Input::GetMouseButton(System.Int32)");
-  static auto GetTouchCount  = il2cpp_resolve_icall<int()>("UnityEngine.Input::get_touchCount()");
+  static auto GetMouseButton = il2cpp_resolve_icall_typed<bool(int)>("UnityEngine.Input::GetMouseButton(System.Int32)");
+  static auto GetTouchCount  = il2cpp_resolve_icall_typed<int()>("UnityEngine.Input::get_touchCount()");
 
   if (_this->BlockPan() || _this->_trackingPOI) {
     d->x = 0.0f;

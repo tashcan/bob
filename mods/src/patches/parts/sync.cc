@@ -1,4 +1,5 @@
 #include "config.h"
+#include "il2cpp-api-types.h"
 
 #include <il2cpp/il2cpp_helper.h>
 
@@ -17,8 +18,12 @@
 #include <EASTL/algorithm.h>
 #include <EASTL/bonus/ring_buffer.h>
 
+#if _WIN32
 #include <winrt/Windows.Foundation.h>
 #include <winrt/Windows.Web.Http.Headers.h>
+#else
+#include <httplib.h>
+#endif
 
 #include <condition_variable>
 #include <format>
@@ -29,6 +34,7 @@
 
 namespace http
 {
+#if _WIN32
 using namespace winrt;
 using namespace Windows::Foundation;
 
@@ -51,17 +57,6 @@ static auto get_client(std::wstring sessionid = L"")
     headers.Append(L"X-PRIME-SYNC", L"0");
   }
   return httpClient;
-}
-
-static void write_data(std::string file_data)
-{
-  if (!Config::Get().sync_file.empty()) {
-    std::ofstream sync_file;
-    sync_file.open(Config::Get().sync_file, std::ios_base::app);
-
-    sync_file << file_data << "\n\n";
-    sync_file.close();
-  }
 }
 
 static void send_data(std::wstring post_data)
@@ -122,8 +117,76 @@ static void send_data(std::string post_data)
 {
   return send_data(std::wstring(winrt::to_hstring(post_data)));
 }
+#else
+
+static auto get_client(std::wstring sessionid = L"")
+{
+  return httplib::Client(Config::Get().sync_url.c_str());
+}
+
+static void send_data(std::string post_data)
+{
+  if (Config::Get().sync_url.empty()) {
+    return;
+  }
+}
+
+static std::wstring get_data_data(std::wstring session, std::wstring url, std::wstring path, std::wstring post_data)
+{
+  if (Config::Get().sync_url.empty()) {
+    return {};
+  }
+
+  return {};
+}
+#endif
+
+static void write_data(std::string file_data)
+{
+  if (!Config::Get().sync_file.empty()) {
+    std::ofstream sync_file;
+    sync_file.open(Config::Get().sync_file, std::ios_base::app);
+
+    sync_file << file_data << "\n\n";
+    sync_file.close();
+  }
+}
 
 } // namespace http
+
+#include <simdutf.h>
+
+static std::wstring to_wstring(const std::string& str)
+{
+#if _WIN32
+  return winrt::to_hstring(str).c_str();
+#else
+  size_t                      expected_utf32words = simdutf::utf32_length_from_utf8(str.data(), str.length());
+  std::unique_ptr<char32_t[]> utf32_output{new char32_t[expected_utf32words]};
+  size_t                      utf16words = simdutf::convert_utf8_to_utf32(str.data(), str.length(), utf32_output.get());
+  return std::wstring(utf32_output.get(), utf32_output.get() + utf16words);
+#endif
+}
+
+static std::wstring to_wstring(Il2CppString* str)
+{
+#if _WIN32
+  return str->chars;
+#else
+  size_t                      expected_utf32words = simdutf::utf32_length_from_utf16(str->chars, str->length);
+  std::unique_ptr<char32_t[]> utf32_output{new char32_t[expected_utf32words]};
+  size_t                      utf16words = simdutf::convert_utf16_to_utf32(str->chars, str->length, utf32_output.get());
+  return std::wstring(utf32_output.get(), utf32_output.get() + utf16words);
+#endif
+}
+
+static std::string to_string(const std::wstring& str)
+{
+  size_t                     expected_utf32words = simdutf::utf8_length_from_utf32((char32_t*)str.data(), str.length());
+  std::unique_ptr<char8_t[]> utf32_output{new char8_t[expected_utf32words]};
+  size_t utf16words = simdutf::convert_utf32_to_utf8((char32_t*)str.data(), str.length(), (char*)utf32_output.get());
+  return std::string(utf32_output.get(), utf32_output.get() + utf16words);
+}
 
 std::mutex              m;
 std::condition_variable cv;
@@ -450,7 +513,9 @@ static std::wstring gameServerUrl;
 
 void ship_sync_data()
 {
+#if _WIN32
   winrt::init_apartment();
+#endif
 
   for (;;) {
     {
@@ -465,17 +530,25 @@ void ship_sync_data()
     })();
     try {
       http::send_data(sync_data);
+#if _WIN32
     } catch (winrt::hresult_error const& ex) {
       spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
     } catch (const std::wstring& sz) {
       spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
     }
+#else
+    } catch (const std::wstring& sz) {
+      spdlog::error("Failed to send sync data: {}", to_string(sz));
+    }
+#endif
   }
 }
 
 void ship_combat_log_data()
 {
+#if _WIN32
   winrt::init_apartment();
+#endif
 
   for (;;) {
     {
@@ -490,7 +563,9 @@ void ship_combat_log_data()
         combat_log_data_queue.pop();
         return data;
       })();
-      auto       body       = std::format(L"{{\"journal_id\":{}}}", sync_data);
+
+
+      auto       body = L"{{\"journal_id\":" + std::to_wstring(sync_data) + L"}}";
       auto       battle_log = http::get_data_data(instanceSessionId, gameServerUrl, L"/journals/get", body);
 
       using json = nlohmann::json;
@@ -523,11 +598,11 @@ void ship_combat_log_data()
                                                     [](const std::string& a, const std::string& b) -> std::string {
                                                       return a + (a.length() > 0 ? "," : "") + b;
                                                     });
-      auto        profiles_body   = std::format("{{\"user_ids\":[{}]}}", profiles_joined);
-      auto        profiles        = http::get_data_data(instanceSessionId, gameServerUrl, L"/user_profile/profiles",
-                                                        winrt::to_hstring(profiles_body).c_str());
-      auto        profiles_json   = json::parse(profiles);
-      auto        names           = json::object();
+      auto        profiles_body   = "{{\"user_ids\":[" + profiles_joined + "]}}";
+      auto        profiles =
+          http::get_data_data(instanceSessionId, gameServerUrl, L"/user_profile/profiles", to_wstring(profiles_body));
+      auto profiles_json = json::parse(profiles);
+      auto names         = json::object();
       for (const auto& profile : profiles_json["user_profiles"].get<json::object_t>()) {
         names[profile.first] = profile.second["name"];
       }
@@ -537,11 +612,17 @@ void ship_combat_log_data()
         auto ship_data = ship_array.dump();
         http::write_data(ship_data);
         http::send_data(ship_data);
+#if _WIN32
       } catch (winrt::hresult_error const& ex) {
         spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
       } catch (const std::wstring& sz) {
         spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
       }
+#else
+      } catch (const std::wstring& sz) {
+        spdlog::error("Failed to send sync data: {}", to_string(sz));
+      }
+#endif
     } catch (...) {
     }
   }
@@ -551,8 +632,8 @@ void PrimeApp_InitPrimeServer(auto original, void* _this, Il2CppString* gameServ
                               Il2CppString* sessionId)
 {
   original(_this, gameServerUrl, gatewayServerUrl, sessionId);
-  ::instanceSessionId = sessionId->chars;
-  ::gameServerUrl     = gameServerUrl->chars;
+  ::instanceSessionId = to_wstring(sessionId);
+  ::gameServerUrl     = to_wstring(gameServerUrl);
 }
 
 void InstallSyncPatches()

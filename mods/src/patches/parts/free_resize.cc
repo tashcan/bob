@@ -104,16 +104,16 @@ struct ResolutionArray {
 
 void AspectRatioConstraintHandler_Update(auto original, void* _this)
 {
-  static auto get_fullscreen  = il2cpp_resolve_icall<bool()>("UnityEngine.Screen::get_fullScreen()");
-  static auto get_height      = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_height()");
-  static auto get_width       = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_width()");
-  static auto get_resolutions = il2cpp_resolve_icall<ResolutionArray*()>("UnityEngine.Screen::get_resolutions()");
-  static auto SetResolution   = il2cpp_resolve_icall<void(int, int, int, int)>(
+  static auto get_fullscreen  = il2cpp_resolve_icall_typed<bool()>("UnityEngine.Screen::get_fullScreen()");
+  static auto get_height      = il2cpp_resolve_icall_typed<int()>("UnityEngine.Screen::get_height()");
+  static auto get_width       = il2cpp_resolve_icall_typed<int()>("UnityEngine.Screen::get_width()");
+  static auto get_resolutions = il2cpp_resolve_icall_typed<ResolutionArray*()>("UnityEngine.Screen::get_resolutions()");
+  static auto SetResolution   = il2cpp_resolve_icall_typed<void(int, int, int, int)>(
       "UnityEngine.Screen::SetResolution(System.Int32,System.Int32,UnityEngine.FullScreenMode,System.Int32)");
 
   if (unityWindow) {
     if (get_fullscreen()) {
-      static auto get_currentResolution_Injected = il2cpp_resolve_icall<void(Resolution*)>(
+      static auto get_currentResolution_Injected = il2cpp_resolve_icall_typed<void(Resolution*)>(
           "UnityEngine.Screen::get_currentResolution_Injected(UnityEngine.Resolution&)");
       auto       height = get_height();
       auto       width  = get_width();
@@ -147,8 +147,8 @@ void InstallFreeResizeHooks()
 {
   auto AspectRatioConstraintHandler_helper =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Utils", "AspectRatioConstraintHandler");
-  auto ptr_update     = AspectRatioConstraintHandler_helper.GetMethod("Update");
-  auto ptr_wndproc    = AspectRatioConstraintHandler_helper.GetMethod("WndProc");
+  auto ptr_update  = AspectRatioConstraintHandler_helper.GetMethod("Update");
+  auto ptr_wndproc = AspectRatioConstraintHandler_helper.GetMethod("WndProc");
 
   if (!ptr_update || !ptr_wndproc) {
     return;
