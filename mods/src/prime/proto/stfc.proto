@@ -55,4 +55,3 @@ message OfficerProgressRewardSpec {
   int32 schemaId = 3;
   repeated int32 amount = 4;
 }
-

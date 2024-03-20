@@ -40,6 +40,7 @@ enum BattlePassType {
 enum PlacementType {
   PLACEMENTTYPE_POSITION = 0;
   PLACEMENTTYPE_MILESTONE = 1;
+  PLACEMENTTYPE_RELATIVEPOSITION = 2;
 }
 
 enum SegmentType {
@@ -128,6 +129,7 @@ message EventRank {
   int32 delta = 5;
   int32 instanceId = 6;
   double scoreDouble = 7;
+  int32 relativePosition = 8;
 }
 
 message EventRanking {
@@ -211,6 +213,7 @@ message GameNewsModel {
   google.protobuf.Timestamp endDate = 6;
   GameNewsMetadata metadata = 7;
   bool isPlayerlifecycle = 8;
+  int32 category = 9;
 }
 
 message GameNewsHolder {
