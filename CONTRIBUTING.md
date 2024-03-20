@@ -2,15 +2,12 @@
 
 ## Building
 
-First clone and initialise the repository:
+First clone and initialize the repository:
 
 ```bash
 git clone https://github.com/tashcan/bob.git
 cd bob
-git submodule update --recursive --init
 ```
-
-This will download three submodules and further submodules that they have, so this will take some time to complete.
 
 ## Installing
 
@@ -52,39 +49,20 @@ apply the changes to have the SDK downloaded and installed.  This will take arou
 
 #### Configure and building the project
 
-Create or enter the `.vs/` folder and place the following in `launch.vs.json`:
+Once they are installed, either standalone or via Visual Studio, you can configure the `bob` project.
+We are using [XMake](https://xmake.io/#/).
+To configure a Visual Studio solution, simple run the following on the Command Line.
 
-```json
-{
-  "version": "0.2.1",
-  "defaults": {},
-  "configurations": [
-    {
-      "type": "default",
-      "exe": "C:\\Games\\Star Trek Fleet Command\\Star Trek Fleet Command\\default\\game\\prime.exe",
-      "project": "CMakeLists.txt",
-      "projectTarget": "stfc-community-patch.dll",
-      "name": "Prime",
-      "cwd": "C:\\Games\\Star Trek Fleet Command\\Star Trek Fleet Command\\default\\game"
-    }
-  ]
-}
+```powershell
+xmake project -k vsxmake -m "debug,release"
 ```
+You will now find a `bob.sln` file inside `vsxmake2022`(or similarly named). You can simply open that in `Visual Studio`
+and Build the solution.
 
-Once they are installed, either standalone or via Visual Studio, you can open the `bob` folder inside 
-Visual Studio or by right clicking in a Windows Explorer via and selecting `Open with Visual Studio`.  
-When it first opens, it should automatically start a build to configure the project.  You can 
-reconfigure the project by right clicking on the `CMakeLists.txt` file and selecting 
-`Configure STFC Community Patch`.  
-
-Once the project configuration has finished, you can build the project by pressing `F6` or right clicking 
-on the `CMakeLists.txt` file and selecting `Build`.  
-
-**IMPORTANT**: To reset the build, you can remove the `out/` folder and all items beneath it.  Visual 
+**IMPORTANT**: To reset the build, you can remove the `build/` folder and all items beneath it.  Visual 
 Studio will then rebuild the project.
 
-**IMPORTANT**: To fully reset the project, also remove the `.vs/` folder.  If you do this, please remember 
-to recreate the `.vs/launch.vs.json` file.
+**IMPORTANT**: To fully reset the project, also remove the `.vs/` folder.
 
 ### Visual Studio Code
 
@@ -93,21 +71,18 @@ are available.
 
 Once they are installed, either standalone or via Visual Studio, you can open the `bob` folder inside 
 Visual Studio or by right clicking in a Windows Explorer via and selecting `Open with Visual Studio Code`.  
-When it first opens, it should ask you to install the CMake extensions bundle.  Once the extensions are 
-installed, you can build the project by pressing `F7` or right clicking on the `CMakeLists.txt` file and
-selecting `Build All Projects`.  This will ask you to configure the project and pick various items to use
-in the build on the first build only.
+When it first opens, it should ask you to install the XMake extension.  Once the extensions are 
+installed, you can build the project by navigating to the XMake section in the Activity Bar and clicking `Build All` at the top.
 
 **IMPORTANT**: To reset the build, you can remove the `build/` folder and all items beneath it.  Visual 
-Studio will then rebuild the project.
+Studio Code will then rebuild the project.
 
 ### Command Line
 
-If you do not have Visual Studio Code, this project uses CMake, so the simplest way to build it on Windows:
+If you do not have Visual Studio Code, this project uses XMake, so the simplest way to build it on Windows:
 
 ```ps1
 mkdir build
 cd build
-cmake ../
-cmake --build .
+xmake
 ```
