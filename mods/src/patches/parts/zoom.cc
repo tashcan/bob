@@ -18,14 +18,8 @@
 
 vec3 GetMouseWorldPos(void *cam, vec3 *pos)
 {
-  static auto il2cpp_runtime_invoke =
-      (il2cpp_runtime_invoke_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_runtime_invoke"));
   static auto class_helper = il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.Client.Core", "MathUtils");
-  static auto il2cpp_class_get_method_from_name = (il2cpp_class_get_method_from_name_t)(GetProcAddress(
-      GetModuleHandle("GameAssembly.dll"), "il2cpp_class_get_method_from_name"));
   static auto fn                                = class_helper.GetMethodInfo("GetMouseWorldPos");
-  static auto il2cpp_object_unbox =
-      (il2cpp_object_unbox_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_object_unbox"));
 
   void            *args[2]   = {cam, (void *)pos};
   Il2CppException *exception = NULL;
@@ -44,8 +38,6 @@ inline void StoreZoom(std::string label, float &zoom, NavigationZoom *_this)
 
 void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 {
-  static auto il2cpp_string_new =
-      (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
   static auto GetMousePosition =
       il2cpp_resolve_icall<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");

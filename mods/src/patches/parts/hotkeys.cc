@@ -81,8 +81,6 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     return;
   }
 
-  static auto il2cpp_string_new =
-      (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
   static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
 
   const auto is_in_chat = Hub::IsInChat();

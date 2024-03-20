@@ -126,8 +126,6 @@ void RequestDispatcherBase_SetDefaultHeader(void* _this, Il2CppString* key, Il2C
 decltype(RequestDispatcherBase_SetDefaultHeader)* oRequestDispatcherBase_SetDefaultHeader = nullptr;
 void RequestDispatcherBase_SetDefaultHeader(void* _this, Il2CppString* key, Il2CppString* value)
 {
-  static auto il2cpp_string_new =
-      (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
   oRequestDispatcherBase_SetDefaultHeader(_this, key, value);
 }
 
@@ -224,11 +222,6 @@ AppConfig* Model_LoadConfigs(auto original, Model* _this)
 {
   original(_this);
   auto config = _this->AppConfig_;
-
-  static auto il2cpp_string_new_utf16 =
-      (il2cpp_string_new_utf16_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new_utf16"));
-  static auto il2cpp_string_new =
-      (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_new"));
 
   if (!Config::Get().config_settings_url.empty()) {
     auto new_settings_url       = il2cpp_string_new(Config::Get().config_settings_url.c_str());
@@ -425,9 +418,7 @@ void InstallTestPatches()
   TrackObject<NavigationInteractionUIViewController>();
   TrackObject<StarNodeObjectViewerWidget>();
 
-  auto calc_liveness = (il2cpp_unity_liveness_calculation_from_root_t)(GetProcAddress(
-      GetModuleHandle("GameAssembly.dll"), "il2cpp_unity_liveness_finalize"));
-  SPUD_STATIC_DETOUR(calc_liveness, calc_liveness_hook);
+  SPUD_STATIC_DETOUR(il2cpp_unity_liveness_finalize, calc_liveness_hook);
 
   static auto SetActive = il2cpp_resolve_icall<void(void*, bool)>("UnityEngine.GameObject::SetActive(System.Boolean)");
   SPUD_STATIC_DETOUR(SetActive, SetActive_hook);

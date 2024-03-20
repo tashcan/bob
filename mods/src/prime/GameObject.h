@@ -7,9 +7,7 @@ public:
 
   template <typename T> T* GetComponentFastPath2()
   {
-    static auto il2cpp_runtime_invoke =
-        (il2cpp_runtime_invoke_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_runtime_invoke"));
-    static auto get_component = get_class_helper().GetMethodInfoSpecial("GetComponent", [](auto count, auto params) {
+      static auto get_component = get_class_helper().GetMethodInfoSpecial("GetComponent", [](auto count, auto params) {
       if (count != 1) {
         return false;
       }

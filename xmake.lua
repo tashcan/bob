@@ -23,6 +23,7 @@ package("spud")
     add_urls("https://github.com/tashcan/spud/archive/refs/tags/$(version).tar.gz",
              "https://github.com/tashcan/spud.git")
     add_versions("v0.1.1", "4298ec14727080166a959051d647a2acfcdceb0170bd1d269c1c76c8e51c1dca")
+    add_versions("v0.2.0.alpha.1", "30df1499b5e4a51ae7ddd9fbda410dcbe6fed2725d6097dfbb2990e9a9ba2ece")
     on_install(function (package)
         local configs = {}
         table.insert(configs, "-DCMAKE_BUILD_TYPE=" .. (package:debug() and "Debug" or "Release"))
@@ -47,7 +48,7 @@ package("libil2cpp")
     end)
 package_end()
 
-add_requires("spud")
+add_requires("spud v0.2.0.alpha.1")
 add_requires("libil2cpp")
 
 -- includes("launcher")

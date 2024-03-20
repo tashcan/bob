@@ -8,8 +8,6 @@ struct SceneManager {
 public:
   static const wchar_t* GetSceneName(void* scene)
   {
-    static auto il2cpp_string_chars =
-        (il2cpp_string_chars_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_string_chars"));
     static auto GetSceneName =
         il2cpp_resolve_icall<Il2CppString*(void*)>("UnityEngine.SceneManagement.Scene::GetNameInternal(System.Int32)");
     auto name = GetSceneName(scene);

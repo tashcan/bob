@@ -70,11 +70,6 @@ public:
 
   static CallbackContainer_1_System_Int32_* Create()
   {
-    static auto il2cpp_runtime_class_init =
-        (il2cpp_runtime_class_init_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_runtime_class_init"));
-    static auto il2cpp_object_new =
-        (il2cpp_object_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_object_new"));
-
     auto n             = get_class_helper().New<CallbackContainer_1_System_Int32_>();
     n                  = n;
     n->fields._onRetry = nullptr;

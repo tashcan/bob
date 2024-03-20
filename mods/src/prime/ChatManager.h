@@ -30,8 +30,6 @@ public:
   {
     static auto OpenChannel =
         get_class_helper().GetMethod<void(ChatManager*, ChatChannelCategory, void*, void*)>("OpenChannel", 2);
-    static auto  il2cpp_string_new = (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"),
-                                                                          "il2cpp_string_new"));
     static void* params            = il2cpp_string_new("");
     OpenChannel(this, category, params, nullptr);
   }
@@ -40,8 +38,6 @@ public:
   {
     static auto OpenChannel =
         get_class_helper().GetMethod<void(ChatManager*, ChatChannelCategory, void*, void*)>("OpenChannel", 2);
-    static auto  il2cpp_string_new = (il2cpp_string_new_t)(GetProcAddress(GetModuleHandle("GameAssembly.dll"),
-                                                                          "il2cpp_string_new"));
     static void* params            = il2cpp_string_new("");
     this->__set_ViewMode(viewMode);
     OpenChannel(this, category, params, nullptr);
