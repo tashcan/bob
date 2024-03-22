@@ -51,7 +51,7 @@ jobs:
           xmake-version: latest
 
       - name: Configure
-        run: xmake f -m releasedbg -y
+        run: xmake f -m releasedbg -y -a x86_64 -v
 
       - name: Build
         run: xmake -y

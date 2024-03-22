@@ -1,12 +1,10 @@
+set_project("stfc-community-patch")
+
 set_languages("c++23")
 
-set_arch("x86_64")
-
-includes("xmake-packages")
-
-add_requires("eastl2")
+add_requires("eastl")
 add_requires("spdlog")
-add_requires("protobuf-cpp2 26.0")
+add_requires("protobuf-cpp")
 add_requires("toml++")
 add_requires("nlohmann_json")
 
@@ -29,11 +27,13 @@ on_fetch(function(package, opt)
 end)
 package_end()
 
-
 add_requires("spud v0.2.0.alpha.4")
 add_requires("libil2cpp")
 add_requires("cpp-httplib")
-add_requires("simdutf2 v5.0.0")
+add_requires("simdutf")
 
 -- includes("launcher")
 includes("mods")
+
+
+add_repositories("stfc-community-patch-repo xmake-packages")
