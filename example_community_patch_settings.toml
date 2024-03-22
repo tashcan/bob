@@ -177,21 +177,16 @@ action_secondary = 'R'
 # Switch between Cargo and Preview screens when clicked on a ship/node/station
 action_view = 'V'
 
-# Move the viewport down (content moves up)
-move_down1 = 'DOWN'
-move_down2 = 'S'
+# Disable all hotkeys when using mod hotkeys
+hotkeys_disble = 'CTRL-ALT-MINUS'
 
-# Move the viewport left (content moves right)
-move_left1 = 'LEFT'
-move_left2 = 'A'
+# Enable all hotkeys when using mod hotkeys
+hotkeys_enable = 'CTRL-ALT-='
 
-# Move the viewport right (content moves left)
-move_right1 = 'RIGHT'
-move_right2 = 'D'
-
-# Move the viewport up (content moves down)
-move_up1 = 'UP'
-move_up2 = 'W'
+# Logging modes
+log_debug = 'F9'
+log_info = 'F11'
+log_trace = 'SHIFT-F9'
 
 # Select the Alliance tab when in chat
 select_chatalliance = 'CTRL-2'
@@ -226,6 +221,21 @@ select_ship7 = '7'
 # Select ship 8 (or locate on second press)
 select_ship8 = '8'
 
+# Zoom shortcuts
+set_zoom_default = 'CTRL-='
+set_zoom_preset1 = 'SHIFT-F1'
+set_zoom_preset2 = 'SHIFT-F2'
+set_zoom_preset3 = 'SHIFT-F3'
+set_zoom_preset4 = 'SHIFT-F4'
+set_zoom_preset5 = 'SHIFT-F5'
+
+# Show alliance screen
+show_alliance = '\'
+
+# Show artifacts screen
+show_artificates = 'SHIFT-I'
+
+
 # Go to the Away Team screen
 show_awayteam = 'SHIFT-T'
 
@@ -257,6 +267,9 @@ show_factions = 'F'
 # Go to the Galaxy view
 show_galaxy = 'G'
 
+# Go to the Gifts screen
+show_gifts = '/'
+
 # Go to the Inventory screen
 show_inventory = 'I'
 
@@ -284,6 +297,24 @@ show_stationinterior = 'SHIFT-H'
 # Go to the System view
 show_system = 'H'
 
+# Toggle the Armada cargo preview window
+toggle_cargo_armada = 'ALT-5'
+
+# Toggle the Default cargo preview window
+toggle_cargo_default = 'ALT-1'
+
+# Toggle the Hostile cargo preview window
+toggle_cargo_hostile = 'ALT-4'
+
+# Toggle the Player cargo preview window
+toggle_cargo_player = 'ALT-2'
+
+# Toggle the Station cargo preview window
+toggle_cargo_station = 'ALT-3'
+
+# Toggle whether locate is allowed during a preview
+toggle_preview_locate = 'CTRL-R'
+
 # Scale the UI down (shrink the HUD)
 ui_scaledown = 'PGDOWN'
 
@@ -310,11 +341,4 @@ zoom_out = 'E'
 zoom_max = 'MINUS'
 zoom_min = 'BACKSPACE'
 zoom_reset = '='
-
-# Toggle cargo options for current session
-toggle_cargo_default = 'ALT-1'
-toggle_cargo_player = 'ALT-2'
-toggle_cargo_station = 'ALT-3'
-toggle_cargo_hostile = 'ALT-4'
-toggle_cargo_armada = 'ALT-5'
 
