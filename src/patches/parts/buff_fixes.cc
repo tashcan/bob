@@ -59,7 +59,6 @@ static bool BuffService_IsBuffConditionMet_Hook(auto original, int64_t _unused, 
       return original(_unused, condition, comparer, buffToCompare, excludeFactionBuffs);
     }
   }
-  return true;
 }
 
 struct BuffModifierValues {
@@ -104,7 +103,7 @@ void InstallBuffFixHooks()
 {
   auto screen_manager_helper =
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Services", "BuffService");
-  auto ptr = screen_manager_helper.GetMethodXor("IsBuffConditionMet");
+  auto ptr = screen_manager_helper.GetMethod("IsBuffConditionMet");
   if (!ptr) {
     return;
   }
@@ -112,7 +111,7 @@ void InstallBuffFixHooks()
 
   screen_manager_helper =
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Services", "FleetService");
-  ptr = screen_manager_helper.GetMethodXor("ResolveOfficerAbilityBuffs");
+  ptr = screen_manager_helper.GetMethod("ResolveOfficerAbilityBuffs");
   if (!ptr) {
     return;
   }
@@ -120,11 +119,10 @@ void InstallBuffFixHooks()
 
   screen_manager_helper =
       il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Services", "BuffService");
-  ptr = screen_manager_helper.GetMethodSpecial(xorstr_("ApplyBuffModifiersToCostVal"), [](auto count, const Il2CppType** params) {
+  ptr = screen_manager_helper.GetMethodSpecial("ApplyBuffModifiersToCostVal", [](auto count, const Il2CppType** params) {
     if (count != 2) {
       return false;
     }
-    auto p1 = params[0]->type;
     auto p2 = params[1]->type;
     if (p2 == IL2CPP_TYPE_VALUETYPE) {
       return true;

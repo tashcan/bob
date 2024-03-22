@@ -25,7 +25,7 @@ public:
 public:
   ScanEngageButtonsWidget* __get__scanEngageButtonsWidget()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_scanEngageButtonsWidget")).offset();
+    static auto field = get_class_helper().GetField("_scanEngageButtonsWidget").offset();
     return *(ScanEngageButtonsWidget**)((char*)this + field);
   }
 };

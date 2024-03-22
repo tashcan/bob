@@ -18,9 +18,10 @@
 #include <chrono>
 #include <iostream>
 
+#include "spdlog/spdlog.h"
+
 int64_t InventoryForPopup_set_MaxItemsToUse(auto original, InventoryForPopup* a1, int64_t a2)
 {
-  auto d = a1->IsDonationUse;
   if (a1->IsDonationUse && a2 == 50 && Config::Get().extend_donation_slider) {
     return 0;
   }
@@ -39,7 +40,7 @@ void BundleDataWidget_OnActionButtonPressedCallback(auto original, BundleDataWid
 void InstallMiscPatches()
 {
   auto h   = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Inventories", "InventoryForPopup");
-  auto ptr = h.GetMethodXor("set_MaxItemsToUse");
+  auto ptr = h.GetMethod("set_MaxItemsToUse");
   if (!ptr) {
     return;
   }
@@ -131,10 +132,13 @@ IList* ExtractBuffsOfType_Hook(auto original, ClientModifierType modifier, IList
 
 bool ShouldShowRevealHook(auto original, void* _this, bool ignore)
 {
+  auto result = original(_this, ignore);
+
   if (Config::Get().always_skip_reveal_sequence) {
-    return false;
+    result = false;
   }
-  return original(_this, ignore);
+
+  return result;
 }
 
 struct ShopCategory {
@@ -227,13 +231,16 @@ public:
 SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* _this, void* status,
                                             SectionNavHistory* history)
 {
-  if (Config::Get().stay_in_bundle_after_summary == false) {
-    return original(_this, status, history);
-  }
-
-  if (strcmp(((Il2CppObject*)(_this))->klass->name, "ShopSummaryDirector") == 0) {
+  if (Config::Get().stay_in_bundle_after_summary
+      && strcmp(((Il2CppObject*)(_this))->klass->name, "ShopSummaryDirector") == 0) {
     auto section_data = (ShopSectionContext*)Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Shop_List);
     section_data      = section_data;
+
+    if (!section_data) {
+      section_data =
+          (ShopSectionContext*)Hub::get_SectionManager()->_sectionStorage->GetState(SectionID::Shop_Refining_List);
+      section_data = section_data;
+    }
 
     auto suppress_go_back = false;
     if (section_data) {
@@ -241,23 +248,26 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
       if (bundle_config) {
         auto f           = bundle_config->_category;
         f                = f;
-        suppress_go_back = (f == 3 || f == 10);
+        suppress_go_back = (f == 3 || f == 10 || f == 22 || f == 29);
       }
     }
 
     if (suppress_go_back) {
-      auto id_array = _this->_backLogicSkipSectionIds;
-      auto ids      = (SectionID*)id_array->vector;
-      for (size_t i = 0; i < id_array->max_length; ++i) {
-        auto id = ids[i];
-        if (id == SectionID::Shop_Showcase) {
-          ids[i] = SectionID::Navigation_Combat_Debug;
+      if (auto id_array = _this->_backLogicSkipSectionIds) {
+        auto ids     = (SectionID*)id_array->vector;
+        auto ids_len = id_array->max_length;
+        for (size_t i = 0; i < ids_len; ++i) {
+          auto id = ids[i];
+          if (id == SectionID::Shop_Showcase) {
+            ids[i] = SectionID::Navigation_Combat_Debug;
+          }
         }
       }
 
       if (auto cache_id_array = _this->backlogicCache; cache_id_array) {
         auto cache_ids = (SectionID*)cache_id_array->vector;
-        for (size_t i = 0; i < cache_id_array->max_length; ++i) {
+        auto cache_len = cache_id_array->max_length;
+        for (size_t i = 0; i < cache_len; ++i) {
           auto id = cache_ids[i];
           if (id == SectionID::Shop_Showcase) {
             cache_ids[i] = SectionID::Navigation_Combat_Debug;
@@ -267,22 +277,30 @@ SectionID ShopSummaryDirectorGoBackBehavior(auto original, ShopSummaryDirector* 
 
       auto sectionID = original(_this, status, history);
 
-      for (size_t i = 0; i < id_array->max_length; ++i) {
-        auto id = ids[i];
-        if (id == SectionID::Navigation_Combat_Debug) {
-          ids[i] = SectionID::Shop_Showcase;
+      if (auto id_array = _this->_backLogicSkipSectionIds) {
+        auto ids     = (SectionID*)id_array->vector;
+        auto ids_len = id_array->max_length;
+
+        for (size_t i = 0; i < ids_len; ++i) {
+          auto id = ids[i];
+          if (id == SectionID::Navigation_Combat_Debug) {
+            ids[i] = SectionID::Shop_Showcase;
+          }
         }
       }
 
       if (auto cache_id_array = _this->backlogicCache; cache_id_array) {
         auto cache_ids = (SectionID*)cache_id_array->vector;
-        for (size_t i = 0; i < cache_id_array->max_length; ++i) {
+        auto cache_len = cache_id_array->max_length;
+
+        for (size_t i = 0; i < cache_len; ++i) {
           auto id = cache_ids[i];
           if (id == SectionID::Navigation_Combat_Debug) {
             cache_ids[i] = SectionID::Shop_Showcase;
           }
         }
       }
+
       return sectionID;
     }
   }

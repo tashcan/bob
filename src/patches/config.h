@@ -3,6 +3,11 @@
 #include <vector>
 
 #include "prime/Toast.h"
+#include <toml++/toml.h>
+
+#define CONFIG_FILE_DEFAULT "community_patch_settings.toml"
+#define CONFIG_FILE_RUNTIME "community_patch_runtime.vars"
+#define CONFIG_FILE_PARSED "community_patch_settings_parsed.toml"
 
 class Config
 {
@@ -10,17 +15,23 @@ public:
   Config();
 
   static Config& Get();
+  static float   GetDPI();
+  static float   RefreshDPI();
 
-  void Load();
+  static void Save(toml::table config, std::string_view filename, bool apply_warning = true);
+  void        Load();
+  void        AdjustUiScale(bool scaleUp);
 
 public:
   float ui_scale;
+  float ui_scale_adjust;
   float zoom;
   bool  free_resize;
   bool  adjust_scale_res;
   bool  show_all_resolutions;
 
   bool  use_out_of_dock_power;
+  float system_pan_momentum;
   float system_pan_momentum_falloff;
 
   float keyboard_zoom_speed;
@@ -28,6 +39,8 @@ public:
   bool  hotkeys_enabled;
   bool  hotkeys_extended;
   bool  use_scopely_hotkeys;
+  bool  use_presets_as_default;
+  bool  enable_experimental;
   float default_system_zoom;
 
   float system_zoom_preset_1;
@@ -44,6 +57,10 @@ public:
   std::vector<int> disabled_banner_types;
 
   bool extend_donation_slider;
+  bool disable_move_keys;
+  bool disable_preview_locate;
+  bool disable_preview_recall;
+  bool disable_escape_exit;
   bool disable_galaxy_chat;
   bool disable_toast_banners;
   bool fix_unity_web_requests;
@@ -58,6 +75,7 @@ public:
   bool stay_in_bundle_after_summary;
 
   std::string sync_url;
+  std::string sync_file;
   std::string sync_token;
   bool        sync_resources;
   bool        sync_battlelogs;

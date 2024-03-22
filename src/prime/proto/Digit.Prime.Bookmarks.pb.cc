@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -75,102 +72,6 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace Bookmarks
 }  // namespace Prime
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrime_2eBookmarks_2eproto[2];
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_Digit_2ePrime_2eBookmarks_2eproto = nullptr;
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrime_2eBookmarks_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrime_2eBookmarks_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.name_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.category_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.systemid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.xcoordinate_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.ycoordinate_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.modifiedat_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.locationtype_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.planettype_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.userprofileid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.planetlocaid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.resourcelocaid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::Bookmark, _impl_.missionlocaid_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::BookmarksSaveData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::Bookmarks::BookmarksSaveData, _impl_.bookmarks_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::Digit::Prime::Bookmarks::Bookmark)},
-        {20, -1, -1, sizeof(::Digit::Prime::Bookmarks::BookmarksSaveData)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Prime::Bookmarks::_Bookmark_default_instance_._instance,
-    &::Digit::Prime::Bookmarks::_BookmarksSaveData_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrime_2eBookmarks_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\033Digit.Prime.Bookmarks.proto\022\025Digit.Pri"
-    "me.Bookmarks\"\200\002\n\010Bookmark\022\014\n\004name\030\001 \001(\t\022"
-    "\020\n\010category\030\002 \001(\005\022\020\n\010systemID\030\003 \001(\003\022\023\n\013x"
-    "Coordinate\030\004 \001(\002\022\023\n\013yCoordinate\030\005 \001(\002\022\022\n"
-    "\nmodifiedAt\030\006 \001(\003\022\024\n\014locationType\030\007 \001(\005\022"
-    "\022\n\nplanetType\030\010 \001(\005\022\025\n\ruserProfileId\030\t \001"
-    "(\t\022\024\n\014planetLocaId\030\n \001(\003\022\026\n\016resourceLoca"
-    "Id\030\013 \001(\003\022\025\n\rmissionLocaId\030\014 \001(\003\"G\n\021Bookm"
-    "arksSaveData\0222\n\tbookmarks\030\001 \003(\0132\037.Digit."
-    "Prime.Bookmarks.Bookmarkb\006proto3"
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrime_2eBookmarks_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrime_2eBookmarks_2eproto = {
-    false,
-    false,
-    392,
-    descriptor_table_protodef_Digit_2ePrime_2eBookmarks_2eproto,
-    "Digit.Prime.Bookmarks.proto",
-    &descriptor_table_Digit_2ePrime_2eBookmarks_2eproto_once,
-    nullptr,
-    0,
-    2,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrime_2eBookmarks_2eproto::offsets,
-    file_level_metadata_Digit_2ePrime_2eBookmarks_2eproto,
-    file_level_enum_descriptors_Digit_2ePrime_2eBookmarks_2eproto,
-    file_level_service_descriptors_Digit_2ePrime_2eBookmarks_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrime_2eBookmarks_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrime_2eBookmarks_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrime_2eBookmarks_2eproto(&descriptor_table_Digit_2ePrime_2eBookmarks_2eproto);
 namespace Digit {
 namespace Prime {
 namespace Bookmarks {
@@ -181,11 +82,11 @@ class Bookmark::_Internal {
 };
 
 Bookmark::Bookmark(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.Bookmarks.Bookmark)
 }
-Bookmark::Bookmark(const Bookmark& from) : ::google::protobuf::Message() {
+Bookmark::Bookmark(const Bookmark& from) : ::google::protobuf::MessageLite() {
   Bookmark* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -203,7 +104,7 @@ Bookmark::Bookmark(const Bookmark& from) : ::google::protobuf::Message() {
       decltype(_impl_.planettype_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -253,7 +154,7 @@ inline void Bookmark::SharedCtor(::_pb::Arena* arena) {
 }
 Bookmark::~Bookmark() {
   // @@protoc_insertion_point(destructor:Digit.Prime.Bookmarks.Bookmark)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Bookmark::SharedDtor() {
@@ -276,7 +177,7 @@ PROTOBUF_NOINLINE void Bookmark::Clear() {
   ::memset(&_impl_.systemid_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.planettype_) -
       reinterpret_cast<char*>(&_impl_.systemid_)) + sizeof(_impl_.planettype_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Bookmark::_InternalParse(
@@ -299,17 +200,17 @@ const ::_pbi::TcParseTable<4, 12, 0, 64, 2> Bookmark::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Bookmark_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string name = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.name_)}},
     // int32 category = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Bookmark, _impl_.category_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.category_)}},
     // int64 systemID = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bookmark, _impl_.systemid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.systemid_)}},
     // float xCoordinate = 4;
     {::_pbi::TcParser::FastF32S1,
@@ -318,25 +219,25 @@ const ::_pbi::TcParseTable<4, 12, 0, 64, 2> Bookmark::_table_ = {
     {::_pbi::TcParser::FastF32S1,
      {45, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.ycoordinate_)}},
     // int64 modifiedAt = 6;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bookmark, _impl_.modifiedat_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {48, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.modifiedat_)}},
     // int32 locationType = 7;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Bookmark, _impl_.locationtype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {56, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.locationtype_)}},
     // int32 planetType = 8;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Bookmark, _impl_.planettype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {64, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.planettype_)}},
     // string userProfileId = 9;
     {::_pbi::TcParser::FastUS1,
      {74, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.userprofileid_)}},
     // int64 planetLocaId = 10;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bookmark, _impl_.planetlocaid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {80, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.planetlocaid_)}},
     // int64 resourceLocaId = 11;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bookmark, _impl_.resourcelocaid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {88, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.resourcelocaid_)}},
     // int64 missionLocaId = 12;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bookmark, _impl_.missionlocaid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {96, 63, 0, PROTOBUF_FIELD_OFFSET(Bookmark, _impl_.missionlocaid_)}},
     {::_pbi::TcParser::MiniParse, {}},
     {::_pbi::TcParser::MiniParse, {}},
@@ -494,9 +395,9 @@ const ::_pbi::TcParseTable<4, 12, 0, 64, 2> Bookmark::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.Bookmarks.Bookmark)
   return target;
@@ -590,19 +491,22 @@ const ::_pbi::TcParseTable<4, 12, 0, 64, 2> Bookmark::_table_ = {
         this->_internal_planettype());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Bookmark::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Bookmark::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Bookmark::GetClassData() const { return &_class_data_; }
+void Bookmark::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Bookmark*>(
+      &from));
+}
 
-
-void Bookmark::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Bookmark*>(&to_msg);
-  auto& from = static_cast<const Bookmark&>(from_msg);
+void Bookmark::MergeFrom(const Bookmark& from) {
+  Bookmark* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.Bookmarks.Bookmark)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -654,7 +558,7 @@ void Bookmark::MergeImpl(::google::protobuf::Message& to_msg, const ::google::pr
   if (from._internal_planettype() != 0) {
     _this->_internal_set_planettype(from._internal_planettype());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Bookmark::CopyFrom(const Bookmark& from) {
@@ -685,11 +589,10 @@ void Bookmark::InternalSwap(Bookmark* other) {
           reinterpret_cast<char*>(&other->_impl_.systemid_));
 }
 
-::google::protobuf::Metadata Bookmark::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eBookmarks_2eproto_getter, &descriptor_table_Digit_2ePrime_2eBookmarks_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eBookmarks_2eproto[0]);
+std::string Bookmark::GetTypeName() const {
+  return "Digit.Prime.Bookmarks.Bookmark";
 }
+
 // ===================================================================
 
 class BookmarksSaveData::_Internal {
@@ -697,18 +600,18 @@ class BookmarksSaveData::_Internal {
 };
 
 BookmarksSaveData::BookmarksSaveData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.Bookmarks.BookmarksSaveData)
 }
-BookmarksSaveData::BookmarksSaveData(const BookmarksSaveData& from) : ::google::protobuf::Message() {
+BookmarksSaveData::BookmarksSaveData(const BookmarksSaveData& from) : ::google::protobuf::MessageLite() {
   BookmarksSaveData* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.bookmarks_){from._impl_.bookmarks_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.Prime.Bookmarks.BookmarksSaveData)
@@ -722,7 +625,7 @@ inline void BookmarksSaveData::SharedCtor(::_pb::Arena* arena) {
 }
 BookmarksSaveData::~BookmarksSaveData() {
   // @@protoc_insertion_point(destructor:Digit.Prime.Bookmarks.BookmarksSaveData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void BookmarksSaveData::SharedDtor() {
@@ -740,7 +643,7 @@ PROTOBUF_NOINLINE void BookmarksSaveData::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_bookmarks()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* BookmarksSaveData::_InternalParse(
@@ -763,7 +666,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> BookmarksSaveData::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_BookmarksSaveData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.Prime.Bookmarks.Bookmark bookmarks = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -796,9 +699,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> BookmarksSaveData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.Bookmarks.BookmarksSaveData)
   return target;
@@ -818,26 +721,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> BookmarksSaveData::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData BookmarksSaveData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    BookmarksSaveData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*BookmarksSaveData::GetClassData() const { return &_class_data_; }
+void BookmarksSaveData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const BookmarksSaveData*>(
+      &from));
+}
 
-
-void BookmarksSaveData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<BookmarksSaveData*>(&to_msg);
-  auto& from = static_cast<const BookmarksSaveData&>(from_msg);
+void BookmarksSaveData::MergeFrom(const BookmarksSaveData& from) {
+  BookmarksSaveData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.Bookmarks.BookmarksSaveData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_bookmarks()->MergeFrom(from._internal_bookmarks());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void BookmarksSaveData::CopyFrom(const BookmarksSaveData& from) {
@@ -857,11 +763,10 @@ void BookmarksSaveData::InternalSwap(BookmarksSaveData* other) {
   _impl_.bookmarks_.InternalSwap(&other->_impl_.bookmarks_);
 }
 
-::google::protobuf::Metadata BookmarksSaveData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eBookmarks_2eproto_getter, &descriptor_table_Digit_2ePrime_2eBookmarks_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eBookmarks_2eproto[1]);
+std::string BookmarksSaveData::GetTypeName() const {
+  return "Digit.Prime.Bookmarks.BookmarksSaveData";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Bookmarks
 }  // namespace Prime

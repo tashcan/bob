@@ -18,19 +18,19 @@ static void ProcessSending_Hook(auto original, void *_this, HttpJob *item)
 {
 
   static auto get_downloadedBytes = il2cpp_resolve_icall<uint64_t(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::get_downloadedBytes()"));
+      "UnityEngine.Networking.UnityWebRequest::get_downloadedBytes()");
   static auto get_uploadedBytes = il2cpp_resolve_icall<uint64_t(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::get_uploadedBytes()"));
+      "UnityEngine.Networking.UnityWebRequest::get_uploadedBytes()");
   static auto get_uploadHandler = il2cpp_resolve_icall<uint64_t(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::get_uploadHandler()"));
+      "UnityEngine.Networking.UnityWebRequest::get_uploadHandler()");
   static auto get_uploadProgress = il2cpp_resolve_icall<float(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::GetUploadProgress"));
+      "UnityEngine.Networking.UnityWebRequest::GetUploadProgress");
   static auto get_IsExecuting =
-      il2cpp_resolve_icall<bool(UnityWebRequest *)>(xorstr_("UnityEngine.Networking.UnityWebRequest::IsExecuting()"));
+      il2cpp_resolve_icall<bool(UnityWebRequest *)>("UnityEngine.Networking.UnityWebRequest::IsExecuting()");
   static auto get_isNetworkError = il2cpp_resolve_icall<bool(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::get_isNetworkError()"));
+      "UnityEngine.Networking.UnityWebRequest::get_isNetworkError()");
   static auto get_ResponseCode = il2cpp_resolve_icall<int32_t(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::get_responseCode()"));
+      "UnityEngine.Networking.UnityWebRequest::get_responseCode()");
 
   if (!get_IsExecuting || !get_ResponseCode || !get_uploadProgress) {
     return original(_this, item);
@@ -55,9 +55,9 @@ static void ProcessSending_Hook(auto original, void *_this, HttpJob *item)
 static void SendWebRequest_Hook(auto original, UnityWebRequest *_this)
 {
   static auto get_use100Continue = il2cpp_resolve_icall<bool(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::get_use100Continue"));
+      "UnityEngine.Networking.UnityWebRequest::get_use100Continue");
   static auto set_use100Continue = il2cpp_resolve_icall<void(UnityWebRequest *, bool)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::set_use100Continue"));
+      "UnityEngine.Networking.UnityWebRequest::set_use100Continue");
   set_use100Continue(_this, false);
   original(_this);
 }
@@ -91,19 +91,22 @@ static void                      *curl_multi_init()
 void InstallWebRequestHooks()
 {
   return;
+
+  /*
   if (!Config::Get().fix_unity_web_requests) {
     return;
   }
   auto screen_manager_helper =
       il2cpp_get_class_helper("Digit.Engine.HTTPClient.Runtime", "Digit.Networking.Network", "DigitHttpClient");
 
-  auto meow = screen_manager_helper.GetMethodXor("ProcessSending");
+  auto meow = screen_manager_helper.GetMethod("ProcessSending");
   if (!meow) {
     return;
   }
   SPUD_STATIC_DETOUR(meow, ProcessSending_Hook);
 
   auto send_web_request_ptr = il2cpp_resolve_icall<void(UnityWebRequest *)>(
-      xorstr_("UnityEngine.Networking.UnityWebRequest::BeginWebRequest()"));
+      "UnityEngine.Networking.UnityWebRequest::BeginWebRequest()");
   SPUD_STATIC_DETOUR(send_web_request_ptr, SendWebRequest_Hook);
+  */
 }

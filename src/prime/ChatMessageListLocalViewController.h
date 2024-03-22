@@ -20,7 +20,7 @@ private:
 public:
   ChatChannelCategory __get__category()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_category")).offset();
+    static auto field = get_class_helper().GetField("_category").offset();
     return *(ChatChannelCategory*)((uintptr_t)this + field);
   }
 };
@@ -42,12 +42,12 @@ private:
 public:
   TMP_InputField* __get__inputField()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_inputField")).offset();
+    static auto field = get_class_helper().GetField("_inputField").offset();
     return *(TMP_InputField**)((uintptr_t)this + field);
   }
   ChatSectionContext* __get_CanvasContext()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("CanvasContext"));
+    static auto field = get_class_helper().GetProperty("CanvasContext");
     return field.Get<ChatSectionContext>(this);
   }
 };

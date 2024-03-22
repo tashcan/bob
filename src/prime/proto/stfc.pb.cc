@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -20,34 +17,6 @@ PROTOBUF_PRAGMA_INIT_SEG
 namespace _pb = ::google::protobuf;
 namespace _pbi = ::google::protobuf::internal;
 namespace _fl = ::google::protobuf::internal::field_layout;
-      template <typename>
-PROTOBUF_CONSTEXPR CacheMap_CacheIndexEntry_DoNotUse::CacheMap_CacheIndexEntry_DoNotUse(::_pbi::ConstantInitialized) {}
-struct CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal() {}
-  union {
-    CacheMap_CacheIndexEntry_DoNotUse _instance;
-  };
-};
-
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
-    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CacheMap_CacheIndexEntry_DoNotUseDefaultTypeInternal _CacheMap_CacheIndexEntry_DoNotUse_default_instance_;
-        template <typename>
-PROTOBUF_CONSTEXPR CacheMap::CacheMap(::_pbi::ConstantInitialized)
-    : _impl_{
-      /* decltype(_impl_.cacheindex_) */ {},
-      /*decltype(_impl_._cached_size_)*/ {},
-    } {}
-struct CacheMapDefaultTypeInternal {
-  PROTOBUF_CONSTEXPR CacheMapDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
-  ~CacheMapDefaultTypeInternal() {}
-  union {
-    CacheMap _instance;
-  };
-};
-
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
-    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CacheMapDefaultTypeInternal _CacheMap_default_instance_;
         template <typename>
 PROTOBUF_CONSTEXPR CommanderSkillSpec::CommanderSkillSpec(::_pbi::ConstantInitialized)
     : _impl_{
@@ -132,174 +101,6 @@ struct OfficerProgressRewardSpecDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 OfficerProgressRewardSpecDefaultTypeInternal _OfficerProgressRewardSpec_default_instance_;
-static ::_pb::Metadata file_level_metadata_stfc_2eproto[6];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_stfc_2eproto[3];
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_stfc_2eproto = nullptr;
-const ::uint32_t TableStruct_stfc_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::CacheMap_CacheIndexEntry_DoNotUse, value_),
-    0,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::CacheMap, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::CacheMap, _impl_.cacheindex_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::CommanderSkillSpec, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::CommanderSkillSpec, _impl_.researchid_),
-    PROTOBUF_FIELD_OFFSET(::CommanderSkillSpec, _impl_.groupid_),
-    PROTOBUF_FIELD_OFFSET(::CommanderSkillSpec, _impl_.sortorder_),
-    PROTOBUF_FIELD_OFFSET(::CommanderSkillSpec, _impl_.skilltype_),
-    PROTOBUF_FIELD_OFFSET(::EntityRef, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::EntityRef, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::EntityRef, _impl_.entityid_),
-    PROTOBUF_FIELD_OFFSET(::EntityRef, _impl_.entityidstr_),
-    PROTOBUF_FIELD_OFFSET(::EntityRef, _impl_.entitytype_),
-    PROTOBUF_FIELD_OFFSET(::EntityRef, _impl_.parententity_),
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::OfficerLevelRewardsSpec, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::OfficerLevelRewardsSpec, _impl_.amount_),
-    PROTOBUF_FIELD_OFFSET(::OfficerLevelRewardsSpec, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::OfficerLevelRewardsSpec, _impl_.level_),
-    PROTOBUF_FIELD_OFFSET(::OfficerLevelRewardsSpec, _impl_.schemaid_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::OfficerProgressRewardSpec, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::OfficerProgressRewardSpec, _impl_.progresstype_),
-    PROTOBUF_FIELD_OFFSET(::OfficerProgressRewardSpec, _impl_.rank_),
-    PROTOBUF_FIELD_OFFSET(::OfficerProgressRewardSpec, _impl_.schemaid_),
-    PROTOBUF_FIELD_OFFSET(::OfficerProgressRewardSpec, _impl_.amount_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 10, -1, sizeof(::CacheMap_CacheIndexEntry_DoNotUse)},
-        {12, -1, -1, sizeof(::CacheMap)},
-        {21, -1, -1, sizeof(::CommanderSkillSpec)},
-        {33, 45, -1, sizeof(::EntityRef)},
-        {49, -1, -1, sizeof(::OfficerLevelRewardsSpec)},
-        {61, -1, -1, sizeof(::OfficerProgressRewardSpec)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::_CacheMap_CacheIndexEntry_DoNotUse_default_instance_._instance,
-    &::_CacheMap_default_instance_._instance,
-    &::_CommanderSkillSpec_default_instance_._instance,
-    &::_EntityRef_default_instance_._instance,
-    &::_OfficerLevelRewardsSpec_default_instance_._instance,
-    &::_OfficerProgressRewardSpec_default_instance_._instance,
-};
-const char descriptor_table_protodef_stfc_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\nstfc.proto\"l\n\010CacheMap\022-\n\ncacheIndex\030\001"
-    " \003(\0132\031.CacheMap.CacheIndexEntry\0321\n\017Cache"
-    "IndexEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\002"
-    "8\001\"r\n\022CommanderSkillSpec\022\022\n\nresearchId\030\001"
-    " \001(\003\022\017\n\007groupId\030\002 \001(\005\022\021\n\tsortOrder\030\003 \001(\005"
-    "\022$\n\tskillType\030\004 \001(\0162\021.OfficerSkillType\"u"
-    "\n\tEntityRef\022\020\n\010entityId\030\001 \001(\003\022\023\n\013entityI"
-    "dStr\030\002 \001(\t\022\037\n\nentityType\030\003 \001(\0162\013.EntityT"
-    "ype\022 \n\014parentEntity\030\004 \001(\0132\n.EntityRef\"V\n"
-    "\027OfficerLevelRewardsSpec\022\016\n\006amount\030\001 \001(\005"
-    "\022\n\n\002id\030\002 \001(\003\022\r\n\005level\030\003 \001(\005\022\020\n\010schemaId\030"
-    "\004 \001(\t\"w\n\031OfficerProgressRewardSpec\022*\n\014pr"
-    "ogressType\030\001 \001(\0162\024.OfficerProgressType\022\014"
-    "\n\004rank\030\002 \001(\005\022\020\n\010schemaId\030\003 \001(\005\022\016\n\006amount"
-    "\030\004 \003(\005*\215\001\n\020OfficerSkillType\022\034\n\030OFFICERSK"
-    "ILLTYPE_UNKNOWN\020\000\022\035\n\031OFFICERSKILLTYPE_AL"
-    "WAYSON\020\001\022\033\n\027OFFICERSKILLTYPE_ONDUTY\020\002\022\037\n"
-    "\033OFFICERSKILLTYPE_SELECTABLE\020\003*\312\001\n\nEntit"
-    "yType\022\026\n\022ENTITYTYPE_INVALID\020\000\022\031\n\021ENTITYT"
-    "YPE_PLAYER\020\264\244\376\231\003\022\033\n\023ENTITYTYPE_ALLIANCE\020"
-    "\361\267\326\327\006\022 \n\030ENTITYTYPE_DEPLOYEDFLEET\020\206\376\271\367\007\022"
-    "\026\n\016ENTITYTYPE_NPC\020\355\271\327\351\007\022\032\n\022ENTITYTYPE_OF"
-    "FICER\020\236\202\273\301\004\022\026\n\017ENTITYTYPE_SHIP\020\324\304\350\"*w\n\023O"
-    "fficerProgressType\022\037\n\033OFFICERPROGRESSTYP"
-    "E_UNKNOWN\020\000\022\037\n\033OFFICERPROGRESSTYPE_LEVEL"
-    "UP\020\001\022\036\n\032OFFICERPROGRESSTYPE_RANKUP\020\002b\006pr"
-    "oto3"
-};
-static ::absl::once_flag descriptor_table_stfc_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_stfc_2eproto = {
-    false,
-    false,
-    1044,
-    descriptor_table_protodef_stfc_2eproto,
-    "stfc.proto",
-    &descriptor_table_stfc_2eproto_once,
-    nullptr,
-    0,
-    6,
-    schemas,
-    file_default_instances,
-    TableStruct_stfc_2eproto::offsets,
-    file_level_metadata_stfc_2eproto,
-    file_level_enum_descriptors_stfc_2eproto,
-    file_level_service_descriptors_stfc_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_stfc_2eproto_getter() {
-  return &descriptor_table_stfc_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_stfc_2eproto(&descriptor_table_stfc_2eproto);
-const ::google::protobuf::EnumDescriptor* OfficerSkillType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_stfc_2eproto);
-  return file_level_enum_descriptors_stfc_2eproto[0];
-}
 bool OfficerSkillType_IsValid(int value) {
   switch (value) {
     case 0:
@@ -311,14 +112,59 @@ bool OfficerSkillType_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* EntityType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_stfc_2eproto);
-  return file_level_enum_descriptors_stfc_2eproto[1];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    OfficerSkillType_strings[4] = {};
+
+static const char OfficerSkillType_names[] = {
+    "OFFICERSKILLTYPE_ALWAYSON"
+    "OFFICERSKILLTYPE_ONDUTY"
+    "OFFICERSKILLTYPE_SELECTABLE"
+    "OFFICERSKILLTYPE_UNKNOWN"
+};
+
+static const ::google::protobuf::internal::EnumEntry OfficerSkillType_entries[] =
+    {
+        {{&OfficerSkillType_names[0], 25}, 1},
+        {{&OfficerSkillType_names[25], 23}, 2},
+        {{&OfficerSkillType_names[48], 27}, 3},
+        {{&OfficerSkillType_names[75], 24}, 0},
+};
+
+static const int OfficerSkillType_entries_by_number[] = {
+    3,  // 0 -> OFFICERSKILLTYPE_UNKNOWN
+    0,  // 1 -> OFFICERSKILLTYPE_ALWAYSON
+    1,  // 2 -> OFFICERSKILLTYPE_ONDUTY
+    2,  // 3 -> OFFICERSKILLTYPE_SELECTABLE
+};
+
+const std::string& OfficerSkillType_Name(OfficerSkillType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          OfficerSkillType_entries, OfficerSkillType_entries_by_number,
+          4, OfficerSkillType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      OfficerSkillType_entries, OfficerSkillType_entries_by_number, 4,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : OfficerSkillType_strings[idx].get();
+}
+
+bool OfficerSkillType_Parse(absl::string_view name, OfficerSkillType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      OfficerSkillType_entries, 4, name, &int_value);
+  if (success) {
+    *value = static_cast<OfficerSkillType>(int_value);
+  }
+  return success;
 }
 bool EntityType_IsValid(int value) {
   switch (value) {
     case 0:
     case 73015892:
+    case 232004982:
     case 859804212:
     case 1211023646:
     case 1794481137:
@@ -329,9 +175,65 @@ bool EntityType_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* OfficerProgressType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_stfc_2eproto);
-  return file_level_enum_descriptors_stfc_2eproto[2];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    EntityType_strings[8] = {};
+
+static const char EntityType_names[] = {
+    "ENTITYTYPE_ALLIANCE"
+    "ENTITYTYPE_DEPLOYEDFLEET"
+    "ENTITYTYPE_INVALID"
+    "ENTITYTYPE_NPC"
+    "ENTITYTYPE_OFFICER"
+    "ENTITYTYPE_PLAYER"
+    "ENTITYTYPE_SHIP"
+    "ENTITYTYPE_SYSTEM"
+};
+
+static const ::google::protobuf::internal::EnumEntry EntityType_entries[] =
+    {
+        {{&EntityType_names[0], 19}, 1794481137},
+        {{&EntityType_names[19], 24}, 2129559302},
+        {{&EntityType_names[43], 18}, 0},
+        {{&EntityType_names[61], 14}, 2100681965},
+        {{&EntityType_names[75], 18}, 1211023646},
+        {{&EntityType_names[93], 17}, 859804212},
+        {{&EntityType_names[110], 15}, 73015892},
+        {{&EntityType_names[125], 17}, 232004982},
+};
+
+static const int EntityType_entries_by_number[] = {
+    2,  // 0 -> ENTITYTYPE_INVALID
+    6,  // 73015892 -> ENTITYTYPE_SHIP
+    7,  // 232004982 -> ENTITYTYPE_SYSTEM
+    5,  // 859804212 -> ENTITYTYPE_PLAYER
+    4,  // 1211023646 -> ENTITYTYPE_OFFICER
+    0,  // 1794481137 -> ENTITYTYPE_ALLIANCE
+    3,  // 2100681965 -> ENTITYTYPE_NPC
+    1,  // 2129559302 -> ENTITYTYPE_DEPLOYEDFLEET
+};
+
+const std::string& EntityType_Name(EntityType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          EntityType_entries, EntityType_entries_by_number,
+          8, EntityType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      EntityType_entries, EntityType_entries_by_number, 8,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : EntityType_strings[idx].get();
+}
+
+bool EntityType_Parse(absl::string_view name, EntityType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      EntityType_entries, 8, name, &int_value);
+  if (success) {
+    *value = static_cast<EntityType>(int_value);
+  }
+  return success;
 }
 bool OfficerProgressType_IsValid(int value) {
   switch (value) {
@@ -343,214 +245,50 @@ bool OfficerProgressType_IsValid(int value) {
       return false;
   }
 }
-// ===================================================================
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    OfficerProgressType_strings[3] = {};
 
-CacheMap_CacheIndexEntry_DoNotUse::CacheMap_CacheIndexEntry_DoNotUse() {}
-CacheMap_CacheIndexEntry_DoNotUse::CacheMap_CacheIndexEntry_DoNotUse(::google::protobuf::Arena* arena)
-    : SuperType(arena) {}
-void CacheMap_CacheIndexEntry_DoNotUse::MergeFrom(const CacheMap_CacheIndexEntry_DoNotUse& other) {
-  MergeFromInternal(other);
-}
-::google::protobuf::Metadata CacheMap_CacheIndexEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[0]);
-}
-// ===================================================================
-
-class CacheMap::_Internal {
- public:
+static const char OfficerProgressType_names[] = {
+    "OFFICERPROGRESSTYPE_LEVELUP"
+    "OFFICERPROGRESSTYPE_RANKUP"
+    "OFFICERPROGRESSTYPE_UNKNOWN"
 };
 
-CacheMap::CacheMap(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
-  SharedCtor(arena);
-  // @@protoc_insertion_point(arena_constructor:CacheMap)
-}
-CacheMap::CacheMap(const CacheMap& from) : ::google::protobuf::Message() {
-  CacheMap* const _this = this;
-  (void)_this;
-  new (&_impl_) Impl_{
-      /* decltype(_impl_.cacheindex_) */ {},
-      /*decltype(_impl_._cached_size_)*/ {},
-  };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
-      from._internal_metadata_);
-  _this->_impl_.cacheindex_.MergeFrom(from._impl_.cacheindex_);
-
-  // @@protoc_insertion_point(copy_constructor:CacheMap)
-}
-inline void CacheMap::SharedCtor(::_pb::Arena* arena) {
-  (void)arena;
-  new (&_impl_) Impl_{
-      /* decltype(_impl_.cacheindex_) */ {::google::protobuf::internal::ArenaInitialized(), arena},
-      /*decltype(_impl_._cached_size_)*/ {},
-  };
-}
-CacheMap::~CacheMap() {
-  // @@protoc_insertion_point(destructor:CacheMap)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
-  SharedDtor();
-}
-inline void CacheMap::SharedDtor() {
-  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.cacheindex_.~MapField();
-}
-void CacheMap::SetCachedSize(int size) const {
-  _impl_._cached_size_.Set(size);
-}
-
-PROTOBUF_NOINLINE void CacheMap::Clear() {
-// @@protoc_insertion_point(message_clear_start:CacheMap)
-  ::uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  _impl_.cacheindex_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
-}
-
-const char* CacheMap::_InternalParse(
-    const char* ptr, ::_pbi::ParseContext* ctx) {
-  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
-  return ptr;
-}
-
-
-PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 1, 27, 2> CacheMap::_table_ = {
-  {
-    0,  // no _has_bits_
-    0, // no _extensions_
-    1, 0,  // max_field_number, fast_idx_mask
-    offsetof(decltype(_table_), field_lookup_table),
-    4294967294,  // skipmap
-    offsetof(decltype(_table_), field_entries),
-    1,  // num_field_entries
-    1,  // num_aux_entries
-    offsetof(decltype(_table_), aux_entries),
-    &_CacheMap_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
-  }, {{
-    {::_pbi::TcParser::MiniParse, {}},
-  }}, {{
-    65535, 65535
-  }}, {{
-    // map<string, string> cacheIndex = 1;
-    {PROTOBUF_FIELD_OFFSET(CacheMap, _impl_.cacheindex_), 0, 0,
-    (0 | ::_fl::kFcRepeated | ::_fl::kMap)},
-  }}, {{
-    {::_pbi::TcParser::GetMapAuxInfo<decltype(CacheMap()._impl_.cacheindex_)>(1, 0, 0)},
-  }}, {{
-    "\10\12\0\0\0\0\0\0"
-    "CacheMap"
-    "cacheIndex"
-  }},
+static const ::google::protobuf::internal::EnumEntry OfficerProgressType_entries[] =
+    {
+        {{&OfficerProgressType_names[0], 27}, 1},
+        {{&OfficerProgressType_names[27], 26}, 2},
+        {{&OfficerProgressType_names[53], 27}, 0},
 };
 
-::uint8_t* CacheMap::_InternalSerialize(
-    ::uint8_t* target,
-    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:CacheMap)
-  ::uint32_t cached_has_bits = 0;
-  (void)cached_has_bits;
-
-  // map<string, string> cacheIndex = 1;
-  if (!_internal_cacheindex().empty()) {
-    using MapType = ::google::protobuf::Map<std::string, std::string>;
-    using WireHelper = CacheMap_CacheIndexEntry_DoNotUse::Funcs;
-    const auto& field = _internal_cacheindex();
-
-    if (stream->IsSerializationDeterministic() && field.size() > 1) {
-      for (const auto& entry : ::google::protobuf::internal::MapSorterPtr<MapType>(field)) {
-        target = WireHelper::InternalSerialize(
-            1, entry.first, entry.second, target, stream);
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.first.data(), static_cast<int>(entry.first.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.second.data(), static_cast<int>(entry.second.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-      }
-    } else {
-      for (const auto& entry : field) {
-        target = WireHelper::InternalSerialize(
-            1, entry.first, entry.second, target, stream);
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.first.data(), static_cast<int>(entry.first.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-        ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            entry.second.data(), static_cast<int>(entry.second.length()),
- ::google::protobuf::internal::WireFormatLite::SERIALIZE, "CacheMap.cacheIndex");
-      }
-    }
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:CacheMap)
-  return target;
-}
-
-::size_t CacheMap::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:CacheMap)
-  ::size_t total_size = 0;
-
-  ::uint32_t cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // map<string, string> cacheIndex = 1;
-  total_size += 1 * ::google::protobuf::internal::FromIntSize(_internal_cacheindex_size());
-  for (const auto& entry : _internal_cacheindex()) {
-    total_size += CacheMap_CacheIndexEntry_DoNotUse::Funcs::ByteSizeLong(entry.first, entry.second);
-  }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
-}
-
-const ::google::protobuf::Message::ClassData CacheMap::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CacheMap::MergeImpl
+static const int OfficerProgressType_entries_by_number[] = {
+    2,  // 0 -> OFFICERPROGRESSTYPE_UNKNOWN
+    0,  // 1 -> OFFICERPROGRESSTYPE_LEVELUP
+    1,  // 2 -> OFFICERPROGRESSTYPE_RANKUP
 };
-const ::google::protobuf::Message::ClassData*CacheMap::GetClassData() const { return &_class_data_; }
 
+const std::string& OfficerProgressType_Name(OfficerProgressType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          OfficerProgressType_entries, OfficerProgressType_entries_by_number,
+          3, OfficerProgressType_strings);
+  (void)kDummy;
 
-void CacheMap::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CacheMap*>(&to_msg);
-  auto& from = static_cast<const CacheMap&>(from_msg);
-  // @@protoc_insertion_point(class_specific_merge_from_start:CacheMap)
-  ABSL_DCHECK_NE(&from, _this);
-  ::uint32_t cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  _this->_impl_.cacheindex_.MergeFrom(from._impl_.cacheindex_);
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      OfficerProgressType_entries, OfficerProgressType_entries_by_number, 3,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : OfficerProgressType_strings[idx].get();
 }
 
-void CacheMap::CopyFrom(const CacheMap& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:CacheMap)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-PROTOBUF_NOINLINE bool CacheMap::IsInitialized() const {
-  return true;
-}
-
-void CacheMap::InternalSwap(CacheMap* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.cacheindex_.InternalSwap(&other->_impl_.cacheindex_);
-}
-
-::google::protobuf::Metadata CacheMap::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[1]);
+bool OfficerProgressType_Parse(absl::string_view name, OfficerProgressType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      OfficerProgressType_entries, 3, name, &int_value);
+  if (success) {
+    *value = static_cast<OfficerProgressType>(int_value);
+  }
+  return success;
 }
 // ===================================================================
 
@@ -559,13 +297,13 @@ class CommanderSkillSpec::_Internal {
 };
 
 CommanderSkillSpec::CommanderSkillSpec(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:CommanderSkillSpec)
 }
 CommanderSkillSpec::CommanderSkillSpec(const CommanderSkillSpec& from)
-    : ::google::protobuf::Message(), _impl_(from._impl_) {
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+    : ::google::protobuf::MessageLite(), _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:CommanderSkillSpec)
 }
@@ -581,7 +319,7 @@ inline void CommanderSkillSpec::SharedCtor(::_pb::Arena* arena) {
 }
 CommanderSkillSpec::~CommanderSkillSpec() {
   // @@protoc_insertion_point(destructor:CommanderSkillSpec)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CommanderSkillSpec::SharedDtor() {
@@ -600,7 +338,7 @@ PROTOBUF_NOINLINE void CommanderSkillSpec::Clear() {
   ::memset(&_impl_.researchid_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.skilltype_) -
       reinterpret_cast<char*>(&_impl_.researchid_)) + sizeof(_impl_.skilltype_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CommanderSkillSpec::_InternalParse(
@@ -623,19 +361,19 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> CommanderSkillSpec::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_CommanderSkillSpec_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .OfficerSkillType skillType = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CommanderSkillSpec, _impl_.skilltype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(CommanderSkillSpec, _impl_.skilltype_)}},
     // int64 researchId = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(CommanderSkillSpec, _impl_.researchid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(CommanderSkillSpec, _impl_.researchid_)}},
     // int32 groupId = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CommanderSkillSpec, _impl_.groupid_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(CommanderSkillSpec, _impl_.groupid_)}},
     // int32 sortOrder = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CommanderSkillSpec, _impl_.sortorder_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(CommanderSkillSpec, _impl_.sortorder_)}},
   }}, {{
     65535, 65535
@@ -694,9 +432,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> CommanderSkillSpec::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:CommanderSkillSpec)
   return target;
@@ -734,19 +472,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> CommanderSkillSpec::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_skilltype());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CommanderSkillSpec::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CommanderSkillSpec::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CommanderSkillSpec::GetClassData() const { return &_class_data_; }
+void CommanderSkillSpec::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CommanderSkillSpec*>(
+      &from));
+}
 
-
-void CommanderSkillSpec::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CommanderSkillSpec*>(&to_msg);
-  auto& from = static_cast<const CommanderSkillSpec&>(from_msg);
+void CommanderSkillSpec::MergeFrom(const CommanderSkillSpec& from) {
+  CommanderSkillSpec* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:CommanderSkillSpec)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -764,7 +505,7 @@ void CommanderSkillSpec::MergeImpl(::google::protobuf::Message& to_msg, const ::
   if (from._internal_skilltype() != 0) {
     _this->_internal_set_skilltype(from._internal_skilltype());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CommanderSkillSpec::CopyFrom(const CommanderSkillSpec& from) {
@@ -789,11 +530,10 @@ void CommanderSkillSpec::InternalSwap(CommanderSkillSpec* other) {
           reinterpret_cast<char*>(&other->_impl_.researchid_));
 }
 
-::google::protobuf::Metadata CommanderSkillSpec::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[2]);
+std::string CommanderSkillSpec::GetTypeName() const {
+  return "CommanderSkillSpec";
 }
+
 // ===================================================================
 
 class EntityRef::_Internal {
@@ -811,11 +551,11 @@ const ::EntityRef& EntityRef::_Internal::parententity(const EntityRef* msg) {
   return *msg->_impl_.parententity_;
 }
 EntityRef::EntityRef(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:EntityRef)
 }
-EntityRef::EntityRef(const EntityRef& from) : ::google::protobuf::Message() {
+EntityRef::EntityRef(const EntityRef& from) : ::google::protobuf::MessageLite() {
   EntityRef* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -826,7 +566,7 @@ EntityRef::EntityRef(const EntityRef& from) : ::google::protobuf::Message() {
       decltype(_impl_.entityid_){},
       decltype(_impl_.entitytype_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.entityidstr_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -861,7 +601,7 @@ inline void EntityRef::SharedCtor(::_pb::Arena* arena) {
 }
 EntityRef::~EntityRef() {
   // @@protoc_insertion_point(destructor:EntityRef)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EntityRef::SharedDtor() {
@@ -889,7 +629,7 @@ PROTOBUF_NOINLINE void EntityRef::Clear() {
       reinterpret_cast<char*>(&_impl_.entitytype_) -
       reinterpret_cast<char*>(&_impl_.entityid_)) + sizeof(_impl_.entitytype_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EntityRef::_InternalParse(
@@ -912,19 +652,19 @@ const ::_pbi::TcParseTable<2, 4, 1, 29, 2> EntityRef::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EntityRef_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .EntityRef parentEntity = 4;
     {::_pbi::TcParser::FastMtS1,
      {34, 0, 0, PROTOBUF_FIELD_OFFSET(EntityRef, _impl_.parententity_)}},
     // int64 entityId = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(EntityRef, _impl_.entityid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(EntityRef, _impl_.entityid_)}},
     // string entityIdStr = 2;
     {::_pbi::TcParser::FastUS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(EntityRef, _impl_.entityidstr_)}},
     // .EntityType entityType = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EntityRef, _impl_.entitytype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(EntityRef, _impl_.entitytype_)}},
   }}, {{
     65535, 65535
@@ -988,9 +728,9 @@ const ::_pbi::TcParseTable<2, 4, 1, 29, 2> EntityRef::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:EntityRef)
   return target;
@@ -1030,19 +770,22 @@ const ::_pbi::TcParseTable<2, 4, 1, 29, 2> EntityRef::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_entitytype());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EntityRef::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EntityRef::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EntityRef::GetClassData() const { return &_class_data_; }
+void EntityRef::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EntityRef*>(
+      &from));
+}
 
-
-void EntityRef::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EntityRef*>(&to_msg);
-  auto& from = static_cast<const EntityRef&>(from_msg);
+void EntityRef::MergeFrom(const EntityRef& from) {
+  EntityRef* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:EntityRef)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1061,7 +804,7 @@ void EntityRef::MergeImpl(::google::protobuf::Message& to_msg, const ::google::p
   if (from._internal_entitytype() != 0) {
     _this->_internal_set_entitytype(from._internal_entitytype());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EntityRef::CopyFrom(const EntityRef& from) {
@@ -1091,11 +834,10 @@ void EntityRef::InternalSwap(EntityRef* other) {
           reinterpret_cast<char*>(&other->_impl_.parententity_));
 }
 
-::google::protobuf::Metadata EntityRef::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[3]);
+std::string EntityRef::GetTypeName() const {
+  return "EntityRef";
 }
+
 // ===================================================================
 
 class OfficerLevelRewardsSpec::_Internal {
@@ -1103,11 +845,11 @@ class OfficerLevelRewardsSpec::_Internal {
 };
 
 OfficerLevelRewardsSpec::OfficerLevelRewardsSpec(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:OfficerLevelRewardsSpec)
 }
-OfficerLevelRewardsSpec::OfficerLevelRewardsSpec(const OfficerLevelRewardsSpec& from) : ::google::protobuf::Message() {
+OfficerLevelRewardsSpec::OfficerLevelRewardsSpec(const OfficerLevelRewardsSpec& from) : ::google::protobuf::MessageLite() {
   OfficerLevelRewardsSpec* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1117,7 +859,7 @@ OfficerLevelRewardsSpec::OfficerLevelRewardsSpec(const OfficerLevelRewardsSpec& 
       decltype(_impl_.level_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.schemaid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1148,7 +890,7 @@ inline void OfficerLevelRewardsSpec::SharedCtor(::_pb::Arena* arena) {
 }
 OfficerLevelRewardsSpec::~OfficerLevelRewardsSpec() {
   // @@protoc_insertion_point(destructor:OfficerLevelRewardsSpec)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void OfficerLevelRewardsSpec::SharedDtor() {
@@ -1169,7 +911,7 @@ PROTOBUF_NOINLINE void OfficerLevelRewardsSpec::Clear() {
   ::memset(&_impl_.id_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.level_) -
       reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.level_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* OfficerLevelRewardsSpec::_InternalParse(
@@ -1192,19 +934,19 @@ const ::_pbi::TcParseTable<2, 4, 0, 40, 2> OfficerLevelRewardsSpec::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_OfficerLevelRewardsSpec_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string schemaId = 4;
     {::_pbi::TcParser::FastUS1,
      {34, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerLevelRewardsSpec, _impl_.schemaid_)}},
     // int32 amount = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OfficerLevelRewardsSpec, _impl_.amount_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerLevelRewardsSpec, _impl_.amount_)}},
     // int64 id = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(OfficerLevelRewardsSpec, _impl_.id_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerLevelRewardsSpec, _impl_.id_)}},
     // int32 level = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OfficerLevelRewardsSpec, _impl_.level_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerLevelRewardsSpec, _impl_.level_)}},
   }}, {{
     65535, 65535
@@ -1267,9 +1009,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 40, 2> OfficerLevelRewardsSpec::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:OfficerLevelRewardsSpec)
   return target;
@@ -1307,19 +1049,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 40, 2> OfficerLevelRewardsSpec::_table_ = {
         this->_internal_level());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData OfficerLevelRewardsSpec::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    OfficerLevelRewardsSpec::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*OfficerLevelRewardsSpec::GetClassData() const { return &_class_data_; }
+void OfficerLevelRewardsSpec::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const OfficerLevelRewardsSpec*>(
+      &from));
+}
 
-
-void OfficerLevelRewardsSpec::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<OfficerLevelRewardsSpec*>(&to_msg);
-  auto& from = static_cast<const OfficerLevelRewardsSpec&>(from_msg);
+void OfficerLevelRewardsSpec::MergeFrom(const OfficerLevelRewardsSpec& from) {
+  OfficerLevelRewardsSpec* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:OfficerLevelRewardsSpec)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1337,7 +1082,7 @@ void OfficerLevelRewardsSpec::MergeImpl(::google::protobuf::Message& to_msg, con
   if (from._internal_level() != 0) {
     _this->_internal_set_level(from._internal_level());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void OfficerLevelRewardsSpec::CopyFrom(const OfficerLevelRewardsSpec& from) {
@@ -1366,11 +1111,10 @@ void OfficerLevelRewardsSpec::InternalSwap(OfficerLevelRewardsSpec* other) {
           reinterpret_cast<char*>(&other->_impl_.id_));
 }
 
-::google::protobuf::Metadata OfficerLevelRewardsSpec::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[4]);
+std::string OfficerLevelRewardsSpec::GetTypeName() const {
+  return "OfficerLevelRewardsSpec";
 }
+
 // ===================================================================
 
 class OfficerProgressRewardSpec::_Internal {
@@ -1378,11 +1122,11 @@ class OfficerProgressRewardSpec::_Internal {
 };
 
 OfficerProgressRewardSpec::OfficerProgressRewardSpec(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:OfficerProgressRewardSpec)
 }
-OfficerProgressRewardSpec::OfficerProgressRewardSpec(const OfficerProgressRewardSpec& from) : ::google::protobuf::Message() {
+OfficerProgressRewardSpec::OfficerProgressRewardSpec(const OfficerProgressRewardSpec& from) : ::google::protobuf::MessageLite() {
   OfficerProgressRewardSpec* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1393,7 +1137,7 @@ OfficerProgressRewardSpec::OfficerProgressRewardSpec(const OfficerProgressReward
       decltype(_impl_.schemaid_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   ::memcpy(&_impl_.progresstype_, &from._impl_.progresstype_,
     static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.schemaid_) -
@@ -1414,7 +1158,7 @@ inline void OfficerProgressRewardSpec::SharedCtor(::_pb::Arena* arena) {
 }
 OfficerProgressRewardSpec::~OfficerProgressRewardSpec() {
   // @@protoc_insertion_point(destructor:OfficerProgressRewardSpec)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void OfficerProgressRewardSpec::SharedDtor() {
@@ -1435,7 +1179,7 @@ PROTOBUF_NOINLINE void OfficerProgressRewardSpec::Clear() {
   ::memset(&_impl_.progresstype_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.schemaid_) -
       reinterpret_cast<char*>(&_impl_.progresstype_)) + sizeof(_impl_.schemaid_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* OfficerProgressRewardSpec::_InternalParse(
@@ -1458,19 +1202,19 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> OfficerProgressRewardSpec::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_OfficerProgressRewardSpec_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated int32 amount = 4;
     {::_pbi::TcParser::FastV32P1,
      {34, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerProgressRewardSpec, _impl_.amount_)}},
     // .OfficerProgressType progressType = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OfficerProgressRewardSpec, _impl_.progresstype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerProgressRewardSpec, _impl_.progresstype_)}},
     // int32 rank = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OfficerProgressRewardSpec, _impl_.rank_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerProgressRewardSpec, _impl_.rank_)}},
     // int32 schemaId = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OfficerProgressRewardSpec, _impl_.schemaid_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(OfficerProgressRewardSpec, _impl_.schemaid_)}},
   }}, {{
     65535, 65535
@@ -1531,9 +1275,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> OfficerProgressRewardSpec::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:OfficerProgressRewardSpec)
   return target;
@@ -1578,19 +1322,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> OfficerProgressRewardSpec::_table_ = {
         this->_internal_schemaid());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData OfficerProgressRewardSpec::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    OfficerProgressRewardSpec::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*OfficerProgressRewardSpec::GetClassData() const { return &_class_data_; }
+void OfficerProgressRewardSpec::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const OfficerProgressRewardSpec*>(
+      &from));
+}
 
-
-void OfficerProgressRewardSpec::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<OfficerProgressRewardSpec*>(&to_msg);
-  auto& from = static_cast<const OfficerProgressRewardSpec&>(from_msg);
+void OfficerProgressRewardSpec::MergeFrom(const OfficerProgressRewardSpec& from) {
+  OfficerProgressRewardSpec* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:OfficerProgressRewardSpec)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1606,7 +1353,7 @@ void OfficerProgressRewardSpec::MergeImpl(::google::protobuf::Message& to_msg, c
   if (from._internal_schemaid() != 0) {
     _this->_internal_set_schemaid(from._internal_schemaid());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void OfficerProgressRewardSpec::CopyFrom(const OfficerProgressRewardSpec& from) {
@@ -1632,11 +1379,10 @@ void OfficerProgressRewardSpec::InternalSwap(OfficerProgressRewardSpec* other) {
           reinterpret_cast<char*>(&other->_impl_.progresstype_));
 }
 
-::google::protobuf::Metadata OfficerProgressRewardSpec::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_stfc_2eproto_getter, &descriptor_table_stfc_2eproto_once,
-      file_level_metadata_stfc_2eproto[5]);
+std::string OfficerProgressRewardSpec::GetTypeName() const {
+  return "OfficerProgressRewardSpec";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 namespace google {
 namespace protobuf {

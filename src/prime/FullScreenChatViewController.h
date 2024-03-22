@@ -12,6 +12,8 @@ public:
 
 private:
   friend class ObjectFinder<FullScreenChatViewController>;
+
+public:
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper =
@@ -19,7 +21,6 @@ private:
     return class_helper;
   }
 
-public:
   ChatMessageListLocalViewController* __get__messageList()
   {
     static auto field = get_class_helper().GetField("_messageList").offset();

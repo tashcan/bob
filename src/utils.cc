@@ -4,8 +4,6 @@
 
 #include <stdexcept>
 
-#include <xorstr.hpp>
-
 bool set_import(const std::string module, const std::string &name, uintptr_t func)
 {
     static uint64_t image_base = 0;
@@ -91,6 +89,6 @@ bool set_import(const std::string module, const std::string &name, uintptr_t fun
 
 void *il2cpp_resolve_icall_internal(const char *name)
 {
-    static auto addr = (decltype(il2cpp_resolve_icall_internal) *)(GetProcAddress(GetModuleHandle(xorstr_("GameAssembly.dll")), xorstr_("il2cpp_resolve_icall")));
+    static auto addr = (decltype(il2cpp_resolve_icall_internal) *)(GetProcAddress(GetModuleHandle("GameAssembly.dll"), "il2cpp_resolve_icall"));
     return addr(name);
 }

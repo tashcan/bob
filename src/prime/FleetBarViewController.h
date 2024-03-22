@@ -8,7 +8,7 @@ struct FleetBarContext {
 public:
   __declspec(property(get = __get_CurrentFleet)) void* CurrentFleet;
 
-private:
+public:
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.HUD", "FleetBarContext");
@@ -35,7 +35,6 @@ public:
             return false;
           }
           auto p1 = params[0]->type;
-          auto p2 = params[1]->type;
           if (p1 == IL2CPP_TYPE_I4) {
             return true;
           }
@@ -59,6 +58,8 @@ public:
 
 private:
   friend class ObjectFinder<FleetBarViewController>;
+
+public:
   static IL2CppClassHelper& get_class_helper()
   {
     static auto class_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.HUD", "FleetBarViewController");

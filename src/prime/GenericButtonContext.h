@@ -17,12 +17,12 @@ private:
 public:
   bool __get_Interactable()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Interactable"));
+    static auto field = get_class_helper().GetProperty("Interactable");
     return *field.Get<bool>(this);
   }
   void __set_Interactable(bool v)
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Interactable"));
+    static auto field = get_class_helper().GetProperty("Interactable");
     field.SetRaw<bool>(this, v);
   }
 };

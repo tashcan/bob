@@ -27,12 +27,10 @@
 #include "google/protobuf/generated_message_tctable_decl.h"
 #include "google/protobuf/generated_message_util.h"
 #include "google/protobuf/metadata_lite.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/message.h"
+#include "google/protobuf/message_lite.h"
 #include "google/protobuf/repeated_field.h"  // IWYU pragma: export
 #include "google/protobuf/extension_set.h"  // IWYU pragma: export
-#include "google/protobuf/generated_enum_reflection.h"
-#include "google/protobuf/unknown_field_set.h"
+#include "google/protobuf/generated_enum_util.h"
 #include "google/protobuf/timestamp.pb.h"
 #include "Digit.PrimePlatform.Content.pb.h"
 // @@protoc_insertion_point(includes)
@@ -54,8 +52,6 @@ class AnyMetadata;
 struct TableStruct_Digit_2ePrimePlatform_2eModels_2eproto {
   static const ::uint32_t offsets[];
 };
-extern const ::google::protobuf::internal::DescriptorTable
-    descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto;
 namespace Digit {
 namespace PrimePlatform {
 namespace Models {
@@ -113,6 +109,15 @@ extern GameNewsModelDefaultTypeInternal _GameNewsModel_default_instance_;
 class Instance;
 struct InstanceDefaultTypeInternal;
 extern InstanceDefaultTypeInternal _Instance_default_instance_;
+class Minigame;
+struct MinigameDefaultTypeInternal;
+extern MinigameDefaultTypeInternal _Minigame_default_instance_;
+class MinigameHolder;
+struct MinigameHolderDefaultTypeInternal;
+extern MinigameHolderDefaultTypeInternal _MinigameHolder_default_instance_;
+class MinigameStage;
+struct MinigameStageDefaultTypeInternal;
+extern MinigameStageDefaultTypeInternal _MinigameStage_default_instance_;
 class Notifications;
 struct NotificationsDefaultTypeInternal;
 extern NotificationsDefaultTypeInternal _Notifications_default_instance_;
@@ -179,6 +184,8 @@ enum EventCategories : int {
   EVENTCATEGORIES_FIELDTRAINING = 12,
   EVENTCATEGORIES_FTCATEGORY = 13,
   EVENTCATEGORIES_CUTSCENES = 14,
+  EVENTCATEGORIES_MINIGAMECATEGORY = 15,
+  EVENTCATEGORIES_MINIGAMESTAGE = 16,
   EventCategories_INT_MIN_SENTINEL_DO_NOT_USE_ =
       std::numeric_limits<::int32_t>::min(),
   EventCategories_INT_MAX_SENTINEL_DO_NOT_USE_ =
@@ -187,10 +194,9 @@ enum EventCategories : int {
 
 bool EventCategories_IsValid(int value);
 constexpr EventCategories EventCategories_MIN = static_cast<EventCategories>(0);
-constexpr EventCategories EventCategories_MAX = static_cast<EventCategories>(14);
-constexpr int EventCategories_ARRAYSIZE = 14 + 1;
-const ::google::protobuf::EnumDescriptor*
-EventCategories_descriptor();
+constexpr EventCategories EventCategories_MAX = static_cast<EventCategories>(16);
+constexpr int EventCategories_ARRAYSIZE = 16 + 1;
+const std::string& EventCategories_Name(EventCategories value);
 template <typename T>
 const std::string& EventCategories_Name(T value) {
   static_assert(std::is_same<T, EventCategories>::value ||
@@ -198,16 +204,8 @@ const std::string& EventCategories_Name(T value) {
                 "Incorrect type passed to EventCategories_Name().");
   return EventCategories_Name(static_cast<EventCategories>(value));
 }
-template <>
-inline const std::string& EventCategories_Name(EventCategories value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<EventCategories_descriptor,
-                                                 0, 14>(
-      static_cast<int>(value));
-}
-inline bool EventCategories_Parse(absl::string_view name, EventCategories* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<EventCategories>(
-      EventCategories_descriptor(), name, value);
-}
+const std::string& EventCategories_Name(EventCategories value);
+bool EventCategories_Parse(absl::string_view name, EventCategories* value);
 enum JoinForbidden : int {
   JOINFORBIDDEN_NONE = 0,
   JOINFORBIDDEN_EVENTINPROGRESS = 1,
@@ -221,8 +219,7 @@ bool JoinForbidden_IsValid(int value);
 constexpr JoinForbidden JoinForbidden_MIN = static_cast<JoinForbidden>(0);
 constexpr JoinForbidden JoinForbidden_MAX = static_cast<JoinForbidden>(1);
 constexpr int JoinForbidden_ARRAYSIZE = 1 + 1;
-const ::google::protobuf::EnumDescriptor*
-JoinForbidden_descriptor();
+const std::string& JoinForbidden_Name(JoinForbidden value);
 template <typename T>
 const std::string& JoinForbidden_Name(T value) {
   static_assert(std::is_same<T, JoinForbidden>::value ||
@@ -230,16 +227,31 @@ const std::string& JoinForbidden_Name(T value) {
                 "Incorrect type passed to JoinForbidden_Name().");
   return JoinForbidden_Name(static_cast<JoinForbidden>(value));
 }
-template <>
-inline const std::string& JoinForbidden_Name(JoinForbidden value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<JoinForbidden_descriptor,
-                                                 0, 1>(
-      static_cast<int>(value));
+const std::string& JoinForbidden_Name(JoinForbidden value);
+bool JoinForbidden_Parse(absl::string_view name, JoinForbidden* value);
+enum BattlePassType : int {
+  BATTLEPASSTYPE_STANDARD = 0,
+  BATTLEPASSTYPE_TERRITORYCAPTURE = 1,
+  BattlePassType_INT_MIN_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::min(),
+  BattlePassType_INT_MAX_SENTINEL_DO_NOT_USE_ =
+      std::numeric_limits<::int32_t>::max(),
+};
+
+bool BattlePassType_IsValid(int value);
+constexpr BattlePassType BattlePassType_MIN = static_cast<BattlePassType>(0);
+constexpr BattlePassType BattlePassType_MAX = static_cast<BattlePassType>(1);
+constexpr int BattlePassType_ARRAYSIZE = 1 + 1;
+const std::string& BattlePassType_Name(BattlePassType value);
+template <typename T>
+const std::string& BattlePassType_Name(T value) {
+  static_assert(std::is_same<T, BattlePassType>::value ||
+                    std::is_integral<T>::value,
+                "Incorrect type passed to BattlePassType_Name().");
+  return BattlePassType_Name(static_cast<BattlePassType>(value));
 }
-inline bool JoinForbidden_Parse(absl::string_view name, JoinForbidden* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<JoinForbidden>(
-      JoinForbidden_descriptor(), name, value);
-}
+const std::string& BattlePassType_Name(BattlePassType value);
+bool BattlePassType_Parse(absl::string_view name, BattlePassType* value);
 enum PlacementType : int {
   PLACEMENTTYPE_POSITION = 0,
   PLACEMENTTYPE_MILESTONE = 1,
@@ -253,8 +265,7 @@ bool PlacementType_IsValid(int value);
 constexpr PlacementType PlacementType_MIN = static_cast<PlacementType>(0);
 constexpr PlacementType PlacementType_MAX = static_cast<PlacementType>(1);
 constexpr int PlacementType_ARRAYSIZE = 1 + 1;
-const ::google::protobuf::EnumDescriptor*
-PlacementType_descriptor();
+const std::string& PlacementType_Name(PlacementType value);
 template <typename T>
 const std::string& PlacementType_Name(T value) {
   static_assert(std::is_same<T, PlacementType>::value ||
@@ -262,16 +273,8 @@ const std::string& PlacementType_Name(T value) {
                 "Incorrect type passed to PlacementType_Name().");
   return PlacementType_Name(static_cast<PlacementType>(value));
 }
-template <>
-inline const std::string& PlacementType_Name(PlacementType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<PlacementType_descriptor,
-                                                 0, 1>(
-      static_cast<int>(value));
-}
-inline bool PlacementType_Parse(absl::string_view name, PlacementType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<PlacementType>(
-      PlacementType_descriptor(), name, value);
-}
+const std::string& PlacementType_Name(PlacementType value);
+bool PlacementType_Parse(absl::string_view name, PlacementType* value);
 enum SegmentType : int {
   SEGMENTTYPE_ALL = 0,
   SEGMENTTYPE_RANGE = 1,
@@ -291,8 +294,7 @@ bool SegmentType_IsValid(int value);
 constexpr SegmentType SegmentType_MIN = static_cast<SegmentType>(0);
 constexpr SegmentType SegmentType_MAX = static_cast<SegmentType>(7);
 constexpr int SegmentType_ARRAYSIZE = 7 + 1;
-const ::google::protobuf::EnumDescriptor*
-SegmentType_descriptor();
+const std::string& SegmentType_Name(SegmentType value);
 template <typename T>
 const std::string& SegmentType_Name(T value) {
   static_assert(std::is_same<T, SegmentType>::value ||
@@ -300,16 +302,8 @@ const std::string& SegmentType_Name(T value) {
                 "Incorrect type passed to SegmentType_Name().");
   return SegmentType_Name(static_cast<SegmentType>(value));
 }
-template <>
-inline const std::string& SegmentType_Name(SegmentType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<SegmentType_descriptor,
-                                                 0, 7>(
-      static_cast<int>(value));
-}
-inline bool SegmentType_Parse(absl::string_view name, SegmentType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<SegmentType>(
-      SegmentType_descriptor(), name, value);
-}
+const std::string& SegmentType_Name(SegmentType value);
+bool SegmentType_Parse(absl::string_view name, SegmentType* value);
 enum PlayerlifecycleContentType : int {
   PLAYERLIFECYCLECONTENTTYPE_NEWS = 0,
   PLAYERLIFECYCLECONTENTTYPE_BUNDLES = 1,
@@ -324,8 +318,7 @@ bool PlayerlifecycleContentType_IsValid(int value);
 constexpr PlayerlifecycleContentType PlayerlifecycleContentType_MIN = static_cast<PlayerlifecycleContentType>(0);
 constexpr PlayerlifecycleContentType PlayerlifecycleContentType_MAX = static_cast<PlayerlifecycleContentType>(2);
 constexpr int PlayerlifecycleContentType_ARRAYSIZE = 2 + 1;
-const ::google::protobuf::EnumDescriptor*
-PlayerlifecycleContentType_descriptor();
+const std::string& PlayerlifecycleContentType_Name(PlayerlifecycleContentType value);
 template <typename T>
 const std::string& PlayerlifecycleContentType_Name(T value) {
   static_assert(std::is_same<T, PlayerlifecycleContentType>::value ||
@@ -333,16 +326,8 @@ const std::string& PlayerlifecycleContentType_Name(T value) {
                 "Incorrect type passed to PlayerlifecycleContentType_Name().");
   return PlayerlifecycleContentType_Name(static_cast<PlayerlifecycleContentType>(value));
 }
-template <>
-inline const std::string& PlayerlifecycleContentType_Name(PlayerlifecycleContentType value) {
-  return ::google::protobuf::internal::NameOfDenseEnum<PlayerlifecycleContentType_descriptor,
-                                                 0, 2>(
-      static_cast<int>(value));
-}
-inline bool PlayerlifecycleContentType_Parse(absl::string_view name, PlayerlifecycleContentType* value) {
-  return ::google::protobuf::internal::ParseNamedEnum<PlayerlifecycleContentType>(
-      PlayerlifecycleContentType_descriptor(), name, value);
-}
+const std::string& PlayerlifecycleContentType_Name(PlayerlifecycleContentType value);
+bool PlayerlifecycleContentType_Parse(absl::string_view name, PlayerlifecycleContentType* value);
 
 // ===================================================================
 
@@ -350,7 +335,7 @@ inline bool PlayerlifecycleContentType_Parse(absl::string_view name, Playerlifec
 // -------------------------------------------------------------------
 
 class EventEntryData final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventEntryData) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventEntryData) */ {
  public:
   inline EventEntryData() : EventEntryData(nullptr) {}
   ~EventEntryData() override;
@@ -381,22 +366,13 @@ class EventEntryData final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventEntryData& default_instance() {
     return *internal_default_instance();
   }
@@ -434,15 +410,9 @@ class EventEntryData final :
   EventEntryData* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventEntryData>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventEntryData& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventEntryData& from) {
-    EventEntryData::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventEntryData& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -455,7 +425,7 @@ class EventEntryData final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventEntryData* other);
 
   private:
@@ -467,10 +437,7 @@ class EventEntryData final :
   explicit EventEntryData(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -544,7 +511,7 @@ class EventEntryData final :
 };// -------------------------------------------------------------------
 
 class EventHighlights final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventHighlights) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventHighlights) */ {
  public:
   inline EventHighlights() : EventHighlights(nullptr) {}
   ~EventHighlights() override;
@@ -575,22 +542,13 @@ class EventHighlights final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventHighlights& default_instance() {
     return *internal_default_instance();
   }
@@ -628,15 +586,9 @@ class EventHighlights final :
   EventHighlights* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventHighlights>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventHighlights& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventHighlights& from) {
-    EventHighlights::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventHighlights& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -649,7 +601,7 @@ class EventHighlights final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventHighlights* other);
 
   private:
@@ -661,10 +613,7 @@ class EventHighlights final :
   explicit EventHighlights(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -762,7 +711,7 @@ class EventHighlights final :
 };// -------------------------------------------------------------------
 
 class EventMetadata final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventMetadata) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventMetadata) */ {
  public:
   inline EventMetadata() : EventMetadata(nullptr) {}
   ~EventMetadata() override;
@@ -793,22 +742,13 @@ class EventMetadata final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventMetadata& default_instance() {
     return *internal_default_instance();
   }
@@ -846,15 +786,9 @@ class EventMetadata final :
   EventMetadata* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventMetadata>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventMetadata& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventMetadata& from) {
-    EventMetadata::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventMetadata& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -867,7 +801,7 @@ class EventMetadata final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventMetadata* other);
 
   private:
@@ -879,10 +813,7 @@ class EventMetadata final :
   explicit EventMetadata(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -898,9 +829,12 @@ class EventMetadata final :
     kVisualAssetFilenameFieldNumber = 8,
     kUnlockItemIdFieldNumber = 14,
     kVisualVideoIdFieldNumber = 20,
+    kBattlePassLinkFieldNumber = 22,
+    kBattlePassResourceIdFieldNumber = 23,
     kBucketFieldNumber = 13,
     kServerTransferCostFieldNumber = 17,
     kVisualVideoAssetsFieldNumber = 21,
+    kCtaFieldNumber = 10,
     kIsAutoRegisterFieldNumber = 1,
     kAutoRewardFieldNumber = 2,
     kImmediateRewardFieldNumber = 3,
@@ -908,8 +842,11 @@ class EventMetadata final :
     kIsUniqueWinnerFieldNumber = 15,
     kIsCrossServerFieldNumber = 16,
     kRespectPriorityFieldNumber = 19,
-    kCtaFieldNumber = 10,
+    kMinigameLockFieldNumber = 25,
     kPriorityFieldNumber = 11,
+    kBattlePassTypeFieldNumber = 24,
+    kMinigameLevelMinFieldNumber = 26,
+    kMinigameLevelMaxFieldNumber = 27,
   };
   // repeated .Digit.PrimePlatform.Models.EventScoringInfo scoringInfo = 9;
   int scoringinfo_size() const;
@@ -1061,6 +998,38 @@ class EventMetadata final :
   std::string* _internal_mutable_visualvideoid();
 
   public:
+  // string battlePassLink = 22;
+  void clear_battlepasslink() ;
+  const std::string& battlepasslink() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_battlepasslink(Arg_&& arg, Args_... args);
+  std::string* mutable_battlepasslink();
+  PROTOBUF_NODISCARD std::string* release_battlepasslink();
+  void set_allocated_battlepasslink(std::string* ptr);
+
+  private:
+  const std::string& _internal_battlepasslink() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_battlepasslink(
+      const std::string& value);
+  std::string* _internal_mutable_battlepasslink();
+
+  public:
+  // string battlePassResourceId = 23;
+  void clear_battlepassresourceid() ;
+  const std::string& battlepassresourceid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_battlepassresourceid(Arg_&& arg, Args_... args);
+  std::string* mutable_battlepassresourceid();
+  PROTOBUF_NODISCARD std::string* release_battlepassresourceid();
+  void set_allocated_battlepassresourceid(std::string* ptr);
+
+  private:
+  const std::string& _internal_battlepassresourceid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_battlepassresourceid(
+      const std::string& value);
+  std::string* _internal_mutable_battlepassresourceid();
+
+  public:
   // .Digit.PrimePlatform.Content.Bucket bucket = 13;
   bool has_bucket() const;
   void clear_bucket() ;
@@ -1104,6 +1073,16 @@ class EventMetadata final :
   private:
   const ::Digit::PrimePlatform::Models::EventVideoAssets& _internal_visualvideoassets() const;
   ::Digit::PrimePlatform::Models::EventVideoAssets* _internal_mutable_visualvideoassets();
+
+  public:
+  // int64 cta = 10;
+  void clear_cta() ;
+  ::int64_t cta() const;
+  void set_cta(::int64_t value);
+
+  private:
+  ::int64_t _internal_cta() const;
+  void _internal_set_cta(::int64_t value);
 
   public:
   // bool isAutoRegister = 1;
@@ -1176,14 +1155,14 @@ class EventMetadata final :
   void _internal_set_respectpriority(bool value);
 
   public:
-  // int64 cta = 10;
-  void clear_cta() ;
-  ::int64_t cta() const;
-  void set_cta(::int64_t value);
+  // bool minigameLock = 25;
+  void clear_minigamelock() ;
+  bool minigamelock() const;
+  void set_minigamelock(bool value);
 
   private:
-  ::int64_t _internal_cta() const;
-  void _internal_set_cta(::int64_t value);
+  bool _internal_minigamelock() const;
+  void _internal_set_minigamelock(bool value);
 
   public:
   // int64 priority = 11;
@@ -1196,12 +1175,42 @@ class EventMetadata final :
   void _internal_set_priority(::int64_t value);
 
   public:
+  // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+  void clear_battlepasstype() ;
+  ::Digit::PrimePlatform::Models::BattlePassType battlepasstype() const;
+  void set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value);
+
+  private:
+  ::Digit::PrimePlatform::Models::BattlePassType _internal_battlepasstype() const;
+  void _internal_set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value);
+
+  public:
+  // uint32 minigameLevelMin = 26;
+  void clear_minigamelevelmin() ;
+  ::uint32_t minigamelevelmin() const;
+  void set_minigamelevelmin(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_minigamelevelmin() const;
+  void _internal_set_minigamelevelmin(::uint32_t value);
+
+  public:
+  // uint32 minigameLevelMax = 27;
+  void clear_minigamelevelmax() ;
+  ::uint32_t minigamelevelmax() const;
+  void set_minigamelevelmax(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_minigamelevelmax() const;
+  void _internal_set_minigamelevelmax(::uint32_t value);
+
+  public:
   // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.EventMetadata)
  private:
   class _Internal;
 
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<5, 21, 6, 148, 2> _table_;
+  static const ::google::protobuf::internal::TcParseTable<5, 27, 6, 190, 2> _table_;
   template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
@@ -1217,9 +1226,12 @@ class EventMetadata final :
     ::google::protobuf::internal::ArenaStringPtr visualassetfilename_;
     ::google::protobuf::internal::ArenaStringPtr unlockitemid_;
     ::google::protobuf::internal::ArenaStringPtr visualvideoid_;
+    ::google::protobuf::internal::ArenaStringPtr battlepasslink_;
+    ::google::protobuf::internal::ArenaStringPtr battlepassresourceid_;
     ::Digit::PrimePlatform::Content::Bucket* bucket_;
     ::Digit::PrimePlatform::Content::Resource* servertransfercost_;
     ::Digit::PrimePlatform::Models::EventVideoAssets* visualvideoassets_;
+    ::int64_t cta_;
     bool isautoregister_;
     bool autoreward_;
     bool immediatereward_;
@@ -1227,8 +1239,11 @@ class EventMetadata final :
     bool isuniquewinner_;
     bool iscrossserver_;
     bool respectpriority_;
-    ::int64_t cta_;
+    bool minigamelock_;
     ::int64_t priority_;
+    int battlepasstype_;
+    ::uint32_t minigamelevelmin_;
+    ::uint32_t minigamelevelmax_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -1236,7 +1251,7 @@ class EventMetadata final :
 };// -------------------------------------------------------------------
 
 class EventModel final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventModel) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventModel) */ {
  public:
   inline EventModel() : EventModel(nullptr) {}
   ~EventModel() override;
@@ -1267,22 +1282,13 @@ class EventModel final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventModel& default_instance() {
     return *internal_default_instance();
   }
@@ -1320,15 +1326,9 @@ class EventModel final :
   EventModel* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventModel>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventModel& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventModel& from) {
-    EventModel::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventModel& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1341,7 +1341,7 @@ class EventModel final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventModel* other);
 
   private:
@@ -1353,10 +1353,7 @@ class EventModel final :
   explicit EventModel(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1622,7 +1619,7 @@ class EventModel final :
 };// -------------------------------------------------------------------
 
 class EventRank final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventRank) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventRank) */ {
  public:
   inline EventRank() : EventRank(nullptr) {}
   ~EventRank() override;
@@ -1653,22 +1650,13 @@ class EventRank final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventRank& default_instance() {
     return *internal_default_instance();
   }
@@ -1706,15 +1694,9 @@ class EventRank final :
   EventRank* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventRank>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventRank& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventRank& from) {
-    EventRank::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventRank& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1727,7 +1709,7 @@ class EventRank final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventRank* other);
 
   private:
@@ -1739,10 +1721,7 @@ class EventRank final :
   explicit EventRank(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -1858,7 +1837,7 @@ class EventRank final :
 };// -------------------------------------------------------------------
 
 class EventRanking final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventRanking) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventRanking) */ {
  public:
   inline EventRanking() : EventRanking(nullptr) {}
   ~EventRanking() override;
@@ -1889,22 +1868,13 @@ class EventRanking final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventRanking& default_instance() {
     return *internal_default_instance();
   }
@@ -1942,15 +1912,9 @@ class EventRanking final :
   EventRanking* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventRanking>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventRanking& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventRanking& from) {
-    EventRanking::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventRanking& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -1963,7 +1927,7 @@ class EventRanking final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventRanking* other);
 
   private:
@@ -1975,10 +1939,7 @@ class EventRanking final :
   explicit EventRanking(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2042,7 +2003,7 @@ class EventRanking final :
 };// -------------------------------------------------------------------
 
 class EventReward final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventReward) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventReward) */ {
  public:
   inline EventReward() : EventReward(nullptr) {}
   ~EventReward() override;
@@ -2073,22 +2034,13 @@ class EventReward final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventReward& default_instance() {
     return *internal_default_instance();
   }
@@ -2126,15 +2078,9 @@ class EventReward final :
   EventReward* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventReward>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventReward& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventReward& from) {
-    EventReward::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventReward& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2147,7 +2093,7 @@ class EventReward final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventReward* other);
 
   private:
@@ -2159,10 +2105,7 @@ class EventReward final :
   explicit EventReward(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2257,7 +2200,7 @@ class EventReward final :
 };// -------------------------------------------------------------------
 
 class EventSchedule final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventSchedule) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventSchedule) */ {
  public:
   inline EventSchedule() : EventSchedule(nullptr) {}
   ~EventSchedule() override;
@@ -2288,22 +2231,13 @@ class EventSchedule final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventSchedule& default_instance() {
     return *internal_default_instance();
   }
@@ -2341,15 +2275,9 @@ class EventSchedule final :
   EventSchedule* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventSchedule>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventSchedule& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventSchedule& from) {
-    EventSchedule::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventSchedule& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2362,7 +2290,7 @@ class EventSchedule final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventSchedule* other);
 
   private:
@@ -2374,10 +2302,7 @@ class EventSchedule final :
   explicit EventSchedule(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2536,7 +2461,7 @@ class EventSchedule final :
 };// -------------------------------------------------------------------
 
 class EventScoringInfo final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventScoringInfo) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventScoringInfo) */ {
  public:
   inline EventScoringInfo() : EventScoringInfo(nullptr) {}
   ~EventScoringInfo() override;
@@ -2567,22 +2492,13 @@ class EventScoringInfo final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventScoringInfo& default_instance() {
     return *internal_default_instance();
   }
@@ -2620,15 +2536,9 @@ class EventScoringInfo final :
   EventScoringInfo* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventScoringInfo>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventScoringInfo& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventScoringInfo& from) {
-    EventScoringInfo::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventScoringInfo& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2641,7 +2551,7 @@ class EventScoringInfo final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventScoringInfo* other);
 
   private:
@@ -2653,10 +2563,7 @@ class EventScoringInfo final :
   explicit EventScoringInfo(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2712,7 +2619,7 @@ class EventScoringInfo final :
 };// -------------------------------------------------------------------
 
 class Events final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Events) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Events) */ {
  public:
   inline Events() : Events(nullptr) {}
   ~Events() override;
@@ -2743,22 +2650,13 @@ class Events final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const Events& default_instance() {
     return *internal_default_instance();
   }
@@ -2796,15 +2694,9 @@ class Events final :
   Events* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<Events>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const Events& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const Events& from) {
-    Events::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const Events& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -2817,7 +2709,7 @@ class Events final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(Events* other);
 
   private:
@@ -2829,10 +2721,7 @@ class Events final :
   explicit Events(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -2899,7 +2788,7 @@ class Events final :
 };// -------------------------------------------------------------------
 
 class EventNotification final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventNotification) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventNotification) */ {
  public:
   inline EventNotification() : EventNotification(nullptr) {}
   ~EventNotification() override;
@@ -2930,22 +2819,13 @@ class EventNotification final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventNotification& default_instance() {
     return *internal_default_instance();
   }
@@ -2983,15 +2863,9 @@ class EventNotification final :
   EventNotification* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventNotification>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventNotification& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventNotification& from) {
-    EventNotification::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventNotification& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3004,7 +2878,7 @@ class EventNotification final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventNotification* other);
 
   private:
@@ -3016,10 +2890,7 @@ class EventNotification final :
   explicit EventNotification(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -3115,7 +2986,7 @@ class EventNotification final :
 };// -------------------------------------------------------------------
 
 class EventSegment final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventSegment) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventSegment) */ {
  public:
   inline EventSegment() : EventSegment(nullptr) {}
   ~EventSegment() override;
@@ -3146,22 +3017,13 @@ class EventSegment final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventSegment& default_instance() {
     return *internal_default_instance();
   }
@@ -3199,15 +3061,9 @@ class EventSegment final :
   EventSegment* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventSegment>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventSegment& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventSegment& from) {
-    EventSegment::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventSegment& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3220,7 +3076,7 @@ class EventSegment final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventSegment* other);
 
   private:
@@ -3232,10 +3088,7 @@ class EventSegment final :
   explicit EventSegment(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -3332,7 +3185,7 @@ class EventSegment final :
 };// -------------------------------------------------------------------
 
 class EventVideoAssets final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventVideoAssets) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.EventVideoAssets) */ {
  public:
   inline EventVideoAssets() : EventVideoAssets(nullptr) {}
   ~EventVideoAssets() override;
@@ -3363,22 +3216,13 @@ class EventVideoAssets final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const EventVideoAssets& default_instance() {
     return *internal_default_instance();
   }
@@ -3416,15 +3260,9 @@ class EventVideoAssets final :
   EventVideoAssets* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<EventVideoAssets>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const EventVideoAssets& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const EventVideoAssets& from) {
-    EventVideoAssets::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const EventVideoAssets& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3437,7 +3275,7 @@ class EventVideoAssets final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(EventVideoAssets* other);
 
   private:
@@ -3449,10 +3287,7 @@ class EventVideoAssets final :
   explicit EventVideoAssets(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -3694,7 +3529,7 @@ class EventVideoAssets final :
 };// -------------------------------------------------------------------
 
 class RepeatedInt32 final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.RepeatedInt32) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.RepeatedInt32) */ {
  public:
   inline RepeatedInt32() : RepeatedInt32(nullptr) {}
   ~RepeatedInt32() override;
@@ -3725,22 +3560,13 @@ class RepeatedInt32 final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const RepeatedInt32& default_instance() {
     return *internal_default_instance();
   }
@@ -3778,15 +3604,9 @@ class RepeatedInt32 final :
   RepeatedInt32* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<RepeatedInt32>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const RepeatedInt32& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const RepeatedInt32& from) {
-    RepeatedInt32::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const RepeatedInt32& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3799,7 +3619,7 @@ class RepeatedInt32 final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(RepeatedInt32* other);
 
   private:
@@ -3811,10 +3631,7 @@ class RepeatedInt32 final :
   explicit RepeatedInt32(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -3861,7 +3678,7 @@ class RepeatedInt32 final :
 };// -------------------------------------------------------------------
 
 class PlayerlifecycleNotification final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerlifecycleNotification) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerlifecycleNotification) */ {
  public:
   inline PlayerlifecycleNotification() : PlayerlifecycleNotification(nullptr) {}
   ~PlayerlifecycleNotification() override;
@@ -3892,22 +3709,13 @@ class PlayerlifecycleNotification final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PlayerlifecycleNotification& default_instance() {
     return *internal_default_instance();
   }
@@ -3945,15 +3753,9 @@ class PlayerlifecycleNotification final :
   PlayerlifecycleNotification* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PlayerlifecycleNotification>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PlayerlifecycleNotification& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PlayerlifecycleNotification& from) {
-    PlayerlifecycleNotification::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PlayerlifecycleNotification& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -3966,7 +3768,7 @@ class PlayerlifecycleNotification final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PlayerlifecycleNotification* other);
 
   private:
@@ -3978,10 +3780,7 @@ class PlayerlifecycleNotification final :
   explicit PlayerlifecycleNotification(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4055,7 +3854,7 @@ class PlayerlifecycleNotification final :
 };// -------------------------------------------------------------------
 
 class GameNewsModel final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.GameNewsModel) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.GameNewsModel) */ {
  public:
   inline GameNewsModel() : GameNewsModel(nullptr) {}
   ~GameNewsModel() override;
@@ -4086,22 +3885,13 @@ class GameNewsModel final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const GameNewsModel& default_instance() {
     return *internal_default_instance();
   }
@@ -4139,15 +3929,9 @@ class GameNewsModel final :
   GameNewsModel* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<GameNewsModel>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const GameNewsModel& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const GameNewsModel& from) {
-    GameNewsModel::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const GameNewsModel& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4160,7 +3944,7 @@ class GameNewsModel final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(GameNewsModel* other);
 
   private:
@@ -4172,10 +3956,7 @@ class GameNewsModel final :
   explicit GameNewsModel(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4313,7 +4094,7 @@ class GameNewsModel final :
 };// -------------------------------------------------------------------
 
 class GameNewsHolder final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.GameNewsHolder) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.GameNewsHolder) */ {
  public:
   inline GameNewsHolder() : GameNewsHolder(nullptr) {}
   ~GameNewsHolder() override;
@@ -4344,22 +4125,13 @@ class GameNewsHolder final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const GameNewsHolder& default_instance() {
     return *internal_default_instance();
   }
@@ -4397,15 +4169,9 @@ class GameNewsHolder final :
   GameNewsHolder* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<GameNewsHolder>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const GameNewsHolder& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const GameNewsHolder& from) {
-    GameNewsHolder::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const GameNewsHolder& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4418,7 +4184,7 @@ class GameNewsHolder final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(GameNewsHolder* other);
 
   private:
@@ -4430,10 +4196,7 @@ class GameNewsHolder final :
   explicit GameNewsHolder(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4479,7 +4242,7 @@ class GameNewsHolder final :
 };// -------------------------------------------------------------------
 
 class GameNewsMetadata final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.GameNewsMetadata) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.GameNewsMetadata) */ {
  public:
   inline GameNewsMetadata() : GameNewsMetadata(nullptr) {}
   ~GameNewsMetadata() override;
@@ -4510,22 +4273,13 @@ class GameNewsMetadata final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const GameNewsMetadata& default_instance() {
     return *internal_default_instance();
   }
@@ -4563,15 +4317,9 @@ class GameNewsMetadata final :
   GameNewsMetadata* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<GameNewsMetadata>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const GameNewsMetadata& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const GameNewsMetadata& from) {
-    GameNewsMetadata::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const GameNewsMetadata& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4584,7 +4332,7 @@ class GameNewsMetadata final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(GameNewsMetadata* other);
 
   private:
@@ -4596,10 +4344,7 @@ class GameNewsMetadata final :
   explicit GameNewsMetadata(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4661,7 +4406,7 @@ class GameNewsMetadata final :
 };// -------------------------------------------------------------------
 
 class Notifications final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Notifications) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Notifications) */ {
  public:
   inline Notifications() : Notifications(nullptr) {}
   ~Notifications() override;
@@ -4692,22 +4437,13 @@ class Notifications final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const Notifications& default_instance() {
     return *internal_default_instance();
   }
@@ -4745,15 +4481,9 @@ class Notifications final :
   Notifications* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<Notifications>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const Notifications& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const Notifications& from) {
-    Notifications::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const Notifications& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4766,7 +4496,7 @@ class Notifications final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(Notifications* other);
 
   private:
@@ -4778,10 +4508,7 @@ class Notifications final :
   explicit Notifications(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -4867,7 +4594,7 @@ class Notifications final :
 };// -------------------------------------------------------------------
 
 class PlatformUserProfile final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlatformUserProfile) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlatformUserProfile) */ {
  public:
   inline PlatformUserProfile() : PlatformUserProfile(nullptr) {}
   ~PlatformUserProfile() override;
@@ -4898,22 +4625,13 @@ class PlatformUserProfile final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PlatformUserProfile& default_instance() {
     return *internal_default_instance();
   }
@@ -4951,15 +4669,9 @@ class PlatformUserProfile final :
   PlatformUserProfile* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PlatformUserProfile>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PlatformUserProfile& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PlatformUserProfile& from) {
-    PlatformUserProfile::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PlatformUserProfile& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -4972,7 +4684,7 @@ class PlatformUserProfile final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PlatformUserProfile* other);
 
   private:
@@ -4984,10 +4696,7 @@ class PlatformUserProfile final :
   explicit PlatformUserProfile(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5049,7 +4758,7 @@ class PlatformUserProfile final :
 };// -------------------------------------------------------------------
 
 class PlatformUserProfileResponse final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlatformUserProfileResponse) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlatformUserProfileResponse) */ {
  public:
   inline PlatformUserProfileResponse() : PlatformUserProfileResponse(nullptr) {}
   ~PlatformUserProfileResponse() override;
@@ -5080,22 +4789,13 @@ class PlatformUserProfileResponse final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PlatformUserProfileResponse& default_instance() {
     return *internal_default_instance();
   }
@@ -5133,15 +4833,9 @@ class PlatformUserProfileResponse final :
   PlatformUserProfileResponse* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PlatformUserProfileResponse>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PlatformUserProfileResponse& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PlatformUserProfileResponse& from) {
-    PlatformUserProfileResponse::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PlatformUserProfileResponse& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5154,7 +4848,7 @@ class PlatformUserProfileResponse final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PlatformUserProfileResponse* other);
 
   private:
@@ -5166,10 +4860,7 @@ class PlatformUserProfileResponse final :
   explicit PlatformUserProfileResponse(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5215,7 +4906,7 @@ class PlatformUserProfileResponse final :
 };// -------------------------------------------------------------------
 
 class PlayerStats final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerStats) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerStats) */ {
  public:
   inline PlayerStats() : PlayerStats(nullptr) {}
   ~PlayerStats() override;
@@ -5246,22 +4937,13 @@ class PlayerStats final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PlayerStats& default_instance() {
     return *internal_default_instance();
   }
@@ -5299,15 +4981,9 @@ class PlayerStats final :
   PlayerStats* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PlayerStats>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PlayerStats& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PlayerStats& from) {
-    PlayerStats::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PlayerStats& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5320,7 +4996,7 @@ class PlayerStats final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PlayerStats* other);
 
   private:
@@ -5332,10 +5008,7 @@ class PlayerStats final :
   explicit PlayerStats(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5399,7 +5072,7 @@ class PlayerStats final :
 };// -------------------------------------------------------------------
 
 class PlayerStatsGroup final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerStatsGroup) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerStatsGroup) */ {
  public:
   inline PlayerStatsGroup() : PlayerStatsGroup(nullptr) {}
   ~PlayerStatsGroup() override;
@@ -5430,22 +5103,13 @@ class PlayerStatsGroup final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PlayerStatsGroup& default_instance() {
     return *internal_default_instance();
   }
@@ -5483,15 +5147,9 @@ class PlayerStatsGroup final :
   PlayerStatsGroup* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PlayerStatsGroup>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PlayerStatsGroup& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PlayerStatsGroup& from) {
-    PlayerStatsGroup::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PlayerStatsGroup& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5504,7 +5162,7 @@ class PlayerStatsGroup final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PlayerStatsGroup* other);
 
   private:
@@ -5516,10 +5174,7 @@ class PlayerStatsGroup final :
   explicit PlayerStatsGroup(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5583,7 +5238,7 @@ class PlayerStatsGroup final :
 };// -------------------------------------------------------------------
 
 class PlayerStatsEntry final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerStatsEntry) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerStatsEntry) */ {
  public:
   inline PlayerStatsEntry() : PlayerStatsEntry(nullptr) {}
   ~PlayerStatsEntry() override;
@@ -5614,22 +5269,13 @@ class PlayerStatsEntry final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PlayerStatsEntry& default_instance() {
     return *internal_default_instance();
   }
@@ -5667,15 +5313,9 @@ class PlayerStatsEntry final :
   PlayerStatsEntry* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PlayerStatsEntry>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PlayerStatsEntry& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PlayerStatsEntry& from) {
-    PlayerStatsEntry::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PlayerStatsEntry& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5688,7 +5328,7 @@ class PlayerStatsEntry final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PlayerStatsEntry* other);
 
   private:
@@ -5700,10 +5340,7 @@ class PlayerStatsEntry final :
   explicit PlayerStatsEntry(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5771,7 +5408,7 @@ class PlayerStatsEntry final :
 };// -------------------------------------------------------------------
 
 class CacheHints final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.CacheHints) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.CacheHints) */ {
  public:
   inline CacheHints() : CacheHints(nullptr) {}
   ~CacheHints() override;
@@ -5802,22 +5439,13 @@ class CacheHints final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const CacheHints& default_instance() {
     return *internal_default_instance();
   }
@@ -5855,15 +5483,9 @@ class CacheHints final :
   CacheHints* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<CacheHints>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const CacheHints& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const CacheHints& from) {
-    CacheHints::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const CacheHints& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -5876,7 +5498,7 @@ class CacheHints final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(CacheHints* other);
 
   private:
@@ -5888,10 +5510,7 @@ class CacheHints final :
   explicit CacheHints(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -5937,7 +5556,7 @@ class CacheHints final :
 };// -------------------------------------------------------------------
 
 class Product final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Product) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Product) */ {
  public:
   inline Product() : Product(nullptr) {}
   ~Product() override;
@@ -5968,22 +5587,13 @@ class Product final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const Product& default_instance() {
     return *internal_default_instance();
   }
@@ -6021,15 +5631,9 @@ class Product final :
   Product* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<Product>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const Product& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const Product& from) {
-    Product::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const Product& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6042,7 +5646,7 @@ class Product final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(Product* other);
 
   private:
@@ -6054,10 +5658,7 @@ class Product final :
   explicit Product(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6163,7 +5764,7 @@ class Product final :
 };// -------------------------------------------------------------------
 
 class ProductInfoHolder final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.ProductInfoHolder) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.ProductInfoHolder) */ {
  public:
   inline ProductInfoHolder() : ProductInfoHolder(nullptr) {}
   ~ProductInfoHolder() override;
@@ -6194,22 +5795,13 @@ class ProductInfoHolder final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const ProductInfoHolder& default_instance() {
     return *internal_default_instance();
   }
@@ -6247,15 +5839,9 @@ class ProductInfoHolder final :
   ProductInfoHolder* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<ProductInfoHolder>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const ProductInfoHolder& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const ProductInfoHolder& from) {
-    ProductInfoHolder::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const ProductInfoHolder& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6268,7 +5854,7 @@ class ProductInfoHolder final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(ProductInfoHolder* other);
 
   private:
@@ -6280,10 +5866,7 @@ class ProductInfoHolder final :
   explicit ProductInfoHolder(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6362,7 +5945,7 @@ class ProductInfoHolder final :
 };// -------------------------------------------------------------------
 
 class Region final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Region) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Region) */ {
  public:
   inline Region() : Region(nullptr) {}
   ~Region() override;
@@ -6393,22 +5976,13 @@ class Region final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const Region& default_instance() {
     return *internal_default_instance();
   }
@@ -6446,15 +6020,9 @@ class Region final :
   Region* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<Region>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const Region& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const Region& from) {
-    Region::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const Region& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6467,7 +6035,7 @@ class Region final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(Region* other);
 
   private:
@@ -6479,10 +6047,7 @@ class Region final :
   explicit Region(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6556,7 +6121,7 @@ class Region final :
 };// -------------------------------------------------------------------
 
 class Instance final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Instance) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Instance) */ {
  public:
   inline Instance() : Instance(nullptr) {}
   ~Instance() override;
@@ -6587,22 +6152,13 @@ class Instance final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const Instance& default_instance() {
     return *internal_default_instance();
   }
@@ -6640,15 +6196,9 @@ class Instance final :
   Instance* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<Instance>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const Instance& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const Instance& from) {
-    Instance::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const Instance& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6661,7 +6211,7 @@ class Instance final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(Instance* other);
 
   private:
@@ -6673,10 +6223,7 @@ class Instance final :
   explicit Instance(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6803,7 +6350,7 @@ class Instance final :
 };// -------------------------------------------------------------------
 
 class PlayerTransferState final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerTransferState) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.PlayerTransferState) */ {
  public:
   inline PlayerTransferState() : PlayerTransferState(nullptr) {}
   ~PlayerTransferState() override;
@@ -6834,22 +6381,13 @@ class PlayerTransferState final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const PlayerTransferState& default_instance() {
     return *internal_default_instance();
   }
@@ -6887,15 +6425,9 @@ class PlayerTransferState final :
   PlayerTransferState* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<PlayerTransferState>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const PlayerTransferState& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const PlayerTransferState& from) {
-    PlayerTransferState::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const PlayerTransferState& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -6908,7 +6440,7 @@ class PlayerTransferState final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(PlayerTransferState* other);
 
   private:
@@ -6920,10 +6452,7 @@ class PlayerTransferState final :
   explicit PlayerTransferState(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -6985,7 +6514,7 @@ class PlayerTransferState final :
 };// -------------------------------------------------------------------
 
 class TranslationCacheUpdate final :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.TranslationCacheUpdate) */ {
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.TranslationCacheUpdate) */ {
  public:
   inline TranslationCacheUpdate() : TranslationCacheUpdate(nullptr) {}
   ~TranslationCacheUpdate() override;
@@ -7016,22 +6545,13 @@ class TranslationCacheUpdate final :
     return *this;
   }
 
-  inline const ::google::protobuf::UnknownFieldSet& unknown_fields() const {
-    return _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance);
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
   }
-  inline ::google::protobuf::UnknownFieldSet* mutable_unknown_fields() {
-    return _internal_metadata_.mutable_unknown_fields<::google::protobuf::UnknownFieldSet>();
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
   }
 
-  static const ::google::protobuf::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::google::protobuf::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::google::protobuf::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
   static const TranslationCacheUpdate& default_instance() {
     return *internal_default_instance();
   }
@@ -7069,15 +6589,9 @@ class TranslationCacheUpdate final :
   TranslationCacheUpdate* New(::google::protobuf::Arena* arena = nullptr) const final {
     return CreateMaybeMessage<TranslationCacheUpdate>(arena);
   }
-  using ::google::protobuf::Message::CopyFrom;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
   void CopyFrom(const TranslationCacheUpdate& from);
-  using ::google::protobuf::Message::MergeFrom;
-  void MergeFrom( const TranslationCacheUpdate& from) {
-    TranslationCacheUpdate::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg);
-  public:
+  void MergeFrom(const TranslationCacheUpdate& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -7090,7 +6604,7 @@ class TranslationCacheUpdate final :
   private:
   void SharedCtor(::google::protobuf::Arena* arena);
   void SharedDtor();
-  void SetCachedSize(int size) const final;
+  void SetCachedSize(int size) const;
   void InternalSwap(TranslationCacheUpdate* other);
 
   private:
@@ -7102,10 +6616,7 @@ class TranslationCacheUpdate final :
   explicit TranslationCacheUpdate(::google::protobuf::Arena* arena);
   public:
 
-  static const ClassData _class_data_;
-  const ::google::protobuf::Message::ClassData*GetClassData() const final;
-
-  ::google::protobuf::Metadata GetMetadata() const final;
+  std::string GetTypeName() const final;
 
   // nested types ----------------------------------------------------
 
@@ -7160,6 +6671,523 @@ class TranslationCacheUpdate final :
     mutable ::google::protobuf::internal::CachedSize _cached_size_;
     ::google::protobuf::internal::ArenaStringPtr section_;
     ::google::protobuf::Timestamp* updatedat_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Digit_2ePrimePlatform_2eModels_2eproto;
+};// -------------------------------------------------------------------
+
+class MinigameHolder final :
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.MinigameHolder) */ {
+ public:
+  inline MinigameHolder() : MinigameHolder(nullptr) {}
+  ~MinigameHolder() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR MinigameHolder(::google::protobuf::internal::ConstantInitialized);
+
+  MinigameHolder(const MinigameHolder& from);
+  MinigameHolder(MinigameHolder&& from) noexcept
+    : MinigameHolder() {
+    *this = ::std::move(from);
+  }
+
+  inline MinigameHolder& operator=(const MinigameHolder& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline MinigameHolder& operator=(MinigameHolder&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
+  }
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
+  }
+
+  static const MinigameHolder& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const MinigameHolder* internal_default_instance() {
+    return reinterpret_cast<const MinigameHolder*>(
+               &_MinigameHolder_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    31;
+
+  friend void swap(MinigameHolder& a, MinigameHolder& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(MinigameHolder* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(MinigameHolder* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  MinigameHolder* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<MinigameHolder>(arena);
+  }
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
+  void CopyFrom(const MinigameHolder& from);
+  void MergeFrom(const MinigameHolder& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(MinigameHolder* other);
+
+  private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "Digit.PrimePlatform.Models.MinigameHolder";
+  }
+  protected:
+  explicit MinigameHolder(::google::protobuf::Arena* arena);
+  public:
+
+  std::string GetTypeName() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kGamesFieldNumber = 1,
+  };
+  // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+  int games_size() const;
+  private:
+  int _internal_games_size() const;
+
+  public:
+  void clear_games() ;
+  ::Digit::PrimePlatform::Models::Minigame* mutable_games(int index);
+  ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >*
+      mutable_games();
+  private:
+  const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>& _internal_games() const;
+  ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>* _internal_mutable_games();
+  public:
+  const ::Digit::PrimePlatform::Models::Minigame& games(int index) const;
+  ::Digit::PrimePlatform::Models::Minigame* add_games();
+  const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >&
+      games() const;
+  // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.MinigameHolder)
+ private:
+  class _Internal;
+
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<0, 1, 1, 0, 2> _table_;
+  template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame > games_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Digit_2ePrimePlatform_2eModels_2eproto;
+};// -------------------------------------------------------------------
+
+class Minigame final :
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.Minigame) */ {
+ public:
+  inline Minigame() : Minigame(nullptr) {}
+  ~Minigame() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR Minigame(::google::protobuf::internal::ConstantInitialized);
+
+  Minigame(const Minigame& from);
+  Minigame(Minigame&& from) noexcept
+    : Minigame() {
+    *this = ::std::move(from);
+  }
+
+  inline Minigame& operator=(const Minigame& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Minigame& operator=(Minigame&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
+  }
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
+  }
+
+  static const Minigame& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Minigame* internal_default_instance() {
+    return reinterpret_cast<const Minigame*>(
+               &_Minigame_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    32;
+
+  friend void swap(Minigame& a, Minigame& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Minigame* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Minigame* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Minigame* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Minigame>(arena);
+  }
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
+  void CopyFrom(const Minigame& from);
+  void MergeFrom(const Minigame& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Minigame* other);
+
+  private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "Digit.PrimePlatform.Models.Minigame";
+  }
+  protected:
+  explicit Minigame(::google::protobuf::Arena* arena);
+  public:
+
+  std::string GetTypeName() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kStagesFieldNumber = 2,
+    kConfigIdFieldNumber = 1,
+  };
+  // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+  int stages_size() const;
+  private:
+  int _internal_stages_size() const;
+
+  public:
+  void clear_stages() ;
+  ::Digit::PrimePlatform::Models::MinigameStage* mutable_stages(int index);
+  ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >*
+      mutable_stages();
+  private:
+  const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>& _internal_stages() const;
+  ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>* _internal_mutable_stages();
+  public:
+  const ::Digit::PrimePlatform::Models::MinigameStage& stages(int index) const;
+  ::Digit::PrimePlatform::Models::MinigameStage* add_stages();
+  const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >&
+      stages() const;
+  // string configId = 1;
+  void clear_configid() ;
+  const std::string& configid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_configid(Arg_&& arg, Args_... args);
+  std::string* mutable_configid();
+  PROTOBUF_NODISCARD std::string* release_configid();
+  void set_allocated_configid(std::string* ptr);
+
+  private:
+  const std::string& _internal_configid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_configid(
+      const std::string& value);
+  std::string* _internal_mutable_configid();
+
+  public:
+  // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.Minigame)
+ private:
+  class _Internal;
+
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<1, 2, 1, 52, 2> _table_;
+  template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage > stages_;
+    ::google::protobuf::internal::ArenaStringPtr configid_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
+    PROTOBUF_TSAN_DECLARE_MEMBER
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_Digit_2ePrimePlatform_2eModels_2eproto;
+};// -------------------------------------------------------------------
+
+class MinigameStage final :
+    public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:Digit.PrimePlatform.Models.MinigameStage) */ {
+ public:
+  inline MinigameStage() : MinigameStage(nullptr) {}
+  ~MinigameStage() override;
+  template<typename = void>
+  explicit PROTOBUF_CONSTEXPR MinigameStage(::google::protobuf::internal::ConstantInitialized);
+
+  MinigameStage(const MinigameStage& from);
+  MinigameStage(MinigameStage&& from) noexcept
+    : MinigameStage() {
+    *this = ::std::move(from);
+  }
+
+  inline MinigameStage& operator=(const MinigameStage& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline MinigameStage& operator=(MinigameStage&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  inline const std::string& unknown_fields() const {
+    return _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString);
+  }
+  inline std::string* mutable_unknown_fields() {
+    return _internal_metadata_.mutable_unknown_fields<std::string>();
+  }
+
+  static const MinigameStage& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const MinigameStage* internal_default_instance() {
+    return reinterpret_cast<const MinigameStage*>(
+               &_MinigameStage_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    33;
+
+  friend void swap(MinigameStage& a, MinigameStage& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(MinigameStage* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::google::protobuf::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(MinigameStage* other) {
+    if (other == this) return;
+    ABSL_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  MinigameStage* New(::google::protobuf::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<MinigameStage>(arena);
+  }
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)  final;
+  void CopyFrom(const MinigameStage& from);
+  void MergeFrom(const MinigameStage& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  ::size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::google::protobuf::internal::ParseContext* ctx) final;
+  ::uint8_t* _InternalSerialize(
+      ::uint8_t* target, ::google::protobuf::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::google::protobuf::Arena* arena);
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(MinigameStage* other);
+
+  private:
+  friend class ::google::protobuf::internal::AnyMetadata;
+  static ::absl::string_view FullMessageName() {
+    return "Digit.PrimePlatform.Models.MinigameStage";
+  }
+  protected:
+  explicit MinigameStage(::google::protobuf::Arena* arena);
+  public:
+
+  std::string GetTypeName() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kRewardsFieldNumber = 3,
+    kConfigIdFieldNumber = 1,
+    kLockedFieldNumber = 2,
+    kScoreFieldNumber = 4,
+    kPriorityFieldNumber = 5,
+  };
+  // repeated uint32 rewards = 3;
+  int rewards_size() const;
+  private:
+  int _internal_rewards_size() const;
+
+  public:
+  void clear_rewards() ;
+  ::uint32_t rewards(int index) const;
+  void set_rewards(int index, ::uint32_t value);
+  void add_rewards(::uint32_t value);
+  const ::google::protobuf::RepeatedField<::uint32_t>& rewards() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* mutable_rewards();
+
+  private:
+  const ::google::protobuf::RepeatedField<::uint32_t>& _internal_rewards() const;
+  ::google::protobuf::RepeatedField<::uint32_t>* _internal_mutable_rewards();
+
+  public:
+  // string configId = 1;
+  void clear_configid() ;
+  const std::string& configid() const;
+  template <typename Arg_ = const std::string&, typename... Args_>
+  void set_configid(Arg_&& arg, Args_... args);
+  std::string* mutable_configid();
+  PROTOBUF_NODISCARD std::string* release_configid();
+  void set_allocated_configid(std::string* ptr);
+
+  private:
+  const std::string& _internal_configid() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_configid(
+      const std::string& value);
+  std::string* _internal_mutable_configid();
+
+  public:
+  // bool locked = 2;
+  void clear_locked() ;
+  bool locked() const;
+  void set_locked(bool value);
+
+  private:
+  bool _internal_locked() const;
+  void _internal_set_locked(bool value);
+
+  public:
+  // uint32 score = 4;
+  void clear_score() ;
+  ::uint32_t score() const;
+  void set_score(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_score() const;
+  void _internal_set_score(::uint32_t value);
+
+  public:
+  // uint32 priority = 5;
+  void clear_priority() ;
+  ::uint32_t priority() const;
+  void set_priority(::uint32_t value);
+
+  private:
+  ::uint32_t _internal_priority() const;
+  void _internal_set_priority(::uint32_t value);
+
+  public:
+  // @@protoc_insertion_point(class_scope:Digit.PrimePlatform.Models.MinigameStage)
+ private:
+  class _Internal;
+
+  friend class ::google::protobuf::internal::TcParser;
+  static const ::google::protobuf::internal::TcParseTable<3, 5, 0, 57, 2> _table_;
+  template <typename T> friend class ::google::protobuf::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::google::protobuf::RepeatedField<::uint32_t> rewards_;
+    mutable ::google::protobuf::internal::CachedSize _rewards_cached_byte_size_;
+    ::google::protobuf::internal::ArenaStringPtr configid_;
+    bool locked_;
+    ::uint32_t score_;
+    ::uint32_t priority_;
+    mutable ::google::protobuf::internal::CachedSize _cached_size_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
   union { Impl_ _impl_; };
@@ -8355,6 +8383,196 @@ inline void EventMetadata::set_allocated_visualvideoassets(::Digit::PrimePlatfor
 
   _impl_.visualvideoassets_ = reinterpret_cast<::Digit::PrimePlatform::Models::EventVideoAssets*>(value);
   // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.EventMetadata.visualVideoAssets)
+}
+
+// string battlePassLink = 22;
+inline void EventMetadata::clear_battlepasslink() {
+  _impl_.battlepasslink_.ClearToEmpty();
+}
+inline const std::string& EventMetadata::battlepasslink() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+  return _internal_battlepasslink();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void EventMetadata::set_battlepasslink(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepasslink_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+}
+inline std::string* EventMetadata::mutable_battlepasslink() {
+  std::string* _s = _internal_mutable_battlepasslink();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+  return _s;
+}
+inline const std::string& EventMetadata::_internal_battlepasslink() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.battlepasslink_.Get();
+}
+inline void EventMetadata::_internal_set_battlepasslink(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepasslink_.Set(value, GetArenaForAllocation());
+}
+inline std::string* EventMetadata::_internal_mutable_battlepasslink() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.battlepasslink_.Mutable( GetArenaForAllocation());
+}
+inline std::string* EventMetadata::release_battlepasslink() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+  return _impl_.battlepasslink_.Release();
+}
+inline void EventMetadata::set_allocated_battlepasslink(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.battlepasslink_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.battlepasslink_.IsDefault()) {
+          _impl_.battlepasslink_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.EventMetadata.battlePassLink)
+}
+
+// string battlePassResourceId = 23;
+inline void EventMetadata::clear_battlepassresourceid() {
+  _impl_.battlepassresourceid_.ClearToEmpty();
+}
+inline const std::string& EventMetadata::battlepassresourceid() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+  return _internal_battlepassresourceid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void EventMetadata::set_battlepassresourceid(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepassresourceid_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+}
+inline std::string* EventMetadata::mutable_battlepassresourceid() {
+  std::string* _s = _internal_mutable_battlepassresourceid();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+  return _s;
+}
+inline const std::string& EventMetadata::_internal_battlepassresourceid() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.battlepassresourceid_.Get();
+}
+inline void EventMetadata::_internal_set_battlepassresourceid(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepassresourceid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* EventMetadata::_internal_mutable_battlepassresourceid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.battlepassresourceid_.Mutable( GetArenaForAllocation());
+}
+inline std::string* EventMetadata::release_battlepassresourceid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+  return _impl_.battlepassresourceid_.Release();
+}
+inline void EventMetadata::set_allocated_battlepassresourceid(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.battlepassresourceid_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.battlepassresourceid_.IsDefault()) {
+          _impl_.battlepassresourceid_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId)
+}
+
+// .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+inline void EventMetadata::clear_battlepasstype() {
+  _impl_.battlepasstype_ = 0;
+}
+inline ::Digit::PrimePlatform::Models::BattlePassType EventMetadata::battlepasstype() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.battlePassType)
+  return _internal_battlepasstype();
+}
+inline void EventMetadata::set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value) {
+  _internal_set_battlepasstype(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.battlePassType)
+}
+inline ::Digit::PrimePlatform::Models::BattlePassType EventMetadata::_internal_battlepasstype() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return static_cast<::Digit::PrimePlatform::Models::BattlePassType>(_impl_.battlepasstype_);
+}
+inline void EventMetadata::_internal_set_battlepasstype(::Digit::PrimePlatform::Models::BattlePassType value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.battlepasstype_ = value;
+}
+
+// bool minigameLock = 25;
+inline void EventMetadata::clear_minigamelock() {
+  _impl_.minigamelock_ = false;
+}
+inline bool EventMetadata::minigamelock() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.minigameLock)
+  return _internal_minigamelock();
+}
+inline void EventMetadata::set_minigamelock(bool value) {
+  _internal_set_minigamelock(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.minigameLock)
+}
+inline bool EventMetadata::_internal_minigamelock() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.minigamelock_;
+}
+inline void EventMetadata::_internal_set_minigamelock(bool value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.minigamelock_ = value;
+}
+
+// uint32 minigameLevelMin = 26;
+inline void EventMetadata::clear_minigamelevelmin() {
+  _impl_.minigamelevelmin_ = 0u;
+}
+inline ::uint32_t EventMetadata::minigamelevelmin() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMin)
+  return _internal_minigamelevelmin();
+}
+inline void EventMetadata::set_minigamelevelmin(::uint32_t value) {
+  _internal_set_minigamelevelmin(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMin)
+}
+inline ::uint32_t EventMetadata::_internal_minigamelevelmin() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.minigamelevelmin_;
+}
+inline void EventMetadata::_internal_set_minigamelevelmin(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.minigamelevelmin_ = value;
+}
+
+// uint32 minigameLevelMax = 27;
+inline void EventMetadata::clear_minigamelevelmax() {
+  _impl_.minigamelevelmax_ = 0u;
+}
+inline ::uint32_t EventMetadata::minigamelevelmax() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMax)
+  return _internal_minigamelevelmax();
+}
+inline void EventMetadata::set_minigamelevelmax(::uint32_t value) {
+  _internal_set_minigamelevelmax(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.EventMetadata.minigameLevelMax)
+}
+inline ::uint32_t EventMetadata::_internal_minigamelevelmax() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.minigamelevelmax_;
+}
+inline void EventMetadata::_internal_set_minigamelevelmax(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.minigamelevelmax_ = value;
 }
 
 // -------------------------------------------------------------------
@@ -14146,6 +14364,320 @@ inline void TranslationCacheUpdate::set_allocated_updatedat(::google::protobuf::
   // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.TranslationCacheUpdate.updatedAt)
 }
 
+// -------------------------------------------------------------------
+
+// MinigameHolder
+
+// repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+inline int MinigameHolder::_internal_games_size() const {
+  return _internal_games().size();
+}
+inline int MinigameHolder::games_size() const {
+  return _internal_games_size();
+}
+inline void MinigameHolder::clear_games() {
+  _internal_mutable_games()->Clear();
+}
+inline ::Digit::PrimePlatform::Models::Minigame* MinigameHolder::mutable_games(int index) {
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.MinigameHolder.games)
+  return _internal_mutable_games()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >*
+MinigameHolder::mutable_games() {
+  // @@protoc_insertion_point(field_mutable_list:Digit.PrimePlatform.Models.MinigameHolder.games)
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  return _internal_mutable_games();
+}
+inline const ::Digit::PrimePlatform::Models::Minigame& MinigameHolder::games(int index) const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameHolder.games)
+    return _internal_games().Get(index);
+}
+inline ::Digit::PrimePlatform::Models::Minigame* MinigameHolder::add_games() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ::Digit::PrimePlatform::Models::Minigame* _add = _internal_mutable_games()->Add();
+  // @@protoc_insertion_point(field_add:Digit.PrimePlatform.Models.MinigameHolder.games)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::Minigame >&
+MinigameHolder::games() const {
+  // @@protoc_insertion_point(field_list:Digit.PrimePlatform.Models.MinigameHolder.games)
+  return _internal_games();
+}
+inline const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>&
+MinigameHolder::_internal_games() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.games_;
+}
+inline ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::Minigame>*
+MinigameHolder::_internal_mutable_games() {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return &_impl_.games_;
+}
+
+// -------------------------------------------------------------------
+
+// Minigame
+
+// string configId = 1;
+inline void Minigame::clear_configid() {
+  _impl_.configid_.ClearToEmpty();
+}
+inline const std::string& Minigame::configid() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.Minigame.configId)
+  return _internal_configid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void Minigame::set_configid(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.Minigame.configId)
+}
+inline std::string* Minigame::mutable_configid() {
+  std::string* _s = _internal_mutable_configid();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.Minigame.configId)
+  return _s;
+}
+inline const std::string& Minigame::_internal_configid() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.configid_.Get();
+}
+inline void Minigame::_internal_set_configid(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* Minigame::_internal_mutable_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.configid_.Mutable( GetArenaForAllocation());
+}
+inline std::string* Minigame::release_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.Minigame.configId)
+  return _impl_.configid_.Release();
+}
+inline void Minigame::set_allocated_configid(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.configid_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.configid_.IsDefault()) {
+          _impl_.configid_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.Minigame.configId)
+}
+
+// repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+inline int Minigame::_internal_stages_size() const {
+  return _internal_stages().size();
+}
+inline int Minigame::stages_size() const {
+  return _internal_stages_size();
+}
+inline void Minigame::clear_stages() {
+  _internal_mutable_stages()->Clear();
+}
+inline ::Digit::PrimePlatform::Models::MinigameStage* Minigame::mutable_stages(int index) {
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.Minigame.stages)
+  return _internal_mutable_stages()->Mutable(index);
+}
+inline ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >*
+Minigame::mutable_stages() {
+  // @@protoc_insertion_point(field_mutable_list:Digit.PrimePlatform.Models.Minigame.stages)
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  return _internal_mutable_stages();
+}
+inline const ::Digit::PrimePlatform::Models::MinigameStage& Minigame::stages(int index) const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.Minigame.stages)
+    return _internal_stages().Get(index);
+}
+inline ::Digit::PrimePlatform::Models::MinigameStage* Minigame::add_stages() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ::Digit::PrimePlatform::Models::MinigameStage* _add = _internal_mutable_stages()->Add();
+  // @@protoc_insertion_point(field_add:Digit.PrimePlatform.Models.Minigame.stages)
+  return _add;
+}
+inline const ::google::protobuf::RepeatedPtrField< ::Digit::PrimePlatform::Models::MinigameStage >&
+Minigame::stages() const {
+  // @@protoc_insertion_point(field_list:Digit.PrimePlatform.Models.Minigame.stages)
+  return _internal_stages();
+}
+inline const ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>&
+Minigame::_internal_stages() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.stages_;
+}
+inline ::google::protobuf::RepeatedPtrField<::Digit::PrimePlatform::Models::MinigameStage>*
+Minigame::_internal_mutable_stages() {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return &_impl_.stages_;
+}
+
+// -------------------------------------------------------------------
+
+// MinigameStage
+
+// string configId = 1;
+inline void MinigameStage::clear_configid() {
+  _impl_.configid_.ClearToEmpty();
+}
+inline const std::string& MinigameStage::configid() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.configId)
+  return _internal_configid();
+}
+template <typename Arg_, typename... Args_>
+inline PROTOBUF_ALWAYS_INLINE void MinigameStage::set_configid(Arg_&& arg,
+                                                     Args_... args) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(static_cast<Arg_&&>(arg), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.configId)
+}
+inline std::string* MinigameStage::mutable_configid() {
+  std::string* _s = _internal_mutable_configid();
+  // @@protoc_insertion_point(field_mutable:Digit.PrimePlatform.Models.MinigameStage.configId)
+  return _s;
+}
+inline const std::string& MinigameStage::_internal_configid() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.configid_.Get();
+}
+inline void MinigameStage::_internal_set_configid(const std::string& value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.configid_.Set(value, GetArenaForAllocation());
+}
+inline std::string* MinigameStage::_internal_mutable_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  return _impl_.configid_.Mutable( GetArenaForAllocation());
+}
+inline std::string* MinigameStage::release_configid() {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  // @@protoc_insertion_point(field_release:Digit.PrimePlatform.Models.MinigameStage.configId)
+  return _impl_.configid_.Release();
+}
+inline void MinigameStage::set_allocated_configid(std::string* value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _impl_.configid_.SetAllocated(value, GetArenaForAllocation());
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        if (_impl_.configid_.IsDefault()) {
+          _impl_.configid_.Set("", GetArenaForAllocation());
+        }
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:Digit.PrimePlatform.Models.MinigameStage.configId)
+}
+
+// bool locked = 2;
+inline void MinigameStage::clear_locked() {
+  _impl_.locked_ = false;
+}
+inline bool MinigameStage::locked() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.locked)
+  return _internal_locked();
+}
+inline void MinigameStage::set_locked(bool value) {
+  _internal_set_locked(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.locked)
+}
+inline bool MinigameStage::_internal_locked() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.locked_;
+}
+inline void MinigameStage::_internal_set_locked(bool value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.locked_ = value;
+}
+
+// repeated uint32 rewards = 3;
+inline int MinigameStage::_internal_rewards_size() const {
+  return _internal_rewards().size();
+}
+inline int MinigameStage::rewards_size() const {
+  return _internal_rewards_size();
+}
+inline void MinigameStage::clear_rewards() {
+  _internal_mutable_rewards()->Clear();
+}
+inline ::uint32_t MinigameStage::rewards(int index) const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.rewards)
+  return _internal_rewards().Get(index);
+}
+inline void MinigameStage::set_rewards(int index, ::uint32_t value) {
+  _internal_mutable_rewards()->Set(index, value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.rewards)
+}
+inline void MinigameStage::add_rewards(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  _internal_mutable_rewards()->Add(value);
+  // @@protoc_insertion_point(field_add:Digit.PrimePlatform.Models.MinigameStage.rewards)
+}
+inline const ::google::protobuf::RepeatedField<::uint32_t>& MinigameStage::rewards() const {
+  // @@protoc_insertion_point(field_list:Digit.PrimePlatform.Models.MinigameStage.rewards)
+  return _internal_rewards();
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* MinigameStage::mutable_rewards() {
+  // @@protoc_insertion_point(field_mutable_list:Digit.PrimePlatform.Models.MinigameStage.rewards)
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  return _internal_mutable_rewards();
+}
+
+inline const ::google::protobuf::RepeatedField<::uint32_t>& MinigameStage::_internal_rewards() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.rewards_;
+}
+inline ::google::protobuf::RepeatedField<::uint32_t>* MinigameStage::_internal_mutable_rewards() {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return &_impl_.rewards_;
+}
+
+// uint32 score = 4;
+inline void MinigameStage::clear_score() {
+  _impl_.score_ = 0u;
+}
+inline ::uint32_t MinigameStage::score() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.score)
+  return _internal_score();
+}
+inline void MinigameStage::set_score(::uint32_t value) {
+  _internal_set_score(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.score)
+}
+inline ::uint32_t MinigameStage::_internal_score() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.score_;
+}
+inline void MinigameStage::_internal_set_score(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.score_ = value;
+}
+
+// uint32 priority = 5;
+inline void MinigameStage::clear_priority() {
+  _impl_.priority_ = 0u;
+}
+inline ::uint32_t MinigameStage::priority() const {
+  // @@protoc_insertion_point(field_get:Digit.PrimePlatform.Models.MinigameStage.priority)
+  return _internal_priority();
+}
+inline void MinigameStage::set_priority(::uint32_t value) {
+  _internal_set_priority(value);
+  // @@protoc_insertion_point(field_set:Digit.PrimePlatform.Models.MinigameStage.priority)
+}
+inline ::uint32_t MinigameStage::_internal_priority() const {
+  PROTOBUF_TSAN_READ(&_impl_._tsan_detect_race);
+  return _impl_.priority_;
+}
+inline void MinigameStage::_internal_set_priority(::uint32_t value) {
+  PROTOBUF_TSAN_WRITE(&_impl_._tsan_detect_race);
+  ;
+  _impl_.priority_ = value;
+}
+
 #ifdef __GNUC__
 #pragma GCC diagnostic pop
 #endif  // __GNUC__
@@ -14162,33 +14694,15 @@ namespace protobuf {
 template <>
 struct is_proto_enum<::Digit::PrimePlatform::Models::EventCategories> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Models::EventCategories>() {
-  return ::Digit::PrimePlatform::Models::EventCategories_descriptor();
-}
-template <>
 struct is_proto_enum<::Digit::PrimePlatform::Models::JoinForbidden> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Models::JoinForbidden>() {
-  return ::Digit::PrimePlatform::Models::JoinForbidden_descriptor();
-}
+struct is_proto_enum<::Digit::PrimePlatform::Models::BattlePassType> : std::true_type {};
 template <>
 struct is_proto_enum<::Digit::PrimePlatform::Models::PlacementType> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Models::PlacementType>() {
-  return ::Digit::PrimePlatform::Models::PlacementType_descriptor();
-}
-template <>
 struct is_proto_enum<::Digit::PrimePlatform::Models::SegmentType> : std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Models::SegmentType>() {
-  return ::Digit::PrimePlatform::Models::SegmentType_descriptor();
-}
-template <>
 struct is_proto_enum<::Digit::PrimePlatform::Models::PlayerlifecycleContentType> : std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor<::Digit::PrimePlatform::Models::PlayerlifecycleContentType>() {
-  return ::Digit::PrimePlatform::Models::PlayerlifecycleContentType_descriptor();
-}
 
 }  // namespace protobuf
 }  // namespace google

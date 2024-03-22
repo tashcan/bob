@@ -6,25 +6,25 @@ struct CanvasController {
 public:
   void ResetFocus()
   {
-    static auto ResetFocus = get_class_helper().GetMethod<void(CanvasController*)>(xorstr_("ResetFocus"));
+    static auto ResetFocus = get_class_helper().GetMethod<void(CanvasController*)>("ResetFocus");
     ResetFocus(this);
   }
 
   bool Visible()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("Visible"));
+    static auto field = get_class_helper().GetProperty("Visible");
     return field.Get<bool>(this);
   }
 
   bool get_enabled()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("enabled"));
+    static auto field = get_class_helper().GetProperty("enabled");
     return field.Get<bool>(this);
   }
 
   bool m_Visible()
   {
-    static auto field = get_class_helper().GetField(xorstr_("m_visible")).offset();
+    static auto field = get_class_helper().GetField("m_visible").offset();
     return *(bool*)((ptrdiff_t)this + field);
   }
 

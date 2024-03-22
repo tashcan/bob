@@ -9,7 +9,7 @@ public:
 
   void SetScaleFactor(float v)
   {
-    static auto SetScaleFactor = get_class_helper().GetMethod<void(CanvasScaler*, float)>(xorstr_("SetScaleFactor"));
+    static auto SetScaleFactor = get_class_helper().GetMethod<void(CanvasScaler*, float)>("SetScaleFactor");
     SetScaleFactor(this, v);
   }
 
@@ -23,23 +23,23 @@ private:
 public:
   float __get_scaleFactor()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("scaleFactor"));
+    static auto field = get_class_helper().GetProperty("scaleFactor");
     return *field.Get<float>(this);
   }
   void __set_scaleFactor(float v)
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("scaleFactor"));
+    static auto field = get_class_helper().GetProperty("scaleFactor");
     field.SetRaw<float>(this, v);
   }
 
   vec2 __get_referenceResolution()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("referenceResolution"));
+    static auto field = get_class_helper().GetProperty("referenceResolution");
     return *field.Get<vec2>(this);
   }
   void __set_referenceResolution(vec2 v)
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("referenceResolution"));
+    static auto field = get_class_helper().GetProperty("referenceResolution");
     field.SetRaw<vec2>(this, v);
   }
 };

@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -98,9 +95,18 @@ PROTOBUF_CONSTEXPR EventMetadata::EventMetadata(::_pbi::ConstantInitialized)
           &::_pbi::fixed_address_empty_string,
           ::_pbi::ConstantInitialized{},
       },
+      /*decltype(_impl_.battlepasslink_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
+      /*decltype(_impl_.battlepassresourceid_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
       /*decltype(_impl_.bucket_)*/ nullptr,
       /*decltype(_impl_.servertransfercost_)*/ nullptr,
       /*decltype(_impl_.visualvideoassets_)*/ nullptr,
+      /*decltype(_impl_.cta_)*/ ::int64_t{0},
       /*decltype(_impl_.isautoregister_)*/ false,
       /*decltype(_impl_.autoreward_)*/ false,
       /*decltype(_impl_.immediatereward_)*/ false,
@@ -108,8 +114,11 @@ PROTOBUF_CONSTEXPR EventMetadata::EventMetadata(::_pbi::ConstantInitialized)
       /*decltype(_impl_.isuniquewinner_)*/ false,
       /*decltype(_impl_.iscrossserver_)*/ false,
       /*decltype(_impl_.respectpriority_)*/ false,
-      /*decltype(_impl_.cta_)*/ ::int64_t{0},
+      /*decltype(_impl_.minigamelock_)*/ false,
       /*decltype(_impl_.priority_)*/ ::int64_t{0},
+      /*decltype(_impl_.battlepasstype_)*/ 0,
+      /*decltype(_impl_.minigamelevelmin_)*/ 0u,
+      /*decltype(_impl_.minigamelevelmax_)*/ 0u,
     } {}
 struct EventMetadataDefaultTypeInternal {
   PROTOBUF_CONSTEXPR EventMetadataDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
@@ -784,751 +793,72 @@ struct TranslationCacheUpdateDefaultTypeInternal {
 
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
     PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 TranslationCacheUpdateDefaultTypeInternal _TranslationCacheUpdate_default_instance_;
+        template <typename>
+PROTOBUF_CONSTEXPR MinigameHolder::MinigameHolder(::_pbi::ConstantInitialized)
+    : _impl_{
+      /*decltype(_impl_.games_)*/ {},
+      /*decltype(_impl_._cached_size_)*/ {},
+    } {}
+struct MinigameHolderDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MinigameHolderDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~MinigameHolderDefaultTypeInternal() {}
+  union {
+    MinigameHolder _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MinigameHolderDefaultTypeInternal _MinigameHolder_default_instance_;
+        template <typename>
+PROTOBUF_CONSTEXPR Minigame::Minigame(::_pbi::ConstantInitialized)
+    : _impl_{
+      /*decltype(_impl_.stages_)*/ {},
+      /*decltype(_impl_.configid_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
+      /*decltype(_impl_._cached_size_)*/ {},
+    } {}
+struct MinigameDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MinigameDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~MinigameDefaultTypeInternal() {}
+  union {
+    Minigame _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MinigameDefaultTypeInternal _Minigame_default_instance_;
+        template <typename>
+PROTOBUF_CONSTEXPR MinigameStage::MinigameStage(::_pbi::ConstantInitialized)
+    : _impl_{
+      /*decltype(_impl_.rewards_)*/ {},
+      /* _impl_._rewards_cached_byte_size_ = */ {0},
+      /*decltype(_impl_.configid_)*/ {
+          &::_pbi::fixed_address_empty_string,
+          ::_pbi::ConstantInitialized{},
+      },
+      /*decltype(_impl_.locked_)*/ false,
+      /*decltype(_impl_.score_)*/ 0u,
+      /*decltype(_impl_.priority_)*/ 0u,
+      /*decltype(_impl_._cached_size_)*/ {},
+    } {}
+struct MinigameStageDefaultTypeInternal {
+  PROTOBUF_CONSTEXPR MinigameStageDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
+  ~MinigameStageDefaultTypeInternal() {}
+  union {
+    MinigameStage _instance;
+  };
+};
+
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
+    PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 MinigameStageDefaultTypeInternal _MinigameStage_default_instance_;
 }  // namespace Models
 }  // namespace PrimePlatform
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[31];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[5];
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrimePlatform_2eModels_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eModels_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventEntryData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventEntryData, _impl_.isregistered_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventEntryData, _impl_.canclaim_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventEntryData, _impl_.lastclaimedrewardindex_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventEntryData, _impl_.joinforbidden_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventHighlights, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventHighlights, _impl_.type_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventHighlights, _impl_.nodeids_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventHighlights, _impl_.specialids_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventHighlights, _impl_.calloutassetid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.isautoregister_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.autoreward_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.immediatereward_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.canshowcase_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.iconassetid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.iconassetfilename_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.visualasset_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.visualassetfilename_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.scoringinfo_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.cta_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.priority_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.highlights_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.bucket_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.unlockitemid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.isuniquewinner_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.iscrossserver_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.servertransfercost_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.groupinstances_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.respectpriority_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.visualvideoid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventMetadata, _impl_.visualvideoassets_),
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    ~0u,
-    ~0u,
-    ~0u,
-    1,
-    ~0u,
-    ~0u,
-    ~0u,
-    2,
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.ranks_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.configid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.source_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.eventtype_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.category_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.placementtype_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.schedule_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.metadata_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.groupname_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.segments_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.ranking_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.entrydata_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.joincost_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventModel, _impl_.categorygroupid_),
-    4,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    1,
-    ~0u,
-    ~0u,
-    2,
-    3,
-    ~0u,
-    ~0u,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _impl_.position_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _impl_.rank_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _impl_.score_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _impl_.delta_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _impl_.instanceid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRank, _impl_.scoredouble_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRanking, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRanking, _impl_.ranks_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventRanking, _impl_.configid_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventReward, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventReward, _impl_.position_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventReward, _impl_.amount_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventReward, _impl_.type_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventReward, _impl_.level_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.term_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.roundnumber_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.announce_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.start_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.display_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.delay_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.end_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSchedule, _impl_.nextstart_),
-    ~0u,
-    ~0u,
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventScoringInfo, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventScoringInfo, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventScoringInfo, _impl_.icon_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Events, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Events, _impl_.tournaments_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Events, _impl_.categories_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventNotification, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventNotification, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventNotification, _impl_.configid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventNotification, _impl_.modified_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventNotification, _impl_.playerrank_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventNotification, _impl_.entrydata_),
-    ~0u,
-    0,
-    1,
-    2,
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSegment, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSegment, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSegment, _impl_.type_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSegment, _impl_.values_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSegment, _impl_.rewards_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventSegment, _impl_.uniquewinner_),
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.en_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.es_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.fr_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.de_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.it_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.ja_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.pt_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.ru_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.cn_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.ko_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.hk_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::EventVideoAssets, _impl_.tr_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::RepeatedInt32, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::RepeatedInt32, _impl_.values_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerlifecycleNotification, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerlifecycleNotification, _impl_.contenttype_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerlifecycleNotification, _impl_.playgamiid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerlifecycleNotification, _impl_.category_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.newsid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.priority_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.pinned_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.important_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.startdate_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.enddate_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.metadata_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsModel, _impl_.isplayerlifecycle_),
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    1,
-    2,
-    ~0u,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsHolder, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsHolder, _impl_.newsitems_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsMetadata, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsMetadata, _impl_.assetid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::GameNewsMetadata, _impl_.assetfilename_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Notifications, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Notifications, _impl_.tournamentnotifications_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Notifications, _impl_.leaderboardnotifications_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Notifications, _impl_.playerlifecyclenotifications_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlatformUserProfile, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlatformUserProfile, _impl_.accountid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlatformUserProfile, _impl_.name_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlatformUserProfileResponse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlatformUserProfileResponse, _impl_.playerprofiles_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStats, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStats, _impl_.accountid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStats, _impl_.groups_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStatsGroup, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStatsGroup, _impl_.name_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStatsGroup, _impl_.entries_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStatsEntry, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStatsEntry, _impl_.statid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStatsEntry, _impl_.priority_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerStatsEntry, _impl_.value_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::CacheHints, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::CacheHints, _impl_.translationcacheupdate_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Product, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Product, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Product, _impl_.name_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Product, _impl_.code_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Product, _impl_.status_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Product, _impl_.instances_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::ProductInfoHolder, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::ProductInfoHolder, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::ProductInfoHolder, _impl_.version_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::ProductInfoHolder, _impl_.product_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::ProductInfoHolder, _impl_.cachehints_),
-    ~0u,
-    0,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Region, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Region, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Region, _impl_.description_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Region, _impl_.num_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_.name_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_.priority_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_.region_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_.status_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_.maintenance_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::Instance, _impl_.playertransferstate_),
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    ~0u,
-    ~0u,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerTransferState, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerTransferState, _impl_.transferin_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerTransferState, _impl_.transferout_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::PlayerTransferState, _impl_.authenticated_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::TranslationCacheUpdate, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::TranslationCacheUpdate, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::TranslationCacheUpdate, _impl_.section_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Models::TranslationCacheUpdate, _impl_.updatedat_),
-    ~0u,
-    0,
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventEntryData)},
-        {12, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventHighlights)},
-        {24, 53, -1, sizeof(::Digit::PrimePlatform::Models::EventMetadata)},
-        {74, 96, -1, sizeof(::Digit::PrimePlatform::Models::EventModel)},
-        {110, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventRank)},
-        {125, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventRanking)},
-        {135, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventReward)},
-        {147, 163, -1, sizeof(::Digit::PrimePlatform::Models::EventSchedule)},
-        {171, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventScoringInfo)},
-        {181, -1, -1, sizeof(::Digit::PrimePlatform::Models::Events)},
-        {191, 203, -1, sizeof(::Digit::PrimePlatform::Models::EventNotification)},
-        {207, 219, -1, sizeof(::Digit::PrimePlatform::Models::EventSegment)},
-        {223, -1, -1, sizeof(::Digit::PrimePlatform::Models::EventVideoAssets)},
-        {243, -1, -1, sizeof(::Digit::PrimePlatform::Models::RepeatedInt32)},
-        {252, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerlifecycleNotification)},
-        {263, 279, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsModel)},
-        {287, -1, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsHolder)},
-        {296, -1, -1, sizeof(::Digit::PrimePlatform::Models::GameNewsMetadata)},
-        {306, -1, -1, sizeof(::Digit::PrimePlatform::Models::Notifications)},
-        {317, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlatformUserProfile)},
-        {327, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlatformUserProfileResponse)},
-        {336, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStats)},
-        {346, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStatsGroup)},
-        {356, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerStatsEntry)},
-        {367, -1, -1, sizeof(::Digit::PrimePlatform::Models::CacheHints)},
-        {376, -1, -1, sizeof(::Digit::PrimePlatform::Models::Product)},
-        {389, 400, -1, sizeof(::Digit::PrimePlatform::Models::ProductInfoHolder)},
-        {403, -1, -1, sizeof(::Digit::PrimePlatform::Models::Region)},
-        {414, 429, -1, sizeof(::Digit::PrimePlatform::Models::Instance)},
-        {436, -1, -1, sizeof(::Digit::PrimePlatform::Models::PlayerTransferState)},
-        {447, 457, -1, sizeof(::Digit::PrimePlatform::Models::TranslationCacheUpdate)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::PrimePlatform::Models::_EventEntryData_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventHighlights_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventMetadata_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventModel_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventRank_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventRanking_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventReward_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventSchedule_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventScoringInfo_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_Events_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventNotification_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventSegment_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_EventVideoAssets_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_RepeatedInt32_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_PlayerlifecycleNotification_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_GameNewsModel_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_GameNewsHolder_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_GameNewsMetadata_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_Notifications_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_PlatformUserProfile_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_PlatformUserProfileResponse_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_PlayerStats_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_PlayerStatsGroup_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_PlayerStatsEntry_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_CacheHints_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_Product_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_ProductInfoHolder_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_Region_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_Instance_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_PlayerTransferState_default_instance_._instance,
-    &::Digit::PrimePlatform::Models::_TranslationCacheUpdate_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrimePlatform_2eModels_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n Digit.PrimePlatform.Models.proto\022\032Digi"
-    "t.PrimePlatform.Models\032\037google/protobuf/"
-    "timestamp.proto\032!Digit.PrimePlatform.Con"
-    "tent.proto\"\232\001\n\016EventEntryData\022\024\n\014isRegis"
-    "tered\030\001 \001(\010\022\020\n\010canClaim\030\002 \001(\010\022\036\n\026lastCla"
-    "imedRewardIndex\030\003 \001(\005\022@\n\rjoinForbidden\030\004"
-    " \001(\0162).Digit.PrimePlatform.Models.JoinFo"
-    "rbidden\"\\\n\017EventHighlights\022\014\n\004type\030\001 \001(\005"
-    "\022\017\n\007nodeIds\030\002 \003(\003\022\022\n\nspecialIds\030\003 \003(\003\022\026\n"
-    "\016calloutAssetId\030\004 \001(\t\"\347\005\n\rEventMetadata\022"
-    "\026\n\016isAutoRegister\030\001 \001(\010\022\022\n\nautoReward\030\002 "
-    "\001(\010\022\027\n\017immediateReward\030\003 \001(\010\022\023\n\013canShowc"
-    "ase\030\004 \001(\010\022\023\n\013iconAssetId\030\005 \001(\t\022\031\n\021iconAs"
-    "setFilename\030\006 \001(\t\022\023\n\013visualAsset\030\007 \001(\t\022\033"
-    "\n\023visualAssetFilename\030\010 \001(\t\022A\n\013scoringIn"
-    "fo\030\t \003(\0132,.Digit.PrimePlatform.Models.Ev"
-    "entScoringInfo\022\013\n\003cta\030\n \001(\003\022\020\n\010priority\030"
-    "\013 \001(\003\022\?\n\nhighlights\030\014 \003(\0132+.Digit.PrimeP"
-    "latform.Models.EventHighlights\0223\n\006bucket"
-    "\030\r \001(\0132#.Digit.PrimePlatform.Content.Buc"
-    "ket\022\024\n\014unlockItemId\030\016 \001(\t\022\026\n\016isUniqueWin"
-    "ner\030\017 \001(\010\022\025\n\risCrossServer\030\020 \001(\010\022A\n\022serv"
-    "erTransferCost\030\021 \001(\0132%.Digit.PrimePlatfo"
-    "rm.Content.Resource\022A\n\016groupInstances\030\022 "
-    "\003(\0132).Digit.PrimePlatform.Models.Repeate"
-    "dInt32\022\027\n\017respectPriority\030\023 \001(\010\022\025\n\rvisua"
-    "lVideoId\030\024 \001(\t\022G\n\021visualVideoAssets\030\025 \001("
-    "\0132,.Digit.PrimePlatform.Models.EventVide"
-    "oAssets\"\212\005\n\nEventModel\0224\n\005ranks\030\014 \001(\0132%."
-    "Digit.PrimePlatform.Models.EventRank\022\020\n\010"
-    "configId\030\001 \001(\t\022\016\n\006source\030\002 \001(\t\022\021\n\teventT"
-    "ype\030\003 \001(\t\022=\n\010category\030\004 \001(\0162+.Digit.Prim"
-    "ePlatform.Models.EventCategories\022@\n\rplac"
-    "ementType\030\005 \001(\0162).Digit.PrimePlatform.Mo"
-    "dels.PlacementType\022;\n\010schedule\030\006 \001(\0132).D"
-    "igit.PrimePlatform.Models.EventSchedule\022"
-    ";\n\010metaData\030\007 \001(\0132).Digit.PrimePlatform."
-    "Models.EventMetadata\022\021\n\tgroupName\030\010 \001(\t\022"
-    ":\n\010segments\030\t \003(\0132(.Digit.PrimePlatform."
-    "Models.EventSegment\0226\n\007ranking\030\n \001(\0132%.D"
-    "igit.PrimePlatform.Models.EventRank\022=\n\te"
-    "ntryData\030\013 \001(\0132*.Digit.PrimePlatform.Mod"
-    "els.EventEntryData\0227\n\010joinCost\030\r \003(\0132%.D"
-    "igit.PrimePlatform.Content.Resource\022\027\n\017c"
-    "ategoryGroupId\030\016 \001(\t\"~\n\tEventRank\022\n\n\002id\030"
-    "\001 \001(\t\022\020\n\010position\030\002 \001(\005\022\014\n\004rank\030\003 \001(\005\022\r\n"
-    "\005score\030\004 \001(\002\022\r\n\005delta\030\005 \001(\005\022\022\n\ninstanceI"
-    "d\030\006 \001(\005\022\023\n\013scoreDouble\030\007 \001(\001\"V\n\014EventRan"
-    "king\0224\n\005ranks\030\001 \003(\0132%.Digit.PrimePlatfor"
-    "m.Models.EventRank\022\020\n\010configId\030\002 \001(\t\"L\n\013"
-    "EventReward\022\020\n\010position\030\001 \003(\003\022\016\n\006amount\030"
-    "\002 \001(\003\022\014\n\004type\030\003 \001(\t\022\r\n\005level\030\004 \001(\t\"\273\002\n\rE"
-    "ventSchedule\022\014\n\004term\030\001 \001(\t\022\023\n\013roundNumbe"
-    "r\030\002 \001(\005\022,\n\010announce\030\003 \001(\0132\032.google.proto"
-    "buf.Timestamp\022)\n\005start\030\004 \001(\0132\032.google.pr"
-    "otobuf.Timestamp\022+\n\007display\030\005 \001(\0132\032.goog"
-    "le.protobuf.Timestamp\022)\n\005delay\030\006 \001(\0132\032.g"
-    "oogle.protobuf.Timestamp\022\'\n\003end\030\007 \001(\0132\032."
-    "google.protobuf.Timestamp\022-\n\tnextStart\030\010"
-    " \001(\0132\032.google.protobuf.Timestamp\",\n\020Even"
-    "tScoringInfo\022\n\n\002id\030\001 \001(\005\022\014\n\004icon\030\002 \001(\t\"Y"
-    "\n\006Events\022;\n\013tournaments\030\001 \003(\0132&.Digit.Pr"
-    "imePlatform.Models.EventModel\022\022\n\ncategor"
-    "ies\030\002 \003(\005\"\315\001\n\021EventNotification\022\020\n\010confi"
-    "gId\030\001 \001(\t\022,\n\010modified\030\002 \001(\0132\032.google.pro"
-    "tobuf.Timestamp\0229\n\nplayerRank\030\003 \001(\0132%.Di"
-    "git.PrimePlatform.Models.EventRank\022=\n\ten"
-    "tryData\030\004 \001(\0132*.Digit.PrimePlatform.Mode"
-    "ls.EventEntryData\"\316\001\n\014EventSegment\0225\n\004ty"
-    "pe\030\001 \001(\0162\'.Digit.PrimePlatform.Models.Se"
-    "gmentType\022\016\n\006values\030\002 \003(\003\0228\n\007rewards\030\003 \003"
-    "(\0132\'.Digit.PrimePlatform.Models.EventRew"
-    "ard\022=\n\014uniqueWinner\030\004 \001(\0132\'.Digit.PrimeP"
-    "latform.Models.EventReward\"\242\001\n\020EventVide"
-    "oAssets\022\n\n\002en\030\001 \001(\t\022\n\n\002es\030\002 \001(\t\022\n\n\002fr\030\003 "
-    "\001(\t\022\n\n\002de\030\004 \001(\t\022\n\n\002it\030\005 \001(\t\022\n\n\002ja\030\006 \001(\t\022"
-    "\n\n\002pt\030\007 \001(\t\022\n\n\002ru\030\010 \001(\t\022\n\n\002cn\030\t \001(\t\022\n\n\002k"
-    "o\030\n \001(\t\022\n\n\002hk\030\013 \001(\t\022\n\n\002tr\030\014 \001(\t\"\037\n\rRepea"
-    "tedInt32\022\016\n\006values\030\001 \003(\005\"\220\001\n\033Playerlifec"
-    "ycleNotification\022K\n\013contentType\030\001 \001(\01626."
-    "Digit.PrimePlatform.Models.Playerlifecyc"
-    "leContentType\022\022\n\nplaygamiId\030\002 \001(\t\022\020\n\010cat"
-    "egory\030\003 \001(\t\"\213\002\n\rGameNewsModel\022\016\n\006newsId\030"
-    "\001 \001(\005\022\020\n\010priority\030\002 \001(\005\022\016\n\006pinned\030\003 \001(\010\022"
-    "\021\n\timportant\030\004 \001(\010\022-\n\tstartDate\030\005 \001(\0132\032."
-    "google.protobuf.Timestamp\022+\n\007endDate\030\006 \001"
-    "(\0132\032.google.protobuf.Timestamp\022>\n\010metada"
-    "ta\030\007 \001(\0132,.Digit.PrimePlatform.Models.Ga"
-    "meNewsMetadata\022\031\n\021isPlayerlifecycle\030\010 \001("
-    "\010\"N\n\016GameNewsHolder\022<\n\tnewsItems\030\001 \003(\0132)"
-    ".Digit.PrimePlatform.Models.GameNewsMode"
-    "l\":\n\020GameNewsMetadata\022\017\n\007assetId\030\001 \001(\t\022\025"
-    "\n\rassetFilename\030\002 \001(\t\"\217\002\n\rNotifications\022"
-    "N\n\027tournamentNotifications\030\001 \003(\0132-.Digit"
-    ".PrimePlatform.Models.EventNotification\022"
-    "O\n\030leaderboardNotifications\030\002 \003(\0132-.Digi"
-    "t.PrimePlatform.Models.EventNotification"
-    "\022]\n\034playerlifecycleNotifications\030\003 \003(\01327"
-    ".Digit.PrimePlatform.Models.Playerlifecy"
-    "cleNotification\"6\n\023PlatformUserProfile\022\021"
-    "\n\taccountId\030\001 \001(\t\022\014\n\004name\030\002 \001(\t\"f\n\033Platf"
-    "ormUserProfileResponse\022G\n\016playerProfiles"
-    "\030\001 \003(\0132/.Digit.PrimePlatform.Models.Plat"
-    "formUserProfile\"^\n\013PlayerStats\022\021\n\taccoun"
-    "tId\030\001 \001(\t\022<\n\006groups\030\002 \003(\0132,.Digit.PrimeP"
-    "latform.Models.PlayerStatsGroup\"_\n\020Playe"
-    "rStatsGroup\022\014\n\004name\030\001 \001(\t\022=\n\007entries\030\002 \003"
-    "(\0132,.Digit.PrimePlatform.Models.PlayerSt"
-    "atsEntry\"C\n\020PlayerStatsEntry\022\016\n\006statId\030\001"
-    " \001(\t\022\020\n\010priority\030\002 \001(\005\022\r\n\005value\030\003 \001(\002\"`\n"
-    "\nCacheHints\022R\n\026translationCacheUpdate\030\001 "
-    "\003(\01322.Digit.PrimePlatform.Models.Transla"
-    "tionCacheUpdate\"z\n\007Product\022\n\n\002id\030\001 \001(\r\022\014"
-    "\n\004name\030\002 \001(\t\022\014\n\004code\030\003 \001(\t\022\016\n\006status\030\004 \001"
-    "(\r\0227\n\tinstances\030\005 \003(\0132$.Digit.PrimePlatf"
-    "orm.Models.Instance\"\226\001\n\021ProductInfoHolde"
-    "r\022\017\n\007version\030\001 \001(\t\0224\n\007product\030\002 \001(\0132#.Di"
-    "git.PrimePlatform.Models.Product\022:\n\ncach"
-    "eHints\030\003 \001(\0132&.Digit.PrimePlatform.Model"
-    "s.CacheHints\"6\n\006Region\022\n\n\002id\030\001 \001(\t\022\023\n\013de"
-    "scription\030\002 \001(\t\022\013\n\003num\030\003 \001(\r\"\335\001\n\010Instanc"
-    "e\022\n\n\002id\030\001 \001(\r\022\014\n\004name\030\002 \001(\t\022\020\n\010priority\030"
-    "\003 \001(\r\0222\n\006region\030\004 \001(\0132\".Digit.PrimePlatf"
-    "orm.Models.Region\022\016\n\006status\030\005 \001(\005\022\023\n\013mai"
-    "ntenance\030\006 \001(\003\022L\n\023playerTransferState\030\007 "
-    "\001(\0132/.Digit.PrimePlatform.Models.PlayerT"
-    "ransferState\"U\n\023PlayerTransferState\022\022\n\nt"
-    "ransferIn\030\001 \001(\010\022\023\n\013transferOut\030\002 \001(\010\022\025\n\r"
-    "authenticated\030\003 \001(\010\"X\n\026TranslationCacheU"
-    "pdate\022\017\n\007section\030\001 \001(\t\022-\n\tupdatedAt\030\002 \001("
-    "\0132\032.google.protobuf.Timestamp*\223\004\n\017EventC"
-    "ategories\022\034\n\030EVENTCATEGORIES_STANDARD\020\000\022"
-    "\036\n\032EVENTCATEGORIES_DAILYGOALS\020\001\022\"\n\036EVENT"
-    "CATEGORIES_DAILYMILESTONE\020\002\022\037\n\033EVENTCATE"
-    "GORIES_LEADERBOARD\020\003\022\030\n\024EVENTCATEGORIES_"
-    "STAT\020\004\022$\n EVENTCATEGORIES_BATTLEPASSSEAS"
-    "ON\020\005\022#\n\037EVENTCATEGORIES_BATTLEPASSEVENT\020"
-    "\006\022$\n EVENTCATEGORIES_TREASURYPROGRESS\020\007\022"
-    "\"\n\036EVENTCATEGORIES_TREASURYREWARD\020\010\022$\n E"
-    "VENTCATEGORIES_SERVERCLASHEVENT\020\t\022!\n\035EVE"
-    "NTCATEGORIES_WEBSTOREEVENT\020\n\022#\n\037EVENTCAT"
-    "EGORIES_PLAYERLIFECYCLE\020\013\022!\n\035EVENTCATEGO"
-    "RIES_FIELDTRAINING\020\014\022\036\n\032EVENTCATEGORIES_"
-    "FTCATEGORY\020\r\022\035\n\031EVENTCATEGORIES_CUTSCENE"
-    "S\020\016*J\n\rJoinForbidden\022\026\n\022JOINFORBIDDEN_NO"
-    "NE\020\000\022!\n\035JOINFORBIDDEN_EVENTINPROGRESS\020\001*"
-    "H\n\rPlacementType\022\032\n\026PLACEMENTTYPE_POSITI"
-    "ON\020\000\022\033\n\027PLACEMENTTYPE_MILESTONE\020\001*\310\001\n\013Se"
-    "gmentType\022\023\n\017SEGMENTTYPE_ALL\020\000\022\025\n\021SEGMEN"
-    "TTYPE_RANGE\020\001\022\024\n\020SEGMENTTYPE_EACH\020\002\022\025\n\021S"
-    "EGMENTTYPE_MATCH\020\003\022\025\n\021SEGMENTTYPE_GROUP\020"
-    "\004\022\024\n\020SEGMENTTYPE_VOID\020\005\022\027\n\023SEGMENTTYPE_E"
-    "ACHAND\020\006\022\032\n\026SEGMENTTYPE_RANGEMULTI\020\007*\220\001\n"
-    "\032PlayerlifecycleContentType\022#\n\037PLAYERLIF"
-    "ECYCLECONTENTTYPE_NEWS\020\000\022&\n\"PLAYERLIFECY"
-    "CLECONTENTTYPE_BUNDLES\020\001\022%\n!PLAYERLIFECY"
-    "CLECONTENTTYPE_EVENTS\020\002b\006proto3"
-};
-static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_deps[2] =
-    {
-        &::descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto,
-        &::descriptor_table_google_2fprotobuf_2ftimestamp_2eproto,
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto = {
-    false,
-    false,
-    6271,
-    descriptor_table_protodef_Digit_2ePrimePlatform_2eModels_2eproto,
-    "Digit.PrimePlatform.Models.proto",
-    &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-    descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_deps,
-    2,
-    31,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrimePlatform_2eModels_2eproto::offsets,
-    file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto,
-    file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto,
-    file_level_service_descriptors_Digit_2ePrimePlatform_2eModels_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrimePlatform_2eModels_2eproto(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
 namespace Digit {
 namespace PrimePlatform {
 namespace Models {
-const ::google::protobuf::EnumDescriptor* EventCategories_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[0];
-}
 bool EventCategories_IsValid(int value) {
   switch (value) {
     case 0:
@@ -1546,14 +876,99 @@ bool EventCategories_IsValid(int value) {
     case 12:
     case 13:
     case 14:
+    case 15:
+    case 16:
       return true;
     default:
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* JoinForbidden_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[1];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    EventCategories_strings[17] = {};
+
+static const char EventCategories_names[] = {
+    "EVENTCATEGORIES_BATTLEPASSEVENT"
+    "EVENTCATEGORIES_BATTLEPASSSEASON"
+    "EVENTCATEGORIES_CUTSCENES"
+    "EVENTCATEGORIES_DAILYGOALS"
+    "EVENTCATEGORIES_DAILYMILESTONE"
+    "EVENTCATEGORIES_FIELDTRAINING"
+    "EVENTCATEGORIES_FTCATEGORY"
+    "EVENTCATEGORIES_LEADERBOARD"
+    "EVENTCATEGORIES_MINIGAMECATEGORY"
+    "EVENTCATEGORIES_MINIGAMESTAGE"
+    "EVENTCATEGORIES_PLAYERLIFECYCLE"
+    "EVENTCATEGORIES_SERVERCLASHEVENT"
+    "EVENTCATEGORIES_STANDARD"
+    "EVENTCATEGORIES_STAT"
+    "EVENTCATEGORIES_TREASURYPROGRESS"
+    "EVENTCATEGORIES_TREASURYREWARD"
+    "EVENTCATEGORIES_WEBSTOREEVENT"
+};
+
+static const ::google::protobuf::internal::EnumEntry EventCategories_entries[] =
+    {
+        {{&EventCategories_names[0], 31}, 6},
+        {{&EventCategories_names[31], 32}, 5},
+        {{&EventCategories_names[63], 25}, 14},
+        {{&EventCategories_names[88], 26}, 1},
+        {{&EventCategories_names[114], 30}, 2},
+        {{&EventCategories_names[144], 29}, 12},
+        {{&EventCategories_names[173], 26}, 13},
+        {{&EventCategories_names[199], 27}, 3},
+        {{&EventCategories_names[226], 32}, 15},
+        {{&EventCategories_names[258], 29}, 16},
+        {{&EventCategories_names[287], 31}, 11},
+        {{&EventCategories_names[318], 32}, 9},
+        {{&EventCategories_names[350], 24}, 0},
+        {{&EventCategories_names[374], 20}, 4},
+        {{&EventCategories_names[394], 32}, 7},
+        {{&EventCategories_names[426], 30}, 8},
+        {{&EventCategories_names[456], 29}, 10},
+};
+
+static const int EventCategories_entries_by_number[] = {
+    12,  // 0 -> EVENTCATEGORIES_STANDARD
+    3,  // 1 -> EVENTCATEGORIES_DAILYGOALS
+    4,  // 2 -> EVENTCATEGORIES_DAILYMILESTONE
+    7,  // 3 -> EVENTCATEGORIES_LEADERBOARD
+    13,  // 4 -> EVENTCATEGORIES_STAT
+    1,  // 5 -> EVENTCATEGORIES_BATTLEPASSSEASON
+    0,  // 6 -> EVENTCATEGORIES_BATTLEPASSEVENT
+    14,  // 7 -> EVENTCATEGORIES_TREASURYPROGRESS
+    15,  // 8 -> EVENTCATEGORIES_TREASURYREWARD
+    11,  // 9 -> EVENTCATEGORIES_SERVERCLASHEVENT
+    16,  // 10 -> EVENTCATEGORIES_WEBSTOREEVENT
+    10,  // 11 -> EVENTCATEGORIES_PLAYERLIFECYCLE
+    5,  // 12 -> EVENTCATEGORIES_FIELDTRAINING
+    6,  // 13 -> EVENTCATEGORIES_FTCATEGORY
+    2,  // 14 -> EVENTCATEGORIES_CUTSCENES
+    8,  // 15 -> EVENTCATEGORIES_MINIGAMECATEGORY
+    9,  // 16 -> EVENTCATEGORIES_MINIGAMESTAGE
+};
+
+const std::string& EventCategories_Name(EventCategories value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          EventCategories_entries, EventCategories_entries_by_number,
+          17, EventCategories_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      EventCategories_entries, EventCategories_entries_by_number, 17,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : EventCategories_strings[idx].get();
+}
+
+bool EventCategories_Parse(absl::string_view name, EventCategories* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      EventCategories_entries, 17, name, &int_value);
+  if (success) {
+    *value = static_cast<EventCategories>(int_value);
+  }
+  return success;
 }
 bool JoinForbidden_IsValid(int value) {
   switch (value) {
@@ -1564,9 +979,98 @@ bool JoinForbidden_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* PlacementType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[2];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    JoinForbidden_strings[2] = {};
+
+static const char JoinForbidden_names[] = {
+    "JOINFORBIDDEN_EVENTINPROGRESS"
+    "JOINFORBIDDEN_NONE"
+};
+
+static const ::google::protobuf::internal::EnumEntry JoinForbidden_entries[] =
+    {
+        {{&JoinForbidden_names[0], 29}, 1},
+        {{&JoinForbidden_names[29], 18}, 0},
+};
+
+static const int JoinForbidden_entries_by_number[] = {
+    1,  // 0 -> JOINFORBIDDEN_NONE
+    0,  // 1 -> JOINFORBIDDEN_EVENTINPROGRESS
+};
+
+const std::string& JoinForbidden_Name(JoinForbidden value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          JoinForbidden_entries, JoinForbidden_entries_by_number,
+          2, JoinForbidden_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      JoinForbidden_entries, JoinForbidden_entries_by_number, 2,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : JoinForbidden_strings[idx].get();
+}
+
+bool JoinForbidden_Parse(absl::string_view name, JoinForbidden* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      JoinForbidden_entries, 2, name, &int_value);
+  if (success) {
+    *value = static_cast<JoinForbidden>(int_value);
+  }
+  return success;
+}
+bool BattlePassType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    BattlePassType_strings[2] = {};
+
+static const char BattlePassType_names[] = {
+    "BATTLEPASSTYPE_STANDARD"
+    "BATTLEPASSTYPE_TERRITORYCAPTURE"
+};
+
+static const ::google::protobuf::internal::EnumEntry BattlePassType_entries[] =
+    {
+        {{&BattlePassType_names[0], 23}, 0},
+        {{&BattlePassType_names[23], 31}, 1},
+};
+
+static const int BattlePassType_entries_by_number[] = {
+    0,  // 0 -> BATTLEPASSTYPE_STANDARD
+    1,  // 1 -> BATTLEPASSTYPE_TERRITORYCAPTURE
+};
+
+const std::string& BattlePassType_Name(BattlePassType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          BattlePassType_entries, BattlePassType_entries_by_number,
+          2, BattlePassType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      BattlePassType_entries, BattlePassType_entries_by_number, 2,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : BattlePassType_strings[idx].get();
+}
+
+bool BattlePassType_Parse(absl::string_view name, BattlePassType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      BattlePassType_entries, 2, name, &int_value);
+  if (success) {
+    *value = static_cast<BattlePassType>(int_value);
+  }
+  return success;
 }
 bool PlacementType_IsValid(int value) {
   switch (value) {
@@ -1577,9 +1081,47 @@ bool PlacementType_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* SegmentType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[3];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    PlacementType_strings[2] = {};
+
+static const char PlacementType_names[] = {
+    "PLACEMENTTYPE_MILESTONE"
+    "PLACEMENTTYPE_POSITION"
+};
+
+static const ::google::protobuf::internal::EnumEntry PlacementType_entries[] =
+    {
+        {{&PlacementType_names[0], 23}, 1},
+        {{&PlacementType_names[23], 22}, 0},
+};
+
+static const int PlacementType_entries_by_number[] = {
+    1,  // 0 -> PLACEMENTTYPE_POSITION
+    0,  // 1 -> PLACEMENTTYPE_MILESTONE
+};
+
+const std::string& PlacementType_Name(PlacementType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          PlacementType_entries, PlacementType_entries_by_number,
+          2, PlacementType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      PlacementType_entries, PlacementType_entries_by_number, 2,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : PlacementType_strings[idx].get();
+}
+
+bool PlacementType_Parse(absl::string_view name, PlacementType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      PlacementType_entries, 2, name, &int_value);
+  if (success) {
+    *value = static_cast<PlacementType>(int_value);
+  }
+  return success;
 }
 bool SegmentType_IsValid(int value) {
   switch (value) {
@@ -1596,9 +1138,65 @@ bool SegmentType_IsValid(int value) {
       return false;
   }
 }
-const ::google::protobuf::EnumDescriptor* PlayerlifecycleContentType_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto);
-  return file_level_enum_descriptors_Digit_2ePrimePlatform_2eModels_2eproto[4];
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    SegmentType_strings[8] = {};
+
+static const char SegmentType_names[] = {
+    "SEGMENTTYPE_ALL"
+    "SEGMENTTYPE_EACH"
+    "SEGMENTTYPE_EACHAND"
+    "SEGMENTTYPE_GROUP"
+    "SEGMENTTYPE_MATCH"
+    "SEGMENTTYPE_RANGE"
+    "SEGMENTTYPE_RANGEMULTI"
+    "SEGMENTTYPE_VOID"
+};
+
+static const ::google::protobuf::internal::EnumEntry SegmentType_entries[] =
+    {
+        {{&SegmentType_names[0], 15}, 0},
+        {{&SegmentType_names[15], 16}, 2},
+        {{&SegmentType_names[31], 19}, 6},
+        {{&SegmentType_names[50], 17}, 4},
+        {{&SegmentType_names[67], 17}, 3},
+        {{&SegmentType_names[84], 17}, 1},
+        {{&SegmentType_names[101], 22}, 7},
+        {{&SegmentType_names[123], 16}, 5},
+};
+
+static const int SegmentType_entries_by_number[] = {
+    0,  // 0 -> SEGMENTTYPE_ALL
+    5,  // 1 -> SEGMENTTYPE_RANGE
+    1,  // 2 -> SEGMENTTYPE_EACH
+    4,  // 3 -> SEGMENTTYPE_MATCH
+    3,  // 4 -> SEGMENTTYPE_GROUP
+    7,  // 5 -> SEGMENTTYPE_VOID
+    2,  // 6 -> SEGMENTTYPE_EACHAND
+    6,  // 7 -> SEGMENTTYPE_RANGEMULTI
+};
+
+const std::string& SegmentType_Name(SegmentType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          SegmentType_entries, SegmentType_entries_by_number,
+          8, SegmentType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      SegmentType_entries, SegmentType_entries_by_number, 8,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : SegmentType_strings[idx].get();
+}
+
+bool SegmentType_Parse(absl::string_view name, SegmentType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      SegmentType_entries, 8, name, &int_value);
+  if (success) {
+    *value = static_cast<SegmentType>(int_value);
+  }
+  return success;
 }
 bool PlayerlifecycleContentType_IsValid(int value) {
   switch (value) {
@@ -1610,6 +1208,51 @@ bool PlayerlifecycleContentType_IsValid(int value) {
       return false;
   }
 }
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    PlayerlifecycleContentType_strings[3] = {};
+
+static const char PlayerlifecycleContentType_names[] = {
+    "PLAYERLIFECYCLECONTENTTYPE_BUNDLES"
+    "PLAYERLIFECYCLECONTENTTYPE_EVENTS"
+    "PLAYERLIFECYCLECONTENTTYPE_NEWS"
+};
+
+static const ::google::protobuf::internal::EnumEntry PlayerlifecycleContentType_entries[] =
+    {
+        {{&PlayerlifecycleContentType_names[0], 34}, 1},
+        {{&PlayerlifecycleContentType_names[34], 33}, 2},
+        {{&PlayerlifecycleContentType_names[67], 31}, 0},
+};
+
+static const int PlayerlifecycleContentType_entries_by_number[] = {
+    2,  // 0 -> PLAYERLIFECYCLECONTENTTYPE_NEWS
+    0,  // 1 -> PLAYERLIFECYCLECONTENTTYPE_BUNDLES
+    1,  // 2 -> PLAYERLIFECYCLECONTENTTYPE_EVENTS
+};
+
+const std::string& PlayerlifecycleContentType_Name(PlayerlifecycleContentType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          PlayerlifecycleContentType_entries, PlayerlifecycleContentType_entries_by_number,
+          3, PlayerlifecycleContentType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      PlayerlifecycleContentType_entries, PlayerlifecycleContentType_entries_by_number, 3,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : PlayerlifecycleContentType_strings[idx].get();
+}
+
+bool PlayerlifecycleContentType_Parse(absl::string_view name, PlayerlifecycleContentType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      PlayerlifecycleContentType_entries, 3, name, &int_value);
+  if (success) {
+    *value = static_cast<PlayerlifecycleContentType>(int_value);
+  }
+  return success;
+}
 // ===================================================================
 
 class EventEntryData::_Internal {
@@ -1617,13 +1260,13 @@ class EventEntryData::_Internal {
 };
 
 EventEntryData::EventEntryData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventEntryData)
 }
 EventEntryData::EventEntryData(const EventEntryData& from)
-    : ::google::protobuf::Message(), _impl_(from._impl_) {
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+    : ::google::protobuf::MessageLite(), _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.EventEntryData)
 }
@@ -1639,7 +1282,7 @@ inline void EventEntryData::SharedCtor(::_pb::Arena* arena) {
 }
 EventEntryData::~EventEntryData() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventEntryData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventEntryData::SharedDtor() {
@@ -1658,7 +1301,7 @@ PROTOBUF_NOINLINE void EventEntryData::Clear() {
   ::memset(&_impl_.isregistered_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.joinforbidden_) -
       reinterpret_cast<char*>(&_impl_.isregistered_)) + sizeof(_impl_.joinforbidden_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventEntryData::_InternalParse(
@@ -1681,19 +1324,19 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> EventEntryData::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_EventEntryData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .Digit.PrimePlatform.Models.JoinForbidden joinForbidden = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventEntryData, _impl_.joinforbidden_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(EventEntryData, _impl_.joinforbidden_)}},
     // bool isRegistered = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EventEntryData, _impl_.isregistered_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(EventEntryData, _impl_.isregistered_)}},
     // bool canClaim = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EventEntryData, _impl_.canclaim_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(EventEntryData, _impl_.canclaim_)}},
     // int32 lastClaimedRewardIndex = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventEntryData, _impl_.lastclaimedrewardindex_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(EventEntryData, _impl_.lastclaimedrewardindex_)}},
   }}, {{
     65535, 65535
@@ -1752,9 +1395,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> EventEntryData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventEntryData)
   return target;
@@ -1790,19 +1433,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 0, 2> EventEntryData::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_joinforbidden());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventEntryData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventEntryData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventEntryData::GetClassData() const { return &_class_data_; }
+void EventEntryData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventEntryData*>(
+      &from));
+}
 
-
-void EventEntryData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventEntryData*>(&to_msg);
-  auto& from = static_cast<const EventEntryData&>(from_msg);
+void EventEntryData::MergeFrom(const EventEntryData& from) {
+  EventEntryData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventEntryData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1820,7 +1466,7 @@ void EventEntryData::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
   if (from._internal_joinforbidden() != 0) {
     _this->_internal_set_joinforbidden(from._internal_joinforbidden());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventEntryData::CopyFrom(const EventEntryData& from) {
@@ -1845,11 +1491,10 @@ void EventEntryData::InternalSwap(EventEntryData* other) {
           reinterpret_cast<char*>(&other->_impl_.isregistered_));
 }
 
-::google::protobuf::Metadata EventEntryData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[0]);
+std::string EventEntryData::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventEntryData";
 }
+
 // ===================================================================
 
 class EventHighlights::_Internal {
@@ -1857,11 +1502,11 @@ class EventHighlights::_Internal {
 };
 
 EventHighlights::EventHighlights(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventHighlights)
 }
-EventHighlights::EventHighlights(const EventHighlights& from) : ::google::protobuf::Message() {
+EventHighlights::EventHighlights(const EventHighlights& from) : ::google::protobuf::MessageLite() {
   EventHighlights* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1873,7 +1518,7 @@ EventHighlights::EventHighlights(const EventHighlights& from) : ::google::protob
       decltype(_impl_.type_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.calloutassetid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1904,7 +1549,7 @@ inline void EventHighlights::SharedCtor(::_pb::Arena* arena) {
 }
 EventHighlights::~EventHighlights() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventHighlights)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventHighlights::SharedDtor() {
@@ -1927,7 +1572,7 @@ PROTOBUF_NOINLINE void EventHighlights::Clear() {
   _internal_mutable_specialids()->Clear();
   _impl_.calloutassetid_.ClearToEmpty();
   _impl_.type_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventHighlights::_InternalParse(
@@ -1950,13 +1595,13 @@ const ::_pbi::TcParseTable<2, 4, 0, 65, 2> EventHighlights::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_EventHighlights_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string calloutAssetId = 4;
     {::_pbi::TcParser::FastUS1,
      {34, 63, 0, PROTOBUF_FIELD_OFFSET(EventHighlights, _impl_.calloutassetid_)}},
     // int32 type = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventHighlights, _impl_.type_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(EventHighlights, _impl_.type_)}},
     // repeated int64 nodeIds = 2;
     {::_pbi::TcParser::FastV64P1,
@@ -2029,9 +1674,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 65, 2> EventHighlights::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventHighlights)
   return target;
@@ -2083,19 +1728,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 65, 2> EventHighlights::_table_ = {
         this->_internal_type());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventHighlights::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventHighlights::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventHighlights::GetClassData() const { return &_class_data_; }
+void EventHighlights::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventHighlights*>(
+      &from));
+}
 
-
-void EventHighlights::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventHighlights*>(&to_msg);
-  auto& from = static_cast<const EventHighlights&>(from_msg);
+void EventHighlights::MergeFrom(const EventHighlights& from) {
+  EventHighlights* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventHighlights)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -2109,7 +1757,7 @@ void EventHighlights::MergeImpl(::google::protobuf::Message& to_msg, const ::goo
   if (from._internal_type() != 0) {
     _this->_internal_set_type(from._internal_type());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventHighlights::CopyFrom(const EventHighlights& from) {
@@ -2135,11 +1783,10 @@ void EventHighlights::InternalSwap(EventHighlights* other) {
         swap(_impl_.type_, other->_impl_.type_);
 }
 
-::google::protobuf::Metadata EventHighlights::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[1]);
+std::string EventHighlights::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventHighlights";
 }
+
 // ===================================================================
 
 class EventMetadata::_Internal {
@@ -2179,11 +1826,11 @@ void EventMetadata::clear_servertransfercost() {
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
 EventMetadata::EventMetadata(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventMetadata)
 }
-EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Message() {
+EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::MessageLite() {
   EventMetadata* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -2198,9 +1845,12 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
       decltype(_impl_.visualassetfilename_){},
       decltype(_impl_.unlockitemid_){},
       decltype(_impl_.visualvideoid_){},
+      decltype(_impl_.battlepasslink_){},
+      decltype(_impl_.battlepassresourceid_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.servertransfercost_){nullptr},
       decltype(_impl_.visualvideoassets_){nullptr},
+      decltype(_impl_.cta_){},
       decltype(_impl_.isautoregister_){},
       decltype(_impl_.autoreward_){},
       decltype(_impl_.immediatereward_){},
@@ -2208,10 +1858,13 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
       decltype(_impl_.isuniquewinner_){},
       decltype(_impl_.iscrossserver_){},
       decltype(_impl_.respectpriority_){},
-      decltype(_impl_.cta_){},
+      decltype(_impl_.minigamelock_){},
       decltype(_impl_.priority_){},
+      decltype(_impl_.battlepasstype_){},
+      decltype(_impl_.minigamelevelmin_){},
+      decltype(_impl_.minigamelevelmax_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.iconassetid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2255,6 +1908,20 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
   if (!from._internal_visualvideoid().empty()) {
     _this->_impl_.visualvideoid_.Set(from._internal_visualvideoid(), _this->GetArenaForAllocation());
   }
+  _impl_.battlepasslink_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepasslink_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_battlepasslink().empty()) {
+    _this->_impl_.battlepasslink_.Set(from._internal_battlepasslink(), _this->GetArenaForAllocation());
+  }
+  _impl_.battlepassresourceid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepassresourceid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_battlepassresourceid().empty()) {
+    _this->_impl_.battlepassresourceid_.Set(from._internal_battlepassresourceid(), _this->GetArenaForAllocation());
+  }
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.bucket_ = new ::Digit::PrimePlatform::Content::Bucket(*from._impl_.bucket_);
   }
@@ -2264,9 +1931,9 @@ EventMetadata::EventMetadata(const EventMetadata& from) : ::google::protobuf::Me
   if ((from._impl_._has_bits_[0] & 0x00000004u) != 0) {
     _this->_impl_.visualvideoassets_ = new ::Digit::PrimePlatform::Models::EventVideoAssets(*from._impl_.visualvideoassets_);
   }
-  ::memcpy(&_impl_.isautoregister_, &from._impl_.isautoregister_,
-    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.priority_) -
-    reinterpret_cast<char*>(&_impl_.isautoregister_)) + sizeof(_impl_.priority_));
+  ::memcpy(&_impl_.cta_, &from._impl_.cta_,
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.minigamelevelmax_) -
+    reinterpret_cast<char*>(&_impl_.cta_)) + sizeof(_impl_.minigamelevelmax_));
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.EventMetadata)
 }
@@ -2284,9 +1951,12 @@ inline void EventMetadata::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.visualassetfilename_){},
       decltype(_impl_.unlockitemid_){},
       decltype(_impl_.visualvideoid_){},
+      decltype(_impl_.battlepasslink_){},
+      decltype(_impl_.battlepassresourceid_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.servertransfercost_){nullptr},
       decltype(_impl_.visualvideoassets_){nullptr},
+      decltype(_impl_.cta_){::int64_t{0}},
       decltype(_impl_.isautoregister_){false},
       decltype(_impl_.autoreward_){false},
       decltype(_impl_.immediatereward_){false},
@@ -2294,8 +1964,11 @@ inline void EventMetadata::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.isuniquewinner_){false},
       decltype(_impl_.iscrossserver_){false},
       decltype(_impl_.respectpriority_){false},
-      decltype(_impl_.cta_){::int64_t{0}},
+      decltype(_impl_.minigamelock_){false},
       decltype(_impl_.priority_){::int64_t{0}},
+      decltype(_impl_.battlepasstype_){0},
+      decltype(_impl_.minigamelevelmin_){0u},
+      decltype(_impl_.minigamelevelmax_){0u},
   };
   _impl_.iconassetid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2321,10 +1994,18 @@ inline void EventMetadata::SharedCtor(::_pb::Arena* arena) {
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
         _impl_.visualvideoid_.Set("", GetArenaForAllocation());
   #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.battlepasslink_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepasslink_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  _impl_.battlepassresourceid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.battlepassresourceid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
 }
 EventMetadata::~EventMetadata() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventMetadata)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventMetadata::SharedDtor() {
@@ -2338,6 +2019,8 @@ inline void EventMetadata::SharedDtor() {
   _impl_.visualassetfilename_.Destroy();
   _impl_.unlockitemid_.Destroy();
   _impl_.visualvideoid_.Destroy();
+  _impl_.battlepasslink_.Destroy();
+  _impl_.battlepassresourceid_.Destroy();
   if (this != internal_default_instance()) delete _impl_.bucket_;
   if (this != internal_default_instance()) delete _impl_.servertransfercost_;
   if (this != internal_default_instance()) delete _impl_.visualvideoassets_;
@@ -2361,6 +2044,8 @@ PROTOBUF_NOINLINE void EventMetadata::Clear() {
   _impl_.visualassetfilename_.ClearToEmpty();
   _impl_.unlockitemid_.ClearToEmpty();
   _impl_.visualvideoid_.ClearToEmpty();
+  _impl_.battlepasslink_.ClearToEmpty();
+  _impl_.battlepassresourceid_.ClearToEmpty();
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
@@ -2376,11 +2061,11 @@ PROTOBUF_NOINLINE void EventMetadata::Clear() {
       _impl_.visualvideoassets_->Clear();
     }
   }
-  ::memset(&_impl_.isautoregister_, 0, static_cast<::size_t>(
-      reinterpret_cast<char*>(&_impl_.priority_) -
-      reinterpret_cast<char*>(&_impl_.isautoregister_)) + sizeof(_impl_.priority_));
+  ::memset(&_impl_.cta_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.minigamelevelmax_) -
+      reinterpret_cast<char*>(&_impl_.cta_)) + sizeof(_impl_.minigamelevelmax_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventMetadata::_InternalParse(
@@ -2391,32 +2076,32 @@ const char* EventMetadata::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
+const ::_pbi::TcParseTable<5, 27, 6, 190, 2> EventMetadata::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_._has_bits_),
     0, // no _extensions_
-    21, 248,  // max_field_number, fast_idx_mask
+    27, 248,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4292870144,  // skipmap
+    4160749568,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    21,  // num_field_entries
+    27,  // num_field_entries
     6,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EventMetadata_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // bool isAutoRegister = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EventMetadata, _impl_.isautoregister_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.isautoregister_)}},
     // bool autoReward = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EventMetadata, _impl_.autoreward_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.autoreward_)}},
     // bool immediateReward = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EventMetadata, _impl_.immediatereward_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.immediatereward_)}},
     // bool canShowcase = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EventMetadata, _impl_.canshowcase_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.canshowcase_)}},
     // string iconAssetId = 5;
     {::_pbi::TcParser::FastUS1,
@@ -2434,10 +2119,10 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     {::_pbi::TcParser::FastMtR1,
      {74, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.scoringinfo_)}},
     // int64 cta = 10;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(EventMetadata, _impl_.cta_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {80, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.cta_)}},
     // int64 priority = 11;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(EventMetadata, _impl_.priority_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {88, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.priority_)}},
     // repeated .Digit.PrimePlatform.Models.EventHighlights highlights = 12;
     {::_pbi::TcParser::FastMtR1,
@@ -2449,7 +2134,7 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {114, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.unlockitemid_)}},
     // bool isUniqueWinner = 15;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(EventMetadata, _impl_.isuniquewinner_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {120, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.isuniquewinner_)}},
     // bool isCrossServer = 16;
     {::_pbi::TcParser::FastV8S2,
@@ -2469,12 +2154,24 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     // .Digit.PrimePlatform.Models.EventVideoAssets visualVideoAssets = 21;
     {::_pbi::TcParser::FastMtS2,
      {426, 2, 5, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.visualvideoassets_)}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
-    {::_pbi::TcParser::MiniParse, {}},
+    // string battlePassLink = 22;
+    {::_pbi::TcParser::FastUS2,
+     {434, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasslink_)}},
+    // string battlePassResourceId = 23;
+    {::_pbi::TcParser::FastUS2,
+     {442, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepassresourceid_)}},
+    // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+    {::_pbi::TcParser::FastV32S2,
+     {448, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasstype_)}},
+    // bool minigameLock = 25;
+    {::_pbi::TcParser::FastV8S2,
+     {456, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelock_)}},
+    // uint32 minigameLevelMin = 26;
+    {::_pbi::TcParser::FastV32S2,
+     {464, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmin_)}},
+    // uint32 minigameLevelMax = 27;
+    {::_pbi::TcParser::FastV32S2,
+     {472, 63, 0, PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmax_)}},
     {::_pbi::TcParser::MiniParse, {}},
     {::_pbi::TcParser::MiniParse, {}},
     {::_pbi::TcParser::MiniParse, {}},
@@ -2545,6 +2242,24 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     // .Digit.PrimePlatform.Models.EventVideoAssets visualVideoAssets = 21;
     {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.visualvideoassets_), _Internal::kHasBitsOffset + 2, 5,
     (0 | ::_fl::kFcOptional | ::_fl::kMessage | ::_fl::kTvTable)},
+    // string battlePassLink = 22;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasslink_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string battlePassResourceId = 23;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepassresourceid_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.battlepasstype_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
+    // bool minigameLock = 25;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelock_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
+    // uint32 minigameLevelMin = 26;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmin_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
+    // uint32 minigameLevelMax = 27;
+    {PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmax_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
   }}, {{
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::EventScoringInfo>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::EventHighlights>()},
@@ -2553,7 +2268,7 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::RepeatedInt32>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::EventVideoAssets>()},
   }}, {{
-    "\50\0\0\0\0\13\21\13\23\0\0\0\0\0\14\0\0\0\0\0\15\0\0\0"
+    "\50\0\0\0\0\13\21\13\23\0\0\0\0\0\14\0\0\0\0\0\15\0\16\24\0\0\0\0\0\0\0\0"
     "Digit.PrimePlatform.Models.EventMetadata"
     "iconAssetId"
     "iconAssetFilename"
@@ -2561,6 +2276,8 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     "visualAssetFilename"
     "unlockItemId"
     "visualVideoId"
+    "battlePassLink"
+    "battlePassResourceId"
   }},
 };
 
@@ -2728,10 +2445,54 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
         _Internal::visualvideoassets(this).GetCachedSize(), target, stream);
   }
 
+  // string battlePassLink = 22;
+  if (!this->_internal_battlepasslink().empty()) {
+    const std::string& _s = this->_internal_battlepasslink();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.EventMetadata.battlePassLink");
+    target = stream->WriteStringMaybeAliased(22, _s, target);
+  }
+
+  // string battlePassResourceId = 23;
+  if (!this->_internal_battlepassresourceid().empty()) {
+    const std::string& _s = this->_internal_battlepassresourceid();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.EventMetadata.battlePassResourceId");
+    target = stream->WriteStringMaybeAliased(23, _s, target);
+  }
+
+  // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+  if (this->_internal_battlepasstype() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+        24, this->_internal_battlepasstype(), target);
+  }
+
+  // bool minigameLock = 25;
+  if (this->_internal_minigamelock() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        25, this->_internal_minigamelock(), target);
+  }
+
+  // uint32 minigameLevelMin = 26;
+  if (this->_internal_minigamelevelmin() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        26, this->_internal_minigamelevelmin(), target);
+  }
+
+  // uint32 minigameLevelMax = 27;
+  if (this->_internal_minigamelevelmax() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        27, this->_internal_minigamelevelmax(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventMetadata)
   return target;
@@ -2799,6 +2560,18 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
                                     this->_internal_visualvideoid());
   }
 
+  // string battlePassLink = 22;
+  if (!this->_internal_battlepasslink().empty()) {
+    total_size += 2 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_battlepasslink());
+  }
+
+  // string battlePassResourceId = 23;
+  if (!this->_internal_battlepassresourceid().empty()) {
+    total_size += 2 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_battlepassresourceid());
+  }
+
   cached_has_bits = _impl_._has_bits_[0];
   if (cached_has_bits & 0x00000007u) {
     // .Digit.PrimePlatform.Content.Bucket bucket = 13;
@@ -2823,6 +2596,12 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     }
 
   }
+  // int64 cta = 10;
+  if (this->_internal_cta() != 0) {
+    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
+        this->_internal_cta());
+  }
+
   // bool isAutoRegister = 1;
   if (this->_internal_isautoregister() != 0) {
     total_size += 2;
@@ -2858,10 +2637,9 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
     total_size += 3;
   }
 
-  // int64 cta = 10;
-  if (this->_internal_cta() != 0) {
-    total_size += ::_pbi::WireFormatLite::Int64SizePlusOne(
-        this->_internal_cta());
+  // bool minigameLock = 25;
+  if (this->_internal_minigamelock() != 0) {
+    total_size += 3;
   }
 
   // int64 priority = 11;
@@ -2870,19 +2648,40 @@ const ::_pbi::TcParseTable<5, 21, 6, 148, 2> EventMetadata::_table_ = {
         this->_internal_priority());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  // .Digit.PrimePlatform.Models.BattlePassType battlePassType = 24;
+  if (this->_internal_battlepasstype() != 0) {
+    total_size += 2 +
+                  ::_pbi::WireFormatLite::EnumSize(this->_internal_battlepasstype());
+  }
+
+  // uint32 minigameLevelMin = 26;
+  if (this->_internal_minigamelevelmin() != 0) {
+    total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                    this->_internal_minigamelevelmin());
+  }
+
+  // uint32 minigameLevelMax = 27;
+  if (this->_internal_minigamelevelmax() != 0) {
+    total_size += 2 + ::_pbi::WireFormatLite::UInt32Size(
+                                    this->_internal_minigamelevelmax());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventMetadata::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventMetadata::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventMetadata::GetClassData() const { return &_class_data_; }
+void EventMetadata::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventMetadata*>(
+      &from));
+}
 
-
-void EventMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventMetadata*>(&to_msg);
-  auto& from = static_cast<const EventMetadata&>(from_msg);
+void EventMetadata::MergeFrom(const EventMetadata& from) {
+  EventMetadata* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventMetadata)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -2909,6 +2708,12 @@ void EventMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
   if (!from._internal_visualvideoid().empty()) {
     _this->_internal_set_visualvideoid(from._internal_visualvideoid());
   }
+  if (!from._internal_battlepasslink().empty()) {
+    _this->_internal_set_battlepasslink(from._internal_battlepasslink());
+  }
+  if (!from._internal_battlepassresourceid().empty()) {
+    _this->_internal_set_battlepassresourceid(from._internal_battlepassresourceid());
+  }
   cached_has_bits = from._impl_._has_bits_[0];
   if (cached_has_bits & 0x00000007u) {
     if (cached_has_bits & 0x00000001u) {
@@ -2923,6 +2728,9 @@ void EventMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
       _this->_internal_mutable_visualvideoassets()->::Digit::PrimePlatform::Models::EventVideoAssets::MergeFrom(
           from._internal_visualvideoassets());
     }
+  }
+  if (from._internal_cta() != 0) {
+    _this->_internal_set_cta(from._internal_cta());
   }
   if (from._internal_isautoregister() != 0) {
     _this->_internal_set_isautoregister(from._internal_isautoregister());
@@ -2945,13 +2753,22 @@ void EventMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
   if (from._internal_respectpriority() != 0) {
     _this->_internal_set_respectpriority(from._internal_respectpriority());
   }
-  if (from._internal_cta() != 0) {
-    _this->_internal_set_cta(from._internal_cta());
+  if (from._internal_minigamelock() != 0) {
+    _this->_internal_set_minigamelock(from._internal_minigamelock());
   }
   if (from._internal_priority() != 0) {
     _this->_internal_set_priority(from._internal_priority());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_battlepasstype() != 0) {
+    _this->_internal_set_battlepasstype(from._internal_battlepasstype());
+  }
+  if (from._internal_minigamelevelmin() != 0) {
+    _this->_internal_set_minigamelevelmin(from._internal_minigamelevelmin());
+  }
+  if (from._internal_minigamelevelmax() != 0) {
+    _this->_internal_set_minigamelevelmax(from._internal_minigamelevelmax());
+  }
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventMetadata::CopyFrom(const EventMetadata& from) {
@@ -2986,19 +2803,22 @@ void EventMetadata::InternalSwap(EventMetadata* other) {
                                        &other->_impl_.unlockitemid_, rhs_arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.visualvideoid_, lhs_arena,
                                        &other->_impl_.visualvideoid_, rhs_arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.battlepasslink_, lhs_arena,
+                                       &other->_impl_.battlepasslink_, rhs_arena);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.battlepassresourceid_, lhs_arena,
+                                       &other->_impl_.battlepassresourceid_, rhs_arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.priority_)
-      + sizeof(EventMetadata::_impl_.priority_)
+      PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.minigamelevelmax_)
+      + sizeof(EventMetadata::_impl_.minigamelevelmax_)
       - PROTOBUF_FIELD_OFFSET(EventMetadata, _impl_.bucket_)>(
           reinterpret_cast<char*>(&_impl_.bucket_),
           reinterpret_cast<char*>(&other->_impl_.bucket_));
 }
 
-::google::protobuf::Metadata EventMetadata::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[2]);
+std::string EventMetadata::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventMetadata";
 }
+
 // ===================================================================
 
 class EventModel::_Internal {
@@ -3047,11 +2867,11 @@ void EventModel::clear_joincost() {
   _internal_mutable_joincost()->Clear();
 }
 EventModel::EventModel(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventModel)
 }
-EventModel::EventModel(const EventModel& from) : ::google::protobuf::Message() {
+EventModel::EventModel(const EventModel& from) : ::google::protobuf::MessageLite() {
   EventModel* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -3072,7 +2892,7 @@ EventModel::EventModel(const EventModel& from) : ::google::protobuf::Message() {
       decltype(_impl_.category_){},
       decltype(_impl_.placementtype_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.configid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -3173,7 +2993,7 @@ inline void EventModel::SharedCtor(::_pb::Arena* arena) {
 }
 EventModel::~EventModel() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventModel)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventModel::SharedDtor() {
@@ -3235,7 +3055,7 @@ PROTOBUF_NOINLINE void EventModel::Clear() {
       reinterpret_cast<char*>(&_impl_.placementtype_) -
       reinterpret_cast<char*>(&_impl_.category_)) + sizeof(_impl_.placementtype_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventModel::_InternalParse(
@@ -3258,7 +3078,7 @@ const ::_pbi::TcParseTable<4, 14, 7, 101, 2> EventModel::_table_ = {
     7,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EventModel_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string configId = 1;
@@ -3271,10 +3091,10 @@ const ::_pbi::TcParseTable<4, 14, 7, 101, 2> EventModel::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {26, 63, 0, PROTOBUF_FIELD_OFFSET(EventModel, _impl_.eventtype_)}},
     // .Digit.PrimePlatform.Models.EventCategories category = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventModel, _impl_.category_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(EventModel, _impl_.category_)}},
     // .Digit.PrimePlatform.Models.PlacementType placementType = 5;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventModel, _impl_.placementtype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {40, 63, 0, PROTOBUF_FIELD_OFFSET(EventModel, _impl_.placementtype_)}},
     // .Digit.PrimePlatform.Models.EventSchedule schedule = 6;
     {::_pbi::TcParser::FastMtS1,
@@ -3482,9 +3302,9 @@ const ::_pbi::TcParseTable<4, 14, 7, 101, 2> EventModel::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventModel)
   return target;
@@ -3590,19 +3410,22 @@ const ::_pbi::TcParseTable<4, 14, 7, 101, 2> EventModel::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_placementtype());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventModel::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventModel::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventModel::GetClassData() const { return &_class_data_; }
+void EventModel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventModel*>(
+      &from));
+}
 
-
-void EventModel::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventModel*>(&to_msg);
-  auto& from = static_cast<const EventModel&>(from_msg);
+void EventModel::MergeFrom(const EventModel& from) {
+  EventModel* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventModel)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -3654,7 +3477,7 @@ void EventModel::MergeImpl(::google::protobuf::Message& to_msg, const ::google::
   if (from._internal_placementtype() != 0) {
     _this->_internal_set_placementtype(from._internal_placementtype());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventModel::CopyFrom(const EventModel& from) {
@@ -3694,11 +3517,10 @@ void EventModel::InternalSwap(EventModel* other) {
           reinterpret_cast<char*>(&other->_impl_.schedule_));
 }
 
-::google::protobuf::Metadata EventModel::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[3]);
+std::string EventModel::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventModel";
 }
+
 // ===================================================================
 
 class EventRank::_Internal {
@@ -3706,11 +3528,11 @@ class EventRank::_Internal {
 };
 
 EventRank::EventRank(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventRank)
 }
-EventRank::EventRank(const EventRank& from) : ::google::protobuf::Message() {
+EventRank::EventRank(const EventRank& from) : ::google::protobuf::MessageLite() {
   EventRank* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -3723,7 +3545,7 @@ EventRank::EventRank(const EventRank& from) : ::google::protobuf::Message() {
       decltype(_impl_.instanceid_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.id_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -3757,7 +3579,7 @@ inline void EventRank::SharedCtor(::_pb::Arena* arena) {
 }
 EventRank::~EventRank() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventRank)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventRank::SharedDtor() {
@@ -3778,7 +3600,7 @@ PROTOBUF_NOINLINE void EventRank::Clear() {
   ::memset(&_impl_.position_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.instanceid_) -
       reinterpret_cast<char*>(&_impl_.position_)) + sizeof(_impl_.instanceid_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventRank::_InternalParse(
@@ -3801,26 +3623,26 @@ const ::_pbi::TcParseTable<3, 7, 0, 47, 2> EventRank::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_EventRank_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string id = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(EventRank, _impl_.id_)}},
     // int32 position = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventRank, _impl_.position_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(EventRank, _impl_.position_)}},
     // int32 rank = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventRank, _impl_.rank_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(EventRank, _impl_.rank_)}},
     // float score = 4;
     {::_pbi::TcParser::FastF32S1,
      {37, 63, 0, PROTOBUF_FIELD_OFFSET(EventRank, _impl_.score_)}},
     // int32 delta = 5;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventRank, _impl_.delta_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {40, 63, 0, PROTOBUF_FIELD_OFFSET(EventRank, _impl_.delta_)}},
     // int32 instanceId = 6;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventRank, _impl_.instanceid_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {48, 63, 0, PROTOBUF_FIELD_OFFSET(EventRank, _impl_.instanceid_)}},
     // double scoreDouble = 7;
     {::_pbi::TcParser::FastF64S1,
@@ -3926,9 +3748,9 @@ const ::_pbi::TcParseTable<3, 7, 0, 47, 2> EventRank::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventRank)
   return target;
@@ -3992,19 +3814,22 @@ const ::_pbi::TcParseTable<3, 7, 0, 47, 2> EventRank::_table_ = {
         this->_internal_instanceid());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventRank::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventRank::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventRank::GetClassData() const { return &_class_data_; }
+void EventRank::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventRank*>(
+      &from));
+}
 
-
-void EventRank::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventRank*>(&to_msg);
-  auto& from = static_cast<const EventRank&>(from_msg);
+void EventRank::MergeFrom(const EventRank& from) {
+  EventRank* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventRank)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -4041,7 +3866,7 @@ void EventRank::MergeImpl(::google::protobuf::Message& to_msg, const ::google::p
   if (from._internal_instanceid() != 0) {
     _this->_internal_set_instanceid(from._internal_instanceid());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventRank::CopyFrom(const EventRank& from) {
@@ -4070,11 +3895,10 @@ void EventRank::InternalSwap(EventRank* other) {
           reinterpret_cast<char*>(&other->_impl_.position_));
 }
 
-::google::protobuf::Metadata EventRank::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[4]);
+std::string EventRank::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventRank";
 }
+
 // ===================================================================
 
 class EventRanking::_Internal {
@@ -4082,11 +3906,11 @@ class EventRanking::_Internal {
 };
 
 EventRanking::EventRanking(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventRanking)
 }
-EventRanking::EventRanking(const EventRanking& from) : ::google::protobuf::Message() {
+EventRanking::EventRanking(const EventRanking& from) : ::google::protobuf::MessageLite() {
   EventRanking* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -4094,7 +3918,7 @@ EventRanking::EventRanking(const EventRanking& from) : ::google::protobuf::Messa
       decltype(_impl_.configid_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.configid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -4120,7 +3944,7 @@ inline void EventRanking::SharedCtor(::_pb::Arena* arena) {
 }
 EventRanking::~EventRanking() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventRanking)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventRanking::SharedDtor() {
@@ -4140,7 +3964,7 @@ PROTOBUF_NOINLINE void EventRanking::Clear() {
 
   _internal_mutable_ranks()->Clear();
   _impl_.configid_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventRanking::_InternalParse(
@@ -4163,7 +3987,7 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> EventRanking::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EventRanking_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string configId = 2;
     {::_pbi::TcParser::FastUS1,
@@ -4213,9 +4037,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> EventRanking::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventRanking)
   return target;
@@ -4241,19 +4065,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> EventRanking::_table_ = {
                                     this->_internal_configid());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventRanking::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventRanking::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventRanking::GetClassData() const { return &_class_data_; }
+void EventRanking::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventRanking*>(
+      &from));
+}
 
-
-void EventRanking::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventRanking*>(&to_msg);
-  auto& from = static_cast<const EventRanking&>(from_msg);
+void EventRanking::MergeFrom(const EventRanking& from) {
+  EventRanking* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventRanking)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -4263,7 +4090,7 @@ void EventRanking::MergeImpl(::google::protobuf::Message& to_msg, const ::google
   if (!from._internal_configid().empty()) {
     _this->_internal_set_configid(from._internal_configid());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventRanking::CopyFrom(const EventRanking& from) {
@@ -4287,11 +4114,10 @@ void EventRanking::InternalSwap(EventRanking* other) {
                                        &other->_impl_.configid_, rhs_arena);
 }
 
-::google::protobuf::Metadata EventRanking::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[5]);
+std::string EventRanking::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventRanking";
 }
+
 // ===================================================================
 
 class EventReward::_Internal {
@@ -4299,11 +4125,11 @@ class EventReward::_Internal {
 };
 
 EventReward::EventReward(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventReward)
 }
-EventReward::EventReward(const EventReward& from) : ::google::protobuf::Message() {
+EventReward::EventReward(const EventReward& from) : ::google::protobuf::MessageLite() {
   EventReward* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -4314,7 +4140,7 @@ EventReward::EventReward(const EventReward& from) : ::google::protobuf::Message(
       decltype(_impl_.amount_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.type_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -4355,7 +4181,7 @@ inline void EventReward::SharedCtor(::_pb::Arena* arena) {
 }
 EventReward::~EventReward() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventReward)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventReward::SharedDtor() {
@@ -4378,7 +4204,7 @@ PROTOBUF_NOINLINE void EventReward::Clear() {
   _impl_.type_.ClearToEmpty();
   _impl_.level_.ClearToEmpty();
   _impl_.amount_ = ::int64_t{0};
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventReward::_InternalParse(
@@ -4401,7 +4227,7 @@ const ::_pbi::TcParseTable<2, 4, 0, 56, 2> EventReward::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_EventReward_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string level = 4;
     {::_pbi::TcParser::FastUS1,
@@ -4410,7 +4236,7 @@ const ::_pbi::TcParseTable<2, 4, 0, 56, 2> EventReward::_table_ = {
     {::_pbi::TcParser::FastV64P1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(EventReward, _impl_.position_)}},
     // int64 amount = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(EventReward, _impl_.amount_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(EventReward, _impl_.amount_)}},
     // string type = 3;
     {::_pbi::TcParser::FastUS1,
@@ -4480,9 +4306,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 56, 2> EventReward::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventReward)
   return target;
@@ -4527,19 +4353,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 56, 2> EventReward::_table_ = {
         this->_internal_amount());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventReward::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventReward::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventReward::GetClassData() const { return &_class_data_; }
+void EventReward::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventReward*>(
+      &from));
+}
 
-
-void EventReward::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventReward*>(&to_msg);
-  auto& from = static_cast<const EventReward&>(from_msg);
+void EventReward::MergeFrom(const EventReward& from) {
+  EventReward* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventReward)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -4555,7 +4384,7 @@ void EventReward::MergeImpl(::google::protobuf::Message& to_msg, const ::google:
   if (from._internal_amount() != 0) {
     _this->_internal_set_amount(from._internal_amount());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventReward::CopyFrom(const EventReward& from) {
@@ -4582,11 +4411,10 @@ void EventReward::InternalSwap(EventReward* other) {
         swap(_impl_.amount_, other->_impl_.amount_);
 }
 
-::google::protobuf::Metadata EventReward::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[6]);
+std::string EventReward::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventReward";
 }
+
 // ===================================================================
 
 class EventSchedule::_Internal {
@@ -4663,11 +4491,11 @@ void EventSchedule::clear_nextstart() {
   _impl_._has_bits_[0] &= ~0x00000020u;
 }
 EventSchedule::EventSchedule(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventSchedule)
 }
-EventSchedule::EventSchedule(const EventSchedule& from) : ::google::protobuf::Message() {
+EventSchedule::EventSchedule(const EventSchedule& from) : ::google::protobuf::MessageLite() {
   EventSchedule* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -4682,7 +4510,7 @@ EventSchedule::EventSchedule(const EventSchedule& from) : ::google::protobuf::Me
       decltype(_impl_.nextstart_){nullptr},
       decltype(_impl_.roundnumber_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.term_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -4734,7 +4562,7 @@ inline void EventSchedule::SharedCtor(::_pb::Arena* arena) {
 }
 EventSchedule::~EventSchedule() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventSchedule)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventSchedule::SharedDtor() {
@@ -4787,7 +4615,7 @@ PROTOBUF_NOINLINE void EventSchedule::Clear() {
   }
   _impl_.roundnumber_ = 0;
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventSchedule::_InternalParse(
@@ -4810,7 +4638,7 @@ const ::_pbi::TcParseTable<3, 8, 6, 61, 2> EventSchedule::_table_ = {
     6,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EventSchedule_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .google.protobuf.Timestamp nextStart = 8;
     {::_pbi::TcParser::FastMtS1,
@@ -4819,7 +4647,7 @@ const ::_pbi::TcParseTable<3, 8, 6, 61, 2> EventSchedule::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(EventSchedule, _impl_.term_)}},
     // int32 roundNumber = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventSchedule, _impl_.roundnumber_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(EventSchedule, _impl_.roundnumber_)}},
     // .google.protobuf.Timestamp announce = 3;
     {::_pbi::TcParser::FastMtS1,
@@ -4943,9 +4771,9 @@ const ::_pbi::TcParseTable<3, 8, 6, 61, 2> EventSchedule::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventSchedule)
   return target;
@@ -5016,19 +4844,22 @@ const ::_pbi::TcParseTable<3, 8, 6, 61, 2> EventSchedule::_table_ = {
         this->_internal_roundnumber());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventSchedule::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventSchedule::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventSchedule::GetClassData() const { return &_class_data_; }
+void EventSchedule::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventSchedule*>(
+      &from));
+}
 
-
-void EventSchedule::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventSchedule*>(&to_msg);
-  auto& from = static_cast<const EventSchedule&>(from_msg);
+void EventSchedule::MergeFrom(const EventSchedule& from) {
+  EventSchedule* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventSchedule)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -5067,7 +4898,7 @@ void EventSchedule::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
   if (from._internal_roundnumber() != 0) {
     _this->_internal_set_roundnumber(from._internal_roundnumber());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventSchedule::CopyFrom(const EventSchedule& from) {
@@ -5097,11 +4928,10 @@ void EventSchedule::InternalSwap(EventSchedule* other) {
           reinterpret_cast<char*>(&other->_impl_.announce_));
 }
 
-::google::protobuf::Metadata EventSchedule::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[7]);
+std::string EventSchedule::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventSchedule";
 }
+
 // ===================================================================
 
 class EventScoringInfo::_Internal {
@@ -5109,11 +4939,11 @@ class EventScoringInfo::_Internal {
 };
 
 EventScoringInfo::EventScoringInfo(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventScoringInfo)
 }
-EventScoringInfo::EventScoringInfo(const EventScoringInfo& from) : ::google::protobuf::Message() {
+EventScoringInfo::EventScoringInfo(const EventScoringInfo& from) : ::google::protobuf::MessageLite() {
   EventScoringInfo* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -5121,7 +4951,7 @@ EventScoringInfo::EventScoringInfo(const EventScoringInfo& from) : ::google::pro
       decltype(_impl_.id_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.icon_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -5148,7 +4978,7 @@ inline void EventScoringInfo::SharedCtor(::_pb::Arena* arena) {
 }
 EventScoringInfo::~EventScoringInfo() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventScoringInfo)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventScoringInfo::SharedDtor() {
@@ -5167,7 +4997,7 @@ PROTOBUF_NOINLINE void EventScoringInfo::Clear() {
 
   _impl_.icon_.ClearToEmpty();
   _impl_.id_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventScoringInfo::_InternalParse(
@@ -5190,13 +5020,13 @@ const ::_pbi::TcParseTable<1, 2, 0, 56, 2> EventScoringInfo::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_EventScoringInfo_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string icon = 2;
     {::_pbi::TcParser::FastUS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(EventScoringInfo, _impl_.icon_)}},
     // int32 id = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventScoringInfo, _impl_.id_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(EventScoringInfo, _impl_.id_)}},
   }}, {{
     65535, 65535
@@ -5239,9 +5069,9 @@ const ::_pbi::TcParseTable<1, 2, 0, 56, 2> EventScoringInfo::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventScoringInfo)
   return target;
@@ -5267,19 +5097,22 @@ const ::_pbi::TcParseTable<1, 2, 0, 56, 2> EventScoringInfo::_table_ = {
         this->_internal_id());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventScoringInfo::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventScoringInfo::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventScoringInfo::GetClassData() const { return &_class_data_; }
+void EventScoringInfo::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventScoringInfo*>(
+      &from));
+}
 
-
-void EventScoringInfo::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventScoringInfo*>(&to_msg);
-  auto& from = static_cast<const EventScoringInfo&>(from_msg);
+void EventScoringInfo::MergeFrom(const EventScoringInfo& from) {
+  EventScoringInfo* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventScoringInfo)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -5291,7 +5124,7 @@ void EventScoringInfo::MergeImpl(::google::protobuf::Message& to_msg, const ::go
   if (from._internal_id() != 0) {
     _this->_internal_set_id(from._internal_id());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventScoringInfo::CopyFrom(const EventScoringInfo& from) {
@@ -5315,11 +5148,10 @@ void EventScoringInfo::InternalSwap(EventScoringInfo* other) {
         swap(_impl_.id_, other->_impl_.id_);
 }
 
-::google::protobuf::Metadata EventScoringInfo::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[8]);
+std::string EventScoringInfo::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventScoringInfo";
 }
+
 // ===================================================================
 
 class Events::_Internal {
@@ -5327,11 +5159,11 @@ class Events::_Internal {
 };
 
 Events::Events(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.Events)
 }
-Events::Events(const Events& from) : ::google::protobuf::Message() {
+Events::Events(const Events& from) : ::google::protobuf::MessageLite() {
   Events* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -5340,7 +5172,7 @@ Events::Events(const Events& from) : ::google::protobuf::Message() {
       /* _impl_._categories_cached_byte_size_ = */ {0},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.Events)
@@ -5356,7 +5188,7 @@ inline void Events::SharedCtor(::_pb::Arena* arena) {
 }
 Events::~Events() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.Events)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Events::SharedDtor() {
@@ -5376,7 +5208,7 @@ PROTOBUF_NOINLINE void Events::Clear() {
 
   _internal_mutable_tournaments()->Clear();
   _internal_mutable_categories()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Events::_InternalParse(
@@ -5399,7 +5231,7 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> Events::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Events_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated int32 categories = 2;
     {::_pbi::TcParser::FastV32P1,
@@ -5447,9 +5279,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> Events::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.Events)
   return target;
@@ -5482,19 +5314,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> Events::_table_ = {
     ;
     total_size += tag_size + data_size;
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Events::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Events::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Events::GetClassData() const { return &_class_data_; }
+void Events::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Events*>(
+      &from));
+}
 
-
-void Events::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Events*>(&to_msg);
-  auto& from = static_cast<const Events&>(from_msg);
+void Events::MergeFrom(const Events& from) {
+  Events* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.Events)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -5502,7 +5337,7 @@ void Events::MergeImpl(::google::protobuf::Message& to_msg, const ::google::prot
 
   _this->_internal_mutable_tournaments()->MergeFrom(from._internal_tournaments());
   _this->_internal_mutable_categories()->MergeFrom(from._internal_categories());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Events::CopyFrom(const Events& from) {
@@ -5523,11 +5358,10 @@ void Events::InternalSwap(Events* other) {
   _impl_.categories_.InternalSwap(&other->_impl_.categories_);
 }
 
-::google::protobuf::Metadata Events::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[9]);
+std::string Events::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.Events";
 }
+
 // ===================================================================
 
 class EventNotification::_Internal {
@@ -5563,11 +5397,11 @@ void EventNotification::clear_modified() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 EventNotification::EventNotification(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventNotification)
 }
-EventNotification::EventNotification(const EventNotification& from) : ::google::protobuf::Message() {
+EventNotification::EventNotification(const EventNotification& from) : ::google::protobuf::MessageLite() {
   EventNotification* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -5578,7 +5412,7 @@ EventNotification::EventNotification(const EventNotification& from) : ::google::
       decltype(_impl_.playerrank_){nullptr},
       decltype(_impl_.entrydata_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.configid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -5616,7 +5450,7 @@ inline void EventNotification::SharedCtor(::_pb::Arena* arena) {
 }
 EventNotification::~EventNotification() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventNotification)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventNotification::SharedDtor() {
@@ -5653,7 +5487,7 @@ PROTOBUF_NOINLINE void EventNotification::Clear() {
     }
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventNotification::_InternalParse(
@@ -5676,7 +5510,7 @@ const ::_pbi::TcParseTable<2, 4, 3, 61, 2> EventNotification::_table_ = {
     3,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EventNotification_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .Digit.PrimePlatform.Models.EventEntryData entryData = 4;
     {::_pbi::TcParser::FastMtS1,
@@ -5754,9 +5588,9 @@ const ::_pbi::TcParseTable<2, 4, 3, 61, 2> EventNotification::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventNotification)
   return target;
@@ -5800,19 +5634,22 @@ const ::_pbi::TcParseTable<2, 4, 3, 61, 2> EventNotification::_table_ = {
     }
 
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventNotification::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventNotification::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventNotification::GetClassData() const { return &_class_data_; }
+void EventNotification::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventNotification*>(
+      &from));
+}
 
-
-void EventNotification::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventNotification*>(&to_msg);
-  auto& from = static_cast<const EventNotification&>(from_msg);
+void EventNotification::MergeFrom(const EventNotification& from) {
+  EventNotification* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventNotification)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -5836,7 +5673,7 @@ void EventNotification::MergeImpl(::google::protobuf::Message& to_msg, const ::g
           from._internal_entrydata());
     }
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventNotification::CopyFrom(const EventNotification& from) {
@@ -5866,11 +5703,10 @@ void EventNotification::InternalSwap(EventNotification* other) {
           reinterpret_cast<char*>(&other->_impl_.modified_));
 }
 
-::google::protobuf::Metadata EventNotification::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[10]);
+std::string EventNotification::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventNotification";
 }
+
 // ===================================================================
 
 class EventSegment::_Internal {
@@ -5888,11 +5724,11 @@ const ::Digit::PrimePlatform::Models::EventReward& EventSegment::_Internal::uniq
   return *msg->_impl_.uniquewinner_;
 }
 EventSegment::EventSegment(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventSegment)
 }
-EventSegment::EventSegment(const EventSegment& from) : ::google::protobuf::Message() {
+EventSegment::EventSegment(const EventSegment& from) : ::google::protobuf::MessageLite() {
   EventSegment* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -5904,7 +5740,7 @@ EventSegment::EventSegment(const EventSegment& from) : ::google::protobuf::Messa
       decltype(_impl_.uniquewinner_){nullptr},
       decltype(_impl_.type_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.uniquewinner_ = new ::Digit::PrimePlatform::Models::EventReward(*from._impl_.uniquewinner_);
@@ -5927,7 +5763,7 @@ inline void EventSegment::SharedCtor(::_pb::Arena* arena) {
 }
 EventSegment::~EventSegment() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventSegment)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventSegment::SharedDtor() {
@@ -5955,7 +5791,7 @@ PROTOBUF_NOINLINE void EventSegment::Clear() {
   }
   _impl_.type_ = 0;
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventSegment::_InternalParse(
@@ -5978,13 +5814,13 @@ const ::_pbi::TcParseTable<2, 4, 2, 0, 2> EventSegment::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_EventSegment_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .Digit.PrimePlatform.Models.EventReward uniqueWinner = 4;
     {::_pbi::TcParser::FastMtS1,
      {34, 0, 1, PROTOBUF_FIELD_OFFSET(EventSegment, _impl_.uniquewinner_)}},
     // .Digit.PrimePlatform.Models.SegmentType type = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(EventSegment, _impl_.type_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(EventSegment, _impl_.type_)}},
     // repeated int64 values = 2;
     {::_pbi::TcParser::FastV64P1,
@@ -6054,9 +5890,9 @@ const ::_pbi::TcParseTable<2, 4, 2, 0, 2> EventSegment::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventSegment)
   return target;
@@ -6103,19 +5939,22 @@ const ::_pbi::TcParseTable<2, 4, 2, 0, 2> EventSegment::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_type());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventSegment::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventSegment::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventSegment::GetClassData() const { return &_class_data_; }
+void EventSegment::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventSegment*>(
+      &from));
+}
 
-
-void EventSegment::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventSegment*>(&to_msg);
-  auto& from = static_cast<const EventSegment&>(from_msg);
+void EventSegment::MergeFrom(const EventSegment& from) {
+  EventSegment* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventSegment)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -6130,7 +5969,7 @@ void EventSegment::MergeImpl(::google::protobuf::Message& to_msg, const ::google
   if (from._internal_type() != 0) {
     _this->_internal_set_type(from._internal_type());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventSegment::CopyFrom(const EventSegment& from) {
@@ -6158,11 +5997,10 @@ void EventSegment::InternalSwap(EventSegment* other) {
           reinterpret_cast<char*>(&other->_impl_.uniquewinner_));
 }
 
-::google::protobuf::Metadata EventSegment::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[11]);
+std::string EventSegment::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventSegment";
 }
+
 // ===================================================================
 
 class EventVideoAssets::_Internal {
@@ -6170,11 +6008,11 @@ class EventVideoAssets::_Internal {
 };
 
 EventVideoAssets::EventVideoAssets(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.EventVideoAssets)
 }
-EventVideoAssets::EventVideoAssets(const EventVideoAssets& from) : ::google::protobuf::Message() {
+EventVideoAssets::EventVideoAssets(const EventVideoAssets& from) : ::google::protobuf::MessageLite() {
   EventVideoAssets* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -6192,7 +6030,7 @@ EventVideoAssets::EventVideoAssets(const EventVideoAssets& from) : ::google::pro
       decltype(_impl_.tr_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.en_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -6349,7 +6187,7 @@ inline void EventVideoAssets::SharedCtor(::_pb::Arena* arena) {
 }
 EventVideoAssets::~EventVideoAssets() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.EventVideoAssets)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void EventVideoAssets::SharedDtor() {
@@ -6389,7 +6227,7 @@ PROTOBUF_NOINLINE void EventVideoAssets::Clear() {
   _impl_.ko_.ClearToEmpty();
   _impl_.hk_.ClearToEmpty();
   _impl_.tr_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* EventVideoAssets::_InternalParse(
@@ -6412,7 +6250,7 @@ const ::_pbi::TcParseTable<4, 12, 0, 84, 2> EventVideoAssets::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_EventVideoAssets_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string en = 1;
@@ -6617,9 +6455,9 @@ const ::_pbi::TcParseTable<4, 12, 0, 84, 2> EventVideoAssets::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.EventVideoAssets)
   return target;
@@ -6705,19 +6543,22 @@ const ::_pbi::TcParseTable<4, 12, 0, 84, 2> EventVideoAssets::_table_ = {
                                     this->_internal_tr());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData EventVideoAssets::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    EventVideoAssets::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*EventVideoAssets::GetClassData() const { return &_class_data_; }
+void EventVideoAssets::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const EventVideoAssets*>(
+      &from));
+}
 
-
-void EventVideoAssets::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<EventVideoAssets*>(&to_msg);
-  auto& from = static_cast<const EventVideoAssets&>(from_msg);
+void EventVideoAssets::MergeFrom(const EventVideoAssets& from) {
+  EventVideoAssets* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.EventVideoAssets)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -6759,7 +6600,7 @@ void EventVideoAssets::MergeImpl(::google::protobuf::Message& to_msg, const ::go
   if (!from._internal_tr().empty()) {
     _this->_internal_set_tr(from._internal_tr());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void EventVideoAssets::CopyFrom(const EventVideoAssets& from) {
@@ -6804,11 +6645,10 @@ void EventVideoAssets::InternalSwap(EventVideoAssets* other) {
                                        &other->_impl_.tr_, rhs_arena);
 }
 
-::google::protobuf::Metadata EventVideoAssets::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[12]);
+std::string EventVideoAssets::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.EventVideoAssets";
 }
+
 // ===================================================================
 
 class RepeatedInt32::_Internal {
@@ -6816,11 +6656,11 @@ class RepeatedInt32::_Internal {
 };
 
 RepeatedInt32::RepeatedInt32(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.RepeatedInt32)
 }
-RepeatedInt32::RepeatedInt32(const RepeatedInt32& from) : ::google::protobuf::Message() {
+RepeatedInt32::RepeatedInt32(const RepeatedInt32& from) : ::google::protobuf::MessageLite() {
   RepeatedInt32* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -6828,7 +6668,7 @@ RepeatedInt32::RepeatedInt32(const RepeatedInt32& from) : ::google::protobuf::Me
       /* _impl_._values_cached_byte_size_ = */ {0},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.RepeatedInt32)
@@ -6843,7 +6683,7 @@ inline void RepeatedInt32::SharedCtor(::_pb::Arena* arena) {
 }
 RepeatedInt32::~RepeatedInt32() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.RepeatedInt32)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void RepeatedInt32::SharedDtor() {
@@ -6861,7 +6701,7 @@ PROTOBUF_NOINLINE void RepeatedInt32::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_values()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* RepeatedInt32::_InternalParse(
@@ -6884,7 +6724,7 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> RepeatedInt32::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_RepeatedInt32_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated int32 values = 1;
     {::_pbi::TcParser::FastV32P1,
@@ -6918,9 +6758,9 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> RepeatedInt32::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.RepeatedInt32)
   return target;
@@ -6947,26 +6787,29 @@ const ::_pbi::TcParseTable<0, 1, 0, 0, 2> RepeatedInt32::_table_ = {
     ;
     total_size += tag_size + data_size;
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData RepeatedInt32::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    RepeatedInt32::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*RepeatedInt32::GetClassData() const { return &_class_data_; }
+void RepeatedInt32::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const RepeatedInt32*>(
+      &from));
+}
 
-
-void RepeatedInt32::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<RepeatedInt32*>(&to_msg);
-  auto& from = static_cast<const RepeatedInt32&>(from_msg);
+void RepeatedInt32::MergeFrom(const RepeatedInt32& from) {
+  RepeatedInt32* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.RepeatedInt32)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_values()->MergeFrom(from._internal_values());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void RepeatedInt32::CopyFrom(const RepeatedInt32& from) {
@@ -6986,11 +6829,10 @@ void RepeatedInt32::InternalSwap(RepeatedInt32* other) {
   _impl_.values_.InternalSwap(&other->_impl_.values_);
 }
 
-::google::protobuf::Metadata RepeatedInt32::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[13]);
+std::string RepeatedInt32::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.RepeatedInt32";
 }
+
 // ===================================================================
 
 class PlayerlifecycleNotification::_Internal {
@@ -6998,11 +6840,11 @@ class PlayerlifecycleNotification::_Internal {
 };
 
 PlayerlifecycleNotification::PlayerlifecycleNotification(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.PlayerlifecycleNotification)
 }
-PlayerlifecycleNotification::PlayerlifecycleNotification(const PlayerlifecycleNotification& from) : ::google::protobuf::Message() {
+PlayerlifecycleNotification::PlayerlifecycleNotification(const PlayerlifecycleNotification& from) : ::google::protobuf::MessageLite() {
   PlayerlifecycleNotification* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -7011,7 +6853,7 @@ PlayerlifecycleNotification::PlayerlifecycleNotification(const PlayerlifecycleNo
       decltype(_impl_.contenttype_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.playgamiid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -7050,7 +6892,7 @@ inline void PlayerlifecycleNotification::SharedCtor(::_pb::Arena* arena) {
 }
 PlayerlifecycleNotification::~PlayerlifecycleNotification() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.PlayerlifecycleNotification)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PlayerlifecycleNotification::SharedDtor() {
@@ -7071,7 +6913,7 @@ PROTOBUF_NOINLINE void PlayerlifecycleNotification::Clear() {
   _impl_.playgamiid_.ClearToEmpty();
   _impl_.category_.ClearToEmpty();
   _impl_.contenttype_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PlayerlifecycleNotification::_InternalParse(
@@ -7094,11 +6936,11 @@ const ::_pbi::TcParseTable<2, 3, 0, 81, 2> PlayerlifecycleNotification::_table_ 
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_PlayerlifecycleNotification_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // .Digit.PrimePlatform.Models.PlayerlifecycleContentType contentType = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(PlayerlifecycleNotification, _impl_.contenttype_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(PlayerlifecycleNotification, _impl_.contenttype_)}},
     // string playgamiId = 2;
     {::_pbi::TcParser::FastUS1,
@@ -7159,9 +7001,9 @@ const ::_pbi::TcParseTable<2, 3, 0, 81, 2> PlayerlifecycleNotification::_table_ 
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.PlayerlifecycleNotification)
   return target;
@@ -7193,19 +7035,22 @@ const ::_pbi::TcParseTable<2, 3, 0, 81, 2> PlayerlifecycleNotification::_table_ 
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_contenttype());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PlayerlifecycleNotification::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PlayerlifecycleNotification::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PlayerlifecycleNotification::GetClassData() const { return &_class_data_; }
+void PlayerlifecycleNotification::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PlayerlifecycleNotification*>(
+      &from));
+}
 
-
-void PlayerlifecycleNotification::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PlayerlifecycleNotification*>(&to_msg);
-  auto& from = static_cast<const PlayerlifecycleNotification&>(from_msg);
+void PlayerlifecycleNotification::MergeFrom(const PlayerlifecycleNotification& from) {
+  PlayerlifecycleNotification* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.PlayerlifecycleNotification)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -7220,7 +7065,7 @@ void PlayerlifecycleNotification::MergeImpl(::google::protobuf::Message& to_msg,
   if (from._internal_contenttype() != 0) {
     _this->_internal_set_contenttype(from._internal_contenttype());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PlayerlifecycleNotification::CopyFrom(const PlayerlifecycleNotification& from) {
@@ -7246,11 +7091,10 @@ void PlayerlifecycleNotification::InternalSwap(PlayerlifecycleNotification* othe
   swap(_impl_.contenttype_, other->_impl_.contenttype_);
 }
 
-::google::protobuf::Metadata PlayerlifecycleNotification::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[14]);
+std::string PlayerlifecycleNotification::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.PlayerlifecycleNotification";
 }
+
 // ===================================================================
 
 class GameNewsModel::_Internal {
@@ -7290,11 +7134,11 @@ void GameNewsModel::clear_enddate() {
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
 GameNewsModel::GameNewsModel(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.GameNewsModel)
 }
-GameNewsModel::GameNewsModel(const GameNewsModel& from) : ::google::protobuf::Message() {
+GameNewsModel::GameNewsModel(const GameNewsModel& from) : ::google::protobuf::MessageLite() {
   GameNewsModel* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -7309,7 +7153,7 @@ GameNewsModel::GameNewsModel(const GameNewsModel& from) : ::google::protobuf::Me
       decltype(_impl_.important_){},
       decltype(_impl_.isplayerlifecycle_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.startdate_ = new ::google::protobuf::Timestamp(*from._impl_.startdate_);
@@ -7343,7 +7187,7 @@ inline void GameNewsModel::SharedCtor(::_pb::Arena* arena) {
 }
 GameNewsModel::~GameNewsModel() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.GameNewsModel)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void GameNewsModel::SharedDtor() {
@@ -7381,7 +7225,7 @@ PROTOBUF_NOINLINE void GameNewsModel::Clear() {
       reinterpret_cast<char*>(&_impl_.isplayerlifecycle_) -
       reinterpret_cast<char*>(&_impl_.newsid_)) + sizeof(_impl_.isplayerlifecycle_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* GameNewsModel::_InternalParse(
@@ -7404,22 +7248,22 @@ const ::_pbi::TcParseTable<3, 8, 3, 0, 2> GameNewsModel::_table_ = {
     3,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_GameNewsModel_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // bool isPlayerlifecycle = 8;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(GameNewsModel, _impl_.isplayerlifecycle_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {64, 63, 0, PROTOBUF_FIELD_OFFSET(GameNewsModel, _impl_.isplayerlifecycle_)}},
     // int32 newsId = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(GameNewsModel, _impl_.newsid_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(GameNewsModel, _impl_.newsid_)}},
     // int32 priority = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(GameNewsModel, _impl_.priority_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(GameNewsModel, _impl_.priority_)}},
     // bool pinned = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(GameNewsModel, _impl_.pinned_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(GameNewsModel, _impl_.pinned_)}},
     // bool important = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(GameNewsModel, _impl_.important_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(GameNewsModel, _impl_.important_)}},
     // .google.protobuf.Timestamp startDate = 5;
     {::_pbi::TcParser::FastMtS1,
@@ -7530,9 +7374,9 @@ const ::_pbi::TcParseTable<3, 8, 3, 0, 2> GameNewsModel::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.GameNewsModel)
   return target;
@@ -7597,19 +7441,22 @@ const ::_pbi::TcParseTable<3, 8, 3, 0, 2> GameNewsModel::_table_ = {
     total_size += 2;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData GameNewsModel::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    GameNewsModel::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*GameNewsModel::GetClassData() const { return &_class_data_; }
+void GameNewsModel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const GameNewsModel*>(
+      &from));
+}
 
-
-void GameNewsModel::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<GameNewsModel*>(&to_msg);
-  auto& from = static_cast<const GameNewsModel&>(from_msg);
+void GameNewsModel::MergeFrom(const GameNewsModel& from) {
+  GameNewsModel* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.GameNewsModel)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -7645,7 +7492,7 @@ void GameNewsModel::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
   if (from._internal_isplayerlifecycle() != 0) {
     _this->_internal_set_isplayerlifecycle(from._internal_isplayerlifecycle());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void GameNewsModel::CopyFrom(const GameNewsModel& from) {
@@ -7671,11 +7518,10 @@ void GameNewsModel::InternalSwap(GameNewsModel* other) {
           reinterpret_cast<char*>(&other->_impl_.startdate_));
 }
 
-::google::protobuf::Metadata GameNewsModel::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[15]);
+std::string GameNewsModel::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.GameNewsModel";
 }
+
 // ===================================================================
 
 class GameNewsHolder::_Internal {
@@ -7683,18 +7529,18 @@ class GameNewsHolder::_Internal {
 };
 
 GameNewsHolder::GameNewsHolder(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.GameNewsHolder)
 }
-GameNewsHolder::GameNewsHolder(const GameNewsHolder& from) : ::google::protobuf::Message() {
+GameNewsHolder::GameNewsHolder(const GameNewsHolder& from) : ::google::protobuf::MessageLite() {
   GameNewsHolder* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.newsitems_){from._impl_.newsitems_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.GameNewsHolder)
@@ -7708,7 +7554,7 @@ inline void GameNewsHolder::SharedCtor(::_pb::Arena* arena) {
 }
 GameNewsHolder::~GameNewsHolder() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.GameNewsHolder)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void GameNewsHolder::SharedDtor() {
@@ -7726,7 +7572,7 @@ PROTOBUF_NOINLINE void GameNewsHolder::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_newsitems()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* GameNewsHolder::_InternalParse(
@@ -7749,7 +7595,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> GameNewsHolder::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_GameNewsHolder_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Models.GameNewsModel newsItems = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -7782,9 +7628,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> GameNewsHolder::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.GameNewsHolder)
   return target;
@@ -7804,26 +7650,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> GameNewsHolder::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData GameNewsHolder::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    GameNewsHolder::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*GameNewsHolder::GetClassData() const { return &_class_data_; }
+void GameNewsHolder::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const GameNewsHolder*>(
+      &from));
+}
 
-
-void GameNewsHolder::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<GameNewsHolder*>(&to_msg);
-  auto& from = static_cast<const GameNewsHolder&>(from_msg);
+void GameNewsHolder::MergeFrom(const GameNewsHolder& from) {
+  GameNewsHolder* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.GameNewsHolder)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_newsitems()->MergeFrom(from._internal_newsitems());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void GameNewsHolder::CopyFrom(const GameNewsHolder& from) {
@@ -7843,11 +7692,10 @@ void GameNewsHolder::InternalSwap(GameNewsHolder* other) {
   _impl_.newsitems_.InternalSwap(&other->_impl_.newsitems_);
 }
 
-::google::protobuf::Metadata GameNewsHolder::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[16]);
+std::string GameNewsHolder::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.GameNewsHolder";
 }
+
 // ===================================================================
 
 class GameNewsMetadata::_Internal {
@@ -7855,11 +7703,11 @@ class GameNewsMetadata::_Internal {
 };
 
 GameNewsMetadata::GameNewsMetadata(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.GameNewsMetadata)
 }
-GameNewsMetadata::GameNewsMetadata(const GameNewsMetadata& from) : ::google::protobuf::Message() {
+GameNewsMetadata::GameNewsMetadata(const GameNewsMetadata& from) : ::google::protobuf::MessageLite() {
   GameNewsMetadata* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -7867,7 +7715,7 @@ GameNewsMetadata::GameNewsMetadata(const GameNewsMetadata& from) : ::google::pro
       decltype(_impl_.assetfilename_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.assetid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -7904,7 +7752,7 @@ inline void GameNewsMetadata::SharedCtor(::_pb::Arena* arena) {
 }
 GameNewsMetadata::~GameNewsMetadata() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.GameNewsMetadata)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void GameNewsMetadata::SharedDtor() {
@@ -7924,7 +7772,7 @@ PROTOBUF_NOINLINE void GameNewsMetadata::Clear() {
 
   _impl_.assetid_.ClearToEmpty();
   _impl_.assetfilename_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* GameNewsMetadata::_InternalParse(
@@ -7947,7 +7795,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 72, 2> GameNewsMetadata::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_GameNewsMetadata_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string assetFilename = 2;
     {::_pbi::TcParser::FastUS1,
@@ -7998,9 +7846,9 @@ const ::_pbi::TcParseTable<1, 2, 0, 72, 2> GameNewsMetadata::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.GameNewsMetadata)
   return target;
@@ -8026,19 +7874,22 @@ const ::_pbi::TcParseTable<1, 2, 0, 72, 2> GameNewsMetadata::_table_ = {
                                     this->_internal_assetfilename());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData GameNewsMetadata::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    GameNewsMetadata::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*GameNewsMetadata::GetClassData() const { return &_class_data_; }
+void GameNewsMetadata::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const GameNewsMetadata*>(
+      &from));
+}
 
-
-void GameNewsMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<GameNewsMetadata*>(&to_msg);
-  auto& from = static_cast<const GameNewsMetadata&>(from_msg);
+void GameNewsMetadata::MergeFrom(const GameNewsMetadata& from) {
+  GameNewsMetadata* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.GameNewsMetadata)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -8050,7 +7901,7 @@ void GameNewsMetadata::MergeImpl(::google::protobuf::Message& to_msg, const ::go
   if (!from._internal_assetfilename().empty()) {
     _this->_internal_set_assetfilename(from._internal_assetfilename());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void GameNewsMetadata::CopyFrom(const GameNewsMetadata& from) {
@@ -8075,11 +7926,10 @@ void GameNewsMetadata::InternalSwap(GameNewsMetadata* other) {
                                        &other->_impl_.assetfilename_, rhs_arena);
 }
 
-::google::protobuf::Metadata GameNewsMetadata::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[17]);
+std::string GameNewsMetadata::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.GameNewsMetadata";
 }
+
 // ===================================================================
 
 class Notifications::_Internal {
@@ -8087,11 +7937,11 @@ class Notifications::_Internal {
 };
 
 Notifications::Notifications(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.Notifications)
 }
-Notifications::Notifications(const Notifications& from) : ::google::protobuf::Message() {
+Notifications::Notifications(const Notifications& from) : ::google::protobuf::MessageLite() {
   Notifications* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -8100,7 +7950,7 @@ Notifications::Notifications(const Notifications& from) : ::google::protobuf::Me
       decltype(_impl_.playerlifecyclenotifications_){from._impl_.playerlifecyclenotifications_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.Notifications)
@@ -8116,7 +7966,7 @@ inline void Notifications::SharedCtor(::_pb::Arena* arena) {
 }
 Notifications::~Notifications() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.Notifications)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Notifications::SharedDtor() {
@@ -8138,7 +7988,7 @@ PROTOBUF_NOINLINE void Notifications::Clear() {
   _internal_mutable_tournamentnotifications()->Clear();
   _internal_mutable_leaderboardnotifications()->Clear();
   _internal_mutable_playerlifecyclenotifications()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Notifications::_InternalParse(
@@ -8161,7 +8011,7 @@ const ::_pbi::TcParseTable<2, 3, 3, 0, 2> Notifications::_table_ = {
     3,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Notifications_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // repeated .Digit.PrimePlatform.Models.EventNotification tournamentNotifications = 1;
@@ -8225,9 +8075,9 @@ const ::_pbi::TcParseTable<2, 3, 3, 0, 2> Notifications::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.Notifications)
   return target;
@@ -8259,19 +8109,22 @@ const ::_pbi::TcParseTable<2, 3, 3, 0, 2> Notifications::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Notifications::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Notifications::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Notifications::GetClassData() const { return &_class_data_; }
+void Notifications::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Notifications*>(
+      &from));
+}
 
-
-void Notifications::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Notifications*>(&to_msg);
-  auto& from = static_cast<const Notifications&>(from_msg);
+void Notifications::MergeFrom(const Notifications& from) {
+  Notifications* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.Notifications)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -8280,7 +8133,7 @@ void Notifications::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
   _this->_internal_mutable_tournamentnotifications()->MergeFrom(from._internal_tournamentnotifications());
   _this->_internal_mutable_leaderboardnotifications()->MergeFrom(from._internal_leaderboardnotifications());
   _this->_internal_mutable_playerlifecyclenotifications()->MergeFrom(from._internal_playerlifecyclenotifications());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Notifications::CopyFrom(const Notifications& from) {
@@ -8302,11 +8155,10 @@ void Notifications::InternalSwap(Notifications* other) {
   _impl_.playerlifecyclenotifications_.InternalSwap(&other->_impl_.playerlifecyclenotifications_);
 }
 
-::google::protobuf::Metadata Notifications::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[18]);
+std::string Notifications::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.Notifications";
 }
+
 // ===================================================================
 
 class PlatformUserProfile::_Internal {
@@ -8314,11 +8166,11 @@ class PlatformUserProfile::_Internal {
 };
 
 PlatformUserProfile::PlatformUserProfile(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.PlatformUserProfile)
 }
-PlatformUserProfile::PlatformUserProfile(const PlatformUserProfile& from) : ::google::protobuf::Message() {
+PlatformUserProfile::PlatformUserProfile(const PlatformUserProfile& from) : ::google::protobuf::MessageLite() {
   PlatformUserProfile* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -8326,7 +8178,7 @@ PlatformUserProfile::PlatformUserProfile(const PlatformUserProfile& from) : ::go
       decltype(_impl_.name_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.accountid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -8363,7 +8215,7 @@ inline void PlatformUserProfile::SharedCtor(::_pb::Arena* arena) {
 }
 PlatformUserProfile::~PlatformUserProfile() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.PlatformUserProfile)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PlatformUserProfile::SharedDtor() {
@@ -8383,7 +8235,7 @@ PROTOBUF_NOINLINE void PlatformUserProfile::Clear() {
 
   _impl_.accountid_.ClearToEmpty();
   _impl_.name_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PlatformUserProfile::_InternalParse(
@@ -8406,7 +8258,7 @@ const ::_pbi::TcParseTable<1, 2, 0, 68, 2> PlatformUserProfile::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_PlatformUserProfile_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string name = 2;
     {::_pbi::TcParser::FastUS1,
@@ -8457,9 +8309,9 @@ const ::_pbi::TcParseTable<1, 2, 0, 68, 2> PlatformUserProfile::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.PlatformUserProfile)
   return target;
@@ -8485,19 +8337,22 @@ const ::_pbi::TcParseTable<1, 2, 0, 68, 2> PlatformUserProfile::_table_ = {
                                     this->_internal_name());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PlatformUserProfile::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PlatformUserProfile::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PlatformUserProfile::GetClassData() const { return &_class_data_; }
+void PlatformUserProfile::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PlatformUserProfile*>(
+      &from));
+}
 
-
-void PlatformUserProfile::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PlatformUserProfile*>(&to_msg);
-  auto& from = static_cast<const PlatformUserProfile&>(from_msg);
+void PlatformUserProfile::MergeFrom(const PlatformUserProfile& from) {
+  PlatformUserProfile* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.PlatformUserProfile)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -8509,7 +8364,7 @@ void PlatformUserProfile::MergeImpl(::google::protobuf::Message& to_msg, const :
   if (!from._internal_name().empty()) {
     _this->_internal_set_name(from._internal_name());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PlatformUserProfile::CopyFrom(const PlatformUserProfile& from) {
@@ -8534,11 +8389,10 @@ void PlatformUserProfile::InternalSwap(PlatformUserProfile* other) {
                                        &other->_impl_.name_, rhs_arena);
 }
 
-::google::protobuf::Metadata PlatformUserProfile::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[19]);
+std::string PlatformUserProfile::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.PlatformUserProfile";
 }
+
 // ===================================================================
 
 class PlatformUserProfileResponse::_Internal {
@@ -8546,18 +8400,18 @@ class PlatformUserProfileResponse::_Internal {
 };
 
 PlatformUserProfileResponse::PlatformUserProfileResponse(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.PlatformUserProfileResponse)
 }
-PlatformUserProfileResponse::PlatformUserProfileResponse(const PlatformUserProfileResponse& from) : ::google::protobuf::Message() {
+PlatformUserProfileResponse::PlatformUserProfileResponse(const PlatformUserProfileResponse& from) : ::google::protobuf::MessageLite() {
   PlatformUserProfileResponse* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.playerprofiles_){from._impl_.playerprofiles_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.PlatformUserProfileResponse)
@@ -8571,7 +8425,7 @@ inline void PlatformUserProfileResponse::SharedCtor(::_pb::Arena* arena) {
 }
 PlatformUserProfileResponse::~PlatformUserProfileResponse() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.PlatformUserProfileResponse)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PlatformUserProfileResponse::SharedDtor() {
@@ -8589,7 +8443,7 @@ PROTOBUF_NOINLINE void PlatformUserProfileResponse::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_playerprofiles()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PlatformUserProfileResponse::_InternalParse(
@@ -8612,7 +8466,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> PlatformUserProfileResponse::_table_ =
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_PlatformUserProfileResponse_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Models.PlatformUserProfile playerProfiles = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -8645,9 +8499,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> PlatformUserProfileResponse::_table_ =
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.PlatformUserProfileResponse)
   return target;
@@ -8667,26 +8521,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> PlatformUserProfileResponse::_table_ =
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PlatformUserProfileResponse::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PlatformUserProfileResponse::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PlatformUserProfileResponse::GetClassData() const { return &_class_data_; }
+void PlatformUserProfileResponse::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PlatformUserProfileResponse*>(
+      &from));
+}
 
-
-void PlatformUserProfileResponse::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PlatformUserProfileResponse*>(&to_msg);
-  auto& from = static_cast<const PlatformUserProfileResponse&>(from_msg);
+void PlatformUserProfileResponse::MergeFrom(const PlatformUserProfileResponse& from) {
+  PlatformUserProfileResponse* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.PlatformUserProfileResponse)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_playerprofiles()->MergeFrom(from._internal_playerprofiles());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PlatformUserProfileResponse::CopyFrom(const PlatformUserProfileResponse& from) {
@@ -8706,11 +8563,10 @@ void PlatformUserProfileResponse::InternalSwap(PlatformUserProfileResponse* othe
   _impl_.playerprofiles_.InternalSwap(&other->_impl_.playerprofiles_);
 }
 
-::google::protobuf::Metadata PlatformUserProfileResponse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[20]);
+std::string PlatformUserProfileResponse::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.PlatformUserProfileResponse";
 }
+
 // ===================================================================
 
 class PlayerStats::_Internal {
@@ -8718,11 +8574,11 @@ class PlayerStats::_Internal {
 };
 
 PlayerStats::PlayerStats(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.PlayerStats)
 }
-PlayerStats::PlayerStats(const PlayerStats& from) : ::google::protobuf::Message() {
+PlayerStats::PlayerStats(const PlayerStats& from) : ::google::protobuf::MessageLite() {
   PlayerStats* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -8730,7 +8586,7 @@ PlayerStats::PlayerStats(const PlayerStats& from) : ::google::protobuf::Message(
       decltype(_impl_.accountid_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.accountid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -8756,7 +8612,7 @@ inline void PlayerStats::SharedCtor(::_pb::Arena* arena) {
 }
 PlayerStats::~PlayerStats() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.PlayerStats)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PlayerStats::SharedDtor() {
@@ -8776,7 +8632,7 @@ PROTOBUF_NOINLINE void PlayerStats::Clear() {
 
   _internal_mutable_groups()->Clear();
   _impl_.accountid_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PlayerStats::_InternalParse(
@@ -8799,7 +8655,7 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> PlayerStats::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_PlayerStats_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Models.PlayerStatsGroup groups = 2;
     {::_pbi::TcParser::FastMtR1,
@@ -8849,9 +8705,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> PlayerStats::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.PlayerStats)
   return target;
@@ -8877,19 +8733,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> PlayerStats::_table_ = {
                                     this->_internal_accountid());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PlayerStats::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PlayerStats::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PlayerStats::GetClassData() const { return &_class_data_; }
+void PlayerStats::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PlayerStats*>(
+      &from));
+}
 
-
-void PlayerStats::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PlayerStats*>(&to_msg);
-  auto& from = static_cast<const PlayerStats&>(from_msg);
+void PlayerStats::MergeFrom(const PlayerStats& from) {
+  PlayerStats* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.PlayerStats)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -8899,7 +8758,7 @@ void PlayerStats::MergeImpl(::google::protobuf::Message& to_msg, const ::google:
   if (!from._internal_accountid().empty()) {
     _this->_internal_set_accountid(from._internal_accountid());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PlayerStats::CopyFrom(const PlayerStats& from) {
@@ -8923,11 +8782,10 @@ void PlayerStats::InternalSwap(PlayerStats* other) {
                                        &other->_impl_.accountid_, rhs_arena);
 }
 
-::google::protobuf::Metadata PlayerStats::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[21]);
+std::string PlayerStats::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.PlayerStats";
 }
+
 // ===================================================================
 
 class PlayerStatsGroup::_Internal {
@@ -8935,11 +8793,11 @@ class PlayerStatsGroup::_Internal {
 };
 
 PlayerStatsGroup::PlayerStatsGroup(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.PlayerStatsGroup)
 }
-PlayerStatsGroup::PlayerStatsGroup(const PlayerStatsGroup& from) : ::google::protobuf::Message() {
+PlayerStatsGroup::PlayerStatsGroup(const PlayerStatsGroup& from) : ::google::protobuf::MessageLite() {
   PlayerStatsGroup* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -8947,7 +8805,7 @@ PlayerStatsGroup::PlayerStatsGroup(const PlayerStatsGroup& from) : ::google::pro
       decltype(_impl_.name_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -8973,7 +8831,7 @@ inline void PlayerStatsGroup::SharedCtor(::_pb::Arena* arena) {
 }
 PlayerStatsGroup::~PlayerStatsGroup() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.PlayerStatsGroup)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PlayerStatsGroup::SharedDtor() {
@@ -8993,7 +8851,7 @@ PROTOBUF_NOINLINE void PlayerStatsGroup::Clear() {
 
   _internal_mutable_entries()->Clear();
   _impl_.name_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PlayerStatsGroup::_InternalParse(
@@ -9016,7 +8874,7 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> PlayerStatsGroup::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_PlayerStatsGroup_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Models.PlayerStatsEntry entries = 2;
     {::_pbi::TcParser::FastMtR1,
@@ -9066,9 +8924,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> PlayerStatsGroup::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.PlayerStatsGroup)
   return target;
@@ -9094,19 +8952,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 56, 2> PlayerStatsGroup::_table_ = {
                                     this->_internal_name());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PlayerStatsGroup::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PlayerStatsGroup::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PlayerStatsGroup::GetClassData() const { return &_class_data_; }
+void PlayerStatsGroup::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PlayerStatsGroup*>(
+      &from));
+}
 
-
-void PlayerStatsGroup::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PlayerStatsGroup*>(&to_msg);
-  auto& from = static_cast<const PlayerStatsGroup&>(from_msg);
+void PlayerStatsGroup::MergeFrom(const PlayerStatsGroup& from) {
+  PlayerStatsGroup* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.PlayerStatsGroup)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -9116,7 +8977,7 @@ void PlayerStatsGroup::MergeImpl(::google::protobuf::Message& to_msg, const ::go
   if (!from._internal_name().empty()) {
     _this->_internal_set_name(from._internal_name());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PlayerStatsGroup::CopyFrom(const PlayerStatsGroup& from) {
@@ -9140,11 +9001,10 @@ void PlayerStatsGroup::InternalSwap(PlayerStatsGroup* other) {
                                        &other->_impl_.name_, rhs_arena);
 }
 
-::google::protobuf::Metadata PlayerStatsGroup::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[22]);
+std::string PlayerStatsGroup::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.PlayerStatsGroup";
 }
+
 // ===================================================================
 
 class PlayerStatsEntry::_Internal {
@@ -9152,11 +9012,11 @@ class PlayerStatsEntry::_Internal {
 };
 
 PlayerStatsEntry::PlayerStatsEntry(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.PlayerStatsEntry)
 }
-PlayerStatsEntry::PlayerStatsEntry(const PlayerStatsEntry& from) : ::google::protobuf::Message() {
+PlayerStatsEntry::PlayerStatsEntry(const PlayerStatsEntry& from) : ::google::protobuf::MessageLite() {
   PlayerStatsEntry* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -9165,7 +9025,7 @@ PlayerStatsEntry::PlayerStatsEntry(const PlayerStatsEntry& from) : ::google::pro
       decltype(_impl_.value_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.statid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -9195,7 +9055,7 @@ inline void PlayerStatsEntry::SharedCtor(::_pb::Arena* arena) {
 }
 PlayerStatsEntry::~PlayerStatsEntry() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.PlayerStatsEntry)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PlayerStatsEntry::SharedDtor() {
@@ -9216,7 +9076,7 @@ PROTOBUF_NOINLINE void PlayerStatsEntry::Clear() {
   ::memset(&_impl_.priority_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.value_) -
       reinterpret_cast<char*>(&_impl_.priority_)) + sizeof(_impl_.value_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PlayerStatsEntry::_InternalParse(
@@ -9239,14 +9099,14 @@ const ::_pbi::TcParseTable<2, 3, 0, 58, 2> PlayerStatsEntry::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_PlayerStatsEntry_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string statId = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(PlayerStatsEntry, _impl_.statid_)}},
     // int32 priority = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(PlayerStatsEntry, _impl_.priority_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(PlayerStatsEntry, _impl_.priority_)}},
     // float value = 3;
     {::_pbi::TcParser::FastF32S1,
@@ -9307,9 +9167,9 @@ const ::_pbi::TcParseTable<2, 3, 0, 58, 2> PlayerStatsEntry::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.PlayerStatsEntry)
   return target;
@@ -9345,19 +9205,22 @@ const ::_pbi::TcParseTable<2, 3, 0, 58, 2> PlayerStatsEntry::_table_ = {
     total_size += 5;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PlayerStatsEntry::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PlayerStatsEntry::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PlayerStatsEntry::GetClassData() const { return &_class_data_; }
+void PlayerStatsEntry::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PlayerStatsEntry*>(
+      &from));
+}
 
-
-void PlayerStatsEntry::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PlayerStatsEntry*>(&to_msg);
-  auto& from = static_cast<const PlayerStatsEntry&>(from_msg);
+void PlayerStatsEntry::MergeFrom(const PlayerStatsEntry& from) {
+  PlayerStatsEntry* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.PlayerStatsEntry)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -9377,7 +9240,7 @@ void PlayerStatsEntry::MergeImpl(::google::protobuf::Message& to_msg, const ::go
   if (raw_value != 0) {
     _this->_internal_set_value(from._internal_value());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PlayerStatsEntry::CopyFrom(const PlayerStatsEntry& from) {
@@ -9406,11 +9269,10 @@ void PlayerStatsEntry::InternalSwap(PlayerStatsEntry* other) {
           reinterpret_cast<char*>(&other->_impl_.priority_));
 }
 
-::google::protobuf::Metadata PlayerStatsEntry::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[23]);
+std::string PlayerStatsEntry::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.PlayerStatsEntry";
 }
+
 // ===================================================================
 
 class CacheHints::_Internal {
@@ -9418,18 +9280,18 @@ class CacheHints::_Internal {
 };
 
 CacheHints::CacheHints(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.CacheHints)
 }
-CacheHints::CacheHints(const CacheHints& from) : ::google::protobuf::Message() {
+CacheHints::CacheHints(const CacheHints& from) : ::google::protobuf::MessageLite() {
   CacheHints* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.translationcacheupdate_){from._impl_.translationcacheupdate_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.CacheHints)
@@ -9443,7 +9305,7 @@ inline void CacheHints::SharedCtor(::_pb::Arena* arena) {
 }
 CacheHints::~CacheHints() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.CacheHints)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CacheHints::SharedDtor() {
@@ -9461,7 +9323,7 @@ PROTOBUF_NOINLINE void CacheHints::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_translationcacheupdate()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CacheHints::_InternalParse(
@@ -9484,7 +9346,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> CacheHints::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_CacheHints_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Models.TranslationCacheUpdate translationCacheUpdate = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -9517,9 +9379,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> CacheHints::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.CacheHints)
   return target;
@@ -9539,26 +9401,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> CacheHints::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CacheHints::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CacheHints::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CacheHints::GetClassData() const { return &_class_data_; }
+void CacheHints::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CacheHints*>(
+      &from));
+}
 
-
-void CacheHints::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CacheHints*>(&to_msg);
-  auto& from = static_cast<const CacheHints&>(from_msg);
+void CacheHints::MergeFrom(const CacheHints& from) {
+  CacheHints* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.CacheHints)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_translationcacheupdate()->MergeFrom(from._internal_translationcacheupdate());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CacheHints::CopyFrom(const CacheHints& from) {
@@ -9578,11 +9443,10 @@ void CacheHints::InternalSwap(CacheHints* other) {
   _impl_.translationcacheupdate_.InternalSwap(&other->_impl_.translationcacheupdate_);
 }
 
-::google::protobuf::Metadata CacheHints::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[24]);
+std::string CacheHints::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.CacheHints";
 }
+
 // ===================================================================
 
 class Product::_Internal {
@@ -9590,11 +9454,11 @@ class Product::_Internal {
 };
 
 Product::Product(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.Product)
 }
-Product::Product(const Product& from) : ::google::protobuf::Message() {
+Product::Product(const Product& from) : ::google::protobuf::MessageLite() {
   Product* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -9605,7 +9469,7 @@ Product::Product(const Product& from) : ::google::protobuf::Message() {
       decltype(_impl_.status_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -9648,7 +9512,7 @@ inline void Product::SharedCtor(::_pb::Arena* arena) {
 }
 Product::~Product() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.Product)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Product::SharedDtor() {
@@ -9673,7 +9537,7 @@ PROTOBUF_NOINLINE void Product::Clear() {
   ::memset(&_impl_.id_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.status_) -
       reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.status_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Product::_InternalParse(
@@ -9696,11 +9560,11 @@ const ::_pbi::TcParseTable<3, 5, 1, 51, 2> Product::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Product_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // uint32 id = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Product, _impl_.id_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(Product, _impl_.id_)}},
     // string name = 2;
     {::_pbi::TcParser::FastUS1,
@@ -9709,7 +9573,7 @@ const ::_pbi::TcParseTable<3, 5, 1, 51, 2> Product::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {26, 63, 0, PROTOBUF_FIELD_OFFSET(Product, _impl_.code_)}},
     // uint32 status = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Product, _impl_.status_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(Product, _impl_.status_)}},
     // repeated .Digit.PrimePlatform.Models.Instance instances = 5;
     {::_pbi::TcParser::FastMtR1,
@@ -9790,9 +9654,9 @@ const ::_pbi::TcParseTable<3, 5, 1, 51, 2> Product::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.Product)
   return target;
@@ -9836,19 +9700,22 @@ const ::_pbi::TcParseTable<3, 5, 1, 51, 2> Product::_table_ = {
         this->_internal_status());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Product::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Product::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Product::GetClassData() const { return &_class_data_; }
+void Product::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Product*>(
+      &from));
+}
 
-
-void Product::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Product*>(&to_msg);
-  auto& from = static_cast<const Product&>(from_msg);
+void Product::MergeFrom(const Product& from) {
+  Product* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.Product)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -9867,7 +9734,7 @@ void Product::MergeImpl(::google::protobuf::Message& to_msg, const ::google::pro
   if (from._internal_status() != 0) {
     _this->_internal_set_status(from._internal_status());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Product::CopyFrom(const Product& from) {
@@ -9899,11 +9766,10 @@ void Product::InternalSwap(Product* other) {
           reinterpret_cast<char*>(&other->_impl_.id_));
 }
 
-::google::protobuf::Metadata Product::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[25]);
+std::string Product::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.Product";
 }
+
 // ===================================================================
 
 class ProductInfoHolder::_Internal {
@@ -9928,11 +9794,11 @@ const ::Digit::PrimePlatform::Models::CacheHints& ProductInfoHolder::_Internal::
   return *msg->_impl_.cachehints_;
 }
 ProductInfoHolder::ProductInfoHolder(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.ProductInfoHolder)
 }
-ProductInfoHolder::ProductInfoHolder(const ProductInfoHolder& from) : ::google::protobuf::Message() {
+ProductInfoHolder::ProductInfoHolder(const ProductInfoHolder& from) : ::google::protobuf::MessageLite() {
   ProductInfoHolder* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -9942,7 +9808,7 @@ ProductInfoHolder::ProductInfoHolder(const ProductInfoHolder& from) : ::google::
       decltype(_impl_.product_){nullptr},
       decltype(_impl_.cachehints_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.version_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -9976,7 +9842,7 @@ inline void ProductInfoHolder::SharedCtor(::_pb::Arena* arena) {
 }
 ProductInfoHolder::~ProductInfoHolder() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.ProductInfoHolder)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void ProductInfoHolder::SharedDtor() {
@@ -10008,7 +9874,7 @@ PROTOBUF_NOINLINE void ProductInfoHolder::Clear() {
     }
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* ProductInfoHolder::_InternalParse(
@@ -10031,7 +9897,7 @@ const ::_pbi::TcParseTable<2, 3, 2, 60, 2> ProductInfoHolder::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_ProductInfoHolder_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string version = 1;
@@ -10096,9 +9962,9 @@ const ::_pbi::TcParseTable<2, 3, 2, 60, 2> ProductInfoHolder::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.ProductInfoHolder)
   return target;
@@ -10135,19 +10001,22 @@ const ::_pbi::TcParseTable<2, 3, 2, 60, 2> ProductInfoHolder::_table_ = {
     }
 
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData ProductInfoHolder::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    ProductInfoHolder::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*ProductInfoHolder::GetClassData() const { return &_class_data_; }
+void ProductInfoHolder::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const ProductInfoHolder*>(
+      &from));
+}
 
-
-void ProductInfoHolder::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<ProductInfoHolder*>(&to_msg);
-  auto& from = static_cast<const ProductInfoHolder&>(from_msg);
+void ProductInfoHolder::MergeFrom(const ProductInfoHolder& from) {
+  ProductInfoHolder* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.ProductInfoHolder)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -10167,7 +10036,7 @@ void ProductInfoHolder::MergeImpl(::google::protobuf::Message& to_msg, const ::g
           from._internal_cachehints());
     }
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void ProductInfoHolder::CopyFrom(const ProductInfoHolder& from) {
@@ -10197,11 +10066,10 @@ void ProductInfoHolder::InternalSwap(ProductInfoHolder* other) {
           reinterpret_cast<char*>(&other->_impl_.product_));
 }
 
-::google::protobuf::Metadata ProductInfoHolder::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[26]);
+std::string ProductInfoHolder::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.ProductInfoHolder";
 }
+
 // ===================================================================
 
 class Region::_Internal {
@@ -10209,11 +10077,11 @@ class Region::_Internal {
 };
 
 Region::Region(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.Region)
 }
-Region::Region(const Region& from) : ::google::protobuf::Message() {
+Region::Region(const Region& from) : ::google::protobuf::MessageLite() {
   Region* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -10222,7 +10090,7 @@ Region::Region(const Region& from) : ::google::protobuf::Message() {
       decltype(_impl_.num_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.id_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -10261,7 +10129,7 @@ inline void Region::SharedCtor(::_pb::Arena* arena) {
 }
 Region::~Region() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.Region)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Region::SharedDtor() {
@@ -10282,7 +10150,7 @@ PROTOBUF_NOINLINE void Region::Clear() {
   _impl_.id_.ClearToEmpty();
   _impl_.description_.ClearToEmpty();
   _impl_.num_ = 0u;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Region::_InternalParse(
@@ -10305,7 +10173,7 @@ const ::_pbi::TcParseTable<2, 3, 0, 55, 2> Region::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Region_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string id = 1;
@@ -10315,7 +10183,7 @@ const ::_pbi::TcParseTable<2, 3, 0, 55, 2> Region::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(Region, _impl_.description_)}},
     // uint32 num = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Region, _impl_.num_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(Region, _impl_.num_)}},
   }}, {{
     65535, 65535
@@ -10370,9 +10238,9 @@ const ::_pbi::TcParseTable<2, 3, 0, 55, 2> Region::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.Region)
   return target;
@@ -10404,19 +10272,22 @@ const ::_pbi::TcParseTable<2, 3, 0, 55, 2> Region::_table_ = {
         this->_internal_num());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Region::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Region::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Region::GetClassData() const { return &_class_data_; }
+void Region::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Region*>(
+      &from));
+}
 
-
-void Region::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Region*>(&to_msg);
-  auto& from = static_cast<const Region&>(from_msg);
+void Region::MergeFrom(const Region& from) {
+  Region* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.Region)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -10431,7 +10302,7 @@ void Region::MergeImpl(::google::protobuf::Message& to_msg, const ::google::prot
   if (from._internal_num() != 0) {
     _this->_internal_set_num(from._internal_num());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Region::CopyFrom(const Region& from) {
@@ -10457,11 +10328,10 @@ void Region::InternalSwap(Region* other) {
         swap(_impl_.num_, other->_impl_.num_);
 }
 
-::google::protobuf::Metadata Region::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[27]);
+std::string Region::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.Region";
 }
+
 // ===================================================================
 
 class Instance::_Internal {
@@ -10486,11 +10356,11 @@ const ::Digit::PrimePlatform::Models::PlayerTransferState& Instance::_Internal::
   return *msg->_impl_.playertransferstate_;
 }
 Instance::Instance(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.Instance)
 }
-Instance::Instance(const Instance& from) : ::google::protobuf::Message() {
+Instance::Instance(const Instance& from) : ::google::protobuf::MessageLite() {
   Instance* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -10504,7 +10374,7 @@ Instance::Instance(const Instance& from) : ::google::protobuf::Message() {
       decltype(_impl_.maintenance_){},
       decltype(_impl_.status_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -10545,7 +10415,7 @@ inline void Instance::SharedCtor(::_pb::Arena* arena) {
 }
 Instance::~Instance() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.Instance)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Instance::SharedDtor() {
@@ -10580,7 +10450,7 @@ PROTOBUF_NOINLINE void Instance::Clear() {
       reinterpret_cast<char*>(&_impl_.status_) -
       reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.status_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Instance::_InternalParse(
@@ -10603,26 +10473,26 @@ const ::_pbi::TcParseTable<3, 7, 2, 48, 2> Instance::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Instance_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // uint32 id = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Instance, _impl_.id_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(Instance, _impl_.id_)}},
     // string name = 2;
     {::_pbi::TcParser::FastUS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(Instance, _impl_.name_)}},
     // uint32 priority = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Instance, _impl_.priority_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(Instance, _impl_.priority_)}},
     // .Digit.PrimePlatform.Models.Region region = 4;
     {::_pbi::TcParser::FastMtS1,
      {34, 0, 0, PROTOBUF_FIELD_OFFSET(Instance, _impl_.region_)}},
     // int32 status = 5;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Instance, _impl_.status_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {40, 63, 0, PROTOBUF_FIELD_OFFSET(Instance, _impl_.status_)}},
     // int64 maintenance = 6;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Instance, _impl_.maintenance_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {48, 63, 0, PROTOBUF_FIELD_OFFSET(Instance, _impl_.maintenance_)}},
     // .Digit.PrimePlatform.Models.PlayerTransferState playerTransferState = 7;
     {::_pbi::TcParser::FastMtS1,
@@ -10720,9 +10590,9 @@ const ::_pbi::TcParseTable<3, 7, 2, 48, 2> Instance::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.Instance)
   return target;
@@ -10783,19 +10653,22 @@ const ::_pbi::TcParseTable<3, 7, 2, 48, 2> Instance::_table_ = {
         this->_internal_status());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Instance::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Instance::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Instance::GetClassData() const { return &_class_data_; }
+void Instance::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Instance*>(
+      &from));
+}
 
-
-void Instance::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Instance*>(&to_msg);
-  auto& from = static_cast<const Instance&>(from_msg);
+void Instance::MergeFrom(const Instance& from) {
+  Instance* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.Instance)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -10827,7 +10700,7 @@ void Instance::MergeImpl(::google::protobuf::Message& to_msg, const ::google::pr
   if (from._internal_status() != 0) {
     _this->_internal_set_status(from._internal_status());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Instance::CopyFrom(const Instance& from) {
@@ -10857,11 +10730,10 @@ void Instance::InternalSwap(Instance* other) {
           reinterpret_cast<char*>(&other->_impl_.region_));
 }
 
-::google::protobuf::Metadata Instance::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[28]);
+std::string Instance::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.Instance";
 }
+
 // ===================================================================
 
 class PlayerTransferState::_Internal {
@@ -10869,13 +10741,13 @@ class PlayerTransferState::_Internal {
 };
 
 PlayerTransferState::PlayerTransferState(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.PlayerTransferState)
 }
 PlayerTransferState::PlayerTransferState(const PlayerTransferState& from)
-    : ::google::protobuf::Message(), _impl_(from._impl_) {
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+    : ::google::protobuf::MessageLite(), _impl_(from._impl_) {
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.PlayerTransferState)
 }
@@ -10890,7 +10762,7 @@ inline void PlayerTransferState::SharedCtor(::_pb::Arena* arena) {
 }
 PlayerTransferState::~PlayerTransferState() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.PlayerTransferState)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void PlayerTransferState::SharedDtor() {
@@ -10909,7 +10781,7 @@ PROTOBUF_NOINLINE void PlayerTransferState::Clear() {
   ::memset(&_impl_.transferin_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.authenticated_) -
       reinterpret_cast<char*>(&_impl_.transferin_)) + sizeof(_impl_.authenticated_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* PlayerTransferState::_InternalParse(
@@ -10932,17 +10804,17 @@ const ::_pbi::TcParseTable<2, 3, 0, 0, 2> PlayerTransferState::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_PlayerTransferState_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // bool transferIn = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(PlayerTransferState, _impl_.transferin_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(PlayerTransferState, _impl_.transferin_)}},
     // bool transferOut = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(PlayerTransferState, _impl_.transferout_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(PlayerTransferState, _impl_.transferout_)}},
     // bool authenticated = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(PlayerTransferState, _impl_.authenticated_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(PlayerTransferState, _impl_.authenticated_)}},
   }}, {{
     65535, 65535
@@ -10991,9 +10863,9 @@ const ::_pbi::TcParseTable<2, 3, 0, 0, 2> PlayerTransferState::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.PlayerTransferState)
   return target;
@@ -11022,19 +10894,22 @@ const ::_pbi::TcParseTable<2, 3, 0, 0, 2> PlayerTransferState::_table_ = {
     total_size += 2;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData PlayerTransferState::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    PlayerTransferState::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*PlayerTransferState::GetClassData() const { return &_class_data_; }
+void PlayerTransferState::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const PlayerTransferState*>(
+      &from));
+}
 
-
-void PlayerTransferState::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<PlayerTransferState*>(&to_msg);
-  auto& from = static_cast<const PlayerTransferState&>(from_msg);
+void PlayerTransferState::MergeFrom(const PlayerTransferState& from) {
+  PlayerTransferState* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.PlayerTransferState)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -11049,7 +10924,7 @@ void PlayerTransferState::MergeImpl(::google::protobuf::Message& to_msg, const :
   if (from._internal_authenticated() != 0) {
     _this->_internal_set_authenticated(from._internal_authenticated());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void PlayerTransferState::CopyFrom(const PlayerTransferState& from) {
@@ -11074,11 +10949,10 @@ void PlayerTransferState::InternalSwap(PlayerTransferState* other) {
           reinterpret_cast<char*>(&other->_impl_.transferin_));
 }
 
-::google::protobuf::Metadata PlayerTransferState::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[29]);
+std::string PlayerTransferState::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.PlayerTransferState";
 }
+
 // ===================================================================
 
 class TranslationCacheUpdate::_Internal {
@@ -11100,11 +10974,11 @@ void TranslationCacheUpdate::clear_updatedat() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 TranslationCacheUpdate::TranslationCacheUpdate(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.TranslationCacheUpdate)
 }
-TranslationCacheUpdate::TranslationCacheUpdate(const TranslationCacheUpdate& from) : ::google::protobuf::Message() {
+TranslationCacheUpdate::TranslationCacheUpdate(const TranslationCacheUpdate& from) : ::google::protobuf::MessageLite() {
   TranslationCacheUpdate* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -11113,7 +10987,7 @@ TranslationCacheUpdate::TranslationCacheUpdate(const TranslationCacheUpdate& fro
       decltype(_impl_.section_){},
       decltype(_impl_.updatedat_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.section_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -11143,7 +11017,7 @@ inline void TranslationCacheUpdate::SharedCtor(::_pb::Arena* arena) {
 }
 TranslationCacheUpdate::~TranslationCacheUpdate() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.TranslationCacheUpdate)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void TranslationCacheUpdate::SharedDtor() {
@@ -11168,7 +11042,7 @@ PROTOBUF_NOINLINE void TranslationCacheUpdate::Clear() {
     _impl_.updatedat_->Clear();
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* TranslationCacheUpdate::_InternalParse(
@@ -11191,7 +11065,7 @@ const ::_pbi::TcParseTable<1, 2, 1, 65, 2> TranslationCacheUpdate::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_TranslationCacheUpdate_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .google.protobuf.Timestamp updatedAt = 2;
     {::_pbi::TcParser::FastMtS1,
@@ -11241,9 +11115,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 65, 2> TranslationCacheUpdate::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.TranslationCacheUpdate)
   return target;
@@ -11271,19 +11145,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 65, 2> TranslationCacheUpdate::_table_ = {
         *_impl_.updatedat_);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData TranslationCacheUpdate::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    TranslationCacheUpdate::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*TranslationCacheUpdate::GetClassData() const { return &_class_data_; }
+void TranslationCacheUpdate::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const TranslationCacheUpdate*>(
+      &from));
+}
 
-
-void TranslationCacheUpdate::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<TranslationCacheUpdate*>(&to_msg);
-  auto& from = static_cast<const TranslationCacheUpdate&>(from_msg);
+void TranslationCacheUpdate::MergeFrom(const TranslationCacheUpdate& from) {
+  TranslationCacheUpdate* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.TranslationCacheUpdate)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -11296,7 +11173,7 @@ void TranslationCacheUpdate::MergeImpl(::google::protobuf::Message& to_msg, cons
     _this->_internal_mutable_updatedat()->::google::protobuf::Timestamp::MergeFrom(
         from._internal_updatedat());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void TranslationCacheUpdate::CopyFrom(const TranslationCacheUpdate& from) {
@@ -11321,11 +11198,718 @@ void TranslationCacheUpdate::InternalSwap(TranslationCacheUpdate* other) {
   swap(_impl_.updatedat_, other->_impl_.updatedat_);
 }
 
-::google::protobuf::Metadata TranslationCacheUpdate::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eModels_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eModels_2eproto[30]);
+std::string TranslationCacheUpdate::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.TranslationCacheUpdate";
 }
+
+// ===================================================================
+
+class MinigameHolder::_Internal {
+ public:
+};
+
+MinigameHolder::MinigameHolder(::google::protobuf::Arena* arena)
+    : ::google::protobuf::MessageLite(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.MinigameHolder)
+}
+MinigameHolder::MinigameHolder(const MinigameHolder& from) : ::google::protobuf::MessageLite() {
+  MinigameHolder* const _this = this;
+  (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.games_){from._impl_.games_},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _internal_metadata_.MergeFrom<std::string>(
+      from._internal_metadata_);
+
+  // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.MinigameHolder)
+}
+inline void MinigameHolder::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.games_){arena},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+}
+MinigameHolder::~MinigameHolder() {
+  // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.MinigameHolder)
+  _internal_metadata_.Delete<std::string>();
+  SharedDtor();
+}
+inline void MinigameHolder::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.games_.~RepeatedPtrField();
+}
+void MinigameHolder::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+PROTOBUF_NOINLINE void MinigameHolder::Clear() {
+// @@protoc_insertion_point(message_clear_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_mutable_games()->Clear();
+  _internal_metadata_.Clear<std::string>();
+}
+
+const char* MinigameHolder::_InternalParse(
+    const char* ptr, ::_pbi::ParseContext* ctx) {
+  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
+  return ptr;
+}
+
+
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<0, 1, 1, 0, 2> MinigameHolder::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    1, 0,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967294,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    1,  // num_field_entries
+    1,  // num_aux_entries
+    offsetof(decltype(_table_), aux_entries),
+    &_MinigameHolder_default_instance_._instance,
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
+  }, {{
+    // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+    {::_pbi::TcParser::FastMtR1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameHolder, _impl_.games_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+    {PROTOBUF_FIELD_OFFSET(MinigameHolder, _impl_.games_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+  }}, {{
+    {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::Minigame>()},
+  }}, {{
+  }},
+};
+
+::uint8_t* MinigameHolder::_InternalSerialize(
+    ::uint8_t* target,
+    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_games_size()); i < n; i++) {
+    const auto& repfield = this->_internal_games().Get(i);
+    target = ::google::protobuf::internal::WireFormatLite::
+        InternalWriteMessage(1, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.MinigameHolder)
+  return target;
+}
+
+::size_t MinigameHolder::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .Digit.PrimePlatform.Models.Minigame games = 1;
+  total_size += 1UL * this->_internal_games_size();
+  for (const auto& msg : this->_internal_games()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+  }
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void MinigameHolder::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const MinigameHolder*>(
+      &from));
+}
+
+void MinigameHolder::MergeFrom(const MinigameHolder& from) {
+  MinigameHolder* const _this = this;
+  // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.MinigameHolder)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_games()->MergeFrom(from._internal_games());
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
+}
+
+void MinigameHolder::CopyFrom(const MinigameHolder& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Digit.PrimePlatform.Models.MinigameHolder)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+PROTOBUF_NOINLINE bool MinigameHolder::IsInitialized() const {
+  return true;
+}
+
+void MinigameHolder::InternalSwap(MinigameHolder* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.games_.InternalSwap(&other->_impl_.games_);
+}
+
+std::string MinigameHolder::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.MinigameHolder";
+}
+
+// ===================================================================
+
+class Minigame::_Internal {
+ public:
+};
+
+Minigame::Minigame(::google::protobuf::Arena* arena)
+    : ::google::protobuf::MessageLite(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.Minigame)
+}
+Minigame::Minigame(const Minigame& from) : ::google::protobuf::MessageLite() {
+  Minigame* const _this = this;
+  (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.stages_){from._impl_.stages_},
+      decltype(_impl_.configid_){},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _internal_metadata_.MergeFrom<std::string>(
+      from._internal_metadata_);
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_configid().empty()) {
+    _this->_impl_.configid_.Set(from._internal_configid(), _this->GetArenaForAllocation());
+  }
+
+  // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.Minigame)
+}
+inline void Minigame::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.stages_){arena},
+      decltype(_impl_.configid_){},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+Minigame::~Minigame() {
+  // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.Minigame)
+  _internal_metadata_.Delete<std::string>();
+  SharedDtor();
+}
+inline void Minigame::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.stages_.~RepeatedPtrField();
+  _impl_.configid_.Destroy();
+}
+void Minigame::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+PROTOBUF_NOINLINE void Minigame::Clear() {
+// @@protoc_insertion_point(message_clear_start:Digit.PrimePlatform.Models.Minigame)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_mutable_stages()->Clear();
+  _impl_.configid_.ClearToEmpty();
+  _internal_metadata_.Clear<std::string>();
+}
+
+const char* Minigame::_InternalParse(
+    const char* ptr, ::_pbi::ParseContext* ctx) {
+  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
+  return ptr;
+}
+
+
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<1, 2, 1, 52, 2> Minigame::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    2, 8,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967292,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    2,  // num_field_entries
+    1,  // num_aux_entries
+    offsetof(decltype(_table_), aux_entries),
+    &_Minigame_default_instance_._instance,
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
+  }, {{
+    // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+    {::_pbi::TcParser::FastMtR1,
+     {18, 63, 0, PROTOBUF_FIELD_OFFSET(Minigame, _impl_.stages_)}},
+    // string configId = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(Minigame, _impl_.configid_)}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string configId = 1;
+    {PROTOBUF_FIELD_OFFSET(Minigame, _impl_.configid_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+    {PROTOBUF_FIELD_OFFSET(Minigame, _impl_.stages_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kMessage | ::_fl::kTvTable)},
+  }}, {{
+    {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Models::MinigameStage>()},
+  }}, {{
+    "\43\10\0\0\0\0\0\0"
+    "Digit.PrimePlatform.Models.Minigame"
+    "configId"
+  }},
+};
+
+::uint8_t* Minigame::_InternalSerialize(
+    ::uint8_t* target,
+    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Digit.PrimePlatform.Models.Minigame)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    const std::string& _s = this->_internal_configid();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.Minigame.configId");
+    target = stream->WriteStringMaybeAliased(1, _s, target);
+  }
+
+  // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+  for (unsigned i = 0,
+      n = static_cast<unsigned>(this->_internal_stages_size()); i < n; i++) {
+    const auto& repfield = this->_internal_stages().Get(i);
+    target = ::google::protobuf::internal::WireFormatLite::
+        InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.Minigame)
+  return target;
+}
+
+::size_t Minigame::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Digit.PrimePlatform.Models.Minigame)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated .Digit.PrimePlatform.Models.MinigameStage stages = 2;
+  total_size += 1UL * this->_internal_stages_size();
+  for (const auto& msg : this->_internal_stages()) {
+    total_size +=
+      ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
+  }
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_configid());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void Minigame::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Minigame*>(
+      &from));
+}
+
+void Minigame::MergeFrom(const Minigame& from) {
+  Minigame* const _this = this;
+  // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.Minigame)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_stages()->MergeFrom(from._internal_stages());
+  if (!from._internal_configid().empty()) {
+    _this->_internal_set_configid(from._internal_configid());
+  }
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
+}
+
+void Minigame::CopyFrom(const Minigame& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Digit.PrimePlatform.Models.Minigame)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+PROTOBUF_NOINLINE bool Minigame::IsInitialized() const {
+  return true;
+}
+
+void Minigame::InternalSwap(Minigame* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.stages_.InternalSwap(&other->_impl_.stages_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.configid_, lhs_arena,
+                                       &other->_impl_.configid_, rhs_arena);
+}
+
+std::string Minigame::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.Minigame";
+}
+
+// ===================================================================
+
+class MinigameStage::_Internal {
+ public:
+};
+
+MinigameStage::MinigameStage(::google::protobuf::Arena* arena)
+    : ::google::protobuf::MessageLite(arena) {
+  SharedCtor(arena);
+  // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Models.MinigameStage)
+}
+MinigameStage::MinigameStage(const MinigameStage& from) : ::google::protobuf::MessageLite() {
+  MinigameStage* const _this = this;
+  (void)_this;
+  new (&_impl_) Impl_{
+      decltype(_impl_.rewards_){from._impl_.rewards_},
+      /* _impl_._rewards_cached_byte_size_ = */ {0},
+      decltype(_impl_.configid_){},
+      decltype(_impl_.locked_){},
+      decltype(_impl_.score_){},
+      decltype(_impl_.priority_){},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _internal_metadata_.MergeFrom<std::string>(
+      from._internal_metadata_);
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (!from._internal_configid().empty()) {
+    _this->_impl_.configid_.Set(from._internal_configid(), _this->GetArenaForAllocation());
+  }
+  ::memcpy(&_impl_.locked_, &from._impl_.locked_,
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.priority_) -
+    reinterpret_cast<char*>(&_impl_.locked_)) + sizeof(_impl_.priority_));
+
+  // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Models.MinigameStage)
+}
+inline void MinigameStage::SharedCtor(::_pb::Arena* arena) {
+  (void)arena;
+  new (&_impl_) Impl_{
+      decltype(_impl_.rewards_){arena},
+      /* _impl_._rewards_cached_byte_size_ = */ {0},
+      decltype(_impl_.configid_){},
+      decltype(_impl_.locked_){false},
+      decltype(_impl_.score_){0u},
+      decltype(_impl_.priority_){0u},
+      /*decltype(_impl_._cached_size_)*/ {},
+  };
+  _impl_.configid_.InitDefault();
+  #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+        _impl_.configid_.Set("", GetArenaForAllocation());
+  #endif  // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+}
+MinigameStage::~MinigameStage() {
+  // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Models.MinigameStage)
+  _internal_metadata_.Delete<std::string>();
+  SharedDtor();
+}
+inline void MinigameStage::SharedDtor() {
+  ABSL_DCHECK(GetArenaForAllocation() == nullptr);
+  _impl_.rewards_.~RepeatedField();
+  _impl_.configid_.Destroy();
+}
+void MinigameStage::SetCachedSize(int size) const {
+  _impl_._cached_size_.Set(size);
+}
+
+PROTOBUF_NOINLINE void MinigameStage::Clear() {
+// @@protoc_insertion_point(message_clear_start:Digit.PrimePlatform.Models.MinigameStage)
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  _internal_mutable_rewards()->Clear();
+  _impl_.configid_.ClearToEmpty();
+  ::memset(&_impl_.locked_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.priority_) -
+      reinterpret_cast<char*>(&_impl_.locked_)) + sizeof(_impl_.priority_));
+  _internal_metadata_.Clear<std::string>();
+}
+
+const char* MinigameStage::_InternalParse(
+    const char* ptr, ::_pbi::ParseContext* ctx) {
+  ptr = ::_pbi::TcParser::ParseLoop(this, ptr, ctx, &_table_.header);
+  return ptr;
+}
+
+
+PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
+const ::_pbi::TcParseTable<3, 5, 0, 57, 2> MinigameStage::_table_ = {
+  {
+    0,  // no _has_bits_
+    0, // no _extensions_
+    5, 56,  // max_field_number, fast_idx_mask
+    offsetof(decltype(_table_), field_lookup_table),
+    4294967264,  // skipmap
+    offsetof(decltype(_table_), field_entries),
+    5,  // num_field_entries
+    0,  // num_aux_entries
+    offsetof(decltype(_table_), field_names),  // no aux_entries
+    &_MinigameStage_default_instance_._instance,
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
+  }, {{
+    {::_pbi::TcParser::MiniParse, {}},
+    // string configId = 1;
+    {::_pbi::TcParser::FastUS1,
+     {10, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.configid_)}},
+    // bool locked = 2;
+    {::_pbi::TcParser::FastV8S1,
+     {16, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.locked_)}},
+    // repeated uint32 rewards = 3;
+    {::_pbi::TcParser::FastV32P1,
+     {26, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.rewards_)}},
+    // uint32 score = 4;
+    {::_pbi::TcParser::FastV32S1,
+     {32, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.score_)}},
+    // uint32 priority = 5;
+    {::_pbi::TcParser::FastV32S1,
+     {40, 63, 0, PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.priority_)}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+  }}, {{
+    65535, 65535
+  }}, {{
+    // string configId = 1;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.configid_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // bool locked = 2;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.locked_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
+    // repeated uint32 rewards = 3;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.rewards_), 0, 0,
+    (0 | ::_fl::kFcRepeated | ::_fl::kPackedUInt32)},
+    // uint32 score = 4;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.score_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
+    // uint32 priority = 5;
+    {PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.priority_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt32)},
+  }},
+  // no aux_entries
+  {{
+    "\50\10\0\0\0\0\0\0"
+    "Digit.PrimePlatform.Models.MinigameStage"
+    "configId"
+  }},
+};
+
+::uint8_t* MinigameStage::_InternalSerialize(
+    ::uint8_t* target,
+    ::google::protobuf::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:Digit.PrimePlatform.Models.MinigameStage)
+  ::uint32_t cached_has_bits = 0;
+  (void)cached_has_bits;
+
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    const std::string& _s = this->_internal_configid();
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+        _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "Digit.PrimePlatform.Models.MinigameStage.configId");
+    target = stream->WriteStringMaybeAliased(1, _s, target);
+  }
+
+  // bool locked = 2;
+  if (this->_internal_locked() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        2, this->_internal_locked(), target);
+  }
+
+  // repeated uint32 rewards = 3;
+  {
+    int byte_size = _impl_._rewards_cached_byte_size_.Get();
+    if (byte_size > 0) {
+      target = stream->WriteUInt32Packed(3, _internal_rewards(),
+                                                 byte_size, target);
+    }
+  }
+
+  // uint32 score = 4;
+  if (this->_internal_score() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        4, this->_internal_score(), target);
+  }
+
+  // uint32 priority = 5;
+  if (this->_internal_priority() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(
+        5, this->_internal_priority(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Models.MinigameStage)
+  return target;
+}
+
+::size_t MinigameStage::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:Digit.PrimePlatform.Models.MinigameStage)
+  ::size_t total_size = 0;
+
+  ::uint32_t cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // repeated uint32 rewards = 3;
+  {
+    std::size_t data_size = ::_pbi::WireFormatLite::UInt32Size(
+        this->_internal_rewards())
+    ;
+    _impl_._rewards_cached_byte_size_.Set(::_pbi::ToCachedSize(data_size));
+    std::size_t tag_size = data_size == 0
+        ? 0
+        : 1 + ::_pbi::WireFormatLite::Int32Size(
+                            static_cast<int32_t>(data_size))
+    ;
+    total_size += tag_size + data_size;
+  }
+  // string configId = 1;
+  if (!this->_internal_configid().empty()) {
+    total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                    this->_internal_configid());
+  }
+
+  // bool locked = 2;
+  if (this->_internal_locked() != 0) {
+    total_size += 2;
+  }
+
+  // uint32 score = 4;
+  if (this->_internal_score() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+        this->_internal_score());
+  }
+
+  // uint32 priority = 5;
+  if (this->_internal_priority() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(
+        this->_internal_priority());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void MinigameStage::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const MinigameStage*>(
+      &from));
+}
+
+void MinigameStage::MergeFrom(const MinigameStage& from) {
+  MinigameStage* const _this = this;
+  // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Models.MinigameStage)
+  ABSL_DCHECK_NE(&from, _this);
+  ::uint32_t cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  _this->_internal_mutable_rewards()->MergeFrom(from._internal_rewards());
+  if (!from._internal_configid().empty()) {
+    _this->_internal_set_configid(from._internal_configid());
+  }
+  if (from._internal_locked() != 0) {
+    _this->_internal_set_locked(from._internal_locked());
+  }
+  if (from._internal_score() != 0) {
+    _this->_internal_set_score(from._internal_score());
+  }
+  if (from._internal_priority() != 0) {
+    _this->_internal_set_priority(from._internal_priority());
+  }
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
+}
+
+void MinigameStage::CopyFrom(const MinigameStage& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:Digit.PrimePlatform.Models.MinigameStage)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+PROTOBUF_NOINLINE bool MinigameStage::IsInitialized() const {
+  return true;
+}
+
+void MinigameStage::InternalSwap(MinigameStage* other) {
+  using std::swap;
+  auto* lhs_arena = GetArenaForAllocation();
+  auto* rhs_arena = other->GetArenaForAllocation();
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _impl_.rewards_.InternalSwap(&other->_impl_.rewards_);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.configid_, lhs_arena,
+                                       &other->_impl_.configid_, rhs_arena);
+  ::google::protobuf::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.priority_)
+      + sizeof(MinigameStage::_impl_.priority_)
+      - PROTOBUF_FIELD_OFFSET(MinigameStage, _impl_.locked_)>(
+          reinterpret_cast<char*>(&_impl_.locked_),
+          reinterpret_cast<char*>(&other->_impl_.locked_));
+}
+
+std::string MinigameStage::GetTypeName() const {
+  return "Digit.PrimePlatform.Models.MinigameStage";
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Models
 }  // namespace PrimePlatform

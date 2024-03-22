@@ -28,8 +28,6 @@
 #include <EASTL/algorithm.h>
 #include <EASTL/bonus/ring_buffer.h>
 
-#include <absl/strings/str_join.h>
-
 namespace http
 {
 using namespace winrt;
@@ -54,6 +52,17 @@ static auto get_client(std::wstring sessionid = L"")
     headers.Append(L"X-PRIME-SYNC", L"0");
   }
   return httpClient;
+}
+
+static void write_data(std::string file_data)
+{
+  if (!Config::Get().sync_file.empty()) {
+    std::ofstream sync_file;
+    sync_file.open(Config::Get().sync_file, std::ios_base::app);
+
+    sync_file << file_data << "\n\n";
+    sync_file.close();
+  }
 }
 
 static void send_data(std::wstring post_data)
@@ -106,6 +115,8 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
   } catch (winrt::hresult_error const& ex) {
     spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
   }
+
+  return {};
 }
 
 static void send_data(std::string post_data)
@@ -509,7 +520,10 @@ void ship_combat_log_data()
         }
       }
 
-      std::string profiles_joined = absl::StrJoin(profiles_to_fetch, ",");
+      std::string profiles_joined = std::accumulate(profiles_to_fetch.begin(), profiles_to_fetch.end(), std::string(),
+                                                    [](const std::string& a, const std::string& b) -> std::string {
+                                                      return a + (a.length() > 0 ? "," : "") + b;
+                                                    });
       auto        profiles_body   = std::format("{{\"user_ids\":[{}]}}", profiles_joined);
       auto        profiles        = http::get_data_data(instanceSessionId, gameServerUrl, L"/user_profile/profiles",
                                                         winrt::to_hstring(profiles_body).c_str());
@@ -521,7 +535,9 @@ void ship_combat_log_data()
       ship_array.push_back({{"type", "battlelog"}, {"names", names}, {"journal", battle_json["journal"]}});
 
       try {
-        http::send_data(ship_array.dump());
+        auto ship_data = ship_array.dump();
+        http::write_data(ship_data);
+        http::send_data(ship_data);
       } catch (winrt::hresult_error const& ex) {
         spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
       } catch (const std::wstring& sz) {

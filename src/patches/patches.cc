@@ -15,6 +15,7 @@
 #include "Dbghelp.h"
 
 #include "version.h"
+#include <map>
 
 #define DO_API(r, n, p) using n##_t = r(*) p;
 #define DO_API_NO_RETURN(r, n, p) DO_API(r, n, p)
@@ -42,34 +43,60 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 {
   auto r = original(domain_name);
 
+#ifndef NDEBUG
+  AllocConsole();
+  FILE* fp;
+  freopen_s(&fp, "CONOUT$", "w", stdout);
+#endif
+
+  auto file_logger = spdlog::basic_logger_mt("default", "community_patch.log", true);
+  auto sink        = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+  file_logger->sinks().push_back(sink);
+  spdlog::set_default_logger(file_logger);
+
   spdlog::info("Initializing STFC Community Patch ({})", VER_PRODUCT_VERSION_STR);
 
-  spdlog::info("Step 1");
-  InstallUiScaleHooks();
-  spdlog::info("Step 2");
-  InstallZoomHooks();
-  spdlog::info("Step 3");
-  InstallBuffFixHooks();
-  spdlog::info("Step 4");
-  InstallToastBannerHooks();
-  spdlog::info("Step 5");
-  InstallPanHooks();
-  spdlog::info("Step 6");
-  InstallWebRequestHooks();
-  spdlog::info("Step 7");
-  InstallImproveResponsivenessHooks();
-  spdlog::info("Step 8");
-  InstallHotkeyHooks();
-  spdlog::info("Step 9");
-  InstallFreeResizeHooks();
-  spdlog::info("Step 10");
-  InstallTempCrashFixes();
-  InstallTestPatches();
-  InstallMiscPatches();
-  InstallChatPatches();
-  InstallResolutionListFix();
-  InstallSyncPatches();
-  spdlog::info("Finished");
+  const std::map<std::string, void*> patches = {
+      {"UiScaleHooks", InstallUiScaleHooks},
+      {"ZoomHooks", InstallZoomHooks},
+      {"BuffFixHooks", InstallBuffFixHooks},
+      {"ToastBannerHooks", InstallToastBannerHooks},
+      {"PanHooks", InstallPanHooks},
+      {"WebRequestHooks", InstallWebRequestHooks},
+      {"ImproveResponsivenessHooks", InstallImproveResponsivenessHooks},
+      {"HotkeyHooks", InstallHotkeyHooks},
+      {"FreeResizeHooks", InstallFreeResizeHooks},
+      {"TempCrashFixes", InstallTempCrashFixes},
+      {"TestPatches", InstallTestPatches},
+      {"MiscPatches", InstallMiscPatches},
+      {"ChatPatches", InstallChatPatches},
+      {"ResolutionListFix", InstallResolutionListFix},
+      {"SyncPatches", InstallSyncPatches},
+  };
+
+  auto patch_count = 0;
+  auto patch_total = patches.size();
+  for (auto& kv : patches) {
+    auto patch_name = kv.first;
+    auto patch_func = kv.second;
+    patch_count++;
+    spdlog::info("Patching {:>2} of {} ({})", patch_count, patch_total, patch_name);
+    reinterpret_cast<void (*)()>(patch_func)();
+  }
+
+  spdlog::info("");
+#if VERSION_PATCH
+  spdlog::info("Loaded beta version {}.{}.{} (Patch {})", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION, VERSION_PATCH);
+  spdlog::info("");
+  spdlog::info("NOTE: Beta versions may have unexpected bugs and issues");
+#else
+  spdlog::info("Loaded release version {}.{}.{}", VERSION_MAJOR, VERSION_MINOR, VERSION_REVISION);
+#endif
+
+  spdlog::info("");
+  spdlog::info("Please see https://github.com/tashcan/bob for latest configuration help, examples and future releases");
+  spdlog::info("or visit the STFC Community Mod discord server at https://discord.gg/PrpHgs7Vjs");
+  spdlog::info("");
 
   return r;
 }
@@ -97,7 +124,7 @@ void CreateMiniDump(EXCEPTION_POINTERS* pep)
 
     MINIDUMP_TYPE mdt = MiniDumpNormal;
 
-    BOOL rv = (*pFn)(GetCurrentProcess(), GetCurrentProcessId(), hFile, mdt, (pep != 0) ? &mdei : 0, 0, 0);
+    (*pFn)(GetCurrentProcess(), GetCurrentProcessId(), hFile, mdt, (pep != 0) ? &mdei : 0, 0, 0);
 
     CloseHandle(hFile);
   }
@@ -111,29 +138,20 @@ LONG WINAPI CrashHandler(struct _EXCEPTION_POINTERS* ExceptionInfo)
 
 void Patches::Apply()
 {
-  TCHAR szFileName[MAX_PATH];
-  GetModuleFileName(NULL, szFileName, MAX_PATH);
-
-  std::filesystem::path game_path = szFileName;
-
-  if (!game_path.filename().generic_wstring().starts_with(L"prime")) {
-    return;
-  }
-
   auto assembly = LoadLibraryA("GameAssembly.dll");
 
   try {
-    auto file_logger = spdlog::basic_logger_mt("default", "community_patch.log", true);
-    spdlog::set_default_logger(file_logger);
+#ifndef NDEBUG
+    const auto log_level = spdlog::level::trace;
+#else
+    const auto log_level = spdlog::level::info;
+#endif
 
-    file_logger->sinks().push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
-
-    spdlog::set_level(spdlog::level::info);
-    spdlog::flush_on(spdlog::level::info);
+    spdlog::set_level(log_level);
+    spdlog::flush_on(log_level);
 
     auto n = GetProcAddress(assembly, "il2cpp_init");
     SPUD_STATIC_DETOUR(n, il2cpp_init_hook);
-    ;
   } catch (...) {
     // Failed to Apply at least some patches
   }

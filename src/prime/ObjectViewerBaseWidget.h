@@ -44,13 +44,13 @@ public:
 
   bool __get_IsInfoShown()
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("IsInfoShown"));
+    static auto field = get_class_helper().GetProperty("IsInfoShown");
     return *field.GetRaw<bool>(this);
   }
 
   void __set_IsInfoShown(bool v)
   {
-    static auto field = get_class_helper().GetProperty(xorstr_("IsInfoShown"));
+    static auto field = get_class_helper().GetProperty("IsInfoShown");
     field.SetRaw(this, v);
   }
 };

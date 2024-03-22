@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -96,138 +93,6 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace NewFlags
 }  // namespace Prime
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrime_2eNewFlags_2eproto[5];
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_Digit_2ePrime_2eNewFlags_2eproto = nullptr;
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrime_2eNewFlags_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrime_2eNewFlags_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemsEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemsEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemsEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemsEntry_DoNotUse, value_),
-    0,
-    1,
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemFlagsEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemFlagsEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemFlagsEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemFlagsEntry_DoNotUse, value_),
-    0,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap, _impl_.items_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagCacheMap, _impl_.itemflags_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagDataCache_CategoriesEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagDataCache_CategoriesEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagDataCache_CategoriesEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagDataCache_CategoriesEntry_DoNotUse, value_),
-    0,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagDataCache, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagDataCache, _impl_.categories_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Prime::NewFlags::NewFlagDataCache, _impl_.version_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 10, -1, sizeof(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemsEntry_DoNotUse)},
-        {12, 22, -1, sizeof(::Digit::Prime::NewFlags::NewFlagCacheMap_ItemFlagsEntry_DoNotUse)},
-        {24, -1, -1, sizeof(::Digit::Prime::NewFlags::NewFlagCacheMap)},
-        {34, 44, -1, sizeof(::Digit::Prime::NewFlags::NewFlagDataCache_CategoriesEntry_DoNotUse)},
-        {46, -1, -1, sizeof(::Digit::Prime::NewFlags::NewFlagDataCache)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Prime::NewFlags::_NewFlagCacheMap_ItemsEntry_DoNotUse_default_instance_._instance,
-    &::Digit::Prime::NewFlags::_NewFlagCacheMap_ItemFlagsEntry_DoNotUse_default_instance_._instance,
-    &::Digit::Prime::NewFlags::_NewFlagCacheMap_default_instance_._instance,
-    &::Digit::Prime::NewFlags::_NewFlagDataCache_CategoriesEntry_DoNotUse_default_instance_._instance,
-    &::Digit::Prime::NewFlags::_NewFlagDataCache_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrime_2eNewFlags_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\032Digit.Prime.NewFlags.proto\022\024Digit.Prim"
-    "e.NewFlags\"\373\001\n\017NewFlagCacheMap\022\?\n\005items\030"
-    "\001 \003(\01320.Digit.Prime.NewFlags.NewFlagCach"
-    "eMap.ItemsEntry\022G\n\titemFlags\030\002 \003(\01324.Dig"
-    "it.Prime.NewFlags.NewFlagCacheMap.ItemFl"
-    "agsEntry\032,\n\nItemsEntry\022\013\n\003key\030\001 \001(\003\022\r\n\005v"
-    "alue\030\002 \001(\010:\0028\001\0320\n\016ItemFlagsEntry\022\013\n\003key\030"
-    "\001 \001(\003\022\r\n\005value\030\002 \001(\005:\0028\001\"\311\001\n\020NewFlagData"
-    "Cache\022J\n\ncategories\030\001 \003(\01326.Digit.Prime."
-    "NewFlags.NewFlagDataCache.CategoriesEntr"
-    "y\022\017\n\007version\030\002 \001(\005\032X\n\017CategoriesEntry\022\013\n"
-    "\003key\030\001 \001(\005\0224\n\005value\030\002 \001(\0132%.Digit.Prime."
-    "NewFlags.NewFlagCacheMap:\0028\001b\006proto3"
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrime_2eNewFlags_2eproto = {
-    false,
-    false,
-    516,
-    descriptor_table_protodef_Digit_2ePrime_2eNewFlags_2eproto,
-    "Digit.Prime.NewFlags.proto",
-    &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_once,
-    nullptr,
-    0,
-    5,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrime_2eNewFlags_2eproto::offsets,
-    file_level_metadata_Digit_2ePrime_2eNewFlags_2eproto,
-    file_level_enum_descriptors_Digit_2ePrime_2eNewFlags_2eproto,
-    file_level_service_descriptors_Digit_2ePrime_2eNewFlags_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrime_2eNewFlags_2eproto(&descriptor_table_Digit_2ePrime_2eNewFlags_2eproto);
 namespace Digit {
 namespace Prime {
 namespace NewFlags {
@@ -239,11 +104,6 @@ NewFlagCacheMap_ItemsEntry_DoNotUse::NewFlagCacheMap_ItemsEntry_DoNotUse(::googl
 void NewFlagCacheMap_ItemsEntry_DoNotUse::MergeFrom(const NewFlagCacheMap_ItemsEntry_DoNotUse& other) {
   MergeFromInternal(other);
 }
-::google::protobuf::Metadata NewFlagCacheMap_ItemsEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_getter, &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eNewFlags_2eproto[0]);
-}
 // ===================================================================
 
 NewFlagCacheMap_ItemFlagsEntry_DoNotUse::NewFlagCacheMap_ItemFlagsEntry_DoNotUse() {}
@@ -252,11 +112,6 @@ NewFlagCacheMap_ItemFlagsEntry_DoNotUse::NewFlagCacheMap_ItemFlagsEntry_DoNotUse
 void NewFlagCacheMap_ItemFlagsEntry_DoNotUse::MergeFrom(const NewFlagCacheMap_ItemFlagsEntry_DoNotUse& other) {
   MergeFromInternal(other);
 }
-::google::protobuf::Metadata NewFlagCacheMap_ItemFlagsEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_getter, &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eNewFlags_2eproto[1]);
-}
 // ===================================================================
 
 class NewFlagCacheMap::_Internal {
@@ -264,11 +119,11 @@ class NewFlagCacheMap::_Internal {
 };
 
 NewFlagCacheMap::NewFlagCacheMap(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.NewFlags.NewFlagCacheMap)
 }
-NewFlagCacheMap::NewFlagCacheMap(const NewFlagCacheMap& from) : ::google::protobuf::Message() {
+NewFlagCacheMap::NewFlagCacheMap(const NewFlagCacheMap& from) : ::google::protobuf::MessageLite() {
   NewFlagCacheMap* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -276,7 +131,7 @@ NewFlagCacheMap::NewFlagCacheMap(const NewFlagCacheMap& from) : ::google::protob
       /* decltype(_impl_.itemflags_) */ {},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _this->_impl_.items_.MergeFrom(from._impl_.items_);
   _this->_impl_.itemflags_.MergeFrom(from._impl_.itemflags_);
@@ -293,13 +148,13 @@ inline void NewFlagCacheMap::SharedCtor(::_pb::Arena* arena) {
 }
 NewFlagCacheMap::~NewFlagCacheMap() {
   // @@protoc_insertion_point(destructor:Digit.Prime.NewFlags.NewFlagCacheMap)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void NewFlagCacheMap::SharedDtor() {
   ABSL_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.items_.~MapField();
-  _impl_.itemflags_.~MapField();
+  _impl_.items_.~MapFieldLite();
+  _impl_.itemflags_.~MapFieldLite();
 }
 void NewFlagCacheMap::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
@@ -313,7 +168,7 @@ PROTOBUF_NOINLINE void NewFlagCacheMap::Clear() {
 
   _impl_.items_.Clear();
   _impl_.itemflags_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* NewFlagCacheMap::_InternalParse(
@@ -336,7 +191,7 @@ const ::_pbi::TcParseTable<0, 2, 2, 0, 2> NewFlagCacheMap::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_NewFlagCacheMap_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
   }}, {{
@@ -401,9 +256,9 @@ const ::_pbi::TcParseTable<0, 2, 2, 0, 2> NewFlagCacheMap::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.NewFlags.NewFlagCacheMap)
   return target;
@@ -427,19 +282,22 @@ const ::_pbi::TcParseTable<0, 2, 2, 0, 2> NewFlagCacheMap::_table_ = {
   for (const auto& entry : _internal_itemflags()) {
     total_size += NewFlagCacheMap_ItemFlagsEntry_DoNotUse::Funcs::ByteSizeLong(entry.first, entry.second);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData NewFlagCacheMap::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    NewFlagCacheMap::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*NewFlagCacheMap::GetClassData() const { return &_class_data_; }
+void NewFlagCacheMap::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const NewFlagCacheMap*>(
+      &from));
+}
 
-
-void NewFlagCacheMap::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<NewFlagCacheMap*>(&to_msg);
-  auto& from = static_cast<const NewFlagCacheMap&>(from_msg);
+void NewFlagCacheMap::MergeFrom(const NewFlagCacheMap& from) {
+  NewFlagCacheMap* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.NewFlags.NewFlagCacheMap)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -447,7 +305,7 @@ void NewFlagCacheMap::MergeImpl(::google::protobuf::Message& to_msg, const ::goo
 
   _this->_impl_.items_.MergeFrom(from._impl_.items_);
   _this->_impl_.itemflags_.MergeFrom(from._impl_.itemflags_);
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void NewFlagCacheMap::CopyFrom(const NewFlagCacheMap& from) {
@@ -468,11 +326,10 @@ void NewFlagCacheMap::InternalSwap(NewFlagCacheMap* other) {
   _impl_.itemflags_.InternalSwap(&other->_impl_.itemflags_);
 }
 
-::google::protobuf::Metadata NewFlagCacheMap::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_getter, &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eNewFlags_2eproto[2]);
+std::string NewFlagCacheMap::GetTypeName() const {
+  return "Digit.Prime.NewFlags.NewFlagCacheMap";
 }
+
 // ===================================================================
 
 NewFlagDataCache_CategoriesEntry_DoNotUse::NewFlagDataCache_CategoriesEntry_DoNotUse() {}
@@ -481,11 +338,6 @@ NewFlagDataCache_CategoriesEntry_DoNotUse::NewFlagDataCache_CategoriesEntry_DoNo
 void NewFlagDataCache_CategoriesEntry_DoNotUse::MergeFrom(const NewFlagDataCache_CategoriesEntry_DoNotUse& other) {
   MergeFromInternal(other);
 }
-::google::protobuf::Metadata NewFlagDataCache_CategoriesEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_getter, &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eNewFlags_2eproto[3]);
-}
 // ===================================================================
 
 class NewFlagDataCache::_Internal {
@@ -493,11 +345,11 @@ class NewFlagDataCache::_Internal {
 };
 
 NewFlagDataCache::NewFlagDataCache(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Prime.NewFlags.NewFlagDataCache)
 }
-NewFlagDataCache::NewFlagDataCache(const NewFlagDataCache& from) : ::google::protobuf::Message() {
+NewFlagDataCache::NewFlagDataCache(const NewFlagDataCache& from) : ::google::protobuf::MessageLite() {
   NewFlagDataCache* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -505,7 +357,7 @@ NewFlagDataCache::NewFlagDataCache(const NewFlagDataCache& from) : ::google::pro
       decltype(_impl_.version_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _this->_impl_.categories_.MergeFrom(from._impl_.categories_);
   _this->_impl_.version_ = from._impl_.version_;
@@ -522,12 +374,12 @@ inline void NewFlagDataCache::SharedCtor(::_pb::Arena* arena) {
 }
 NewFlagDataCache::~NewFlagDataCache() {
   // @@protoc_insertion_point(destructor:Digit.Prime.NewFlags.NewFlagDataCache)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void NewFlagDataCache::SharedDtor() {
   ABSL_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.categories_.~MapField();
+  _impl_.categories_.~MapFieldLite();
 }
 void NewFlagDataCache::SetCachedSize(int size) const {
   _impl_._cached_size_.Set(size);
@@ -541,7 +393,7 @@ PROTOBUF_NOINLINE void NewFlagDataCache::Clear() {
 
   _impl_.categories_.Clear();
   _impl_.version_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* NewFlagDataCache::_InternalParse(
@@ -564,10 +416,10 @@ const ::_pbi::TcParseTable<0, 2, 2, 0, 2> NewFlagDataCache::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_NewFlagDataCache_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // int32 version = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(NewFlagDataCache, _impl_.version_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(NewFlagDataCache, _impl_.version_)}},
   }}, {{
     65535, 65535
@@ -619,9 +471,9 @@ const ::_pbi::TcParseTable<0, 2, 2, 0, 2> NewFlagDataCache::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Prime.NewFlags.NewFlagDataCache)
   return target;
@@ -646,19 +498,22 @@ const ::_pbi::TcParseTable<0, 2, 2, 0, 2> NewFlagDataCache::_table_ = {
         this->_internal_version());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData NewFlagDataCache::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    NewFlagDataCache::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*NewFlagDataCache::GetClassData() const { return &_class_data_; }
+void NewFlagDataCache::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const NewFlagDataCache*>(
+      &from));
+}
 
-
-void NewFlagDataCache::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<NewFlagDataCache*>(&to_msg);
-  auto& from = static_cast<const NewFlagDataCache&>(from_msg);
+void NewFlagDataCache::MergeFrom(const NewFlagDataCache& from) {
+  NewFlagDataCache* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Prime.NewFlags.NewFlagDataCache)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -668,7 +523,7 @@ void NewFlagDataCache::MergeImpl(::google::protobuf::Message& to_msg, const ::go
   if (from._internal_version() != 0) {
     _this->_internal_set_version(from._internal_version());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void NewFlagDataCache::CopyFrom(const NewFlagDataCache& from) {
@@ -689,11 +544,10 @@ void NewFlagDataCache::InternalSwap(NewFlagDataCache* other) {
         swap(_impl_.version_, other->_impl_.version_);
 }
 
-::google::protobuf::Metadata NewFlagDataCache::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_getter, &descriptor_table_Digit_2ePrime_2eNewFlags_2eproto_once,
-      file_level_metadata_Digit_2ePrime_2eNewFlags_2eproto[4]);
+std::string NewFlagDataCache::GetTypeName() const {
+  return "Digit.Prime.NewFlags.NewFlagDataCache";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace NewFlags
 }  // namespace Prime

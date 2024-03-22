@@ -1,29 +1,35 @@
-name: Build and test
+name: Build
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - "**"
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
 
 jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: 'recursive'
 
+      - uses: seanmiddleditch/gha-setup-ninja@master
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: amd64
+
       - name: Configure CMake
-        run: cmake -B build -S ${{ github.workspace }}
+        run: cmake -G "Ninja Multi-Config" -B build -S ${{ github.workspace }}
 
       - name: Build
         run: cmake --build build --target stfc-community-patch -j --config Release
-  
+
       - name: Package
         run: |
           mv build/Release/stfc-community-patch.dll version.dll
-  
+
       - uses: actions/upload-artifact@v2
         with:
           name: stfc-community-patch

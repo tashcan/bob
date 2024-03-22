@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -136,178 +133,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace Localization
 }  // namespace Client
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2eClient_2eLocalization_2eproto[6];
-static const ::_pb::EnumDescriptor* file_level_enum_descriptors_Digit_2eClient_2eLocalization_2eproto[1];
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2eClient_2eLocalization_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2eClient_2eLocalization_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory_TranslationsEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory_TranslationsEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory_TranslationsEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory_TranslationsEntry_DoNotUse, value_),
-    0,
-    1,
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory, _impl_.info_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedCategory, _impl_.translations_),
-    0,
-    ~0u,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedTranslation, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedTranslation, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedTranslation, _impl_.key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedTranslation, _impl_.text_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CachedTranslation, _impl_.status_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CategoryInfo, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CategoryInfo, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CategoryInfo, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CategoryInfo, _impl_.name_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CategoryInfo, _impl_.dynamic_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::CategoryInfo, _impl_.timestamp_),
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::LocalizationCacheData_CategoriesEntry_DoNotUse, _has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::LocalizationCacheData_CategoriesEntry_DoNotUse, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::LocalizationCacheData_CategoriesEntry_DoNotUse, key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::LocalizationCacheData_CategoriesEntry_DoNotUse, value_),
-    0,
-    1,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::LocalizationCacheData, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::LocalizationCacheData, _impl_.language_),
-    PROTOBUF_FIELD_OFFSET(::Digit::Client::Localization::LocalizationCacheData, _impl_.categories_),
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 10, -1, sizeof(::Digit::Client::Localization::CachedCategory_TranslationsEntry_DoNotUse)},
-        {12, 22, -1, sizeof(::Digit::Client::Localization::CachedCategory)},
-        {24, -1, -1, sizeof(::Digit::Client::Localization::CachedTranslation)},
-        {36, 48, -1, sizeof(::Digit::Client::Localization::CategoryInfo)},
-        {52, 62, -1, sizeof(::Digit::Client::Localization::LocalizationCacheData_CategoriesEntry_DoNotUse)},
-        {64, -1, -1, sizeof(::Digit::Client::Localization::LocalizationCacheData)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::Client::Localization::_CachedCategory_TranslationsEntry_DoNotUse_default_instance_._instance,
-    &::Digit::Client::Localization::_CachedCategory_default_instance_._instance,
-    &::Digit::Client::Localization::_CachedTranslation_default_instance_._instance,
-    &::Digit::Client::Localization::_CategoryInfo_default_instance_._instance,
-    &::Digit::Client::Localization::_LocalizationCacheData_CategoriesEntry_DoNotUse_default_instance_._instance,
-    &::Digit::Client::Localization::_LocalizationCacheData_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2eClient_2eLocalization_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n\037Digit.Client.Localization.proto\022\031Digit"
-    ".Client.Localization\032\037google/protobuf/ti"
-    "mestamp.proto\"\375\001\n\016CachedCategory\0225\n\004info"
-    "\030\001 \001(\0132\'.Digit.Client.Localization.Categ"
-    "oryInfo\022Q\n\014translations\030\002 \003(\0132;.Digit.Cl"
-    "ient.Localization.CachedCategory.Transla"
-    "tionsEntry\032a\n\021TranslationsEntry\022\013\n\003key\030\001"
-    " \001(\003\022;\n\005value\030\002 \001(\0132,.Digit.Client.Local"
-    "ization.CachedTranslation:\0028\001\"v\n\021CachedT"
-    "ranslation\022\n\n\002id\030\001 \001(\t\022\013\n\003key\030\002 \001(\003\022\014\n\004t"
-    "ext\030\003 \001(\t\022:\n\006status\030\004 \001(\0162*.Digit.Client"
-    ".Localization.ContentIdStatus\"h\n\014Categor"
-    "yInfo\022\n\n\002id\030\001 \001(\003\022\014\n\004name\030\002 \001(\t\022\017\n\007dynam"
-    "ic\030\003 \001(\010\022-\n\ttimestamp\030\004 \001(\0132\032.google.pro"
-    "tobuf.Timestamp\"\335\001\n\025LocalizationCacheDat"
-    "a\022\020\n\010language\030\001 \001(\t\022T\n\ncategories\030\002 \003(\0132"
-    "@.Digit.Client.Localization.Localization"
-    "CacheData.CategoriesEntry\032\\\n\017CategoriesE"
-    "ntry\022\013\n\003key\030\001 \001(\003\0228\n\005value\030\002 \001(\0132).Digit"
-    ".Client.Localization.CachedCategory:\0028\001*"
-    "m\n\017ContentIdStatus\022\026\n\022CONTENTIDSTATUS_OK"
-    "\020\000\022!\n\035CONTENTIDSTATUS_REQUESTFAILED\020\001\022\037\n"
-    "\033CONTENTIDSTATUS_MISSINGDATA\020\002b\006proto3"
-};
-static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2eClient_2eLocalization_2eproto_deps[1] =
-    {
-        &::descriptor_table_google_2fprotobuf_2ftimestamp_2eproto,
-};
-static ::absl::once_flag descriptor_table_Digit_2eClient_2eLocalization_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2eClient_2eLocalization_2eproto = {
-    false,
-    false,
-    918,
-    descriptor_table_protodef_Digit_2eClient_2eLocalization_2eproto,
-    "Digit.Client.Localization.proto",
-    &descriptor_table_Digit_2eClient_2eLocalization_2eproto_once,
-    descriptor_table_Digit_2eClient_2eLocalization_2eproto_deps,
-    1,
-    6,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2eClient_2eLocalization_2eproto::offsets,
-    file_level_metadata_Digit_2eClient_2eLocalization_2eproto,
-    file_level_enum_descriptors_Digit_2eClient_2eLocalization_2eproto,
-    file_level_service_descriptors_Digit_2eClient_2eLocalization_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2eClient_2eLocalization_2eproto_getter() {
-  return &descriptor_table_Digit_2eClient_2eLocalization_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2eClient_2eLocalization_2eproto(&descriptor_table_Digit_2eClient_2eLocalization_2eproto);
 namespace Digit {
 namespace Client {
 namespace Localization {
-const ::google::protobuf::EnumDescriptor* ContentIdStatus_descriptor() {
-  ::google::protobuf::internal::AssignDescriptors(&descriptor_table_Digit_2eClient_2eLocalization_2eproto);
-  return file_level_enum_descriptors_Digit_2eClient_2eLocalization_2eproto[0];
-}
 bool ContentIdStatus_IsValid(int value) {
   switch (value) {
     case 0:
@@ -318,6 +146,51 @@ bool ContentIdStatus_IsValid(int value) {
       return false;
   }
 }
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    ContentIdStatus_strings[3] = {};
+
+static const char ContentIdStatus_names[] = {
+    "CONTENTIDSTATUS_MISSINGDATA"
+    "CONTENTIDSTATUS_OK"
+    "CONTENTIDSTATUS_REQUESTFAILED"
+};
+
+static const ::google::protobuf::internal::EnumEntry ContentIdStatus_entries[] =
+    {
+        {{&ContentIdStatus_names[0], 27}, 2},
+        {{&ContentIdStatus_names[27], 18}, 0},
+        {{&ContentIdStatus_names[45], 29}, 1},
+};
+
+static const int ContentIdStatus_entries_by_number[] = {
+    1,  // 0 -> CONTENTIDSTATUS_OK
+    2,  // 1 -> CONTENTIDSTATUS_REQUESTFAILED
+    0,  // 2 -> CONTENTIDSTATUS_MISSINGDATA
+};
+
+const std::string& ContentIdStatus_Name(ContentIdStatus value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          ContentIdStatus_entries, ContentIdStatus_entries_by_number,
+          3, ContentIdStatus_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      ContentIdStatus_entries, ContentIdStatus_entries_by_number, 3,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : ContentIdStatus_strings[idx].get();
+}
+
+bool ContentIdStatus_Parse(absl::string_view name, ContentIdStatus* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      ContentIdStatus_entries, 3, name, &int_value);
+  if (success) {
+    *value = static_cast<ContentIdStatus>(int_value);
+  }
+  return success;
+}
 // ===================================================================
 
 CachedCategory_TranslationsEntry_DoNotUse::CachedCategory_TranslationsEntry_DoNotUse() {}
@@ -325,11 +198,6 @@ CachedCategory_TranslationsEntry_DoNotUse::CachedCategory_TranslationsEntry_DoNo
     : SuperType(arena) {}
 void CachedCategory_TranslationsEntry_DoNotUse::MergeFrom(const CachedCategory_TranslationsEntry_DoNotUse& other) {
   MergeFromInternal(other);
-}
-::google::protobuf::Metadata CachedCategory_TranslationsEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eLocalization_2eproto_getter, &descriptor_table_Digit_2eClient_2eLocalization_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eLocalization_2eproto[0]);
 }
 // ===================================================================
 
@@ -348,11 +216,11 @@ const ::Digit::Client::Localization::CategoryInfo& CachedCategory::_Internal::in
   return *msg->_impl_.info_;
 }
 CachedCategory::CachedCategory(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.Localization.CachedCategory)
 }
-CachedCategory::CachedCategory(const CachedCategory& from) : ::google::protobuf::Message() {
+CachedCategory::CachedCategory(const CachedCategory& from) : ::google::protobuf::MessageLite() {
   CachedCategory* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -361,7 +229,7 @@ CachedCategory::CachedCategory(const CachedCategory& from) : ::google::protobuf:
       /* decltype(_impl_.translations_) */ {},
       decltype(_impl_.info_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _this->_impl_.translations_.MergeFrom(from._impl_.translations_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
@@ -381,12 +249,12 @@ inline void CachedCategory::SharedCtor(::_pb::Arena* arena) {
 }
 CachedCategory::~CachedCategory() {
   // @@protoc_insertion_point(destructor:Digit.Client.Localization.CachedCategory)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CachedCategory::SharedDtor() {
   ABSL_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.translations_.~MapField();
+  _impl_.translations_.~MapFieldLite();
   if (this != internal_default_instance()) delete _impl_.info_;
 }
 void CachedCategory::SetCachedSize(int size) const {
@@ -406,7 +274,7 @@ PROTOBUF_NOINLINE void CachedCategory::Clear() {
     _impl_.info_->Clear();
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CachedCategory::_InternalParse(
@@ -429,7 +297,7 @@ const ::_pbi::TcParseTable<0, 2, 3, 0, 2> CachedCategory::_table_ = {
     3,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_CachedCategory_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .Digit.Client.Localization.CategoryInfo info = 1;
     {::_pbi::TcParser::FastMtS1,
@@ -486,9 +354,9 @@ const ::_pbi::TcParseTable<0, 2, 3, 0, 2> CachedCategory::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.Localization.CachedCategory)
   return target;
@@ -515,19 +383,22 @@ const ::_pbi::TcParseTable<0, 2, 3, 0, 2> CachedCategory::_table_ = {
         *_impl_.info_);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CachedCategory::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CachedCategory::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CachedCategory::GetClassData() const { return &_class_data_; }
+void CachedCategory::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CachedCategory*>(
+      &from));
+}
 
-
-void CachedCategory::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CachedCategory*>(&to_msg);
-  auto& from = static_cast<const CachedCategory&>(from_msg);
+void CachedCategory::MergeFrom(const CachedCategory& from) {
+  CachedCategory* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.Localization.CachedCategory)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -538,7 +409,7 @@ void CachedCategory::MergeImpl(::google::protobuf::Message& to_msg, const ::goog
     _this->_internal_mutable_info()->::Digit::Client::Localization::CategoryInfo::MergeFrom(
         from._internal_info());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CachedCategory::CopyFrom(const CachedCategory& from) {
@@ -560,11 +431,10 @@ void CachedCategory::InternalSwap(CachedCategory* other) {
   swap(_impl_.info_, other->_impl_.info_);
 }
 
-::google::protobuf::Metadata CachedCategory::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eLocalization_2eproto_getter, &descriptor_table_Digit_2eClient_2eLocalization_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eLocalization_2eproto[1]);
+std::string CachedCategory::GetTypeName() const {
+  return "Digit.Client.Localization.CachedCategory";
 }
+
 // ===================================================================
 
 class CachedTranslation::_Internal {
@@ -572,11 +442,11 @@ class CachedTranslation::_Internal {
 };
 
 CachedTranslation::CachedTranslation(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.Localization.CachedTranslation)
 }
-CachedTranslation::CachedTranslation(const CachedTranslation& from) : ::google::protobuf::Message() {
+CachedTranslation::CachedTranslation(const CachedTranslation& from) : ::google::protobuf::MessageLite() {
   CachedTranslation* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -586,7 +456,7 @@ CachedTranslation::CachedTranslation(const CachedTranslation& from) : ::google::
       decltype(_impl_.status_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.id_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -628,7 +498,7 @@ inline void CachedTranslation::SharedCtor(::_pb::Arena* arena) {
 }
 CachedTranslation::~CachedTranslation() {
   // @@protoc_insertion_point(destructor:Digit.Client.Localization.CachedTranslation)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CachedTranslation::SharedDtor() {
@@ -651,7 +521,7 @@ PROTOBUF_NOINLINE void CachedTranslation::Clear() {
   ::memset(&_impl_.key_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.status_) -
       reinterpret_cast<char*>(&_impl_.key_)) + sizeof(_impl_.status_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CachedTranslation::_InternalParse(
@@ -674,16 +544,16 @@ const ::_pbi::TcParseTable<2, 4, 0, 58, 2> CachedTranslation::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_CachedTranslation_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .Digit.Client.Localization.ContentIdStatus status = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(CachedTranslation, _impl_.status_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(CachedTranslation, _impl_.status_)}},
     // string id = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(CachedTranslation, _impl_.id_)}},
     // int64 key = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(CachedTranslation, _impl_.key_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(CachedTranslation, _impl_.key_)}},
     // string text = 3;
     {::_pbi::TcParser::FastUS1,
@@ -751,9 +621,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 58, 2> CachedTranslation::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.Localization.CachedTranslation)
   return target;
@@ -791,19 +661,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 58, 2> CachedTranslation::_table_ = {
                   ::_pbi::WireFormatLite::EnumSize(this->_internal_status());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CachedTranslation::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CachedTranslation::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CachedTranslation::GetClassData() const { return &_class_data_; }
+void CachedTranslation::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CachedTranslation*>(
+      &from));
+}
 
-
-void CachedTranslation::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CachedTranslation*>(&to_msg);
-  auto& from = static_cast<const CachedTranslation&>(from_msg);
+void CachedTranslation::MergeFrom(const CachedTranslation& from) {
+  CachedTranslation* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.Localization.CachedTranslation)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -821,7 +694,7 @@ void CachedTranslation::MergeImpl(::google::protobuf::Message& to_msg, const ::g
   if (from._internal_status() != 0) {
     _this->_internal_set_status(from._internal_status());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CachedTranslation::CopyFrom(const CachedTranslation& from) {
@@ -852,11 +725,10 @@ void CachedTranslation::InternalSwap(CachedTranslation* other) {
           reinterpret_cast<char*>(&other->_impl_.key_));
 }
 
-::google::protobuf::Metadata CachedTranslation::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eLocalization_2eproto_getter, &descriptor_table_Digit_2eClient_2eLocalization_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eLocalization_2eproto[2]);
+std::string CachedTranslation::GetTypeName() const {
+  return "Digit.Client.Localization.CachedTranslation";
 }
+
 // ===================================================================
 
 class CategoryInfo::_Internal {
@@ -878,11 +750,11 @@ void CategoryInfo::clear_timestamp() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 CategoryInfo::CategoryInfo(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.Localization.CategoryInfo)
 }
-CategoryInfo::CategoryInfo(const CategoryInfo& from) : ::google::protobuf::Message() {
+CategoryInfo::CategoryInfo(const CategoryInfo& from) : ::google::protobuf::MessageLite() {
   CategoryInfo* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -893,7 +765,7 @@ CategoryInfo::CategoryInfo(const CategoryInfo& from) : ::google::protobuf::Messa
       decltype(_impl_.id_){},
       decltype(_impl_.dynamic_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.name_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -928,7 +800,7 @@ inline void CategoryInfo::SharedCtor(::_pb::Arena* arena) {
 }
 CategoryInfo::~CategoryInfo() {
   // @@protoc_insertion_point(destructor:Digit.Client.Localization.CategoryInfo)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void CategoryInfo::SharedDtor() {
@@ -956,7 +828,7 @@ PROTOBUF_NOINLINE void CategoryInfo::Clear() {
       reinterpret_cast<char*>(&_impl_.dynamic_) -
       reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.dynamic_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* CategoryInfo::_InternalParse(
@@ -979,19 +851,19 @@ const ::_pbi::TcParseTable<2, 4, 1, 51, 2> CategoryInfo::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_CategoryInfo_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .google.protobuf.Timestamp timestamp = 4;
     {::_pbi::TcParser::FastMtS1,
      {34, 0, 0, PROTOBUF_FIELD_OFFSET(CategoryInfo, _impl_.timestamp_)}},
     // int64 id = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(CategoryInfo, _impl_.id_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(CategoryInfo, _impl_.id_)}},
     // string name = 2;
     {::_pbi::TcParser::FastUS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(CategoryInfo, _impl_.name_)}},
     // bool dynamic = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(CategoryInfo, _impl_.dynamic_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(CategoryInfo, _impl_.dynamic_)}},
   }}, {{
     65535, 65535
@@ -1055,9 +927,9 @@ const ::_pbi::TcParseTable<2, 4, 1, 51, 2> CategoryInfo::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.Localization.CategoryInfo)
   return target;
@@ -1096,19 +968,22 @@ const ::_pbi::TcParseTable<2, 4, 1, 51, 2> CategoryInfo::_table_ = {
     total_size += 2;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData CategoryInfo::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    CategoryInfo::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*CategoryInfo::GetClassData() const { return &_class_data_; }
+void CategoryInfo::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const CategoryInfo*>(
+      &from));
+}
 
-
-void CategoryInfo::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<CategoryInfo*>(&to_msg);
-  auto& from = static_cast<const CategoryInfo&>(from_msg);
+void CategoryInfo::MergeFrom(const CategoryInfo& from) {
+  CategoryInfo* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.Localization.CategoryInfo)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1127,7 +1002,7 @@ void CategoryInfo::MergeImpl(::google::protobuf::Message& to_msg, const ::google
   if (from._internal_dynamic() != 0) {
     _this->_internal_set_dynamic(from._internal_dynamic());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void CategoryInfo::CopyFrom(const CategoryInfo& from) {
@@ -1157,11 +1032,10 @@ void CategoryInfo::InternalSwap(CategoryInfo* other) {
           reinterpret_cast<char*>(&other->_impl_.timestamp_));
 }
 
-::google::protobuf::Metadata CategoryInfo::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eLocalization_2eproto_getter, &descriptor_table_Digit_2eClient_2eLocalization_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eLocalization_2eproto[3]);
+std::string CategoryInfo::GetTypeName() const {
+  return "Digit.Client.Localization.CategoryInfo";
 }
+
 // ===================================================================
 
 LocalizationCacheData_CategoriesEntry_DoNotUse::LocalizationCacheData_CategoriesEntry_DoNotUse() {}
@@ -1170,11 +1044,6 @@ LocalizationCacheData_CategoriesEntry_DoNotUse::LocalizationCacheData_Categories
 void LocalizationCacheData_CategoriesEntry_DoNotUse::MergeFrom(const LocalizationCacheData_CategoriesEntry_DoNotUse& other) {
   MergeFromInternal(other);
 }
-::google::protobuf::Metadata LocalizationCacheData_CategoriesEntry_DoNotUse::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eLocalization_2eproto_getter, &descriptor_table_Digit_2eClient_2eLocalization_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eLocalization_2eproto[4]);
-}
 // ===================================================================
 
 class LocalizationCacheData::_Internal {
@@ -1182,11 +1051,11 @@ class LocalizationCacheData::_Internal {
 };
 
 LocalizationCacheData::LocalizationCacheData(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.Client.Localization.LocalizationCacheData)
 }
-LocalizationCacheData::LocalizationCacheData(const LocalizationCacheData& from) : ::google::protobuf::Message() {
+LocalizationCacheData::LocalizationCacheData(const LocalizationCacheData& from) : ::google::protobuf::MessageLite() {
   LocalizationCacheData* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1194,7 +1063,7 @@ LocalizationCacheData::LocalizationCacheData(const LocalizationCacheData& from) 
       decltype(_impl_.language_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _this->_impl_.categories_.MergeFrom(from._impl_.categories_);
   _impl_.language_.InitDefault();
@@ -1221,12 +1090,12 @@ inline void LocalizationCacheData::SharedCtor(::_pb::Arena* arena) {
 }
 LocalizationCacheData::~LocalizationCacheData() {
   // @@protoc_insertion_point(destructor:Digit.Client.Localization.LocalizationCacheData)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void LocalizationCacheData::SharedDtor() {
   ABSL_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.categories_.~MapField();
+  _impl_.categories_.~MapFieldLite();
   _impl_.language_.Destroy();
 }
 void LocalizationCacheData::SetCachedSize(int size) const {
@@ -1241,7 +1110,7 @@ PROTOBUF_NOINLINE void LocalizationCacheData::Clear() {
 
   _impl_.categories_.Clear();
   _impl_.language_.ClearToEmpty();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* LocalizationCacheData::_InternalParse(
@@ -1264,7 +1133,7 @@ const ::_pbi::TcParseTable<0, 2, 2, 64, 2> LocalizationCacheData::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_LocalizationCacheData_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string language = 1;
     {::_pbi::TcParser::FastUS1,
@@ -1323,9 +1192,9 @@ const ::_pbi::TcParseTable<0, 2, 2, 64, 2> LocalizationCacheData::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.Client.Localization.LocalizationCacheData)
   return target;
@@ -1350,19 +1219,22 @@ const ::_pbi::TcParseTable<0, 2, 2, 64, 2> LocalizationCacheData::_table_ = {
                                     this->_internal_language());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData LocalizationCacheData::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    LocalizationCacheData::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*LocalizationCacheData::GetClassData() const { return &_class_data_; }
+void LocalizationCacheData::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const LocalizationCacheData*>(
+      &from));
+}
 
-
-void LocalizationCacheData::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<LocalizationCacheData*>(&to_msg);
-  auto& from = static_cast<const LocalizationCacheData&>(from_msg);
+void LocalizationCacheData::MergeFrom(const LocalizationCacheData& from) {
+  LocalizationCacheData* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.Client.Localization.LocalizationCacheData)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1372,7 +1244,7 @@ void LocalizationCacheData::MergeImpl(::google::protobuf::Message& to_msg, const
   if (!from._internal_language().empty()) {
     _this->_internal_set_language(from._internal_language());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void LocalizationCacheData::CopyFrom(const LocalizationCacheData& from) {
@@ -1396,11 +1268,10 @@ void LocalizationCacheData::InternalSwap(LocalizationCacheData* other) {
                                        &other->_impl_.language_, rhs_arena);
 }
 
-::google::protobuf::Metadata LocalizationCacheData::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2eClient_2eLocalization_2eproto_getter, &descriptor_table_Digit_2eClient_2eLocalization_2eproto_once,
-      file_level_metadata_Digit_2eClient_2eLocalization_2eproto[5]);
+std::string LocalizationCacheData::GetTypeName() const {
+  return "Digit.Client.Localization.LocalizationCacheData";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Localization
 }  // namespace Client

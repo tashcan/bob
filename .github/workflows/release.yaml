@@ -11,36 +11,41 @@ jobs:
     permissions:
       contents: write
     name: Create Release
-    runs-on: windows-2022
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Check Prerelease
+        id: check-prerelease
+        run: |
+          if echo "${{ github.ref_name }}" | grep -Pq "^v[\d]+.[\d]+.[\d]+(?:.(alpha|beta).[\d]+)$"; then
+            echo "prerelease=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag: ${{ github.ref }}
+          name: ${{ github.ref_name }}
           generateReleaseNotes: true
-          draft: true
-          prerelease: false
+          prerelease: ${{ steps.check-prerelease.outputs.prerelease == 'true' }}
 
       - name: Download artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v3
         with:
+          commit: ${{env.GITHUB_SHA}}
           workflow: ci.yaml
           workflow_conclusion: success
 
       - name: Package
         run: |
-          tar -c -a -f stfc-community-patch.zip -C stfc-community-patch *.dll
+          (cd stfc-community-patch && zip -r - .) > stfc-community-patch.zip
 
       - name: Upload Community Patch
         id: upload-patch
-        uses: actions/upload-release-asset@v1
+        uses: shogo82148/actions-upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -51,11 +56,11 @@ jobs:
 
       - name: Upload Community Patch
         id: upload-patch-versioned
-        uses: actions/upload-release-asset@v1
+        uses: shogo82148/actions-upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./stfc-community-patch.zip
-          asset_name: stfc-community-patch-${{ github.ref }}.zip
+          asset_name: stfc-community-patch-${{ github.ref_name }}.zip
           asset_content_type: application/zip

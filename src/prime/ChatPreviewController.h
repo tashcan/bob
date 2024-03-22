@@ -25,7 +25,7 @@ public:
 public:
   int32_t __get__currentContentIndex()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_currentContentIndex"));
+    static auto field = get_class_helper().GetField("_currentContentIndex");
     return *(int32_t*)((ptrdiff_t)this + field.offset());
   }
 };
@@ -47,25 +47,25 @@ public:
 public:
   Il2CppArray* __get__panelIndicators()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_panelIndicators"));
+    static auto field = get_class_helper().GetField("_panelIndicators");
     return *(Il2CppArray**)((ptrdiff_t)this + field.offset());
   }
 
   SwipeScroller* __get__swipeScroller()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_swipeScroller"));
+    static auto field = get_class_helper().GetField("_swipeScroller");
     return *(SwipeScroller**)((ptrdiff_t)this + field.offset());
   }
 
   PanelState __get__focusedPanel()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_focusedPanel"));
+    static auto field = get_class_helper().GetField("_focusedPanel");
     return *(PanelState*)((ptrdiff_t)this + field.offset());
   }
 
   void __set__focusedPanel(PanelState v)
   {
-    static auto field                                = get_class_helper().GetField(xorstr_("_focusedPanel"));
+    static auto field                                = get_class_helper().GetField("_focusedPanel");
     *(PanelState*)((ptrdiff_t)this + field.offset()) = v;
   }
 };

@@ -7,10 +7,7 @@
 #include "google/protobuf/io/coded_stream.h"
 #include "google/protobuf/extension_set.h"
 #include "google/protobuf/wire_format_lite.h"
-#include "google/protobuf/descriptor.h"
-#include "google/protobuf/generated_message_reflection.h"
-#include "google/protobuf/reflection_ops.h"
-#include "google/protobuf/wire_format.h"
+#include "google/protobuf/io/zero_copy_stream_impl_lite.h"
 #include "google/protobuf/generated_message_tctable_impl.h"
 // @@protoc_insertion_point(includes)
 
@@ -55,6 +52,7 @@ PROTOBUF_CONSTEXPR Bundle::Bundle(::_pbi::ConstantInitialized)
       /*decltype(_impl_.sortorder_)*/ 0u,
       /*decltype(_impl_.isspecial_)*/ false,
       /*decltype(_impl_.isplayerlifecycle_)*/ false,
+      /*decltype(_impl_.allowcustomquantity_)*/ false,
     } {}
 struct BundleDefaultTypeInternal {
   PROTOBUF_CONSTEXPR BundleDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
@@ -307,6 +305,7 @@ PROTOBUF_CONSTEXPR Resource::Resource(::_pbi::ConstantInitialized)
       },
       /*decltype(_impl_.amount_)*/ 0u,
       /*decltype(_impl_.amountold_)*/ 0u,
+      /*decltype(_impl_.amountulong_)*/ ::uint64_t{0u},
       /*decltype(_impl_.unavailabledisplaymode_)*/ 0,
       /*decltype(_impl_._cached_size_)*/ {},
     } {}
@@ -347,6 +346,8 @@ PROTOBUF_CONSTEXPR Metadata::Metadata(::_pbi::ConstantInitialized)
       },
       /*decltype(_impl_.bucket_)*/ nullptr,
       /*decltype(_impl_.secondarybundleid_)*/ ::int64_t{0},
+      /*decltype(_impl_.animationonclaimtype_)*/ 0,
+      /*decltype(_impl_.skiponclaimall_)*/ false,
     } {}
 struct MetadataDefaultTypeInternal {
   PROTOBUF_CONSTEXPR MetadataDefaultTypeInternal() : _instance(::_pbi::ConstantInitialized{}) {}
@@ -426,415 +427,60 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 }  // namespace Content
 }  // namespace PrimePlatform
 }  // namespace Digit
-static ::_pb::Metadata file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[17];
-static constexpr const ::_pb::EnumDescriptor**
-    file_level_enum_descriptors_Digit_2ePrimePlatform_2eContent_2eproto = nullptr;
-static constexpr const ::_pb::ServiceDescriptor**
-    file_level_service_descriptors_Digit_2ePrimePlatform_2eContent_2eproto = nullptr;
-const ::uint32_t TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(
-    protodesc_cold) = {
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.bundleid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.bundletypestring_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.priority_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.sortorder_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.isspecial_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.cost_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.requirements_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.category_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.metadata_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.content_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.hinting_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.externalid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.oldexternalid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.offerdetails_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundle, _impl_.isplayerlifecycle_),
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    1,
-    2,
-    ~0u,
-    ~0u,
-    3,
-    ~0u,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationsContainer, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationsContainer, _impl_.sections_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationSection, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationSection, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationSection, _impl_.section_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationSection, _impl_.sectionhash_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationSection, _impl_.translations_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::TranslationSection, _impl_.modified_),
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Translation, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Translation, _impl_.key_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Translation, _impl_.keyhash_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Translation, _impl_.text_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Translation, _impl_.id_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::ContentItem, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::ContentItem, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::ContentItem, _impl_.quantity_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::ContentItem, _impl_.type_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::ContentItem, _impl_.level_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bucket, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bucket, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bucket, _impl_.transid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bucket, _impl_.artid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bucket, _impl_.sortorder_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::BundleContent, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::BundleContent, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::BundleContent, _impl_.dynamic_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::BundleContent, _impl_.gifts_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::BundleContent, _impl_.showcase_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::BundleContent, _impl_.static__),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::BundleContent, _impl_.multiplied_),
-    ~0u,
-    0,
-    1,
-    2,
-    3,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::ContentItemList, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::ContentItemList, _impl_.items_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Order, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Order, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Order, _impl_.orderid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Order, _impl_.created_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Order, _impl_.orderitems_),
-    ~0u,
-    0,
-    ~0u,
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OrderItem, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OrderItem, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OrderItem, _impl_.bundleid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OrderItem, _impl_.bundleversion_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OrderItem, _impl_.content_),
-    ~0u,
-    ~0u,
-    0,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundles, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Bundles, _impl_.bundles__),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Cost, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Cost, _impl_.cost__),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Cost, _impl_.quantity_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.amount_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.amountold_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.id_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.type_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Resource, _impl_.unavailabledisplaymode_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.color_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.assetid_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.assetfilename_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.iconassetfilename_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.bucket_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.bundlemultiplier_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Metadata, _impl_.secondarybundleid_),
-    ~0u,
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    ~0u,
-    ~0u,
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Hinting_TranslationKey, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Hinting_TranslationKey, _impl_.field_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Hinting_TranslationKey, _impl_.istranslated_),
-    ~0u,  // no _has_bits_
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Hinting, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::Hinting, _impl_.translationkeys_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_._has_bits_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _internal_metadata_),
-    ~0u,  // no _extensions_
-    ~0u,  // no _oneof_case_
-    ~0u,  // no _weak_field_map_
-    ~0u,  // no _inlined_string_donated_
-    ~0u,  // no _split_
-    ~0u,  // no sizeof(Split)
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_.bonuslabel_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_.bonusvalue_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_.validcount_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_.validfromtimestamp_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_.validuntiltimestamp_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_.sameremainingcount_),
-    PROTOBUF_FIELD_OFFSET(::Digit::PrimePlatform::Content::OfferDetails, _impl_.sameremainingcountvisible_),
-    ~0u,
-    ~0u,
-    ~0u,
-    0,
-    1,
-    ~0u,
-    ~0u,
-};
-
-static const ::_pbi::MigrationSchema
-    schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-        {0, 23, -1, sizeof(::Digit::PrimePlatform::Content::Bundle)},
-        {38, -1, -1, sizeof(::Digit::PrimePlatform::Content::TranslationsContainer)},
-        {47, 59, -1, sizeof(::Digit::PrimePlatform::Content::TranslationSection)},
-        {63, -1, -1, sizeof(::Digit::PrimePlatform::Content::Translation)},
-        {75, -1, -1, sizeof(::Digit::PrimePlatform::Content::ContentItem)},
-        {87, -1, -1, sizeof(::Digit::PrimePlatform::Content::Bucket)},
-        {99, 112, -1, sizeof(::Digit::PrimePlatform::Content::BundleContent)},
-        {117, -1, -1, sizeof(::Digit::PrimePlatform::Content::ContentItemList)},
-        {126, 137, -1, sizeof(::Digit::PrimePlatform::Content::Order)},
-        {140, 151, -1, sizeof(::Digit::PrimePlatform::Content::OrderItem)},
-        {154, -1, -1, sizeof(::Digit::PrimePlatform::Content::Bundles)},
-        {163, -1, -1, sizeof(::Digit::PrimePlatform::Content::Cost)},
-        {173, -1, -1, sizeof(::Digit::PrimePlatform::Content::Resource)},
-        {186, 201, -1, sizeof(::Digit::PrimePlatform::Content::Metadata)},
-        {208, -1, -1, sizeof(::Digit::PrimePlatform::Content::Hinting_TranslationKey)},
-        {218, -1, -1, sizeof(::Digit::PrimePlatform::Content::Hinting)},
-        {227, 242, -1, sizeof(::Digit::PrimePlatform::Content::OfferDetails)},
-};
-
-static const ::_pb::Message* const file_default_instances[] = {
-    &::Digit::PrimePlatform::Content::_Bundle_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_TranslationsContainer_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_TranslationSection_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Translation_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_ContentItem_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Bucket_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_BundleContent_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_ContentItemList_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Order_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_OrderItem_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Bundles_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Cost_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Resource_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Metadata_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Hinting_TranslationKey_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_Hinting_default_instance_._instance,
-    &::Digit::PrimePlatform::Content::_OfferDetails_default_instance_._instance,
-};
-const char descriptor_table_protodef_Digit_2ePrimePlatform_2eContent_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-    "\n!Digit.PrimePlatform.Content.proto\022\033Dig"
-    "it.PrimePlatform.Content\032\037google/protobu"
-    "f/timestamp.proto\"\240\004\n\006Bundle\022\020\n\010bundleId"
-    "\030\001 \001(\003\022\030\n\020bundleTypeString\030\002 \001(\t\022\020\n\010prio"
-    "rity\030\003 \001(\r\022\021\n\tsortOrder\030\004 \001(\r\022\021\n\tisSpeci"
-    "al\030\005 \001(\010\022/\n\004cost\030\006 \003(\0132!.Digit.PrimePlat"
-    "form.Content.Cost\022;\n\014requirements\030\007 \003(\0132"
-    "%.Digit.PrimePlatform.Content.Resource\022\020"
-    "\n\010category\030\010 \001(\t\0227\n\010metadata\030\t \001(\0132%.Dig"
-    "it.PrimePlatform.Content.Metadata\022;\n\007con"
-    "tent\030\n \001(\0132*.Digit.PrimePlatform.Content"
-    ".BundleContent\0225\n\007hinting\030\013 \001(\0132$.Digit."
-    "PrimePlatform.Content.Hinting\022\022\n\nexterna"
-    "lId\030\014 \001(\t\022\025\n\roldExternalId\030\r \001(\t\022\?\n\014offe"
-    "rDetails\030\016 \001(\0132).Digit.PrimePlatform.Con"
-    "tent.OfferDetails\022\031\n\021isPlayerlifecycle\030\017"
-    " \001(\010\"Z\n\025TranslationsContainer\022A\n\010section"
-    "s\030\001 \003(\0132/.Digit.PrimePlatform.Content.Tr"
-    "anslationSection\"\250\001\n\022TranslationSection\022"
-    "\017\n\007section\030\001 \001(\t\022\023\n\013sectionHash\030\002 \001(\005\022>\n"
-    "\014translations\030\003 \003(\0132(.Digit.PrimePlatfor"
-    "m.Content.Translation\022,\n\010modified\030\004 \001(\0132"
-    "\032.google.protobuf.Timestamp\"E\n\013Translati"
-    "on\022\013\n\003key\030\001 \001(\t\022\017\n\007keyHash\030\002 \001(\005\022\014\n\004text"
-    "\030\003 \001(\t\022\n\n\002id\030\004 \001(\t\"H\n\013ContentItem\022\n\n\002id\030"
-    "\001 \001(\t\022\020\n\010quantity\030\002 \001(\003\022\014\n\004type\030\003 \001(\t\022\r\n"
-    "\005level\030\004 \001(\r\"G\n\006Bucket\022\n\n\002id\030\001 \001(\003\022\017\n\007tr"
-    "ansId\030\002 \001(\t\022\r\n\005artId\030\003 \001(\t\022\021\n\tsortOrder\030"
-    "\004 \001(\003\"\313\002\n\rBundleContent\022=\n\007dynamic\030\001 \003(\013"
-    "2,.Digit.PrimePlatform.Content.ContentIt"
-    "emList\022;\n\005gifts\030\002 \001(\0132,.Digit.PrimePlatf"
-    "orm.Content.ContentItemList\022>\n\010showcase\030"
-    "\003 \001(\0132,.Digit.PrimePlatform.Content.Cont"
-    "entItemList\022<\n\006static\030\004 \001(\0132,.Digit.Prim"
-    "ePlatform.Content.ContentItemList\022@\n\nmul"
-    "tiplied\030\005 \001(\0132,.Digit.PrimePlatform.Cont"
-    "ent.ContentItemList\"J\n\017ContentItemList\0227"
-    "\n\005items\030\001 \003(\0132(.Digit.PrimePlatform.Cont"
-    "ent.ContentItem\"\201\001\n\005Order\022\017\n\007orderId\030\001 \001"
-    "(\t\022+\n\007created\030\002 \001(\0132\032.google.protobuf.Ti"
-    "mestamp\022:\n\norderItems\030\003 \003(\0132&.Digit.Prim"
-    "ePlatform.Content.OrderItem\"q\n\tOrderItem"
-    "\022\020\n\010bundleId\030\001 \001(\r\022\025\n\rbundleVersion\030\002 \001("
-    "\r\022;\n\007content\030\003 \001(\0132*.Digit.PrimePlatform"
-    ".Content.BundleContent\"@\n\007Bundles\0225\n\010bun"
-    "dles_\030\001 \003(\0132#.Digit.PrimePlatform.Conten"
-    "t.Bundle\"N\n\004Cost\0224\n\005cost_\030\001 \003(\0132%.Digit."
-    "PrimePlatform.Content.Resource\022\020\n\010quanti"
-    "ty\030\002 \001(\r\"g\n\010Resource\022\016\n\006amount\030\001 \001(\r\022\021\n\t"
-    "amountOld\030\002 \001(\r\022\n\n\002id\030\003 \001(\t\022\014\n\004type\030\004 \001("
-    "\t\022\036\n\026unavailableDisplayMode\030\005 \001(\005\"\306\001\n\010Me"
-    "tadata\022\r\n\005color\030\001 \001(\t\022\017\n\007assetId\030\002 \001(\t\022\025"
-    "\n\rassetFilename\030\003 \001(\t\022\031\n\021iconAssetFilena"
-    "me\030\004 \001(\t\0223\n\006bucket\030\005 \001(\0132#.Digit.PrimePl"
-    "atform.Content.Bucket\022\030\n\020bundleMultiplie"
-    "r\030\006 \001(\t\022\031\n\021secondaryBundleId\030\007 \001(\003\"\216\001\n\007H"
-    "inting\022L\n\017translationKeys\030\001 \003(\01323.Digit."
-    "PrimePlatform.Content.Hinting.Translatio"
-    "nKey\0325\n\016TranslationKey\022\r\n\005field\030\001 \001(\t\022\024\n"
-    "\014isTranslated\030\002 \001(\010\"\372\001\n\014OfferDetails\022\022\n\n"
-    "bonusLabel\030\001 \001(\t\022\022\n\nbonusValue\030\002 \001(\t\022\022\n\n"
-    "validCount\030\003 \001(\005\0226\n\022validFromTimestamp\030\004"
-    " \001(\0132\032.google.protobuf.Timestamp\0227\n\023vali"
-    "dUntilTimestamp\030\005 \001(\0132\032.google.protobuf."
-    "Timestamp\022\032\n\022sameRemainingCount\030\006 \001(\005\022!\n"
-    "\031sameRemainingCountVisible\030\007 \001(\010b\006proto3"
-};
-static const ::_pbi::DescriptorTable* const descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_deps[1] =
-    {
-        &::descriptor_table_google_2fprotobuf_2ftimestamp_2eproto,
-};
-static ::absl::once_flag descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once;
-const ::_pbi::DescriptorTable descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto = {
-    false,
-    false,
-    2640,
-    descriptor_table_protodef_Digit_2ePrimePlatform_2eContent_2eproto,
-    "Digit.PrimePlatform.Content.proto",
-    &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-    descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_deps,
-    1,
-    17,
-    schemas,
-    file_default_instances,
-    TableStruct_Digit_2ePrimePlatform_2eContent_2eproto::offsets,
-    file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto,
-    file_level_enum_descriptors_Digit_2ePrimePlatform_2eContent_2eproto,
-    file_level_service_descriptors_Digit_2ePrimePlatform_2eContent_2eproto,
-};
-
-// This function exists to be marked as weak.
-// It can significantly speed up compilation by breaking up LLVM's SCC
-// in the .pb.cc translation units. Large translation units see a
-// reduction of more than 35% of walltime for optimized builds. Without
-// the weak attribute all the messages in the file, including all the
-// vtables and everything they use become part of the same SCC through
-// a cycle like:
-// GetMetadata -> descriptor table -> default instances ->
-//   vtables -> GetMetadata
-// By adding a weak function here we break the connection from the
-// individual vtables back into the descriptor table.
-PROTOBUF_ATTRIBUTE_WEAK const ::_pbi::DescriptorTable* descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter() {
-  return &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto;
-}
-// Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY2
-static ::_pbi::AddDescriptorsRunner dynamic_init_dummy_Digit_2ePrimePlatform_2eContent_2eproto(&descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto);
 namespace Digit {
 namespace PrimePlatform {
 namespace Content {
+bool AnimationOnClaimType_IsValid(int value) {
+  switch (value) {
+    case 0:
+    case 1:
+      return true;
+    default:
+      return false;
+  }
+}
+static ::google::protobuf::internal::ExplicitlyConstructed<std::string>
+    AnimationOnClaimType_strings[2] = {};
+
+static const char AnimationOnClaimType_names[] = {
+    "ANIMATIONONCLAIMTYPE_FLYOUT"
+    "ANIMATIONONCLAIMTYPE_UNSPECIFIED"
+};
+
+static const ::google::protobuf::internal::EnumEntry AnimationOnClaimType_entries[] =
+    {
+        {{&AnimationOnClaimType_names[0], 27}, 1},
+        {{&AnimationOnClaimType_names[27], 32}, 0},
+};
+
+static const int AnimationOnClaimType_entries_by_number[] = {
+    1,  // 0 -> ANIMATIONONCLAIMTYPE_UNSPECIFIED
+    0,  // 1 -> ANIMATIONONCLAIMTYPE_FLYOUT
+};
+
+const std::string& AnimationOnClaimType_Name(AnimationOnClaimType value) {
+  static const bool kDummy =
+      ::google::protobuf::internal::InitializeEnumStrings(
+          AnimationOnClaimType_entries, AnimationOnClaimType_entries_by_number,
+          2, AnimationOnClaimType_strings);
+  (void)kDummy;
+
+  int idx = ::google::protobuf::internal::LookUpEnumName(
+      AnimationOnClaimType_entries, AnimationOnClaimType_entries_by_number, 2,
+      value);
+  return idx == -1 ? ::google::protobuf::internal::GetEmptyString()
+                   : AnimationOnClaimType_strings[idx].get();
+}
+
+bool AnimationOnClaimType_Parse(absl::string_view name, AnimationOnClaimType* value) {
+  int int_value;
+  bool success = ::google::protobuf::internal::LookUpEnumValue(
+      AnimationOnClaimType_entries, 2, name, &int_value);
+  if (success) {
+    *value = static_cast<AnimationOnClaimType>(int_value);
+  }
+  return success;
+}
 // ===================================================================
 
 class Bundle::_Internal {
@@ -873,11 +519,11 @@ const ::Digit::PrimePlatform::Content::OfferDetails& Bundle::_Internal::offerdet
   return *msg->_impl_.offerdetails_;
 }
 Bundle::Bundle(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Bundle)
 }
-Bundle::Bundle(const Bundle& from) : ::google::protobuf::Message() {
+Bundle::Bundle(const Bundle& from) : ::google::protobuf::MessageLite() {
   Bundle* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -898,8 +544,9 @@ Bundle::Bundle(const Bundle& from) : ::google::protobuf::Message() {
       decltype(_impl_.sortorder_){},
       decltype(_impl_.isspecial_){},
       decltype(_impl_.isplayerlifecycle_){},
+      decltype(_impl_.allowcustomquantity_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.bundletypestring_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -942,8 +589,8 @@ Bundle::Bundle(const Bundle& from) : ::google::protobuf::Message() {
     _this->_impl_.offerdetails_ = new ::Digit::PrimePlatform::Content::OfferDetails(*from._impl_.offerdetails_);
   }
   ::memcpy(&_impl_.bundleid_, &from._impl_.bundleid_,
-    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.isplayerlifecycle_) -
-    reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.isplayerlifecycle_));
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.allowcustomquantity_) -
+    reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.allowcustomquantity_));
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.Bundle)
 }
@@ -967,6 +614,7 @@ inline void Bundle::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.sortorder_){0u},
       decltype(_impl_.isspecial_){false},
       decltype(_impl_.isplayerlifecycle_){false},
+      decltype(_impl_.allowcustomquantity_){false},
   };
   _impl_.bundletypestring_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -987,7 +635,7 @@ inline void Bundle::SharedCtor(::_pb::Arena* arena) {
 }
 Bundle::~Bundle() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Bundle)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Bundle::SharedDtor() {
@@ -1039,10 +687,10 @@ PROTOBUF_NOINLINE void Bundle::Clear() {
     }
   }
   ::memset(&_impl_.bundleid_, 0, static_cast<::size_t>(
-      reinterpret_cast<char*>(&_impl_.isplayerlifecycle_) -
-      reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.isplayerlifecycle_));
+      reinterpret_cast<char*>(&_impl_.allowcustomquantity_) -
+      reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.allowcustomquantity_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Bundle::_InternalParse(
@@ -1053,35 +701,37 @@ const char* Bundle::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
+const ::_pbi::TcParseTable<4, 16, 6, 106, 2> Bundle::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(Bundle, _impl_._has_bits_),
     0, // no _extensions_
-    15, 120,  // max_field_number, fast_idx_mask
+    16, 120,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294934528,  // skipmap
+    4294901760,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    15,  // num_field_entries
+    16,  // num_field_entries
     6,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Bundle_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
-    {::_pbi::TcParser::MiniParse, {}},
+    // bool allowCustomQuantity = 16;
+    {::_pbi::TcParser::FastV8S2,
+     {384, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.allowcustomquantity_)}},
     // int64 bundleId = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bundle, _impl_.bundleid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.bundleid_)}},
     // string bundleTypeString = 2;
     {::_pbi::TcParser::FastUS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.bundletypestring_)}},
     // uint32 priority = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Bundle, _impl_.priority_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.priority_)}},
     // uint32 sortOrder = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Bundle, _impl_.sortorder_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.sortorder_)}},
     // bool isSpecial = 5;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(Bundle, _impl_.isspecial_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {40, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.isspecial_)}},
     // repeated .Digit.PrimePlatform.Content.Cost cost = 6;
     {::_pbi::TcParser::FastMtR1,
@@ -1111,7 +761,7 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
     {::_pbi::TcParser::FastMtS1,
      {114, 3, 5, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.offerdetails_)}},
     // bool isPlayerlifecycle = 15;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(Bundle, _impl_.isplayerlifecycle_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {120, 63, 0, PROTOBUF_FIELD_OFFSET(Bundle, _impl_.isplayerlifecycle_)}},
   }}, {{
     65535, 65535
@@ -1161,6 +811,9 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
     // bool isPlayerlifecycle = 15;
     {PROTOBUF_FIELD_OFFSET(Bundle, _impl_.isplayerlifecycle_), -1, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kBool)},
+    // bool allowCustomQuantity = 16;
+    {PROTOBUF_FIELD_OFFSET(Bundle, _impl_.allowcustomquantity_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
   }}, {{
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Cost>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Resource>()},
@@ -1169,7 +822,7 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Hinting>()},
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::OfferDetails>()},
   }}, {{
-    "\42\0\20\0\0\0\0\0\10\0\0\0\12\15\0\0"
+    "\42\0\20\0\0\0\0\0\10\0\0\0\12\15\0\0\0\0\0\0\0\0\0\0"
     "Digit.PrimePlatform.Content.Bundle"
     "bundleTypeString"
     "category"
@@ -1297,10 +950,17 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
         15, this->_internal_isplayerlifecycle(), target);
   }
 
+  // bool allowCustomQuantity = 16;
+  if (this->_internal_allowcustomquantity() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        16, this->_internal_allowcustomquantity(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Bundle)
   return target;
@@ -1409,19 +1069,27 @@ const ::_pbi::TcParseTable<4, 15, 6, 98, 2> Bundle::_table_ = {
     total_size += 2;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  // bool allowCustomQuantity = 16;
+  if (this->_internal_allowcustomquantity() != 0) {
+    total_size += 3;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Bundle::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Bundle::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Bundle::GetClassData() const { return &_class_data_; }
+void Bundle::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Bundle*>(
+      &from));
+}
 
-
-void Bundle::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Bundle*>(&to_msg);
-  auto& from = static_cast<const Bundle&>(from_msg);
+void Bundle::MergeFrom(const Bundle& from) {
+  Bundle* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Bundle)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1475,7 +1143,10 @@ void Bundle::MergeImpl(::google::protobuf::Message& to_msg, const ::google::prot
   if (from._internal_isplayerlifecycle() != 0) {
     _this->_internal_set_isplayerlifecycle(from._internal_isplayerlifecycle());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_allowcustomquantity() != 0) {
+    _this->_internal_set_allowcustomquantity(from._internal_allowcustomquantity());
+  }
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Bundle::CopyFrom(const Bundle& from) {
@@ -1506,18 +1177,17 @@ void Bundle::InternalSwap(Bundle* other) {
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.oldexternalid_, lhs_arena,
                                        &other->_impl_.oldexternalid_, rhs_arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Bundle, _impl_.isplayerlifecycle_)
-      + sizeof(Bundle::_impl_.isplayerlifecycle_)
+      PROTOBUF_FIELD_OFFSET(Bundle, _impl_.allowcustomquantity_)
+      + sizeof(Bundle::_impl_.allowcustomquantity_)
       - PROTOBUF_FIELD_OFFSET(Bundle, _impl_.metadata_)>(
           reinterpret_cast<char*>(&_impl_.metadata_),
           reinterpret_cast<char*>(&other->_impl_.metadata_));
 }
 
-::google::protobuf::Metadata Bundle::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[0]);
+std::string Bundle::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Bundle";
 }
+
 // ===================================================================
 
 class TranslationsContainer::_Internal {
@@ -1525,18 +1195,18 @@ class TranslationsContainer::_Internal {
 };
 
 TranslationsContainer::TranslationsContainer(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.TranslationsContainer)
 }
-TranslationsContainer::TranslationsContainer(const TranslationsContainer& from) : ::google::protobuf::Message() {
+TranslationsContainer::TranslationsContainer(const TranslationsContainer& from) : ::google::protobuf::MessageLite() {
   TranslationsContainer* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.sections_){from._impl_.sections_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.TranslationsContainer)
@@ -1550,7 +1220,7 @@ inline void TranslationsContainer::SharedCtor(::_pb::Arena* arena) {
 }
 TranslationsContainer::~TranslationsContainer() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.TranslationsContainer)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void TranslationsContainer::SharedDtor() {
@@ -1568,7 +1238,7 @@ PROTOBUF_NOINLINE void TranslationsContainer::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_sections()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* TranslationsContainer::_InternalParse(
@@ -1591,7 +1261,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> TranslationsContainer::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_TranslationsContainer_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Content.TranslationSection sections = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -1624,9 +1294,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> TranslationsContainer::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.TranslationsContainer)
   return target;
@@ -1646,26 +1316,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> TranslationsContainer::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData TranslationsContainer::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    TranslationsContainer::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*TranslationsContainer::GetClassData() const { return &_class_data_; }
+void TranslationsContainer::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const TranslationsContainer*>(
+      &from));
+}
 
-
-void TranslationsContainer::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<TranslationsContainer*>(&to_msg);
-  auto& from = static_cast<const TranslationsContainer&>(from_msg);
+void TranslationsContainer::MergeFrom(const TranslationsContainer& from) {
+  TranslationsContainer* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.TranslationsContainer)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_sections()->MergeFrom(from._internal_sections());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void TranslationsContainer::CopyFrom(const TranslationsContainer& from) {
@@ -1685,11 +1358,10 @@ void TranslationsContainer::InternalSwap(TranslationsContainer* other) {
   _impl_.sections_.InternalSwap(&other->_impl_.sections_);
 }
 
-::google::protobuf::Metadata TranslationsContainer::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[1]);
+std::string TranslationsContainer::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.TranslationsContainer";
 }
+
 // ===================================================================
 
 class TranslationSection::_Internal {
@@ -1711,11 +1383,11 @@ void TranslationSection::clear_modified() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 TranslationSection::TranslationSection(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.TranslationSection)
 }
-TranslationSection::TranslationSection(const TranslationSection& from) : ::google::protobuf::Message() {
+TranslationSection::TranslationSection(const TranslationSection& from) : ::google::protobuf::MessageLite() {
   TranslationSection* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -1726,7 +1398,7 @@ TranslationSection::TranslationSection(const TranslationSection& from) : ::googl
       decltype(_impl_.modified_){nullptr},
       decltype(_impl_.sectionhash_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.section_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -1759,7 +1431,7 @@ inline void TranslationSection::SharedCtor(::_pb::Arena* arena) {
 }
 TranslationSection::~TranslationSection() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.TranslationSection)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void TranslationSection::SharedDtor() {
@@ -1787,7 +1459,7 @@ PROTOBUF_NOINLINE void TranslationSection::Clear() {
   }
   _impl_.sectionhash_ = 0;
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* TranslationSection::_InternalParse(
@@ -1810,7 +1482,7 @@ const ::_pbi::TcParseTable<2, 4, 2, 62, 2> TranslationSection::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_TranslationSection_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // .google.protobuf.Timestamp modified = 4;
     {::_pbi::TcParser::FastMtS1,
@@ -1819,7 +1491,7 @@ const ::_pbi::TcParseTable<2, 4, 2, 62, 2> TranslationSection::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(TranslationSection, _impl_.section_)}},
     // int32 sectionHash = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(TranslationSection, _impl_.sectionhash_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(TranslationSection, _impl_.sectionhash_)}},
     // repeated .Digit.PrimePlatform.Content.Translation translations = 3;
     {::_pbi::TcParser::FastMtR1,
@@ -1888,9 +1560,9 @@ const ::_pbi::TcParseTable<2, 4, 2, 62, 2> TranslationSection::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.TranslationSection)
   return target;
@@ -1930,19 +1602,22 @@ const ::_pbi::TcParseTable<2, 4, 2, 62, 2> TranslationSection::_table_ = {
         this->_internal_sectionhash());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData TranslationSection::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    TranslationSection::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*TranslationSection::GetClassData() const { return &_class_data_; }
+void TranslationSection::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const TranslationSection*>(
+      &from));
+}
 
-
-void TranslationSection::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<TranslationSection*>(&to_msg);
-  auto& from = static_cast<const TranslationSection&>(from_msg);
+void TranslationSection::MergeFrom(const TranslationSection& from) {
+  TranslationSection* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.TranslationSection)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -1959,7 +1634,7 @@ void TranslationSection::MergeImpl(::google::protobuf::Message& to_msg, const ::
   if (from._internal_sectionhash() != 0) {
     _this->_internal_set_sectionhash(from._internal_sectionhash());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void TranslationSection::CopyFrom(const TranslationSection& from) {
@@ -1990,11 +1665,10 @@ void TranslationSection::InternalSwap(TranslationSection* other) {
           reinterpret_cast<char*>(&other->_impl_.modified_));
 }
 
-::google::protobuf::Metadata TranslationSection::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[2]);
+std::string TranslationSection::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.TranslationSection";
 }
+
 // ===================================================================
 
 class Translation::_Internal {
@@ -2002,11 +1676,11 @@ class Translation::_Internal {
 };
 
 Translation::Translation(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Translation)
 }
-Translation::Translation(const Translation& from) : ::google::protobuf::Message() {
+Translation::Translation(const Translation& from) : ::google::protobuf::MessageLite() {
   Translation* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -2016,7 +1690,7 @@ Translation::Translation(const Translation& from) : ::google::protobuf::Message(
       decltype(_impl_.keyhash_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.key_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2067,7 +1741,7 @@ inline void Translation::SharedCtor(::_pb::Arena* arena) {
 }
 Translation::~Translation() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Translation)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Translation::SharedDtor() {
@@ -2090,7 +1764,7 @@ PROTOBUF_NOINLINE void Translation::Clear() {
   _impl_.text_.ClearToEmpty();
   _impl_.id_.ClearToEmpty();
   _impl_.keyhash_ = 0;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Translation::_InternalParse(
@@ -2113,7 +1787,7 @@ const ::_pbi::TcParseTable<2, 4, 0, 57, 2> Translation::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Translation_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // string id = 4;
     {::_pbi::TcParser::FastUS1,
@@ -2122,7 +1796,7 @@ const ::_pbi::TcParseTable<2, 4, 0, 57, 2> Translation::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(Translation, _impl_.key_)}},
     // int32 keyHash = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Translation, _impl_.keyhash_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(Translation, _impl_.keyhash_)}},
     // string text = 3;
     {::_pbi::TcParser::FastUS1,
@@ -2192,9 +1866,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 57, 2> Translation::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Translation)
   return target;
@@ -2232,19 +1906,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 57, 2> Translation::_table_ = {
         this->_internal_keyhash());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Translation::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Translation::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Translation::GetClassData() const { return &_class_data_; }
+void Translation::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Translation*>(
+      &from));
+}
 
-
-void Translation::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Translation*>(&to_msg);
-  auto& from = static_cast<const Translation&>(from_msg);
+void Translation::MergeFrom(const Translation& from) {
+  Translation* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Translation)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -2262,7 +1939,7 @@ void Translation::MergeImpl(::google::protobuf::Message& to_msg, const ::google:
   if (from._internal_keyhash() != 0) {
     _this->_internal_set_keyhash(from._internal_keyhash());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Translation::CopyFrom(const Translation& from) {
@@ -2290,11 +1967,10 @@ void Translation::InternalSwap(Translation* other) {
         swap(_impl_.keyhash_, other->_impl_.keyhash_);
 }
 
-::google::protobuf::Metadata Translation::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[3]);
+std::string Translation::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Translation";
 }
+
 // ===================================================================
 
 class ContentItem::_Internal {
@@ -2302,11 +1978,11 @@ class ContentItem::_Internal {
 };
 
 ContentItem::ContentItem(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.ContentItem)
 }
-ContentItem::ContentItem(const ContentItem& from) : ::google::protobuf::Message() {
+ContentItem::ContentItem(const ContentItem& from) : ::google::protobuf::MessageLite() {
   ContentItem* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -2316,7 +1992,7 @@ ContentItem::ContentItem(const ContentItem& from) : ::google::protobuf::Message(
       decltype(_impl_.level_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.id_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2358,7 +2034,7 @@ inline void ContentItem::SharedCtor(::_pb::Arena* arena) {
 }
 ContentItem::~ContentItem() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.ContentItem)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void ContentItem::SharedDtor() {
@@ -2381,7 +2057,7 @@ PROTOBUF_NOINLINE void ContentItem::Clear() {
   ::memset(&_impl_.quantity_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.level_) -
       reinterpret_cast<char*>(&_impl_.quantity_)) + sizeof(_impl_.level_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* ContentItem::_InternalParse(
@@ -2404,16 +2080,16 @@ const ::_pbi::TcParseTable<2, 4, 0, 54, 2> ContentItem::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_ContentItem_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // uint32 level = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(ContentItem, _impl_.level_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(ContentItem, _impl_.level_)}},
     // string id = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 63, 0, PROTOBUF_FIELD_OFFSET(ContentItem, _impl_.id_)}},
     // int64 quantity = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(ContentItem, _impl_.quantity_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(ContentItem, _impl_.quantity_)}},
     // string type = 3;
     {::_pbi::TcParser::FastUS1,
@@ -2481,9 +2157,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 54, 2> ContentItem::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.ContentItem)
   return target;
@@ -2521,19 +2197,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 54, 2> ContentItem::_table_ = {
         this->_internal_level());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData ContentItem::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    ContentItem::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*ContentItem::GetClassData() const { return &_class_data_; }
+void ContentItem::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const ContentItem*>(
+      &from));
+}
 
-
-void ContentItem::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<ContentItem*>(&to_msg);
-  auto& from = static_cast<const ContentItem&>(from_msg);
+void ContentItem::MergeFrom(const ContentItem& from) {
+  ContentItem* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.ContentItem)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -2551,7 +2230,7 @@ void ContentItem::MergeImpl(::google::protobuf::Message& to_msg, const ::google:
   if (from._internal_level() != 0) {
     _this->_internal_set_level(from._internal_level());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void ContentItem::CopyFrom(const ContentItem& from) {
@@ -2582,11 +2261,10 @@ void ContentItem::InternalSwap(ContentItem* other) {
           reinterpret_cast<char*>(&other->_impl_.quantity_));
 }
 
-::google::protobuf::Metadata ContentItem::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[4]);
+std::string ContentItem::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.ContentItem";
 }
+
 // ===================================================================
 
 class Bucket::_Internal {
@@ -2594,11 +2272,11 @@ class Bucket::_Internal {
 };
 
 Bucket::Bucket(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Bucket)
 }
-Bucket::Bucket(const Bucket& from) : ::google::protobuf::Message() {
+Bucket::Bucket(const Bucket& from) : ::google::protobuf::MessageLite() {
   Bucket* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -2608,7 +2286,7 @@ Bucket::Bucket(const Bucket& from) : ::google::protobuf::Message() {
       decltype(_impl_.sortorder_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.transid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -2650,7 +2328,7 @@ inline void Bucket::SharedCtor(::_pb::Arena* arena) {
 }
 Bucket::~Bucket() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Bucket)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Bucket::SharedDtor() {
@@ -2673,7 +2351,7 @@ PROTOBUF_NOINLINE void Bucket::Clear() {
   ::memset(&_impl_.id_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.sortorder_) -
       reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.sortorder_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Bucket::_InternalParse(
@@ -2696,13 +2374,13 @@ const ::_pbi::TcParseTable<2, 4, 0, 55, 2> Bucket::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Bucket_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // int64 sortOrder = 4;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bucket, _impl_.sortorder_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {32, 63, 0, PROTOBUF_FIELD_OFFSET(Bucket, _impl_.sortorder_)}},
     // int64 id = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Bucket, _impl_.id_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(Bucket, _impl_.id_)}},
     // string transId = 2;
     {::_pbi::TcParser::FastUS1,
@@ -2773,9 +2451,9 @@ const ::_pbi::TcParseTable<2, 4, 0, 55, 2> Bucket::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Bucket)
   return target;
@@ -2813,19 +2491,22 @@ const ::_pbi::TcParseTable<2, 4, 0, 55, 2> Bucket::_table_ = {
         this->_internal_sortorder());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Bucket::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Bucket::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Bucket::GetClassData() const { return &_class_data_; }
+void Bucket::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Bucket*>(
+      &from));
+}
 
-
-void Bucket::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Bucket*>(&to_msg);
-  auto& from = static_cast<const Bucket&>(from_msg);
+void Bucket::MergeFrom(const Bucket& from) {
+  Bucket* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Bucket)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -2843,7 +2524,7 @@ void Bucket::MergeImpl(::google::protobuf::Message& to_msg, const ::google::prot
   if (from._internal_sortorder() != 0) {
     _this->_internal_set_sortorder(from._internal_sortorder());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Bucket::CopyFrom(const Bucket& from) {
@@ -2874,11 +2555,10 @@ void Bucket::InternalSwap(Bucket* other) {
           reinterpret_cast<char*>(&other->_impl_.id_));
 }
 
-::google::protobuf::Metadata Bucket::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[5]);
+std::string Bucket::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Bucket";
 }
+
 // ===================================================================
 
 class BundleContent::_Internal {
@@ -2917,11 +2597,11 @@ const ::Digit::PrimePlatform::Content::ContentItemList& BundleContent::_Internal
   return *msg->_impl_.multiplied_;
 }
 BundleContent::BundleContent(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.BundleContent)
 }
-BundleContent::BundleContent(const BundleContent& from) : ::google::protobuf::Message() {
+BundleContent::BundleContent(const BundleContent& from) : ::google::protobuf::MessageLite() {
   BundleContent* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -2933,7 +2613,7 @@ BundleContent::BundleContent(const BundleContent& from) : ::google::protobuf::Me
       decltype(_impl_.static__){nullptr},
       decltype(_impl_.multiplied_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.gifts_ = new ::Digit::PrimePlatform::Content::ContentItemList(*from._impl_.gifts_);
@@ -2964,7 +2644,7 @@ inline void BundleContent::SharedCtor(::_pb::Arena* arena) {
 }
 BundleContent::~BundleContent() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.BundleContent)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void BundleContent::SharedDtor() {
@@ -3006,7 +2686,7 @@ PROTOBUF_NOINLINE void BundleContent::Clear() {
     }
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* BundleContent::_InternalParse(
@@ -3029,7 +2709,7 @@ const ::_pbi::TcParseTable<3, 5, 5, 0, 2> BundleContent::_table_ = {
     5,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_BundleContent_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // repeated .Digit.PrimePlatform.Content.ContentItemList dynamic = 1;
@@ -3122,9 +2802,9 @@ const ::_pbi::TcParseTable<3, 5, 5, 0, 2> BundleContent::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.BundleContent)
   return target;
@@ -3175,19 +2855,22 @@ const ::_pbi::TcParseTable<3, 5, 5, 0, 2> BundleContent::_table_ = {
     }
 
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData BundleContent::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    BundleContent::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*BundleContent::GetClassData() const { return &_class_data_; }
+void BundleContent::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const BundleContent*>(
+      &from));
+}
 
-
-void BundleContent::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<BundleContent*>(&to_msg);
-  auto& from = static_cast<const BundleContent&>(from_msg);
+void BundleContent::MergeFrom(const BundleContent& from) {
+  BundleContent* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.BundleContent)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -3213,7 +2896,7 @@ void BundleContent::MergeImpl(::google::protobuf::Message& to_msg, const ::googl
           from._internal_multiplied());
     }
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void BundleContent::CopyFrom(const BundleContent& from) {
@@ -3240,11 +2923,10 @@ void BundleContent::InternalSwap(BundleContent* other) {
           reinterpret_cast<char*>(&other->_impl_.gifts_));
 }
 
-::google::protobuf::Metadata BundleContent::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[6]);
+std::string BundleContent::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.BundleContent";
 }
+
 // ===================================================================
 
 class ContentItemList::_Internal {
@@ -3252,18 +2934,18 @@ class ContentItemList::_Internal {
 };
 
 ContentItemList::ContentItemList(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.ContentItemList)
 }
-ContentItemList::ContentItemList(const ContentItemList& from) : ::google::protobuf::Message() {
+ContentItemList::ContentItemList(const ContentItemList& from) : ::google::protobuf::MessageLite() {
   ContentItemList* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.items_){from._impl_.items_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.ContentItemList)
@@ -3277,7 +2959,7 @@ inline void ContentItemList::SharedCtor(::_pb::Arena* arena) {
 }
 ContentItemList::~ContentItemList() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.ContentItemList)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void ContentItemList::SharedDtor() {
@@ -3295,7 +2977,7 @@ PROTOBUF_NOINLINE void ContentItemList::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_items()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* ContentItemList::_InternalParse(
@@ -3318,7 +3000,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> ContentItemList::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_ContentItemList_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Content.ContentItem items = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -3351,9 +3033,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> ContentItemList::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.ContentItemList)
   return target;
@@ -3373,26 +3055,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> ContentItemList::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData ContentItemList::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    ContentItemList::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*ContentItemList::GetClassData() const { return &_class_data_; }
+void ContentItemList::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const ContentItemList*>(
+      &from));
+}
 
-
-void ContentItemList::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<ContentItemList*>(&to_msg);
-  auto& from = static_cast<const ContentItemList&>(from_msg);
+void ContentItemList::MergeFrom(const ContentItemList& from) {
+  ContentItemList* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.ContentItemList)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_items()->MergeFrom(from._internal_items());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void ContentItemList::CopyFrom(const ContentItemList& from) {
@@ -3412,11 +3097,10 @@ void ContentItemList::InternalSwap(ContentItemList* other) {
   _impl_.items_.InternalSwap(&other->_impl_.items_);
 }
 
-::google::protobuf::Metadata ContentItemList::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[7]);
+std::string ContentItemList::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.ContentItemList";
 }
+
 // ===================================================================
 
 class Order::_Internal {
@@ -3438,11 +3122,11 @@ void Order::clear_created() {
   _impl_._has_bits_[0] &= ~0x00000001u;
 }
 Order::Order(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Order)
 }
-Order::Order(const Order& from) : ::google::protobuf::Message() {
+Order::Order(const Order& from) : ::google::protobuf::MessageLite() {
   Order* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -3452,7 +3136,7 @@ Order::Order(const Order& from) : ::google::protobuf::Message() {
       decltype(_impl_.orderid_){},
       decltype(_impl_.created_){nullptr},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.orderid_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -3483,7 +3167,7 @@ inline void Order::SharedCtor(::_pb::Arena* arena) {
 }
 Order::~Order() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Order)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Order::SharedDtor() {
@@ -3510,7 +3194,7 @@ PROTOBUF_NOINLINE void Order::Clear() {
     _impl_.created_->Clear();
   }
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Order::_InternalParse(
@@ -3533,7 +3217,7 @@ const ::_pbi::TcParseTable<2, 3, 2, 49, 2> Order::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Order_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string orderId = 1;
@@ -3599,9 +3283,9 @@ const ::_pbi::TcParseTable<2, 3, 2, 49, 2> Order::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Order)
   return target;
@@ -3635,19 +3319,22 @@ const ::_pbi::TcParseTable<2, 3, 2, 49, 2> Order::_table_ = {
         *_impl_.created_);
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Order::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Order::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Order::GetClassData() const { return &_class_data_; }
+void Order::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Order*>(
+      &from));
+}
 
-
-void Order::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Order*>(&to_msg);
-  auto& from = static_cast<const Order&>(from_msg);
+void Order::MergeFrom(const Order& from) {
+  Order* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Order)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -3661,7 +3348,7 @@ void Order::MergeImpl(::google::protobuf::Message& to_msg, const ::google::proto
     _this->_internal_mutable_created()->::google::protobuf::Timestamp::MergeFrom(
         from._internal_created());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Order::CopyFrom(const Order& from) {
@@ -3687,11 +3374,10 @@ void Order::InternalSwap(Order* other) {
   swap(_impl_.created_, other->_impl_.created_);
 }
 
-::google::protobuf::Metadata Order::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[8]);
+std::string Order::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Order";
 }
+
 // ===================================================================
 
 class OrderItem::_Internal {
@@ -3709,11 +3395,11 @@ const ::Digit::PrimePlatform::Content::BundleContent& OrderItem::_Internal::cont
   return *msg->_impl_.content_;
 }
 OrderItem::OrderItem(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.OrderItem)
 }
-OrderItem::OrderItem(const OrderItem& from) : ::google::protobuf::Message() {
+OrderItem::OrderItem(const OrderItem& from) : ::google::protobuf::MessageLite() {
   OrderItem* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -3723,7 +3409,7 @@ OrderItem::OrderItem(const OrderItem& from) : ::google::protobuf::Message() {
       decltype(_impl_.bundleid_){},
       decltype(_impl_.bundleversion_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.content_ = new ::Digit::PrimePlatform::Content::BundleContent(*from._impl_.content_);
@@ -3746,7 +3432,7 @@ inline void OrderItem::SharedCtor(::_pb::Arena* arena) {
 }
 OrderItem::~OrderItem() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.OrderItem)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void OrderItem::SharedDtor() {
@@ -3772,7 +3458,7 @@ PROTOBUF_NOINLINE void OrderItem::Clear() {
       reinterpret_cast<char*>(&_impl_.bundleversion_) -
       reinterpret_cast<char*>(&_impl_.bundleid_)) + sizeof(_impl_.bundleversion_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* OrderItem::_InternalParse(
@@ -3795,14 +3481,14 @@ const ::_pbi::TcParseTable<2, 3, 1, 0, 2> OrderItem::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_OrderItem_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // uint32 bundleId = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OrderItem, _impl_.bundleid_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(OrderItem, _impl_.bundleid_)}},
     // uint32 bundleVersion = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OrderItem, _impl_.bundleversion_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(OrderItem, _impl_.bundleversion_)}},
     // .Digit.PrimePlatform.Content.BundleContent content = 3;
     {::_pbi::TcParser::FastMtS1,
@@ -3855,9 +3541,9 @@ const ::_pbi::TcParseTable<2, 3, 1, 0, 2> OrderItem::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.OrderItem)
   return target;
@@ -3891,19 +3577,22 @@ const ::_pbi::TcParseTable<2, 3, 1, 0, 2> OrderItem::_table_ = {
         this->_internal_bundleversion());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData OrderItem::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    OrderItem::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*OrderItem::GetClassData() const { return &_class_data_; }
+void OrderItem::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const OrderItem*>(
+      &from));
+}
 
-
-void OrderItem::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<OrderItem*>(&to_msg);
-  auto& from = static_cast<const OrderItem&>(from_msg);
+void OrderItem::MergeFrom(const OrderItem& from) {
+  OrderItem* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.OrderItem)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -3919,7 +3608,7 @@ void OrderItem::MergeImpl(::google::protobuf::Message& to_msg, const ::google::p
   if (from._internal_bundleversion() != 0) {
     _this->_internal_set_bundleversion(from._internal_bundleversion());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void OrderItem::CopyFrom(const OrderItem& from) {
@@ -3945,11 +3634,10 @@ void OrderItem::InternalSwap(OrderItem* other) {
           reinterpret_cast<char*>(&other->_impl_.content_));
 }
 
-::google::protobuf::Metadata OrderItem::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[9]);
+std::string OrderItem::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.OrderItem";
 }
+
 // ===================================================================
 
 class Bundles::_Internal {
@@ -3957,18 +3645,18 @@ class Bundles::_Internal {
 };
 
 Bundles::Bundles(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Bundles)
 }
-Bundles::Bundles(const Bundles& from) : ::google::protobuf::Message() {
+Bundles::Bundles(const Bundles& from) : ::google::protobuf::MessageLite() {
   Bundles* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.bundles__){from._impl_.bundles__},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.Bundles)
@@ -3982,7 +3670,7 @@ inline void Bundles::SharedCtor(::_pb::Arena* arena) {
 }
 Bundles::~Bundles() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Bundles)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Bundles::SharedDtor() {
@@ -4000,7 +3688,7 @@ PROTOBUF_NOINLINE void Bundles::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_bundles_()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Bundles::_InternalParse(
@@ -4023,7 +3711,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> Bundles::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Bundles_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Content.Bundle bundles_ = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -4056,9 +3744,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> Bundles::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Bundles)
   return target;
@@ -4078,26 +3766,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> Bundles::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Bundles::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Bundles::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Bundles::GetClassData() const { return &_class_data_; }
+void Bundles::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Bundles*>(
+      &from));
+}
 
-
-void Bundles::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Bundles*>(&to_msg);
-  auto& from = static_cast<const Bundles&>(from_msg);
+void Bundles::MergeFrom(const Bundles& from) {
+  Bundles* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Bundles)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_bundles_()->MergeFrom(from._internal_bundles_());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Bundles::CopyFrom(const Bundles& from) {
@@ -4117,11 +3808,10 @@ void Bundles::InternalSwap(Bundles* other) {
   _impl_.bundles__.InternalSwap(&other->_impl_.bundles__);
 }
 
-::google::protobuf::Metadata Bundles::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[10]);
+std::string Bundles::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Bundles";
 }
+
 // ===================================================================
 
 class Cost::_Internal {
@@ -4129,11 +3819,11 @@ class Cost::_Internal {
 };
 
 Cost::Cost(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Cost)
 }
-Cost::Cost(const Cost& from) : ::google::protobuf::Message() {
+Cost::Cost(const Cost& from) : ::google::protobuf::MessageLite() {
   Cost* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -4141,7 +3831,7 @@ Cost::Cost(const Cost& from) : ::google::protobuf::Message() {
       decltype(_impl_.quantity_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _this->_impl_.quantity_ = from._impl_.quantity_;
 
@@ -4157,7 +3847,7 @@ inline void Cost::SharedCtor(::_pb::Arena* arena) {
 }
 Cost::~Cost() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Cost)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Cost::SharedDtor() {
@@ -4176,7 +3866,7 @@ PROTOBUF_NOINLINE void Cost::Clear() {
 
   _internal_mutable_cost_()->Clear();
   _impl_.quantity_ = 0u;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Cost::_InternalParse(
@@ -4199,10 +3889,10 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> Cost::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Cost_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // uint32 quantity = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Cost, _impl_.quantity_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(Cost, _impl_.quantity_)}},
     // repeated .Digit.PrimePlatform.Content.Resource cost_ = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -4245,9 +3935,9 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> Cost::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Cost)
   return target;
@@ -4273,19 +3963,22 @@ const ::_pbi::TcParseTable<1, 2, 1, 0, 2> Cost::_table_ = {
         this->_internal_quantity());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Cost::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Cost::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Cost::GetClassData() const { return &_class_data_; }
+void Cost::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Cost*>(
+      &from));
+}
 
-
-void Cost::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Cost*>(&to_msg);
-  auto& from = static_cast<const Cost&>(from_msg);
+void Cost::MergeFrom(const Cost& from) {
+  Cost* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Cost)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -4295,7 +3988,7 @@ void Cost::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protob
   if (from._internal_quantity() != 0) {
     _this->_internal_set_quantity(from._internal_quantity());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Cost::CopyFrom(const Cost& from) {
@@ -4316,11 +4009,10 @@ void Cost::InternalSwap(Cost* other) {
         swap(_impl_.quantity_, other->_impl_.quantity_);
 }
 
-::google::protobuf::Metadata Cost::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[11]);
+std::string Cost::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Cost";
 }
+
 // ===================================================================
 
 class Resource::_Internal {
@@ -4328,11 +4020,11 @@ class Resource::_Internal {
 };
 
 Resource::Resource(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Resource)
 }
-Resource::Resource(const Resource& from) : ::google::protobuf::Message() {
+Resource::Resource(const Resource& from) : ::google::protobuf::MessageLite() {
   Resource* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -4340,10 +4032,11 @@ Resource::Resource(const Resource& from) : ::google::protobuf::Message() {
       decltype(_impl_.type_){},
       decltype(_impl_.amount_){},
       decltype(_impl_.amountold_){},
+      decltype(_impl_.amountulong_){},
       decltype(_impl_.unavailabledisplaymode_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.id_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -4372,6 +4065,7 @@ inline void Resource::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.type_){},
       decltype(_impl_.amount_){0u},
       decltype(_impl_.amountold_){0u},
+      decltype(_impl_.amountulong_){::uint64_t{0u}},
       decltype(_impl_.unavailabledisplaymode_){0},
       /*decltype(_impl_._cached_size_)*/ {},
   };
@@ -4386,7 +4080,7 @@ inline void Resource::SharedCtor(::_pb::Arena* arena) {
 }
 Resource::~Resource() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Resource)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Resource::SharedDtor() {
@@ -4409,7 +4103,7 @@ PROTOBUF_NOINLINE void Resource::Clear() {
   ::memset(&_impl_.amount_, 0, static_cast<::size_t>(
       reinterpret_cast<char*>(&_impl_.unavailabledisplaymode_) -
       reinterpret_cast<char*>(&_impl_.amount_)) + sizeof(_impl_.unavailabledisplaymode_));
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Resource::_InternalParse(
@@ -4420,26 +4114,26 @@ const char* Resource::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
+const ::_pbi::TcParseTable<3, 6, 0, 51, 2> Resource::_table_ = {
   {
     0,  // no _has_bits_
     0, // no _extensions_
-    5, 56,  // max_field_number, fast_idx_mask
+    6, 56,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967264,  // skipmap
+    4294967232,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    5,  // num_field_entries
+    6,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Resource_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // uint32 amount = 1;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Resource, _impl_.amount_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {8, 63, 0, PROTOBUF_FIELD_OFFSET(Resource, _impl_.amount_)}},
     // uint32 amountOld = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Resource, _impl_.amountold_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(Resource, _impl_.amountold_)}},
     // string id = 3;
     {::_pbi::TcParser::FastUS1,
@@ -4448,9 +4142,11 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {34, 63, 0, PROTOBUF_FIELD_OFFSET(Resource, _impl_.type_)}},
     // int32 unavailableDisplayMode = 5;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(Resource, _impl_.unavailabledisplaymode_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {40, 63, 0, PROTOBUF_FIELD_OFFSET(Resource, _impl_.unavailabledisplaymode_)}},
-    {::_pbi::TcParser::MiniParse, {}},
+    // uint64 amountUlong = 6;
+    {::_pbi::TcParser::FastV64S1,
+     {48, 63, 0, PROTOBUF_FIELD_OFFSET(Resource, _impl_.amountulong_)}},
     {::_pbi::TcParser::MiniParse, {}},
   }}, {{
     65535, 65535
@@ -4470,6 +4166,9 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
     // int32 unavailableDisplayMode = 5;
     {PROTOBUF_FIELD_OFFSET(Resource, _impl_.unavailabledisplaymode_), 0, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kInt32)},
+    // uint64 amountUlong = 6;
+    {PROTOBUF_FIELD_OFFSET(Resource, _impl_.amountulong_), 0, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kUInt64)},
   }},
   // no aux_entries
   {{
@@ -4524,10 +4223,17 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
             stream, this->_internal_unavailabledisplaymode(), target);
   }
 
+  // uint64 amountUlong = 6;
+  if (this->_internal_amountulong() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(
+        6, this->_internal_amountulong(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Resource)
   return target;
@@ -4565,25 +4271,34 @@ const ::_pbi::TcParseTable<3, 5, 0, 51, 2> Resource::_table_ = {
         this->_internal_amountold());
   }
 
+  // uint64 amountUlong = 6;
+  if (this->_internal_amountulong() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(
+        this->_internal_amountulong());
+  }
+
   // int32 unavailableDisplayMode = 5;
   if (this->_internal_unavailabledisplaymode() != 0) {
     total_size += ::_pbi::WireFormatLite::Int32SizePlusOne(
         this->_internal_unavailabledisplaymode());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Resource::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Resource::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Resource::GetClassData() const { return &_class_data_; }
+void Resource::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Resource*>(
+      &from));
+}
 
-
-void Resource::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Resource*>(&to_msg);
-  auto& from = static_cast<const Resource&>(from_msg);
+void Resource::MergeFrom(const Resource& from) {
+  Resource* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Resource)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -4601,10 +4316,13 @@ void Resource::MergeImpl(::google::protobuf::Message& to_msg, const ::google::pr
   if (from._internal_amountold() != 0) {
     _this->_internal_set_amountold(from._internal_amountold());
   }
+  if (from._internal_amountulong() != 0) {
+    _this->_internal_set_amountulong(from._internal_amountulong());
+  }
   if (from._internal_unavailabledisplaymode() != 0) {
     _this->_internal_set_unavailabledisplaymode(from._internal_unavailabledisplaymode());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Resource::CopyFrom(const Resource& from) {
@@ -4635,11 +4353,10 @@ void Resource::InternalSwap(Resource* other) {
           reinterpret_cast<char*>(&other->_impl_.amount_));
 }
 
-::google::protobuf::Metadata Resource::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[12]);
+std::string Resource::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Resource";
 }
+
 // ===================================================================
 
 class Metadata::_Internal {
@@ -4657,11 +4374,11 @@ const ::Digit::PrimePlatform::Content::Bucket& Metadata::_Internal::bucket(const
   return *msg->_impl_.bucket_;
 }
 Metadata::Metadata(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Metadata)
 }
-Metadata::Metadata(const Metadata& from) : ::google::protobuf::Message() {
+Metadata::Metadata(const Metadata& from) : ::google::protobuf::MessageLite() {
   Metadata* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -4674,8 +4391,10 @@ Metadata::Metadata(const Metadata& from) : ::google::protobuf::Message() {
       decltype(_impl_.bundlemultiplier_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.secondarybundleid_){},
+      decltype(_impl_.animationonclaimtype_){},
+      decltype(_impl_.skiponclaimall_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.color_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -4715,7 +4434,9 @@ Metadata::Metadata(const Metadata& from) : ::google::protobuf::Message() {
   if ((from._impl_._has_bits_[0] & 0x00000001u) != 0) {
     _this->_impl_.bucket_ = new ::Digit::PrimePlatform::Content::Bucket(*from._impl_.bucket_);
   }
-  _this->_impl_.secondarybundleid_ = from._impl_.secondarybundleid_;
+  ::memcpy(&_impl_.secondarybundleid_, &from._impl_.secondarybundleid_,
+    static_cast<::size_t>(reinterpret_cast<char*>(&_impl_.skiponclaimall_) -
+    reinterpret_cast<char*>(&_impl_.secondarybundleid_)) + sizeof(_impl_.skiponclaimall_));
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.Metadata)
 }
@@ -4731,6 +4452,8 @@ inline void Metadata::SharedCtor(::_pb::Arena* arena) {
       decltype(_impl_.bundlemultiplier_){},
       decltype(_impl_.bucket_){nullptr},
       decltype(_impl_.secondarybundleid_){::int64_t{0}},
+      decltype(_impl_.animationonclaimtype_){0},
+      decltype(_impl_.skiponclaimall_){false},
   };
   _impl_.color_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -4755,7 +4478,7 @@ inline void Metadata::SharedCtor(::_pb::Arena* arena) {
 }
 Metadata::~Metadata() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Metadata)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Metadata::SharedDtor() {
@@ -4787,9 +4510,11 @@ PROTOBUF_NOINLINE void Metadata::Clear() {
     ABSL_DCHECK(_impl_.bucket_ != nullptr);
     _impl_.bucket_->Clear();
   }
-  _impl_.secondarybundleid_ = ::int64_t{0};
+  ::memset(&_impl_.secondarybundleid_, 0, static_cast<::size_t>(
+      reinterpret_cast<char*>(&_impl_.skiponclaimall_) -
+      reinterpret_cast<char*>(&_impl_.secondarybundleid_)) + sizeof(_impl_.skiponclaimall_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Metadata::_InternalParse(
@@ -4800,19 +4525,19 @@ const char* Metadata::_InternalParse(
 
 
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
+const ::_pbi::TcParseTable<4, 9, 1, 111, 2> Metadata::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(Metadata, _impl_._has_bits_),
     0, // no _extensions_
-    7, 56,  // max_field_number, fast_idx_mask
+    9, 120,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967168,  // skipmap
+    4294966784,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    7,  // num_field_entries
+    9,  // num_field_entries
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Metadata_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string color = 1;
@@ -4834,8 +4559,20 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {50, 63, 0, PROTOBUF_FIELD_OFFSET(Metadata, _impl_.bundlemultiplier_)}},
     // int64 secondaryBundleId = 7;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint64_t, offsetof(Metadata, _impl_.secondarybundleid_), 63>(),
+    {::_pbi::TcParser::FastV64S1,
      {56, 63, 0, PROTOBUF_FIELD_OFFSET(Metadata, _impl_.secondarybundleid_)}},
+    // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+    {::_pbi::TcParser::FastV32S1,
+     {64, 63, 0, PROTOBUF_FIELD_OFFSET(Metadata, _impl_.animationonclaimtype_)}},
+    // bool skipOnClaimAll = 9;
+    {::_pbi::TcParser::FastV8S1,
+     {72, 63, 0, PROTOBUF_FIELD_OFFSET(Metadata, _impl_.skiponclaimall_)}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
+    {::_pbi::TcParser::MiniParse, {}},
   }}, {{
     65535, 65535
   }}, {{
@@ -4860,10 +4597,16 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
     // int64 secondaryBundleId = 7;
     {PROTOBUF_FIELD_OFFSET(Metadata, _impl_.secondarybundleid_), -1, 0,
     (0 | ::_fl::kFcSingular | ::_fl::kInt64)},
+    // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+    {PROTOBUF_FIELD_OFFSET(Metadata, _impl_.animationonclaimtype_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kOpenEnum)},
+    // bool skipOnClaimAll = 9;
+    {PROTOBUF_FIELD_OFFSET(Metadata, _impl_.skiponclaimall_), -1, 0,
+    (0 | ::_fl::kFcSingular | ::_fl::kBool)},
   }}, {{
     {::_pbi::TcParser::GetTable<::Digit::PrimePlatform::Content::Bucket>()},
   }}, {{
-    "\44\5\7\15\21\0\20\0"
+    "\44\5\7\15\21\0\20\0\0\0\0\0\0\0\0\0"
     "Digit.PrimePlatform.Content.Metadata"
     "color"
     "assetId"
@@ -4935,10 +4678,24 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
             stream, this->_internal_secondarybundleid(), target);
   }
 
+  // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+  if (this->_internal_animationonclaimtype() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteEnumToArray(
+        8, this->_internal_animationonclaimtype(), target);
+  }
+
+  // bool skipOnClaimAll = 9;
+  if (this->_internal_skiponclaimall() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::_pbi::WireFormatLite::WriteBoolToArray(
+        9, this->_internal_skiponclaimall(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Metadata)
   return target;
@@ -4996,19 +4753,33 @@ const ::_pbi::TcParseTable<3, 7, 1, 103, 2> Metadata::_table_ = {
         this->_internal_secondarybundleid());
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  // .Digit.PrimePlatform.Content.AnimationOnClaimType animationOnClaimType = 8;
+  if (this->_internal_animationonclaimtype() != 0) {
+    total_size += 1 +
+                  ::_pbi::WireFormatLite::EnumSize(this->_internal_animationonclaimtype());
+  }
+
+  // bool skipOnClaimAll = 9;
+  if (this->_internal_skiponclaimall() != 0) {
+    total_size += 2;
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Metadata::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Metadata::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Metadata::GetClassData() const { return &_class_data_; }
+void Metadata::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Metadata*>(
+      &from));
+}
 
-
-void Metadata::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Metadata*>(&to_msg);
-  auto& from = static_cast<const Metadata&>(from_msg);
+void Metadata::MergeFrom(const Metadata& from) {
+  Metadata* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Metadata)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -5036,7 +4807,13 @@ void Metadata::MergeImpl(::google::protobuf::Message& to_msg, const ::google::pr
   if (from._internal_secondarybundleid() != 0) {
     _this->_internal_set_secondarybundleid(from._internal_secondarybundleid());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  if (from._internal_animationonclaimtype() != 0) {
+    _this->_internal_set_animationonclaimtype(from._internal_animationonclaimtype());
+  }
+  if (from._internal_skiponclaimall() != 0) {
+    _this->_internal_set_skiponclaimall(from._internal_skiponclaimall());
+  }
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Metadata::CopyFrom(const Metadata& from) {
@@ -5067,18 +4844,17 @@ void Metadata::InternalSwap(Metadata* other) {
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.bundlemultiplier_, lhs_arena,
                                        &other->_impl_.bundlemultiplier_, rhs_arena);
   ::google::protobuf::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(Metadata, _impl_.secondarybundleid_)
-      + sizeof(Metadata::_impl_.secondarybundleid_)
+      PROTOBUF_FIELD_OFFSET(Metadata, _impl_.skiponclaimall_)
+      + sizeof(Metadata::_impl_.skiponclaimall_)
       - PROTOBUF_FIELD_OFFSET(Metadata, _impl_.bucket_)>(
           reinterpret_cast<char*>(&_impl_.bucket_),
           reinterpret_cast<char*>(&other->_impl_.bucket_));
 }
 
-::google::protobuf::Metadata Metadata::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[13]);
+std::string Metadata::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Metadata";
 }
+
 // ===================================================================
 
 class Hinting_TranslationKey::_Internal {
@@ -5086,11 +4862,11 @@ class Hinting_TranslationKey::_Internal {
 };
 
 Hinting_TranslationKey::Hinting_TranslationKey(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Hinting.TranslationKey)
 }
-Hinting_TranslationKey::Hinting_TranslationKey(const Hinting_TranslationKey& from) : ::google::protobuf::Message() {
+Hinting_TranslationKey::Hinting_TranslationKey(const Hinting_TranslationKey& from) : ::google::protobuf::MessageLite() {
   Hinting_TranslationKey* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -5098,7 +4874,7 @@ Hinting_TranslationKey::Hinting_TranslationKey(const Hinting_TranslationKey& fro
       decltype(_impl_.istranslated_){},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.field_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -5125,7 +4901,7 @@ inline void Hinting_TranslationKey::SharedCtor(::_pb::Arena* arena) {
 }
 Hinting_TranslationKey::~Hinting_TranslationKey() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Hinting.TranslationKey)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Hinting_TranslationKey::SharedDtor() {
@@ -5144,7 +4920,7 @@ PROTOBUF_NOINLINE void Hinting_TranslationKey::Clear() {
 
   _impl_.field_.ClearToEmpty();
   _impl_.istranslated_ = false;
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Hinting_TranslationKey::_InternalParse(
@@ -5167,10 +4943,10 @@ const ::_pbi::TcParseTable<1, 2, 0, 64, 2> Hinting_TranslationKey::_table_ = {
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     &_Hinting_TranslationKey_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // bool isTranslated = 2;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(Hinting_TranslationKey, _impl_.istranslated_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {16, 63, 0, PROTOBUF_FIELD_OFFSET(Hinting_TranslationKey, _impl_.istranslated_)}},
     // string field = 1;
     {::_pbi::TcParser::FastUS1,
@@ -5216,9 +4992,9 @@ const ::_pbi::TcParseTable<1, 2, 0, 64, 2> Hinting_TranslationKey::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Hinting.TranslationKey)
   return target;
@@ -5243,19 +5019,22 @@ const ::_pbi::TcParseTable<1, 2, 0, 64, 2> Hinting_TranslationKey::_table_ = {
     total_size += 2;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Hinting_TranslationKey::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Hinting_TranslationKey::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Hinting_TranslationKey::GetClassData() const { return &_class_data_; }
+void Hinting_TranslationKey::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Hinting_TranslationKey*>(
+      &from));
+}
 
-
-void Hinting_TranslationKey::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Hinting_TranslationKey*>(&to_msg);
-  auto& from = static_cast<const Hinting_TranslationKey&>(from_msg);
+void Hinting_TranslationKey::MergeFrom(const Hinting_TranslationKey& from) {
+  Hinting_TranslationKey* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Hinting.TranslationKey)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -5267,7 +5046,7 @@ void Hinting_TranslationKey::MergeImpl(::google::protobuf::Message& to_msg, cons
   if (from._internal_istranslated() != 0) {
     _this->_internal_set_istranslated(from._internal_istranslated());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Hinting_TranslationKey::CopyFrom(const Hinting_TranslationKey& from) {
@@ -5291,11 +5070,10 @@ void Hinting_TranslationKey::InternalSwap(Hinting_TranslationKey* other) {
         swap(_impl_.istranslated_, other->_impl_.istranslated_);
 }
 
-::google::protobuf::Metadata Hinting_TranslationKey::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[14]);
+std::string Hinting_TranslationKey::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Hinting.TranslationKey";
 }
+
 // ===================================================================
 
 class Hinting::_Internal {
@@ -5303,18 +5081,18 @@ class Hinting::_Internal {
 };
 
 Hinting::Hinting(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.Hinting)
 }
-Hinting::Hinting(const Hinting& from) : ::google::protobuf::Message() {
+Hinting::Hinting(const Hinting& from) : ::google::protobuf::MessageLite() {
   Hinting* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.translationkeys_){from._impl_.translationkeys_},
       /*decltype(_impl_._cached_size_)*/ {},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
 
   // @@protoc_insertion_point(copy_constructor:Digit.PrimePlatform.Content.Hinting)
@@ -5328,7 +5106,7 @@ inline void Hinting::SharedCtor(::_pb::Arena* arena) {
 }
 Hinting::~Hinting() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.Hinting)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void Hinting::SharedDtor() {
@@ -5346,7 +5124,7 @@ PROTOBUF_NOINLINE void Hinting::Clear() {
   (void) cached_has_bits;
 
   _internal_mutable_translationkeys()->Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* Hinting::_InternalParse(
@@ -5369,7 +5147,7 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> Hinting::_table_ = {
     1,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_Hinting_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     // repeated .Digit.PrimePlatform.Content.Hinting.TranslationKey translationKeys = 1;
     {::_pbi::TcParser::FastMtR1,
@@ -5402,9 +5180,9 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> Hinting::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.Hinting)
   return target;
@@ -5424,26 +5202,29 @@ const ::_pbi::TcParseTable<0, 1, 1, 0, 2> Hinting::_table_ = {
     total_size +=
       ::google::protobuf::internal::WireFormatLite::MessageSize(msg);
   }
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData Hinting::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    Hinting::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*Hinting::GetClassData() const { return &_class_data_; }
+void Hinting::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const Hinting*>(
+      &from));
+}
 
-
-void Hinting::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<Hinting*>(&to_msg);
-  auto& from = static_cast<const Hinting&>(from_msg);
+void Hinting::MergeFrom(const Hinting& from) {
+  Hinting* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.Hinting)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   _this->_internal_mutable_translationkeys()->MergeFrom(from._internal_translationkeys());
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void Hinting::CopyFrom(const Hinting& from) {
@@ -5463,11 +5244,10 @@ void Hinting::InternalSwap(Hinting* other) {
   _impl_.translationkeys_.InternalSwap(&other->_impl_.translationkeys_);
 }
 
-::google::protobuf::Metadata Hinting::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[15]);
+std::string Hinting::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.Hinting";
 }
+
 // ===================================================================
 
 class OfferDetails::_Internal {
@@ -5500,11 +5280,11 @@ void OfferDetails::clear_validuntiltimestamp() {
   _impl_._has_bits_[0] &= ~0x00000002u;
 }
 OfferDetails::OfferDetails(::google::protobuf::Arena* arena)
-    : ::google::protobuf::Message(arena) {
+    : ::google::protobuf::MessageLite(arena) {
   SharedCtor(arena);
   // @@protoc_insertion_point(arena_constructor:Digit.PrimePlatform.Content.OfferDetails)
 }
-OfferDetails::OfferDetails(const OfferDetails& from) : ::google::protobuf::Message() {
+OfferDetails::OfferDetails(const OfferDetails& from) : ::google::protobuf::MessageLite() {
   OfferDetails* const _this = this;
   (void)_this;
   new (&_impl_) Impl_{
@@ -5518,7 +5298,7 @@ OfferDetails::OfferDetails(const OfferDetails& from) : ::google::protobuf::Messa
       decltype(_impl_.sameremainingcount_){},
       decltype(_impl_.sameremainingcountvisible_){},
   };
-  _internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(
+  _internal_metadata_.MergeFrom<std::string>(
       from._internal_metadata_);
   _impl_.bonuslabel_.InitDefault();
   #ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
@@ -5570,7 +5350,7 @@ inline void OfferDetails::SharedCtor(::_pb::Arena* arena) {
 }
 OfferDetails::~OfferDetails() {
   // @@protoc_insertion_point(destructor:Digit.PrimePlatform.Content.OfferDetails)
-  _internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Delete<std::string>();
   SharedDtor();
 }
 inline void OfferDetails::SharedDtor() {
@@ -5607,7 +5387,7 @@ PROTOBUF_NOINLINE void OfferDetails::Clear() {
       reinterpret_cast<char*>(&_impl_.sameremainingcountvisible_) -
       reinterpret_cast<char*>(&_impl_.validcount_)) + sizeof(_impl_.sameremainingcountvisible_));
   _impl_._has_bits_.Clear();
-  _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
+  _internal_metadata_.Clear<std::string>();
 }
 
 const char* OfferDetails::_InternalParse(
@@ -5630,7 +5410,7 @@ const ::_pbi::TcParseTable<3, 7, 2, 69, 2> OfferDetails::_table_ = {
     2,  // num_aux_entries
     offsetof(decltype(_table_), aux_entries),
     &_OfferDetails_default_instance_._instance,
-    ::_pbi::TcParser::GenericFallback,  // fallback
+    ::_pbi::TcParser::GenericFallbackLite,  // fallback
   }, {{
     {::_pbi::TcParser::MiniParse, {}},
     // string bonusLabel = 1;
@@ -5640,7 +5420,7 @@ const ::_pbi::TcParseTable<3, 7, 2, 69, 2> OfferDetails::_table_ = {
     {::_pbi::TcParser::FastUS1,
      {18, 63, 0, PROTOBUF_FIELD_OFFSET(OfferDetails, _impl_.bonusvalue_)}},
     // int32 validCount = 3;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OfferDetails, _impl_.validcount_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {24, 63, 0, PROTOBUF_FIELD_OFFSET(OfferDetails, _impl_.validcount_)}},
     // .google.protobuf.Timestamp validFromTimestamp = 4;
     {::_pbi::TcParser::FastMtS1,
@@ -5649,10 +5429,10 @@ const ::_pbi::TcParseTable<3, 7, 2, 69, 2> OfferDetails::_table_ = {
     {::_pbi::TcParser::FastMtS1,
      {42, 1, 1, PROTOBUF_FIELD_OFFSET(OfferDetails, _impl_.validuntiltimestamp_)}},
     // int32 sameRemainingCount = 6;
-    {::_pbi::TcParser::SingularVarintNoZag1<::uint32_t, offsetof(OfferDetails, _impl_.sameremainingcount_), 63>(),
+    {::_pbi::TcParser::FastV32S1,
      {48, 63, 0, PROTOBUF_FIELD_OFFSET(OfferDetails, _impl_.sameremainingcount_)}},
     // bool sameRemainingCountVisible = 7;
-    {::_pbi::TcParser::SingularVarintNoZag1<bool, offsetof(OfferDetails, _impl_.sameremainingcountvisible_), 63>(),
+    {::_pbi::TcParser::FastV8S1,
      {56, 63, 0, PROTOBUF_FIELD_OFFSET(OfferDetails, _impl_.sameremainingcountvisible_)}},
   }}, {{
     65535, 65535
@@ -5749,9 +5529,9 @@ const ::_pbi::TcParseTable<3, 7, 2, 69, 2> OfferDetails::_table_ = {
   }
 
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target =
-        ::_pbi::WireFormat::InternalSerializeUnknownFieldsToArray(
-            _internal_metadata_.unknown_fields<::google::protobuf::UnknownFieldSet>(::google::protobuf::UnknownFieldSet::default_instance), target, stream);
+    target = stream->WriteRaw(
+        _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).data(),
+        static_cast<int>(_internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size()), target);
   }
   // @@protoc_insertion_point(serialize_to_array_end:Digit.PrimePlatform.Content.OfferDetails)
   return target;
@@ -5811,19 +5591,22 @@ const ::_pbi::TcParseTable<3, 7, 2, 69, 2> OfferDetails::_table_ = {
     total_size += 2;
   }
 
-  return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    total_size += _internal_metadata_.unknown_fields<std::string>(::google::protobuf::internal::GetEmptyString).size();
+  }
+  int cached_size = ::_pbi::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
 }
 
-const ::google::protobuf::Message::ClassData OfferDetails::_class_data_ = {
-    ::google::protobuf::Message::CopyWithSourceCheck,
-    OfferDetails::MergeImpl
-};
-const ::google::protobuf::Message::ClassData*OfferDetails::GetClassData() const { return &_class_data_; }
+void OfferDetails::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::_pbi::DownCast<const OfferDetails*>(
+      &from));
+}
 
-
-void OfferDetails::MergeImpl(::google::protobuf::Message& to_msg, const ::google::protobuf::Message& from_msg) {
-  auto* const _this = static_cast<OfferDetails*>(&to_msg);
-  auto& from = static_cast<const OfferDetails&>(from_msg);
+void OfferDetails::MergeFrom(const OfferDetails& from) {
+  OfferDetails* const _this = this;
   // @@protoc_insertion_point(class_specific_merge_from_start:Digit.PrimePlatform.Content.OfferDetails)
   ABSL_DCHECK_NE(&from, _this);
   ::uint32_t cached_has_bits = 0;
@@ -5855,7 +5638,7 @@ void OfferDetails::MergeImpl(::google::protobuf::Message& to_msg, const ::google
   if (from._internal_sameremainingcountvisible() != 0) {
     _this->_internal_set_sameremainingcountvisible(from._internal_sameremainingcountvisible());
   }
-  _this->_internal_metadata_.MergeFrom<::google::protobuf::UnknownFieldSet>(from._internal_metadata_);
+  _this->_internal_metadata_.MergeFrom<std::string>(from._internal_metadata_);
 }
 
 void OfferDetails::CopyFrom(const OfferDetails& from) {
@@ -5887,11 +5670,10 @@ void OfferDetails::InternalSwap(OfferDetails* other) {
           reinterpret_cast<char*>(&other->_impl_.validfromtimestamp_));
 }
 
-::google::protobuf::Metadata OfferDetails::GetMetadata() const {
-  return ::_pbi::AssignDescriptors(
-      &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_getter, &descriptor_table_Digit_2ePrimePlatform_2eContent_2eproto_once,
-      file_level_metadata_Digit_2ePrimePlatform_2eContent_2eproto[16]);
+std::string OfferDetails::GetTypeName() const {
+  return "Digit.PrimePlatform.Content.OfferDetails";
 }
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace Content
 }  // namespace PrimePlatform

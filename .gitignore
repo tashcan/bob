@@ -1,8 +1,12 @@
 .vscode/
 .vs/
-out/
-build/
+/out/
+/build/
 *.code-workspace
-/app/
 /.cache/
 compile_commands.json
+version.aps
+*.vars
+debug.log
+enc_temp_folder/
+/app/

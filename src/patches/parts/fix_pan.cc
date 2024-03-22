@@ -4,12 +4,11 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
+#include "MapKey.h"
 #include "utils.h"
 
 #include <prime/NavigationPan.h>
 #include <prime/TKTouch.h>
-
-#include <xorstr.hpp>
 
 TKTouch *TKTouch_populateWithPosition_Hook(auto original, TKTouch *_this, uintptr_t pos, int phase)
 {
@@ -23,11 +22,14 @@ TKTouch *TKTouch_populateWithPosition_Hook(auto original, TKTouch *_this, uintpt
 bool NavigationPan_LateUpdate_Hook(auto original, NavigationPan *_this)
 {
   auto d = _this->_lastDelta;
-  auto r = original(_this);
+
+  if (!Config::Get().disable_move_keys) {
+    original(_this);
+  }
 
   static auto GetMouseButton =
-      il2cpp_resolve_icall<bool(int)>(xorstr_("UnityEngine.Input::GetMouseButton(System.Int32)"));
-  static auto GetTouchCount = il2cpp_resolve_icall<int()>(xorstr_("UnityEngine.Input::get_touchCount()"));
+      il2cpp_resolve_icall<bool(int)>("UnityEngine.Input::GetMouseButton(System.Int32)");
+  static auto GetTouchCount = il2cpp_resolve_icall<int()>("UnityEngine.Input::get_touchCount()");
 
   if (_this->BlockPan() || _this->_trackingPOI) {
     d->x = 0.0f;
@@ -46,7 +48,7 @@ bool NavigationPan_LateUpdate_Hook(auto original, NavigationPan *_this)
 void InstallPanHooks()
 {
   auto helper = il2cpp_get_class_helper("Assembly-CSharp-firstpass", "", "TKTouch");
-  auto ptr    = helper.GetMethodXor("populateWithPosition");
+  auto ptr    = helper.GetMethod("populateWithPosition");
   if (!ptr) {
     return;
   }
@@ -54,7 +56,7 @@ void InstallPanHooks()
 
   auto h = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Navigation", "NavigationPan");
 
-  ptr = h.GetMethodXor("LateUpdate");
+  ptr = h.GetMethod("LateUpdate");
   if (!ptr) {
     return;
   }

@@ -24,7 +24,7 @@ private:
 public:
   int __get_Count()
   {
-    static auto field = get_class_helper().GetField(xorstr_("_size")).offset();
+    static auto field = get_class_helper().GetField("_size").offset();
     return *(int*)((char*)this + field);
   }
 };
