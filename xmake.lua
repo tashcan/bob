@@ -7,6 +7,7 @@ add_requires("spdlog")
 add_requires("protobuf-cpp")
 add_requires("toml++")
 add_requires("nlohmann_json")
+add_requires("inifile-cpp")
 
 if is_plat("windows") then
     includes("win-proxy-dll")
