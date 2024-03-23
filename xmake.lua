@@ -15,6 +15,7 @@ end
 if is_plat("macosx") then
     includes("macos-dylib")
     includes("macos-loader")
+    includes("macos-launcher")
 end
 
 add_rules("mode.debug")
