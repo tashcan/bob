@@ -8,6 +8,9 @@ add_requires("protobuf-cpp")
 add_requires("toml++")
 add_requires("nlohmann_json")
 add_requires("inifile-cpp")
+add_requires("7z")
+add_requires("lzma")
+add_requires("librsync")
 
 if is_plat("windows") then
     includes("win-proxy-dll")
