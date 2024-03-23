@@ -56,7 +56,10 @@ jobs:
       - name: Build
         run: xmake -y
 
+      - name: Create App Bundle
+        run: scripts/create-mac-dmg.sh
+
       - uses: actions/upload-artifact@v2
         with:
-          name: stfc-community-patch
-          path: build/macosx/
+          name: stfc-community-patch-installer.dmg
+          path: build/macosx/x86_64/STFC-Community-Patch-Installer.dmg
