@@ -221,14 +221,6 @@ select_ship7 = '7'
 # Select ship 8 (or locate on second press)
 select_ship8 = '8'
 
-# Zoom shortcuts
-set_zoom_default = 'CTRL-='
-set_zoom_preset1 = 'SHIFT-F1'
-set_zoom_preset2 = 'SHIFT-F2'
-set_zoom_preset3 = 'SHIFT-F3'
-set_zoom_preset4 = 'SHIFT-F4'
-set_zoom_preset5 = 'SHIFT-F5'
-
 # Show alliance screen
 show_alliance = '\'
 
@@ -329,6 +321,7 @@ zoom_preset4 = 'F4'
 zoom_preset5 = 'F5'
 
 # Set zoom presets from zoom for current session
+set_zoom_default = 'CTRL-='
 set_zoom_preset1 = 'SHIFT-F1'
 set_zoom_preset2 = 'SHIFT-F2'
 set_zoom_preset3 = 'SHIFT-F3'
