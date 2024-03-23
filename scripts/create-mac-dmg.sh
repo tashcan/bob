@@ -14,6 +14,8 @@ cp assets/launcher.icns build/macosx/x86_64/release/macOSLauncher.app/Contents/R
 rm -r build/macosx/x86_64/release/STFC\ Community\ Patch.app || true
 mv build/macosx/x86_64/release/macOSLauncher.app build/macosx/x86_64/release/STFC\ Community\ Patch.app
 
+codesign --force --verify --verbose --deep --sign "-" build/macosx/x86_64/release/STFC\ Community\ Patch.app
+
 rm STFC-Community-Patch-Installer.dmg || true
 create-dmg \
   --volname "STFC Community Patch Installer" \

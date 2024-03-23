@@ -40,7 +40,7 @@ jobs:
           path: version.dll
 
   build-mac:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v4
         with:
@@ -50,11 +50,18 @@ jobs:
         with:
           xmake-version: latest
 
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
       - name: Configure
-        run: xmake f -m releasedbg -y -a x86_64 -v
+        run: xmake f -m release -y -a x86_64 -v
 
       - name: Build
         run: xmake -y
+
+      - name: Install brew things
+        run: brew install create-dmg
 
       - name: Create App Bundle
         run: scripts/create-mac-dmg.sh
@@ -62,4 +69,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: stfc-community-patch-installer.dmg
-          path: build/macosx/x86_64/STFC-Community-Patch-Installer.dmg
+          path: STFC-Community-Patch-Installer.dmg
