@@ -32,7 +32,7 @@ public:
 
   __declspec(property(get = __get_Distance, put = __set_Distance)) float Distance;
 
-  __declspec(property(get = __get__depth, put = __set_depth)) int _depth;
+  __declspec(property(get = __get__depth, put = __set_depth)) NodeDepth _depth;
   //
   __declspec(property(get = __get__storedZoomDistanceSystem,
                       put = __set__storedZoomDistanceSystem)) float _storedZoomDistanceSystem;
@@ -74,16 +74,16 @@ public:
     return field.SetRaw(this, depth);
   }
 
-  int __get__depth()
+  NodeDepth __get__depth()
   {
     static auto field = get_class_helper().GetField("_depth");
-    return *(int*)((ptrdiff_t)this + field.offset());
+    return *(NodeDepth*)((ptrdiff_t)this + field.offset());
   }
 
-  void __set_depth(int depth)
+  void __set_depth(NodeDepth depth)
   {
-    static auto field                         = get_class_helper().GetField("_depth");
-    *(int*)((ptrdiff_t)this + field.offset()) = depth;
+    static auto field                               = get_class_helper().GetField("_depth");
+    *(NodeDepth*)((ptrdiff_t)this + field.offset()) = depth;
   }
 
   float __get__viewRadius()
