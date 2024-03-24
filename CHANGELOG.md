@@ -1,5 +1,10 @@
 # Change Log
 
+## 0.6.1
+
+- Switch to xmake
+- When ui_scale set to 0.0f disable all scaling features
+_
 ## 0.6.0
 
 - Add customisable hotkeys

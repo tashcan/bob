@@ -27,29 +27,31 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
 {
   original(_this);
 
-  static auto get_height_method = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_height()");
-  static auto get_width_method  = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_width()");
+  if (Config::Get().ui_scale != 0.0f) {
+    static auto get_height_method = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_height()");
+    static auto get_width_method  = il2cpp_resolve_icall<int()>("UnityEngine.Screen::get_width()");
 
-  static auto ref_height = 1080;
-  static auto ref_width  = 1920;
+    static auto ref_height = 1080;
+    static auto ref_width  = 1920;
 
-  auto scr_height = (float)get_height_method();
-  auto scr_width  = (float)get_width_method();
-  auto dpi        = Config::GetDPI();
+    auto scr_height = (float)get_height_method();
+    auto scr_width  = (float)get_width_method();
+    auto dpi        = Config::GetDPI();
 
-  auto adjustedFactor = scr_height / (float)ref_height;
+    auto adjustedFactor = scr_height / (float)ref_height;
 
-  if (!Config::Get().adjust_scale_res) {
-    adjustedFactor = 1.0f;
+    if (!Config::Get().adjust_scale_res) {
+      adjustedFactor = 1.0f;
+    }
+
+    auto n = (Config::Get().ui_scale * adjustedFactor * dpi);
+    if (isnan(n)) {
+      n = 1.0f;
+    }
+    n = std::clamp(n, 0.1f, 5.0f);
+
+    _this->m_canvasRootScaler->scaleFactor = n;
   }
-
-  auto n = (Config::Get().ui_scale * adjustedFactor * dpi);
-  if (isnan(n)) {
-    n = 1.0f;
-  }
-  n = std::clamp(n, 0.1f, 5.0f);
-
-  _this->m_canvasRootScaler->scaleFactor = n;
 }
 
 BOOL SetWindowPos_Hook(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)

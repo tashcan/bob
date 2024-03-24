@@ -121,14 +121,16 @@ float Config::GetDPI()
 
 void Config::AdjustUiScale(bool scaleUp)
 {
-  auto old_scale    = this->ui_scale;
-  auto scale_factor = (scaleUp ? 1.0f : -1.0f) * this->ui_scale_adjust;
-  auto new_scale    = this->ui_scale + scale_factor;
-  this->ui_scale    = std::clamp(new_scale, 0.1f, 2.0f);
+  if (this->ui_scale != 0.0f) {
+    auto old_scale    = this->ui_scale;
+    auto scale_factor = (scaleUp ? 1.0f : -1.0f) * this->ui_scale_adjust;
+    auto new_scale    = this->ui_scale + scale_factor;
+    this->ui_scale    = std::clamp(new_scale, 0.1f, 2.0f);
 
-  auto dpi = Config::RefreshDPI();
-  spdlog::info("UI has been scaled {}, was {}, now {} (unclamped {}) @ {} DPI Scaling", (scaleUp ? "UP" : "DOWN"),
-               old_scale, this->ui_scale, new_scale, dpi);
+    auto dpi = Config::RefreshDPI();
+    spdlog::info("UI has been scaled {}, was {}, now {} (unclamped {}) @ {} DPI Scaling", (scaleUp ? "UP" : "DOWN"),
+                 old_scale, this->ui_scale, new_scale, dpi);
+  }
 }
 
 std::string get_config_type_as_string(toml::node_type type)
