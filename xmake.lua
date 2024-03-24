@@ -11,6 +11,7 @@ add_requires("inifile-cpp")
 add_requires("7z")
 add_requires("lzma")
 add_requires("librsync")
+add_requires("libcurl", { configs = { zlib = true }})
 
 if is_plat("windows") then
     includes("win-proxy-dll")
@@ -25,7 +26,6 @@ end
 add_rules("mode.debug")
 add_rules("mode.releasedbg")
 
-
 package("libil2cpp")
 on_fetch(function(package, opt)
     return { includedirs = path.join(os.scriptdir(), "third_party/libil2cpp") }
@@ -34,7 +34,6 @@ package_end()
 
 add_requires("spud v0.2.0.alpha.4")
 add_requires("libil2cpp")
-add_requires("cpp-httplib")
 add_requires("simdutf")
 
 -- includes("launcher")

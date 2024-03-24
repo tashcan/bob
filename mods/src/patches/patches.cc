@@ -57,7 +57,7 @@ __int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::info("Initializing STFC Community Patch ({})", VER_PRODUCT_VERSION_STR);
 
-  const std::pair<std::string, void (*)()> patches[] = {
+  const std::pair<const char*, void (*)()> patches[] = {
     {"UiScaleHooks", InstallUiScaleHooks},
     {"ZoomHooks", InstallZoomHooks},
     {"BuffFixHooks", InstallBuffFixHooks},
