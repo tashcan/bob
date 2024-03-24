@@ -19,17 +19,21 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
+  
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
 
-      - name: Configure CMake
-        run: cmake -G "Ninja Multi-Config" -B build -S ${{ github.workspace }}
+      - name: Configure
+        run: xmake f -m releasedbg -y
 
       - name: Build
-        run: cmake --build build --target stfc-community-patch -j --config Release
-
+        run: xmake -y
+  
       - name: Package
         run: |
-          mv build/Release/stfc-community-patch.dll version.dll
-
+          mv build/windows/x64/releasedbg/stfc-community-patch.dll version.dll
+  
       - uses: actions/upload-artifact@v2
         with:
           name: stfc-community-patch

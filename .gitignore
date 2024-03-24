@@ -1,4 +1,5 @@
-.vscode/
+.vscode/*
+!.vscode/extensions.json
 .vs/
 /out/
 /build/
@@ -8,5 +9,6 @@ compile_commands.json
 version.aps
 *.vars
 debug.log
-enc_temp_folder/
 /app/
+/.xmake/
+/vsxmake*/

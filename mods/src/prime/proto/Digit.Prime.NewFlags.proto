@@ -1,0 +1,18 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.Prime.NewFlags;
+
+message NewFlagCacheMap {
+  map<int64, bool> items = 1;
+  map<int64, int32> itemFlags = 2;
+}
+
+message NewFlagDataCache {
+  map<int32, NewFlagCacheMap> categories = 1;
+  int32 version = 2;
+}
+

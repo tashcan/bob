@@ -1,0 +1,71 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.Platform.Models;
+
+message FileSignedURLsHolder {
+  int64 expireIn = 1;
+  repeated FileSignedURLData files = 2;
+  uint32 maxFileSize = 3;
+  uint32 code = 4;
+}
+
+message SignedPOSTData {
+  string url = 1;
+  repeated FormFieldEntry formFields = 2;
+}
+
+message Error {
+  int32 code = 1;
+  string type = 2;
+  string error_ = 3;
+}
+
+message FileSignedURLData {
+  string name = 1;
+  string getUrl = 2;
+  SignedPOSTData postData = 3;
+  string deleteUrl = 4;
+}
+
+message FormFieldEntry {
+  string name = 1;
+  string value = 2;
+}
+
+message EntityGroup {
+enum Type {
+  TYPE_STATICTRANSLATIONS = 0;
+  TYPE_DYNAMICTRANSLATIONS = 1;
+  TYPE_STOREOFFERS = 2;
+  TYPE_ORDERVIRTUALGOOD = 3;
+  TYPE_JSON = 4;
+  TYPE_TOURNAMENTBUNDLES = 5;
+  TYPE_EVENTRANKING = 6;
+  TYPE_EVENTSMODEL = 7;
+  TYPE_LEADERBOARDRANKING = 8;
+  TYPE_LEADERBOARDSMODEL = 9;
+  TYPE_EVENTNOTIFICATION = 10;
+  TYPE_PLAYERSTATS = 11;
+  TYPE_GAMENEWS = 12;
+  TYPE_FILESIGNEDURLS = 13;
+  TYPE_GAMEINFO = 14;
+  TYPE_PLAYERPROFILES = 15;
+  TYPE_PLAYERLIFECYCLENOTIFICATION = 16;
+  TYPE_MINIGAMESLIST = 17;
+  TYPE_GAMENEWSVIDEO = 18;
+}
+
+  Type type = 1;
+  bytes group = 2;
+}
+
+message ServiceResponse {
+  repeated EntityGroup entityGroups = 1;
+  google.protobuf.Timestamp serverTime = 2;
+  Error error = 3;
+}
+

@@ -1,0 +1,42 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.Client.SaveSystem;
+
+enum CloudSectionType {
+  CLOUDSECTIONTYPE_BOOKMARKS = 0;
+  CLOUDSECTIONTYPE_PLAYERPREFS = 1;
+  CLOUDSECTIONTYPE_TUTORIALSTATE = 2;
+  CLOUDSECTIONTYPE_NEWFLAGS = 3;
+  CLOUDSECTIONTYPE_FAVOURITEDMISSIONS = 4;
+  CLOUDSECTIONTYPE_ARCHIVEDMISSIONS = 5;
+  CLOUDSECTIONTYPE_TCSLIDESHOWFLAG = 6;
+}
+
+enum CloudFileType {
+  CLOUDFILETYPE_STARTUP = 0;
+  CLOUDFILETYPE_NORMAL = 1;
+}
+
+message CloudBlob {
+  CloudBlobMetaData metadata = 1;
+  repeated CloudSection sections = 2;
+}
+
+message CloudSection {
+  CloudSectionMetaData metadata = 1;
+  bytes group = 2;
+}
+
+message CloudSectionMetaData {
+  google.protobuf.Timestamp timestamp = 1;
+  CloudSectionType sectionType = 2;
+}
+
+message CloudBlobMetaData {
+  CloudFileType filetype = 1;
+}
+

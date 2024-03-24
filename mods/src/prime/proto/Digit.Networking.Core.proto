@@ -1,0 +1,11 @@
+syntax="proto3";
+
+option optimize_for = LITE_RUNTIME;
+
+import "google/protobuf/timestamp.proto";
+
+package Digit.Networking.Core;
+
+message CacheMap {
+}
+
