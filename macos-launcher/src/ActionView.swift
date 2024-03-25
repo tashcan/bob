@@ -11,6 +11,7 @@ struct ActionView: View, XSollaUpdaterDelegate {
   @State private var updateSubAction: String = ""
   @State private var updateProgress: Float = 0.0
   @State private var gameInstalled: Bool = false
+  @State private var gameRunning: Bool = false
   private var model = PulsatingViewModel()
 
   func updateProgress(progress: XsollaUpdateProgress) {
@@ -98,7 +99,7 @@ struct ActionView: View, XSollaUpdaterDelegate {
             }.buttonStyle(PlainButtonStyle())
             Button {
               withAnimation {
-                launchSTFC()
+                launchGame()
               }
             } label: {
               commonButton(text: "Engage!")
@@ -119,8 +120,8 @@ struct ActionView: View, XSollaUpdaterDelegate {
           }
 
         }
-        .opacity(updating ? 0.5 : 1.0)
-        .allowsHitTesting(!updating)
+        .opacity(updating || gameRunning ? 0.5 : 1.0)
+        .allowsHitTesting(!updating && !gameRunning)
       }
       .frame(width: geo.size.width, height: 150)
       .offset(x: 85, y: 20)
@@ -177,14 +178,30 @@ struct ActionView: View, XSollaUpdaterDelegate {
       .joined()
   }
 
-  private func launchSTFC() {
-    let process = Process()
-    let helper = Bundle.main.path(forAuxiliaryExecutable: "stfc-community-patch-loader")
-    process.executableURL = URL(fileURLWithPath: helper!)
-    try! process.run()
-    process.waitUntilExit()
+  private func launchGame() {
+    DispatchQueue.global().async {
+      DispatchQueue.main.async {
+        gameRunning = true
+      }
+      let process = Process()
+      let helper = Bundle.main.path(forAuxiliaryExecutable: "stfc-community-patch-loader")
+      process.executableURL = URL(fileURLWithPath: helper!)
+      DispatchQueue.global().async {
+        do {
+          try process.run()
+        } catch {
+          DispatchQueue.main.async {
+            gameRunning = false
+          }
+          return
+        }
+        process.waitUntilExit()
+        DispatchQueue.main.async {
+          gameRunning = false
+        }
+      }
+    }
   }
-
 }
 
 class PulsatingViewModel: ObservableObject {
