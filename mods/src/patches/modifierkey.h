@@ -7,6 +7,7 @@
 #include "key.h"
 
 #include <string>
+#include <vector>
 
 struct ModifierKey
 {

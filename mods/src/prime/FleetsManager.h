@@ -24,7 +24,7 @@ public:
   private:
     static IL2CppClassHelper& get_class_helper()
     {
-      auto class_helper = FleetsManager::get_class_helper().GetNestedType("<Tow>d__170");
+      static auto class_helper = FleetsManager::get_class_helper().GetNestedType("<Tow>d__170");
       return class_helper;
     }
   };

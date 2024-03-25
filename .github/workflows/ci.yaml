@@ -5,21 +5,21 @@ on:
     branches:
       - "**"
   pull_request:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
 
 jobs:
-  build:
+  build-win:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
 
       - uses: seanmiddleditch/gha-setup-ninja@master
       - uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: amd64
-  
+
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
@@ -29,12 +29,44 @@ jobs:
 
       - name: Build
         run: xmake -y
-  
+
       - name: Package
         run: |
           mv build/windows/x64/releasedbg/stfc-community-patch.dll version.dll
-  
+
       - uses: actions/upload-artifact@v2
         with:
           name: stfc-community-patch
           path: version.dll
+
+  build-mac:
+    runs-on: macos-13
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+
+      - uses: xmake-io/github-action-setup-xmake@v1
+        with:
+          xmake-version: latest
+
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Configure
+        run: xmake f -m release -y -a x86_64 -v
+
+      - name: Build
+        run: xmake -y
+
+      - name: Install brew things
+        run: brew install create-dmg
+
+      - name: Create App Bundle
+        run: scripts/create-mac-dmg.sh
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: stfc-community-patch-installer.dmg
+          path: STFC-Community-Patch-Installer.dmg

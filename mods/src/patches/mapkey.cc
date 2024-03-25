@@ -1,23 +1,18 @@
-#include "config.h"
-#include "prime/EventSystem.h"
-#include "utils.h"
-#include "str_utils.h"
-#include "key.h"
 #include "mapkey.h"
+#include "gamefunctions.h"
 #include "modifierkey.h"
-#include "prime/TMP_InputField.h"
+#include "str_utils.h"
+#include <prime/KeyCode.h>
 
-#include <cstdint>
+#include <array>
 #include <iostream>
-#include <map>
-#include <sstream>
-#include <stdio.h>
 #include <string>
 #include <string_view>
+#include <vector>
 
 MapKey::MapKey()
 {
-  this->Key = KeyCode::None;
+  this->Key          = KeyCode::None;
   this->hasModifiers = false;
 }
 

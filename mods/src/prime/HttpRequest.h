@@ -4,7 +4,7 @@
 
 struct HttpRequest {
 public:
-  const wchar_t* get_URL()
+  const Il2CppChar* get_URL()
   {
     static auto prop = get_class_helper().GetProperty("URL");
     auto        s    = prop.Get<Il2CppString>((void*)this);

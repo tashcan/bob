@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Windows.h>
-
-#include "utils.h"
 #include "il2cpp-functions.h"
 
 #include <il2cpp-api-types.h>
@@ -14,6 +11,11 @@
 #include <EASTL/span.h>
 #include <EASTL/unordered_map.h>
 #include <EASTL/vector.h>
+
+#if !_WIN32
+#include <syslog.h>
+#include <unistd.h>
+#endif
 
 class IL2CppPropertyHelper
 {
@@ -105,7 +107,7 @@ public:
 
   template <typename T> inline T Get() const
   {
-    T           v;
+    T v;
     il2cpp_field_static_get_value(this->fieldInfo, &v);
     return v;
   }
@@ -340,3 +342,8 @@ public:
     return {reinterpret_cast<T**>(objects.data()), reinterpret_cast<T**>(objects.data()) + objects.size()};
   }
 };
+
+template <typename T> T* il2cpp_resolve_icall_typed(const char* name)
+{
+  return (T*)il2cpp_resolve_icall(name);
+}

@@ -1,25 +1,19 @@
 #include "config.h"
-#include "prime_types.h"
 
-#include "patches/mapkey.h"
-#include "utils.h"
-#include <spdlog/spdlog.h>
-#include <spud/detour.h>
+#include <patches/mapkey.h>
 
 #include <il2cpp/il2cpp_helper.h>
 
-#include "prime/EventSystem.h"
-#include "prime/Hub.h"
-#include "prime/KeyCode.h"
-#include "prime/NavigationPan.h"
-#include "prime/NavigationZoom.h"
-#include "prime/ScreenManager.h"
-#include "prime/TMP_InputField.h"
+#include <prime/NavigationPan.h>
+#include <prime/NavigationZoom.h>
+
+#include <spdlog/spdlog.h>
+#include <spud/detour.h>
 
 vec3 GetMouseWorldPos(void *cam, vec3 *pos)
 {
   static auto class_helper = il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.Client.Core", "MathUtils");
-  static auto fn                                = class_helper.GetMethodInfo("GetMouseWorldPos");
+  static auto fn           = class_helper.GetMethodInfo("GetMouseWorldPos");
 
   void            *args[2]   = {cam, (void *)pos};
   Il2CppException *exception = NULL;
@@ -39,8 +33,8 @@ inline void StoreZoom(std::string label, float &zoom, NavigationZoom *_this)
 void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 {
   static auto GetMousePosition =
-      il2cpp_resolve_icall<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
-  static auto GetDeltaTime = il2cpp_resolve_icall<float()>("UnityEngine.Time::get_deltaTime()");
+      il2cpp_resolve_icall_typed<void(vec3 *)>("UnityEngine.Input::get_mousePosition_Injected(UnityEngine.Vector3&)");
+  static auto GetDeltaTime = il2cpp_resolve_icall_typed<float()>("UnityEngine.Time::get_deltaTime()");
 
   const auto dt               = GetDeltaTime();
   auto       zoomDelta        = 0.0f;
@@ -147,14 +141,67 @@ void NavigationZoom_SetViewParameters_Hook(auto original, NavigationZoom *_this,
   }
 }
 
+void NavigationZoom_ApplyRangeChanges_Hook(auto original, NavigationZoom *_this)
+{
+  if (_this->_depth == NodeDepth::SolarSystem) {
+    auto ratio                     = (Config::Get().zoom / _this->_viewRadius);
+    _this->_farRatioSystemNormal   = 0.55f * ratio;
+    _this->_farRatioSystemExtended = 1 * ratio;
+    original(_this);
+    _this->_sceneCamera->farClipPlane = Config::Get().zoom * 2.75f;
+    do_default_zoom                   = true;
+  } else {
+    original(_this);
+  }
+}
+
+void NavigationZoom_SetDepth_Hook(auto original, NavigationZoom *_this, NodeDepth depth)
+{
+  if (depth == NodeDepth::SolarSystem) {
+    auto ratio                        = (Config::Get().zoom / _this->_viewRadius);
+    _this->_farRatioSystemNormal      = 0.55f * ratio;
+    _this->_farRatioSystemExtended    = 1 * ratio;
+    _this->_sceneCamera->farClipPlane = Config::Get().zoom * 3.75f;
+    original(_this, depth);
+    _this->_sceneCamera->farClipPlane = Config::Get().zoom * 3.75f;
+    do_default_zoom                   = true;
+  } else {
+    original(_this, depth);
+  }
+}
+
+void NavigationCamera_SetSystemViewSizeData_Hook(auto original, uint8_t *_this_cam, float radius, Vector3 *systemPos,
+                                                 NodeDepth depth)
+{
+  if (depth == NodeDepth::SolarSystem) {
+    auto _this                     = *(NavigationZoom **)(_this_cam + 0x20);
+    auto ratio                     = (Config::Get().zoom / radius);
+    _this->_farRatioSystemNormal   = 0.55f * ratio;
+    _this->_farRatioSystemExtended = 1 * ratio;
+    original(_this_cam, radius, systemPos, depth);
+    _this->_sceneCamera->farClipPlane = Config::Get().zoom * 2.75f;
+    do_default_zoom                   = true;
+  } else {
+    original(_this_cam, radius, systemPos, depth);
+  }
+}
+
 void InstallZoomHooks()
 {
   auto screen_manager_helper   = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Navigation", "NavigationZoom");
   auto ptr_set_view_parameters = screen_manager_helper.GetMethod("SetViewParameters");
   auto ptr_update              = screen_manager_helper.GetMethod("Update");
-  if (!ptr_set_view_parameters || !ptr_update) {
-    return;
-  }
+  auto ptr_apply_range_changes = screen_manager_helper.GetMethod("ApplyRangeChanges");
+  auto ptr_set_depth           = screen_manager_helper.GetMethod("SetDepth");
   SPUD_STATIC_DETOUR(ptr_update, NavigationZoom_Update_Hook);
+  SPUD_STATIC_DETOUR(ptr_set_depth, NavigationZoom_SetDepth_Hook);
+
+#if _WIN32
   SPUD_STATIC_DETOUR(ptr_set_view_parameters, NavigationZoom_SetViewParameters_Hook);
+  // SPUD_STATIC_DETOUR(ptr_apply_range_changes, NavigationZoom_ApplyRangeChanges_Hook);
+#endif
+
+  // auto navigation_camera = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Navigation", "NavigationCamera");
+  // auto ptr_set_system_view_size_data = navigation_camera.GetMethod("SetSystemViewSizeData");
+  // SPUD_STATIC_DETOUR(ptr_set_system_view_size_data, NavigationCamera_SetSystemViewSizeData_Hook);
 }

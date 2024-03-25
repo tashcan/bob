@@ -1,24 +1,21 @@
 #include "config.h"
-#include "prime_types.h"
 
-#include <spud/detour.h>
-
-#include "utils.h"
-
-#include "prime/BundleDataWidget.h"
-#include "prime/ClientModifierType.h"
-#include "prime/Hub.h"
-#include "prime/IList.h"
-#include "prime/InventoryForPopup.h"
-#include "prime/ShopSummaryDirector.h"
+#include <prime/BundleDataWidget.h>
+#include <prime/ClientModifierType.h>
+#include <prime/Hub.h>
+#include <prime/IList.h>
+#include <prime/InventoryForPopup.h>
+#include <prime/ShopSummaryDirector.h>
 
 #include <il2cpp/il2cpp_helper.h>
 
-#include <algorithm>
-#include <chrono>
-#include <iostream>
+#include <spud/detour.h>
 
-#include "spdlog/spdlog.h"
+#if _WIN32
+#include <Windows.h>
+#endif
+
+#include <algorithm>
 
 int64_t InventoryForPopup_set_MaxItemsToUse(auto original, InventoryForPopup* a1, int64_t a2)
 {
@@ -76,6 +73,7 @@ ResolutionArray* GetResolutions_Hook(auto original)
 {
   auto resolutions = original();
 
+#if _WIN32
   // Modify
   auto screenWidth  = GetSystemMetrics(SM_CXSCREEN);
   auto screenHeight = GetSystemMetrics(SM_CYSCREEN);
@@ -107,13 +105,14 @@ ResolutionArray* GetResolutions_Hook(auto original)
     ++i;
   }
   resolutions->maxlength = res.size();
+#endif
 
   return resolutions;
 }
 
 void InstallResolutionListFix()
 {
-  SPUD_STATIC_DETOUR(il2cpp_resolve_icall<ResolutionArray*()>("UnityEngine.Screen::get_resolutions()"),
+  SPUD_STATIC_DETOUR(il2cpp_resolve_icall_typed<ResolutionArray*()>("UnityEngine.Screen::get_resolutions()"),
                      GetResolutions_Hook);
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "config.h"
-#include "utils.h"
 #include "str_utils.h"
 #include "key.h"
 #include "modifierkey.h"

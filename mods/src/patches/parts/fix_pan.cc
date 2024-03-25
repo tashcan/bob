@@ -1,14 +1,11 @@
 #include "config.h"
 
-#include <spud/detour.h>
-
 #include <il2cpp/il2cpp_helper.h>
-
-#include "patches/MapKey.h"
-#include "utils.h"
 
 #include <prime/NavigationPan.h>
 #include <prime/TKTouch.h>
+
+#include <spud/detour.h>
 
 TKTouch *TKTouch_populateWithPosition_Hook(auto original, TKTouch *_this, uintptr_t pos, int phase)
 {
@@ -27,9 +24,8 @@ bool NavigationPan_LateUpdate_Hook(auto original, NavigationPan *_this)
     original(_this);
   }
 
-  static auto GetMouseButton =
-      il2cpp_resolve_icall<bool(int)>("UnityEngine.Input::GetMouseButton(System.Int32)");
-  static auto GetTouchCount = il2cpp_resolve_icall<int()>("UnityEngine.Input::get_touchCount()");
+  static auto GetMouseButton = il2cpp_resolve_icall_typed<bool(int)>("UnityEngine.Input::GetMouseButton(System.Int32)");
+  static auto GetTouchCount  = il2cpp_resolve_icall_typed<int()>("UnityEngine.Input::get_touchCount()");
 
   if (_this->BlockPan() || _this->_trackingPOI) {
     d->x = 0.0f;

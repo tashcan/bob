@@ -1,10 +1,10 @@
 #pragma once
 
+#include <algorithm>
+#include <cctype>
 #include <string>
 #include <string_view>
-#include <algorithm>
 #include <vector>
-#include <cctype>
 
 inline bool ascii_isspace(unsigned char c)
 {

@@ -1,19 +1,43 @@
 #include "config.h"
-#include "version.h"
-#include "str_utils.h"
 #include "patches/mapkey.h"
 #include "prime/KeyCode.h"
+#include "str_utils.h"
+#include "version.h"
+#include <prime\Toast.h>
+
+#include <EASTL/tuple.h>
+#include <spdlog/spdlog.h>
 
 #include <algorithm>
-#include <cstdint>
+#include <cstdio>
 #include <filesystem>
 #include <iostream>
 #include <string>
 #include <string_view>
 
-#include <EASTL/tuple.h>
+#if !_WIN32
+#include "folder_manager.h"
+#endif
 
-#include <spdlog/spdlog.h>
+static auto make_config_path(auto filename, bool create_dir = false)
+{
+#if !_WIN32
+  auto ApplicationSupportPath =
+      (char*)fm::FolderManager::pathForDirectory(fm::NSApplicationSupportDirectory, fm::NSUserDomainMask);
+  auto LibraryPath = (char*)fm::FolderManager::pathForDirectory(fm::NSLibraryDirectory, fm::NSUserDomainMask);
+
+  const auto config_dir = std::filesystem::path(LibraryPath) / "Preferences" / "com.tashcan.startrekpatch";
+
+  if (create_dir) {
+    std::error_code ec;
+    std::filesystem::create_directories(config_dir, ec);
+  }
+  std::filesystem::path config_path = config_dir / filename;
+  return config_path.u8string();
+#else
+  return filename;
+#endif
+}
 
 static const eastl::tuple<const char*, int> bannerTypes[] = {
     {"Standard", ToastState::Standard},
@@ -47,11 +71,14 @@ Config::Config()
 void Config::Save(toml::table config, std::string_view filename, bool apply_warning)
 {
   std::ofstream config_file;
-  config_file.open(filename);
+
+  auto config_path = make_config_path(filename, true);
+
+  config_file.open(config_path);
   if (apply_warning) {
     char buff[44];
     snprintf(buff, 44, "%-44s", CONFIG_FILE_DEFAULT);
- 
+
     config_file << "#######################################################################\n";
     config_file << "#######################################################################\n";
     config_file << "####                                                               ####\n";
@@ -74,6 +101,7 @@ Config& Config::Get()
   return config;
 }
 
+#if _WIN32
 static HMONITOR lastMonitor = (HMONITOR)-1;
 static float    dpi         = 1.0f;
 
@@ -118,6 +146,17 @@ float Config::GetDPI()
 
   return dpi;
 }
+#else
+float Config::RefreshDPI()
+{
+  return Config::GetDPI();
+}
+
+float Config::GetDPI()
+{
+  return 1.0f;
+}
+#endif
 
 void Config::AdjustUiScale(bool scaleUp)
 {
@@ -230,7 +269,7 @@ void Config::Load()
   toml::table parsed;
   bool        write_config = false;
   try {
-    config       = std::move(toml::parse_file("community_patch_settings.toml"));
+    config       = std::move(toml::parse_file(make_config_path(CONFIG_FILE_DEFAULT)));
     write_config = true;
   } catch (const toml::parse_error& e) {
     spdlog::warn("Failed to load config file, falling back to default settings: {}", e.description());
@@ -277,18 +316,18 @@ void Config::Load()
 
   this->use_out_of_dock_power = get_config_or_default(config, parsed, "buffs", "use_out_of_dock_power", false);
 
-  this->disable_escape_exit        = get_config_or_default(config, parsed, "ui", "disable_escape_exit", false);
-  this->disable_preview_locate     = get_config_or_default(config, parsed, "ui", "disable_preview_locate", false);
-  this->disable_preview_recall     = get_config_or_default(config, parsed, "ui", "disable_preview_recall", false);
-  this->disable_move_keys          = get_config_or_default(config, parsed, "ui", "disable_move_keys", false);
-  this->disable_toast_banners      = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
-  this->extend_donation_slider     = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);
-  this->disable_galaxy_chat        = get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", false);
-  this->show_cargo_default         = get_config_or_default(config, parsed, "ui", "show_cargo_default", false);
-  this->show_player_cargo          = get_config_or_default(config, parsed, "ui", "show_player_cargo", false);
-  this->show_station_cargo         = get_config_or_default(config, parsed, "ui", "show_station_cargo", true);
-  this->show_hostile_cargo         = get_config_or_default(config, parsed, "ui", "show_hostile_cargo", true);
-  this->show_armada_cargo          = get_config_or_default(config, parsed, "ui", "show_armada_cargo", true);
+  this->disable_escape_exit    = get_config_or_default(config, parsed, "ui", "disable_escape_exit", false);
+  this->disable_preview_locate = get_config_or_default(config, parsed, "ui", "disable_preview_locate", false);
+  this->disable_preview_recall = get_config_or_default(config, parsed, "ui", "disable_preview_recall", false);
+  this->disable_move_keys      = get_config_or_default(config, parsed, "ui", "disable_move_keys", false);
+  this->disable_toast_banners  = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
+  this->extend_donation_slider = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);
+  this->disable_galaxy_chat    = get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", false);
+  this->show_cargo_default     = get_config_or_default(config, parsed, "ui", "show_cargo_default", false);
+  this->show_player_cargo      = get_config_or_default(config, parsed, "ui", "show_player_cargo", false);
+  this->show_station_cargo     = get_config_or_default(config, parsed, "ui", "show_station_cargo", true);
+  this->show_hostile_cargo     = get_config_or_default(config, parsed, "ui", "show_hostile_cargo", true);
+  this->show_armada_cargo      = get_config_or_default(config, parsed, "ui", "show_armada_cargo", true);
 
   this->always_skip_reveal_sequence = get_config_or_default(config, parsed, "ui", "always_skip_reveal_sequence", false);
   this->stay_in_bundle_after_summary =
@@ -314,7 +353,8 @@ void Config::Load()
       get_config_or_default<std::string>(config, parsed, "ui", "disabled_banner_types", "");
 
   this->config_settings_url = get_config_or_default<std::string>(config, parsed, "config", "settings_url", "");
-  this->config_assets_url_override = get_config_or_default<std::string>(config, parsed, "config", "assets_url_override", "");
+  this->config_assets_url_override =
+      get_config_or_default<std::string>(config, parsed, "config", "assets_url_override", "");
 
   std::vector<std::string> types = StrSplit(disabled_banner_types_str, ',');
 
@@ -442,7 +482,7 @@ void Config::Load()
     parse_config_shortcut(config, parsed, "toggle_cargo_armada", GameFunction::ToggleCargoArmada, "ALT-5");
   }
 
-  if (!std::filesystem::exists(CONFIG_FILE_DEFAULT)) {
+  if (!std::filesystem::exists(make_config_path(CONFIG_FILE_RUNTIME))) {
     message.str("");
     message << "Creating " << CONFIG_FILE_DEFAULT << " (default config file)";
     spdlog::warn(message.str());
