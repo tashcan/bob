@@ -15,6 +15,30 @@
 #include <string>
 #include <string_view>
 
+#if !_WIN32
+#include "folder_manager.h"
+#endif
+
+static auto make_config_path(auto filename, bool create_dir = false)
+{
+#if !_WIN32
+  auto ApplicationSupportPath =
+      (char*)fm::FolderManager::pathForDirectory(fm::NSApplicationSupportDirectory, fm::NSUserDomainMask);
+  auto LibraryPath = (char*)fm::FolderManager::pathForDirectory(fm::NSLibraryDirectory, fm::NSUserDomainMask);
+
+  const auto config_dir = std::filesystem::path(LibraryPath) / "Preferences" / "com.tashcan.startrekpatch";
+
+  if (create_dir) {
+    std::error_code ec;
+    std::filesystem::create_directories(config_dir, ec);
+  }
+  std::filesystem::path config_path = config_dir / filename;
+  return config_path.u8string();
+#else
+  return filename;
+#endif
+}
+
 static const eastl::tuple<const char*, int> bannerTypes[] = {
     {"Standard", ToastState::Standard},
     {"FactionWarning", ToastState::FactionWarning},
@@ -47,7 +71,10 @@ Config::Config()
 void Config::Save(toml::table config, std::string_view filename, bool apply_warning)
 {
   std::ofstream config_file;
-  config_file.open(filename);
+
+  auto config_path = make_config_path(filename, true);
+
+  config_file.open(config_path);
   if (apply_warning) {
     char buff[44];
     snprintf(buff, 44, "%-44s", CONFIG_FILE_DEFAULT);
@@ -242,7 +269,7 @@ void Config::Load()
   toml::table parsed;
   bool        write_config = false;
   try {
-    config       = std::move(toml::parse_file("community_patch_settings.toml"));
+    config       = std::move(toml::parse_file(make_config_path(CONFIG_FILE_DEFAULT)));
     write_config = true;
   } catch (const toml::parse_error& e) {
     spdlog::warn("Failed to load config file, falling back to default settings: {}", e.description());
@@ -455,7 +482,7 @@ void Config::Load()
     parse_config_shortcut(config, parsed, "toggle_cargo_armada", GameFunction::ToggleCargoArmada, "ALT-5");
   }
 
-  if (!std::filesystem::exists(CONFIG_FILE_DEFAULT)) {
+  if (!std::filesystem::exists(make_config_path(CONFIG_FILE_RUNTIME))) {
     message.str("");
     message << "Creating " << CONFIG_FILE_DEFAULT << " (default config file)";
     spdlog::warn(message.str());

@@ -16,6 +16,7 @@ do
     end
     if is_plat("macosx") then
         add_cxflags("-fms-extensions")
+        add_files("src/*.mm")
     end
     set_policy("build.optimization.lto", true)
 end
