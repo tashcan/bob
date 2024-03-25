@@ -68,5 +68,5 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: stfc-community-patch-installer.dmg
-          path: STFC-Community-Patch-Installer.dmg
+          name: stfc-community-patch-installer
+          path: stfc-community-patch-installer.dmg

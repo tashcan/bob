@@ -72,5 +72,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./stfc-community-patch-installer.dmg
+          asset_path: ./stfc-community-patch-installer/stfc-community-patch-installer.dmg
           asset_name: stfc-community-patch-installer.dmg

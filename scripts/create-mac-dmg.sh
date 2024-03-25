@@ -26,5 +26,5 @@ create-dmg \
   --icon "STFC Community Patch.app" 200 190 \
   --hide-extension "STFC Community Patch.app" \
   --app-drop-link 600 185 \
-  "STFC-Community-Patch-Installer.dmg" \
+  "stfc-community-patch-installer.dmg" \
   "build/macosx/x86_64/release/"
