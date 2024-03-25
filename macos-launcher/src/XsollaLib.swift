@@ -89,6 +89,29 @@ class XsollaUpdateParser: NSObject, XMLParserDelegate {
   }
 }
 
+enum XsollaUpdateProgress {
+  case Start(totalActions: Int)
+  case Progress(currentAction: Int, totalActions: Int)
+  case Extracting(currentFile: String)
+  case ExtractComplete(currentFile: String)
+  case Downloading(url: String)
+  case DownloadComplete(url: String)
+  case Patching(totalFiles: Int)
+  case PatchingProgress(currentBytes: Int, totalBytes: Int)
+  case PatchStepComplete
+  case PatchComplete
+  case Waiting
+  case ApplyVersion
+  case VersionApplied
+  case Finalizing
+  case CleaningUp
+  case Complete
+}
+
+protocol XSollaUpdaterDelegate {
+  func updateProgress(progress: XsollaUpdateProgress)
+}
+
 struct XsollaUpdater {
   var gameName: String
 
@@ -96,20 +119,23 @@ struct XsollaUpdater {
     self.gameName = gameName
   }
 
-  func gamePath() -> String {
+  func gamePath() throws -> String {
     let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
     let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
       self.gameName)
     let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
     let settingsIni = parseConfig(settingsIniPath.path)
     let gamePath = settingsIni["General"]?["152033..GAME_PATH"]
+    if gamePath == nil {
+      throw NSError(domain: "XsollaUpdater", code: 1, userInfo: nil)
+    }
     if gamePath!.starts(with: "//") {
       return String(gamePath!.dropFirst())
     }
     return gamePath!
   }
 
-  func gameTempPath() -> String {
+  func gameTempPath() throws -> String {
     let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
     let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
       self.gameName)
@@ -124,7 +150,7 @@ struct XsollaUpdater {
 
   func installedVersion() -> Int {
     do {
-      var gamePath = URL(fileURLWithPath: self.gamePath())
+      var gamePath = URL(fileURLWithPath: try self.gamePath())
       gamePath.appendPathComponent(".version")
       let versionFile = try String(contentsOf: gamePath)
       let versionSegments = versionFile.split(separator: "=")
@@ -170,7 +196,8 @@ struct XsollaUpdater {
     }
   }
 
-  func updateGame() async throws {
+  func updateGame(delegate: XSollaUpdaterDelegate? = nil) async throws {
+    defer { delegate?.updateProgress(progress: XsollaUpdateProgress.Complete) }
     let url = URL(
       string: String(
         format:
@@ -183,11 +210,11 @@ struct XsollaUpdater {
     xml.delegate = parser
     xml.parse()
 
-    var tempGamePath = self.gameTempPath()
+    var tempGamePath = try self.gameTempPath()
     if tempGamePath.hasSuffix("/") || tempGamePath.hasSuffix("\\") {
       tempGamePath = String(tempGamePath.dropLast())
     }
-    var gamePath = self.gamePath()
+    var gamePath = try self.gamePath()
     if gamePath.hasSuffix("/") || gamePath.hasSuffix("\\") {
       gamePath = String(gamePath.dropLast())
     }
@@ -198,12 +225,24 @@ struct XsollaUpdater {
     try FileManager.default.createDirectory(
       atPath: tempGamePath, withIntermediateDirectories: true, attributes: nil)
 
+    delegate?.updateProgress(
+      progress: XsollaUpdateProgress.Start(totalActions: parser.actions.count))
+
+    var currentAction = 0
     for action in parser.actions {
+      currentAction += 1
+      delegate?.updateProgress(
+        progress: XsollaUpdateProgress.Progress(
+          currentAction: currentAction, totalActions: parser.actions.count))
       switch action {
       case .Download(let downloadAction):
+        delegate?.updateProgress(
+          progress: XsollaUpdateProgress.Downloading(url: downloadAction.url))
         let (localURL, response) = try await URLSession.shared.download(
           from: URL(string: downloadAction.url)!)
         let toPath = downloadAction.to.replacingOccurrences(of: "$temp_path", with: tempGamePath)
+        delegate?.updateProgress(
+          progress: XsollaUpdateProgress.DownloadComplete(url: downloadAction.url))
         try FileManager.default.moveItem(at: localURL, to: URL(fileURLWithPath: toPath))
         break
       case .Extract(let extractAction):
@@ -214,7 +253,10 @@ struct XsollaUpdater {
         let decoder = try Decoder(
           stream: archivePathInStream, fileType: .sevenZ)
         let _ = try decoder.open()
+        delegate?.updateProgress(progress: XsollaUpdateProgress.Extracting(currentFile: fromPath))
         let _ = try decoder.extract(to: Path(toPath))
+        delegate?.updateProgress(
+          progress: XsollaUpdateProgress.ExtractComplete(currentFile: fromPath))
         break
       case .Patch(let patchAction):
         var binaries = patchAction.binaries
@@ -225,6 +267,8 @@ struct XsollaUpdater {
         let patch_rules_json = URL(fileURLWithPath: patch).appendingPathComponent("patchRules.json")
         let patch_rules = try JSONDecoder().decode(
           [PatchRule].self, from: Data(contentsOf: patch_rules_json))
+        delegate?.updateProgress(
+          progress: XsollaUpdateProgress.Patching(totalFiles: patch_rules.count))
         for rule in patch_rules {
           var relativePath = rule.relative_path.trimmingCharacters(in: .whitespacesAndNewlines)
           if relativePath.starts(with: "/") || relativePath.starts(with: "\\") {
@@ -234,6 +278,8 @@ struct XsollaUpdater {
           let targetPath = tempPath.contentURL.appendingPathComponent(relativePath)
           let sourcePath = URL(fileURLWithPath: gamePath).appendingPathComponent(relativePath)
           let patchPath = URL(fileURLWithPath: patch).appendingPathComponent(relativePath)
+
+          //delegate?.updateProgress()
           switch rule.rule {
           case "patch":
             if !FileManager.default.fileExists(atPath: targetPath.path) {
@@ -269,22 +315,29 @@ struct XsollaUpdater {
             print("Unknown rule \(rule.rule)")
             break
           }
+          delegate?.updateProgress(progress: XsollaUpdateProgress.PatchStepComplete)
         }
+        delegate?.updateProgress(progress: XsollaUpdateProgress.PatchComplete)
         break
       case .WaitActions:
+        delegate?.updateProgress(progress: XsollaUpdateProgress.Waiting)
         break
       case .Version(let versionAction):
-        var versionPath = URL(fileURLWithPath: self.gamePath())
+        var versionPath = URL(fileURLWithPath: gamePath)
         versionPath.appendPathComponent(".version")
         let fileVersion = String(format: "&game=%d", versionAction.version)
+        delegate?.updateProgress(progress: XsollaUpdateProgress.ApplyVersion)
         try fileVersion.write(to: versionPath, atomically: true, encoding: .utf8)
+        delegate?.updateProgress(progress: XsollaUpdateProgress.VersionApplied)
         break
 
       }
     }
+    delegate?.updateProgress(progress: XsollaUpdateProgress.Finalizing)
     copyContentsOfDirectory(from: tempPath.contentURL, to: URL(fileURLWithPath: gamePath))
-    tempPath.keepAlive()
+    delegate?.updateProgress(progress: XsollaUpdateProgress.CleaningUp)
     try FileManager.default.removeItem(atPath: tempGamePath)
+
   }
 }
 

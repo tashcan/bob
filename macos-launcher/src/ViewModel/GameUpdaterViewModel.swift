@@ -12,12 +12,17 @@ class GameUpdaterViewModel: ObservableObject {
   }
 
   @MainActor
+  func getInstalledGameVersion() -> Int {
+    return gameUpdater.installedVersion()
+  }
+
+  @MainActor
   func checkForGameUpdate() async -> Bool {
     return await gameUpdater.checkForUpdateAvailable()
   }
 
   @MainActor
-  func updateGame() async throws {
-    try await gameUpdater.updateGame()
+  func updateGame(delegate: XSollaUpdaterDelegate? = nil) async throws {
+    try await gameUpdater.updateGame(delegate: delegate)
   }
 }

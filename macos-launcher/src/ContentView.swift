@@ -8,7 +8,9 @@
 import Foundation
 import SwiftUI
 
-struct ContentView: View {
+struct ContentView: View, XSollaUpdaterDelegate {
+  @State private var updateAction: String = ""
+
   var body: some View {
     GeometryReader { geo in
       ZStack {
@@ -18,7 +20,7 @@ struct ContentView: View {
           bottomContent
             .frame(height: geo.size.height * (2 / 2) - 10)
         }
-        ActionView()
+        ActionView().offset(y: geo.size.height - 150)
       }
     }
     .edgesIgnoringSafeArea(.all)
@@ -147,13 +149,6 @@ struct ContentView: View {
           }
           .frame(width: 200, height: 20)
         }
-        .overlay(alignment: .bottomTrailing) {
-          Text("DATA NODE 188")
-            .font(.custom("HelveticaNeue-CondensedBold", size: 35))
-            .padding(.bottom, 45)
-            .foregroundColor(.lcarOrange)
-            .scaleEffect(x: 0.7, anchor: .trailing)
-        }
         .overlay {
           Image("ufp-logo")
             .opacity(0.15)
@@ -188,6 +183,9 @@ struct ContentView: View {
     (1...count)
       .map { _ in "\(Int.random(in: 0...9))" }
       .joined()
+  }
+
+  func updateProgress(progress: XsollaUpdateProgress) {
   }
 }
 
