@@ -261,8 +261,8 @@ void remove_from_tracking_recursive(Il2CppClass* klass, void* _this)
 #undef GET_CLASS
 }
 
-void (*GC_register_finalizer_inner)(unsigned __int64 obj, void(__fastcall* fn)(void*, void*), void* cd,
-                                    void(__fastcall** ofn)(void*, void*), void** ocd) = nullptr;
+void (*GC_register_finalizer_inner)(unsigned __int64 obj, void(* fn)(void*, void*), void* cd,
+                                    void(** ofn)(void*, void*), void** ocd) = nullptr;
 
 void track_finalizer(void* _this, void*)
 {

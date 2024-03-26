@@ -36,7 +36,7 @@ void InstallResolutionListFix();
 void InstallTempCrashFixes();
 void InstallSyncPatches();
 
-__int64 __fastcall il2cpp_init_hook(auto original, const char* domain_name)
+__int64 il2cpp_init_hook(auto original, const char* domain_name)
 {
   printf("il2cpp_init_hook(%s)\n", domain_name);
 
