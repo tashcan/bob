@@ -35,8 +35,8 @@ private func parseLine(_ line: String) -> (String, String)? {
   return nil
 }
 
-func parseConfig(_ filename: String) -> Config {
-  let f = try! String(contentsOfFile: filename)
+func parseConfig(_ filename: String) throws -> Config {
+  let f = try String(contentsOfFile: filename)
   var config = Config()
   var currentSectionName = "main"
   for line in f.components(separatedBy: "\n") {
