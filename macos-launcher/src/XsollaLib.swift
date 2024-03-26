@@ -120,33 +120,37 @@ struct XsollaUpdater {
   }
 
   func gamePath() throws -> String {
-    let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
-    let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
-      self.gameName)
-    let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
-    let settingsIni = parseConfig(settingsIniPath.path)
-    let gamePath = settingsIni["General"]?["152033..GAME_PATH"]
-    if let gamePath {
-      if gamePath.starts(with: "//") {
-        return String(gamePath.dropFirst())
+    let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first
+    if let library {
+      let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
+        self.gameName)
+      let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
+      let settingsIni = parseConfig(settingsIniPath.path)
+      let gamePath = settingsIni["General"]?["152033..GAME_PATH"]
+      if let gamePath {
+        if gamePath.starts(with: "//") {
+          return String(gamePath.dropFirst())
+        }
+        return gamePath
       }
-      return gamePath
     }
     throw NSError(domain: "XsollaUpdater", code: 1, userInfo: nil)
   }
 
   func gameTempPath() throws -> String {
-    let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first!
-    let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
-      self.gameName)
-    let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
-    let settingsIni = parseConfig(settingsIniPath.path)
-    let gameTempPath = settingsIni["General"]?["152033..GAME_TEMP_PATH"]
-    if let gameTempPath {
-      if gameTempPath.starts(with: "//") {
-        return String(gameTempPath.dropFirst())
+    let library = FileManager.default.urls(for: .libraryDirectory, in: .userDomainMask).first
+    if let library {
+      let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
+        self.gameName)
+      let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
+      let settingsIni = parseConfig(settingsIniPath.path)
+      let gameTempPath = settingsIni["General"]?["152033..GAME_TEMP_PATH"]
+      if let gameTempPath {
+        if gameTempPath.starts(with: "//") {
+          return String(gameTempPath.dropFirst())
+        }
+        return gameTempPath
       }
-      return gameTempPath
     }
     throw NSError(domain: "XsollaUpdater", code: 1, userInfo: nil)
   }
@@ -180,14 +184,17 @@ struct XsollaUpdater {
       string: String(
         format:
           "https://gus.xsolla.com/updates?version=%d&project_id=152033&region=&platform=mac_os",
-        self.installedVersion()))!
-    let (data, _) = try await URLSession.shared.data(from: url)
+        self.installedVersion()))
+    if let url {
+      let (data, _) = try await URLSession.shared.data(from: url)
 
-    let xml = XMLParser(data: data)
-    let parser = XsollaUpdateParser()
-    xml.delegate = parser
-    xml.parse()
-    return parser.gameVersion
+      let xml = XMLParser(data: data)
+      let parser = XsollaUpdateParser()
+      xml.delegate = parser
+      xml.parse()
+      return parser.gameVersion
+    }
+    throw NSError(domain: "XsollaUpdater", code: 2, userInfo: nil)
   }
 
   func checkForUpdateAvailable() async -> Bool {
@@ -201,12 +208,15 @@ struct XsollaUpdater {
 
   func updateGame(delegate: XSollaUpdaterDelegate? = nil) async throws {
     defer { delegate?.updateProgress(progress: XsollaUpdateProgress.Complete) }
-    let url = URL(
+    let url = try URL(
       string: String(
         format:
           "https://gus.xsolla.com/updates?version=%d&project_id=152033&region=&platform=mac_os",
-        self.installedVersion()))!
-    let (data, _) = try await URLSession.shared.data(from: url)
+        self.installedVersion()))
+    if url == nil {
+      throw NSError(domain: "XsollaUpdater", code: 3, userInfo: nil)
+    }
+    let (data, _) = try await URLSession.shared.data(from: url!)
 
     let xml = XMLParser(data: data)
     let parser = XsollaUpdateParser()
