@@ -126,13 +126,13 @@ struct XsollaUpdater {
     let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
     let settingsIni = parseConfig(settingsIniPath.path)
     let gamePath = settingsIni["General"]?["152033..GAME_PATH"]
-    if gamePath == nil {
-      throw NSError(domain: "XsollaUpdater", code: 1, userInfo: nil)
+    if let gamePath {
+      if gamePath.starts(with: "//") {
+        return String(gamePath.dropFirst())
+      }
+      return gamePath
     }
-    if gamePath!.starts(with: "//") {
-      return String(gamePath!.dropFirst())
-    }
-    return gamePath!
+    throw NSError(domain: "XsollaUpdater", code: 1, userInfo: nil)
   }
 
   func gameTempPath() throws -> String {
@@ -142,10 +142,13 @@ struct XsollaUpdater {
     let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
     let settingsIni = parseConfig(settingsIniPath.path)
     let gameTempPath = settingsIni["General"]?["152033..GAME_TEMP_PATH"]
-    if gameTempPath!.starts(with: "//") {
-      return String(gameTempPath!.dropFirst())
+    if let gameTempPath {
+      if gameTempPath.starts(with: "//") {
+        return String(gameTempPath.dropFirst())
+      }
+      return gameTempPath
     }
-    return gameTempPath!
+    throw NSError(domain: "XsollaUpdater", code: 1, userInfo: nil)
   }
 
   func installedVersion() -> Int {
