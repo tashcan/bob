@@ -30,6 +30,7 @@ public:
   bool HasJoinButton()
   {
     // TODO
+    return false;
   }
 
 private:
