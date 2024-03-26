@@ -11,6 +11,7 @@
 ## Features
 
 - Set system UI scale + adjustment factor
+- Set viewer UI scale 
 - Set system zoom
   - default
   - maximum
@@ -66,7 +67,7 @@ The following keybinds have recently been added:
 Key | Shortcut
 --: | ---
 MINUS | Zoom (min)
-EQUAL | Zoom (default)
+EQUALS | Zoom (default)
 BACKSPACE | Zoom (max)
 B | Bookmarks
 F | Factions
@@ -80,6 +81,8 @@ Shift-T | Away Teams
 X | ExoComp
 Z | Daily Missions
 ` | Open Alliance Chat - Side of Screen
+SHIFT-PGUP | UI Viewer Scale Up
+SHIFT-PGDOWN | UI Viewer Scale Down
 
 ## Contributing / Building
 

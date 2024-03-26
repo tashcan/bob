@@ -39,6 +39,7 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
   const auto dt               = GetDeltaTime();
   auto       zoomDelta        = 0.0f;
   bool       do_absolute_zoom = false;
+  bool       do_store_zoom    = false;
   auto       config           = &Config::Get();
 
   if (!Key::IsInputFocused()) {
@@ -58,15 +59,20 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
 
     do_absolute_zoom = true;
     if (MapKey::IsDown(GameFunction::ZoomPreset1)) {
-      zoomDelta = config->system_zoom_preset_1;
+      zoomDelta     = config->system_zoom_preset_1;
+      do_store_zoom = true;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset2)) {
-      zoomDelta = config->system_zoom_preset_2;
+      zoomDelta     = config->system_zoom_preset_2;
+      do_store_zoom = true;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset3)) {
-      zoomDelta = config->system_zoom_preset_3;
+      zoomDelta     = config->system_zoom_preset_3;
+      do_store_zoom = true;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset4)) {
-      zoomDelta = config->system_zoom_preset_4;
+      zoomDelta     = config->system_zoom_preset_4;
+      do_store_zoom = true;
     } else if (MapKey::IsDown(GameFunction::ZoomPreset5)) {
-      zoomDelta = config->system_zoom_preset_5;
+      zoomDelta     = config->system_zoom_preset_5;
+      do_store_zoom = true;
     }
 
     if (config->hotkeys_extended) {
@@ -74,9 +80,9 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
         do_absolute_zoom = false;
         do_default_zoom  = true;
       } else if (MapKey::IsDown(GameFunction::ZoomMin)) {
-        zoomDelta = config->zoom;
+        zoomDelta     = config->zoom;
       } else if (MapKey::IsDown(GameFunction::ZoomMax)) {
-        zoomDelta = 100;
+        zoomDelta     = 100;
       }
     }
 
@@ -116,10 +122,8 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
     }
   }
 
-  if (zoomDelta > 0.0f && config->use_presets_as_default) {
-    if (!do_default_zoom && do_absolute_zoom) {
-      StoreZoom("System Preset Default from Preset", config->default_system_zoom, _this);
-    }
+  if (zoomDelta > 0.0f && config->use_presets_as_default && do_store_zoom) {
+    StoreZoom("System Preset Default from Preset", config->default_system_zoom, _this);
   }
 
   do_default_zoom = false;

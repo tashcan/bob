@@ -224,6 +224,10 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
         config->AdjustUiScale(true);
       } else if (MapKey::IsPressed(GameFunction::UiScaleDown)) {
         config->AdjustUiScale(false);
+      } else if (MapKey::IsPressed(GameFunction::UiViewerScaleUp)) {
+        config->AdjustUiViewerScale(true);
+      } else if (MapKey::IsPressed(GameFunction::UiViewerScaleDown)) {
+        config->AdjustUiViewerScale(false);
       } else if (MapKey::IsDown(GameFunction::TogglePreviewLocate)) {
         config->disable_preview_locate = !config->disable_preview_locate;
       } else if (MapKey::IsDown(GameFunction::TogglePreviewRecall)) {

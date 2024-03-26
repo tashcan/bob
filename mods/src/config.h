@@ -20,10 +20,12 @@ public:
   static void Save(toml::table config, std::string_view filename, bool apply_warning = true);
   void        Load();
   void        AdjustUiScale(bool scaleUp);
+  void        AdjustUiViewerScale(bool scaleUp);
 
 public:
   float ui_scale;
   float ui_scale_adjust;
+  float ui_scale_viewer;
   float zoom;
   bool  free_resize;
   bool  adjust_scale_res;

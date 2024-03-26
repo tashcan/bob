@@ -1,12 +1,16 @@
-#include "config.h"
+#include <config.h>
 
 #include <il2cpp/il2cpp_helper.h>
 
 #include <prime/CanvasScaler.h>
 #include <prime/ScreenManager.h>
+#include <prime/Transform.h>
 
 #include <spdlog/spdlog.h>
 #include <spud/detour.h>
+
+#include <prime/Vector3.h>
+#include <str_utils.h>
 
 void SetResolution_Hook(auto original, int x, int y, int mode, int unk)
 {
@@ -45,18 +49,62 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
   }
 }
 
+BOOL SetWindowPos_Hook(HWND hWnd, HWND hWndInsertAfter, int X, int Y, int cx, int cy, UINT uFlags)
+{
+  spdlog::trace("Window size/position {} (x) {} (y) {} (cx) {} (cy)", X, Y, cx, cy);
+  return SetWindowPos(hWnd, hWndInsertAfter, X, Y, cx, cy, uFlags);
+}
+
+void CanvasController_Show(auto original, CanvasController* _this)
+{
+  const auto ui_scale_viewer = Config::Get().ui_scale_viewer;
+  if (ui_scale_viewer != 0.0f && to_wstring(_this->name) == L"ObjectViewerTemplate_Canvas") {
+    auto transform        = _this->transform;
+    auto localScale       = transform->localScale;
+    localScale->x         = ui_scale_viewer;
+    localScale->y         = ui_scale_viewer;
+    localScale->z         = ui_scale_viewer;
+    transform->localScale = localScale;
+  }
+  original(_this);
+}
+
 void InstallUiScaleHooks()
 {
   auto screen_manager_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "ScreenManager");
   auto ptr_update_scale      = screen_manager_helper.GetMethod("UpdateCanvasRootScaleFactor");
-  if (!ptr_update_scale) {
-    return;
+  if (ptr_update_scale) {
+    SPUD_STATIC_DETOUR(ptr_update_scale, ScreenManager_UpdateCanvasRootScaleFactor_Hook);
+    static auto SetResolution = il2cpp_resolve_icall_typed<void(int, int, int, int)>(
+        "UnityEngine.Screen::SetResolution(System.Int32,System.Int32,UnityEngine.FullScreenMode,System.Int32)");
+    SPUD_STATIC_DETOUR(SetResolution, SetResolution_Hook);
   }
 
-  SPUD_STATIC_DETOUR(ptr_update_scale, ScreenManager_UpdateCanvasRootScaleFactor_Hook);
-  static auto SetResolution = il2cpp_resolve_icall_typed<void(int, int, int, int)>(
-      "UnityEngine.Screen::SetResolution(System.Int32,System.Int32,UnityEngine.FullScreenMode,System.Int32)");
-  SPUD_STATIC_DETOUR(SetResolution, SetResolution_Hook);
+  spdlog::info("Finding CanvasController");
+
+  auto canvas_controller_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "CanvasController");
+
+  spdlog::info("Finding CanvasController_Show");
+
+  auto ptr_canvas_show = canvas_controller_helper.GetMethodSpecial("Show", [](auto count, const Il2CppType** params) {
+    if (count != 2) {
+      return false;
+    }
+
+    auto p1 = params[0]->type;
+    auto p2 = params[1]->type;
+
+    spdlog::info("Finding CanvasController_Show Params {} - {}", p1, p2);
+
+    if (p1 == IL2CPP_TYPE_I4 && p2 == IL2CPP_TYPE_BOOLEAN) {
+      return true;
+    }
+    return false;
+  });
+  if (ptr_canvas_show) {
+    spdlog::info("Hooking CanvasController_Show");
+    SPUD_STATIC_DETOUR(ptr_canvas_show, CanvasController_Show);
+  }
 
   Config::RefreshDPI();
 }

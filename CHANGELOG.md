@@ -3,8 +3,10 @@
 ## 0.6.1
 
 - Switch to xmake
-- When ui_scale set to 0.0f disable all scaling features
-_
+- Add ui_scale_viewer to scale the size of object viewers
+- Fix ui_scale or ui_scale_viewer so when set to 0.0f disable those scaling features
+- Fix zoom_min and zoom_max no longer set default system zoom (only presets can)
+
 ## 0.6.0
 
 - Add customisable hotkeys

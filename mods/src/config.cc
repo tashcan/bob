@@ -172,6 +172,19 @@ void Config::AdjustUiScale(bool scaleUp)
   }
 }
 
+void Config::AdjustUiViewerScale(bool scaleUp)
+{
+  if (this->ui_scale_viewer != 0.0f) {
+    auto old_scale        = this->ui_scale_viewer;
+    auto scale_factor     = (scaleUp ? 1.0f : -1.0f) * this->ui_scale_adjust;
+    auto new_scale        = this->ui_scale_viewer + (scale_factor * 0.25f);
+    this->ui_scale_viewer = std::clamp(new_scale, 0.1f, 2.0f);
+
+    spdlog::info("UI Viewer has been scaled {}, was {}, now {} (unclamped {})", (scaleUp ? "UP" : "DOWN"), old_scale,
+                 this->ui_scale_viewer, new_scale);
+  }
+}
+
 std::string get_config_type_as_string(toml::node_type type)
 {
   switch (type) {
@@ -288,6 +301,7 @@ void Config::Load()
 
   this->ui_scale            = get_config_or_default(config, parsed, "graphics", "ui_scale", 0.9f);
   this->ui_scale_adjust     = get_config_or_default(config, parsed, "graphics", "ui_scale_adjust", 0.05f);
+  this->ui_scale_viewer     = get_config_or_default(config, parsed, "graphics", "ui_scale_viewer", 100.0f);
   this->zoom                = get_config_or_default(config, parsed, "graphics", "zoom", 2500.f);
   this->free_resize         = get_config_or_default(config, parsed, "graphics", "free_resize", true);
   this->adjust_scale_res    = get_config_or_default(config, parsed, "graphics", "adjust_scale_res", false);
@@ -432,6 +446,8 @@ void Config::Load()
   parse_config_shortcut(config, parsed, "zoom_reset", GameFunction::ZoomReset, "=");
   parse_config_shortcut(config, parsed, "ui_scaleup", GameFunction::UiScaleUp, "PGUP");
   parse_config_shortcut(config, parsed, "ui_scaledown", GameFunction::UiScaleDown, "PGDOWN");
+  parse_config_shortcut(config, parsed, "ui_scaleviewerup", GameFunction::UiViewerScaleUp, "SHIFT-PGUP");
+  parse_config_shortcut(config, parsed, "ui_scaleviewerdown", GameFunction::UiViewerScaleDown, "SHIFT-PGDOWN");
   parse_config_shortcut(config, parsed, "log_debug", GameFunction::LogLevelDebug, "F9");
   parse_config_shortcut(config, parsed, "log_trace", GameFunction::LogLevelTrace, "SHIFT-F9");
   parse_config_shortcut(config, parsed, "log_info", GameFunction::LogLevelInfo, "F11");

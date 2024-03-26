@@ -55,6 +55,8 @@ enum GameFunction {
   ZoomReset,
   UiScaleUp,
   UiScaleDown,
+  UiViewerScaleUp,
+  UiViewerScaleDown,
   ActionPrimary,
   ActionSecondary,
   ActionView,
