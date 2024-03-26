@@ -11,7 +11,7 @@ add_requires("inifile-cpp")
 add_requires("7z")
 add_requires("lzma")
 add_requires("librsync")
-add_requires("libcurl", { configs = { zlib = true }})
+add_requires("libcurl", { configs = { zlib = true } })
 
 if is_plat("windows") then
     includes("win-proxy-dll")
@@ -24,6 +24,7 @@ if is_plat("macosx") then
 end
 
 add_rules("mode.debug")
+add_rules("mode.release")
 add_rules("mode.releasedbg")
 
 package("libil2cpp")

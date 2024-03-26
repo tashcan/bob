@@ -55,7 +55,7 @@ jobs:
         uses: Homebrew/actions/setup-homebrew@master
 
       - name: Configure
-        run: xmake f -m release -y -a x86_64 -v
+        run: xmake f -m releasedbg -y -a x86_64 -v
 
       - name: Build
         run: xmake -y
@@ -64,7 +64,7 @@ jobs:
         run: brew install create-dmg
 
       - name: Create App Bundle
-        run: scripts/create-mac-dmg.sh
+        run: scripts/create-mac-dmg.sh releasedbg
 
       - uses: actions/upload-artifact@v2
         with:
