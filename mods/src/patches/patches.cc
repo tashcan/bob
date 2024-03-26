@@ -35,6 +35,7 @@ void InstallChatPatches();
 void InstallResolutionListFix();
 void InstallTempCrashFixes();
 void InstallSyncPatches();
+void InstallObjectTrackers();
 
 __int64 il2cpp_init_hook(auto original, const char* domain_name)
 {
@@ -74,6 +75,7 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
     {"ChatPatches", InstallChatPatches},
     {"ResolutionListFix", InstallResolutionListFix},
     {"SyncPatches", InstallSyncPatches},
+    {"ObjectTracker", InstallObjectTrackers}
   };
 
   auto patch_count = 0;
