@@ -132,11 +132,9 @@ IList* ExtractBuffsOfType_Hook(auto original, ClientModifierType modifier, IList
 bool ShouldShowRevealHook(auto original, void* _this, bool ignore)
 {
   auto result = original(_this, ignore);
-
   if (Config::Get().always_skip_reveal_sequence) {
-    result = false;
+    return false;
   }
-
   return result;
 }
 
