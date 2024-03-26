@@ -57,9 +57,6 @@ jobs:
       - name: Configure
         run: xmake f -m releasedbg -y -a x86_64 -v
 
-      - name: Build
-        run: xmake -y
-
       - name: Install brew things
         run: brew install create-dmg
 
