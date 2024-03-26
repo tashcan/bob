@@ -16,6 +16,7 @@ cp assets/launcher.icns build/macosx/x86_64/$CONFIG/macOSLauncher.app/Contents/R
 rm -r build/macosx/x86_64/$CONFIG/STFC\ Community\ Patch.app || true
 mv build/macosx/x86_64/$CONFIG/macOSLauncher.app build/macosx/x86_64/$CONFIG/STFC\ Community\ Patch.app
 
+rm -rf build/macosx/x86_64/$CONFIG/*.dSYM || true
 codesign --force --verify --verbose --deep --sign "-" build/macosx/x86_64/$CONFIG/STFC\ Community\ Patch.app
 
 rm stfc-community-patch-installer.dmg || true
