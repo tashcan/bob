@@ -125,7 +125,7 @@ struct XsollaUpdater {
       let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
         self.gameName)
       let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
-      let settingsIni = parseConfig(settingsIniPath.path)
+      let settingsIni = try parseConfig(settingsIniPath.path)
       let gamePath = settingsIni["General"]?["152033..GAME_PATH"]
       if let gamePath {
         if gamePath.starts(with: "//") {
@@ -143,7 +143,7 @@ struct XsollaUpdater {
       let preferences = library.appendingPathComponent("Preferences").appendingPathComponent(
         self.gameName)
       let settingsIniPath = preferences.appendingPathComponent("launcher_settings.ini")
-      let settingsIni = parseConfig(settingsIniPath.path)
+      let settingsIni = try parseConfig(settingsIniPath.path)
       let gameTempPath = settingsIni["General"]?["152033..GAME_TEMP_PATH"]
       if let gameTempPath {
         if gameTempPath.starts(with: "//") {
