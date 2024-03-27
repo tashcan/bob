@@ -43,7 +43,7 @@ void ScreenManager_UpdateCanvasRootScaleFactor_Hook(auto original, ScreenManager
   }
 }
 
-void CanvasController_Show(auto original, CanvasController* _this)
+void CanvasController_Show(auto original, CanvasController* _this, int desiredEntryPoint, bool instant)
 {
   const auto ui_scale_viewer = Config::Get().ui_scale_viewer;
   if (ui_scale_viewer != 0.0f && to_wstring(_this->name) == L"ObjectViewerTemplate_Canvas") {
@@ -54,18 +54,17 @@ void CanvasController_Show(auto original, CanvasController* _this)
     localScale->z         = ui_scale_viewer;
     transform->localScale = localScale;
   }
-  original(_this);
+  return original(_this, desiredEntryPoint, instant);
 }
 
 void InstallUiScaleHooks()
 {
   auto screen_manager_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "ScreenManager");
   auto ptr_update_scale      = screen_manager_helper.GetMethod("UpdateCanvasRootScaleFactor");
-  if (ptr_update_scale) {
-    SPUD_STATIC_DETOUR(ptr_update_scale, ScreenManager_UpdateCanvasRootScaleFactor_Hook);
-  }
+  SPUD_STATIC_DETOUR(ptr_update_scale, ScreenManager_UpdateCanvasRootScaleFactor_Hook);
 
   auto canvas_controller_helper = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "CanvasController");
+
   auto ptr_canvas_show = canvas_controller_helper.GetMethodSpecial("Show", [](auto count, const Il2CppType** params) {
     if (count != 2) {
       return false;
