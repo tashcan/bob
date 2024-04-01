@@ -147,7 +147,9 @@ disabled_banner_types = 'Event,Victory,Defeat'
 # TakeoverDefeat
 
 # Change 'false' to 'true' from the line below to extend the donation slider to max value for next Alliance level
+# When max is set to 0, it will be unlimited
 extend_donation_slider = false
+extend_donation_max = 0
 
 # Set to true to always show the rewards for selected ships/stations
 show_cargo_default = false
