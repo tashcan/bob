@@ -20,9 +20,16 @@
 int64_t InventoryForPopup_set_MaxItemsToUse(auto original, InventoryForPopup* a1, int64_t a2)
 {
   if (a1->IsDonationUse && a2 == 50 && Config::Get().extend_donation_slider) {
-    return 0;
+    const auto max = Config::Get().extend_donation_max;
+    if (max) {
+      a2 = max;
+    } else {
+      return 0;
+    }
   }
-  return original(a1, a2);
+
+  int64_t standard = original(a1, a2);
+  return standard;
 }
 
 void BundleDataWidget_OnActionButtonPressedCallback(auto original, BundleDataWidget* _this)

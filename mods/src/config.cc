@@ -336,6 +336,7 @@ void Config::Load()
   this->disable_move_keys      = get_config_or_default(config, parsed, "ui", "disable_move_keys", false);
   this->disable_toast_banners  = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
   this->extend_donation_slider = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);
+  this->extend_donation_max    = get_config_or_default(config, parsed, "ui", "extend_donation_max", 0);
   this->disable_galaxy_chat    = get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", false);
   this->show_cargo_default     = get_config_or_default(config, parsed, "ui", "show_cargo_default", false);
   this->show_player_cargo      = get_config_or_default(config, parsed, "ui", "show_player_cargo", false);
