@@ -73,6 +73,9 @@ public:
   bool show_hostile_cargo;
   bool show_armada_cargo;
 
+  bool auto_confirm_borgcube;
+  bool auto_confirm_discovery;
+
   bool always_skip_reveal_sequence;
   bool stay_in_bundle_after_summary;
 

@@ -344,6 +344,9 @@ void Config::Load()
   this->show_hostile_cargo     = get_config_or_default(config, parsed, "ui", "show_hostile_cargo", true);
   this->show_armada_cargo      = get_config_or_default(config, parsed, "ui", "show_armada_cargo", true);
 
+  this->auto_confirm_borgcube = get_config_or_default(config, parsed, "ui", "auto_confirm_borgcube", false);
+  this->auto_confirm_discovery = get_config_or_default(config, parsed, "ui", "auto_confirm_discovery", false);
+
   this->always_skip_reveal_sequence = get_config_or_default(config, parsed, "ui", "always_skip_reveal_sequence", false);
   this->stay_in_bundle_after_summary =
       get_config_or_default(config, parsed, "ui", "stay_in_bundle_after_summary", true);

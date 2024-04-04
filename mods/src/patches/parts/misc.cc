@@ -9,6 +9,7 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
+#include <spdlog/spdlog.h>
 #include <spud/detour.h>
 
 #if _WIN32
@@ -16,6 +17,7 @@
 #endif
 
 #include <algorithm>
+#include <prime/ActionPromptPopupViewController.h>
 
 int64_t InventoryForPopup_set_MaxItemsToUse(auto original, InventoryForPopup* a1, int64_t a2)
 {
@@ -316,6 +318,27 @@ void ShopSummaryDirectorCtr(auto original, ShopSummaryDirector* _this)
   original(_this);
 }
 
+void ActionPromptPopupViewController_AboutToShow(auto original, ActionPromptPopupViewController* _this)
+{
+  const auto context = _this->CanvasContext;
+  if (context != nullptr) {
+    const auto actionType = context->activatedAbilityType;
+    const auto config     = Config::Get();
+
+    const auto confirm_borgcube = config.auto_confirm_borgcube && actionType == ActivatedAbilityType::CuttingBeam;
+    const auto confirm_discovery =
+        config.auto_confirm_discovery
+        && (actionType == ActivatedAbilityType::InstantWarp || actionType == ActivatedAbilityType::Towing);
+
+    spdlog::info("ActionPrompt Type - {} (borgcube {}, discovery {})", actionType, confirm_borgcube, confirm_discovery);
+    if (confirm_discovery || confirm_borgcube) {
+      return _this->OnActionButtonClick();
+    }
+  }
+
+  return original(_this);
+}
+
 //   const auto section_data = Hub::get_SectionManager()->_sectionStorage->GetState(sectionID);
 
 void InstallTempCrashFixes()
@@ -332,8 +355,16 @@ void InstallTempCrashFixes()
   SPUD_STATIC_DETOUR(reveal_show, ShouldShowRevealHook);
 
   auto shop_summary_director = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Shop", "ShopSummaryDirector");
-  reveal_show                = shop_summary_director.GetMethod("Start");
+
+  reveal_show = shop_summary_director.GetMethod("Start");
   SPUD_STATIC_DETOUR(reveal_show, ShopSummaryDirectorCtr);
+
   reveal_show = shop_summary_director.GetMethod("GoBackBehaviour");
   SPUD_STATIC_DETOUR(reveal_show, ShopSummaryDirectorGoBackBehavior);
+
+  auto action_prompt_popup_controller =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.HUD", "ActionPromptPopupViewController");
+
+  auto action_prompt_show = action_prompt_popup_controller.GetMethod("AboutToShow");
+  SPUD_STATIC_DETOUR(action_prompt_show, ActionPromptPopupViewController_AboutToShow);
 }
