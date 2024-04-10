@@ -15,7 +15,9 @@ public:
   void CancelWarpClicked()
   {
     static auto CancelWarpClicked = get_class_helper().GetMethod<void(FleetLocalViewController*)>("CancelWarpClicked");
-    CancelWarpClicked(this);
+    if (CancelWarpClicked != nullptr) {
+      CancelWarpClicked(this);
+    }
   }
 
   bool RequestAction(IActionData target, ActionType type, int index, ActionBehaviour behaviourMask,

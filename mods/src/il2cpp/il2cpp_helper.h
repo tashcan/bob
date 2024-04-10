@@ -143,8 +143,11 @@ public:
     }
 
     auto fn = il2cpp_class_get_method_from_name(this->cls, name, arg_count);
+    if (fn != nullptr) {
+      return (T*)fn->methodPointer;
+    }
 
-    return (T*)fn->methodPointer;
+    return nullptr;
   }
 
   template <typename T = void> T* GetVirtualMethod(const char* name, int arg_count = -1)
