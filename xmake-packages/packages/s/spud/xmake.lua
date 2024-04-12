@@ -7,6 +7,7 @@ add_versions("v0.2.0.alpha.1", "30df1499b5e4a51ae7ddd9fbda410dcbe6fed2725d6097df
 add_versions("v0.2.0.alpha.2", "414db66510c3410ea1e90207fff1be15c72b362983c04b14c63edc5d7067b4f1")
 add_versions("v0.2.0.alpha.3", "a0e0d810a6dfd3919267581766663fa28d1980b8d4a6f111fa770d0d3e6ce211")
 add_versions("v0.2.0.alpha.4", "f758c0a2403256837d84df7b103612d7ad4360917310f3dd6a04f77bbfd22bfb")
+add_versions("v0.2.0.alpha.5", "d3c1f03279f95a2416334a62cd98f8ae98d45ae37ff4e7a59acc69b2cbabc53a")
 on_install(function(package)
     local configs = {}
     table.insert(configs, "-DCMAKE_BUILD_TYPE=" .. (package:debug() and "Debug" or "Release"))

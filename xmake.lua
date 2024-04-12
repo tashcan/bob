@@ -33,7 +33,7 @@ on_fetch(function(package, opt)
 end)
 package_end()
 
-add_requires("spud v0.2.0.alpha.4")
+add_requires("spud v0.2.0.alpha.5")
 add_requires("libil2cpp")
 add_requires("simdutf")
 
