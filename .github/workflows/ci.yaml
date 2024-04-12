@@ -23,6 +23,8 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
+          actions-cache-folder: '.xmake-cache'
+          actions-cache-key: 'win-ci'
 
       - name: Configure
         run: xmake f -m releasedbg -y
@@ -49,6 +51,8 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
+          actions-cache-folder: '.xmake-cache'
+          actions-cache-key: 'mac-ci'
 
       - name: Set up Homebrew
         id: set-up-homebrew
