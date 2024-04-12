@@ -320,6 +320,10 @@ void ShopSummaryDirectorCtr(auto original, ShopSummaryDirector* _this)
 
 void ActionPromptPopupViewController_AboutToShow(auto original, ActionPromptPopupViewController* _this)
 {
+  if (!ActionPromptPopupViewController::IsInstance(_this)) {
+     return original(_this);
+  }
+
   const auto context = _this->CanvasContext;
   if (context != nullptr) {
     const auto actionType = context->activatedAbilityType;

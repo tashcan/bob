@@ -15,6 +15,11 @@ public:
     return class_helper;
   }
 
+  static bool IsInstance(void *obj)
+  {
+    return get_class_helper().get_cls() == ((Il2CppObject*)obj)->klass;
+  }
+
   void OnActionButtonClick()
   {
     static auto OnActionButtonClickMethod =
