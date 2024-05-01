@@ -51,13 +51,6 @@ public:
     SetTowRequest(this, towedFleetId, towingFleetId, ptr);
   }
 
-  void CancelWarpRequest(uint64_t fleetId)
-  {
-    static auto CancelWarpRequest =
-        get_class_helper().GetMethod<void(DeploymentManger*, uint64_t, void*)>("CancelWarp");
-    CancelWarpRequest(this, fleetId, nullptr);
-  }
-
   DeploymentService::IEnumerator_PlanCourse* PlanCourse(FleetPlayerData* selectedFleet, void* targetAddress,
                                                         Vector3 targetPosition, FleetDeployedData* targetDeployedFleet,
                                                         void* starbaseData, void* allianceStarbaseData)

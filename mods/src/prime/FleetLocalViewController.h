@@ -12,6 +12,14 @@ public:
   __declspec(property(get = __get__shipBarItemLocalViewController))
       ShipBarItemLocalViewController* shipBarItemLocalViewController;
 
+  void CancelWarpClicked()
+  {
+    static auto CancelWarpClicked = get_class_helper().GetMethod<void(FleetLocalViewController*)>("CancelWarpClicked");
+    if (CancelWarpClicked != nullptr) {
+      CancelWarpClicked(this);
+    }
+  }
+
   bool RequestAction(IActionData target, ActionType type, int index, ActionBehaviour behaviourMask,
                      void* callback = nullptr)
   {

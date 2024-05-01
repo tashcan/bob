@@ -508,7 +508,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
 
   if (has_recall_cancel
       && (fleet->CurrentState == FleetState::WarpCharging || fleet->CurrentState == FleetState::Warping)) {
-    DeploymentManger::Instance()->CancelWarpRequest(fleet->Id);
+    fleet_controller->CancelWarpClicked();
   } else {
     auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
     for (auto pre_scan_widget : all_pre_scan_widgets) {
