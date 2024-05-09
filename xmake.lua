@@ -15,6 +15,7 @@ add_requires("libcurl", { configs = { zlib = true } })
 
 if is_plat("windows") then
     includes("win-proxy-dll")
+    add_links('rpcrt4')
 end
 
 if is_plat("macosx") then

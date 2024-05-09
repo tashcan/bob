@@ -82,7 +82,7 @@ static std::string newUUID()
   return s;
 }
 
-void* process_curl_response(std::string label, CURLcode code, bool throw_error = true)
+void* process_curl_response(std::string label, CURLcode code, bool throw_error = false)
 {
   if (code != CURLE_OK) {
     auto text = "SYNC: Curl failed to " + label + ": " + std::to_string((int)code);
@@ -109,8 +109,8 @@ static void send_data(std::wstring post_data)
   std::wstring httpResponseBody;
   CURL*        httpClient = curl_easy_init();
 
-  process_curl_response("set TLS", curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS), true);
-  process_curl_response("set UserAgent", curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"), true);
+  process_curl_response("set TLS", curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
+  process_curl_response("set UserAgent", curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
 
   struct curl_slist* list = NULL;
 
@@ -137,7 +137,15 @@ static void send_data(std::wstring post_data)
   auto post_data_str = to_string(post_data);
   process_curl_response("set data", curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
 
-  process_curl_response("send data", curl_easy_perform(httpClient));
+  process_curl_response("send data", curl_easy_perform(httpClient), true);
+
+  long http_code = 0;
+  process_curl_response("get response code", curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
+
+  if (http_code != 200) {
+    spdlog::error("SYNC: Failed to communicate with server - {}", http_code);
+    throw std::runtime_error("SYNC: Failed to communicate with server - " + std::to_string((int)http_code));
+  }
 }
 
 static size_t curl_write_to_string(void* contents, size_t size, size_t nmemb, std::string* s)
@@ -204,13 +212,13 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
 
   process_curl_response("set write func", curl_easy_setopt(httpClient, CURLOPT_WRITEFUNCTION, curl_write_to_string));
   process_curl_response("set write var", curl_easy_setopt(httpClient, CURLOPT_WRITEDATA, &s));
-  process_curl_response("send data", curl_easy_perform(httpClient));
+  process_curl_response("send data", curl_easy_perform(httpClient), true);
 
   long http_code = 0;
   process_curl_response("get response code", curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
 
   if (http_code != 200) {
-    spdlog::error("SYNC: Failed to community with server - {}", http_code);
+    spdlog::error("SYNC: Failed to communicate with server - {}", http_code);
     throw std::runtime_error("SYNC: Failed to communicate with server - " + std::to_string((int)http_code));
   }
 
