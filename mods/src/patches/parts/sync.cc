@@ -145,8 +145,11 @@ static void process_curl_response(std::string type, std::string label, long code
   }
 }
 
-#define CURL_TYPE_UPLOAD "UPLOAD"
-#define CURL_TYPE_DOWNLOAD "DOWNLOAD"
+static const std::string CURL_TYPE_UPLOAD   = "UPLOAD";
+static const std::string CURL_TYPE_DOWNLOAD = "DOWNLOAD";
+static const std::string UNITY_VERSION      = "2020.3.18f1-digit-multiple-fixes-build";
+static const std::string PRIME_VERSION      = "1.000.33037";
+static const std::string PRIME_API_KEY      = "meh";
 
 static void send_data(std::wstring post_data)
 {
@@ -242,15 +245,20 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
 
   if (!session.empty()) {
     auto session_id_header = to_string(session);
-    auto game_server_url   = to_string(gameServerUrl);
-    game_server_url        = game_server_url.substr(8, game_server_url.length() - 8);
+    auto user_agent        = "UnityPlayer/" + UNITY_VERSION + " (UnityWebRequest / 1.0, libcurl / 7.75.0 - DEV)";
+
+    auto game_server_url = to_string(gameServerUrl);
+    game_server_url      = game_server_url.substr(8, game_server_url.length() - 8);
 
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "Host", game_server_url.c_str());
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-AUTH-SESSION-ID", session_id_header.c_str(), true);
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-TRANSACTION-ID", newUUID().c_str(), true);
-    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-VERSION", "meh");
-    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Api-Key", "meh");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Api-Key", PRIME_API_KEY);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Unity-Version", UNITY_VERSION);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-VERSION", PRIME_VERSION);
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-SYNC", "0");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Suppress-Codes", "1");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "User-Agent", user_agent);
   }
 
   if (list) {
