@@ -82,18 +82,35 @@ static std::string newUUID()
   return s;
 }
 
-void* process_curl_response(std::string label, CURLcode code, bool throw_error = false)
+static void sync_log_error(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::error("SYNC-{}: {}", type, text);
+  }
+}
+
+static void sync_log_warn(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::warn("SYNC-{}: {}", type, text);
+  }
+}
+
+static void process_curl_response(std::string type, std::string label, long code, bool throw_error = false)
 {
   if (code != CURLE_OK) {
-    auto text = "SYNC: Curl failed to " + label + ": " + std::to_string((int)code);
+    auto text = "Curl failed to " + label + " - Code " + std::to_string((long)code);
     text      = text;
 
-    spdlog::error(text);
+    sync_log_error(type, text);
     if (throw_error) {
       throw std::runtime_error("Failed to " + label);
     }
   }
 }
+
+#define CURL_TYPE_UPLOAD "UPLOAD"
+#define CURL_TYPE_DOWNLOAD "DOWNLOAD"
 
 static void send_data(std::wstring post_data)
 {
@@ -101,7 +118,7 @@ static void send_data(std::wstring post_data)
   if (Config::Get().sync_url.empty()) {
     if (!loggedUrl) {
       loggedUrl = true;
-      spdlog::warn("SYNC: No url found, will not attempt");
+      sync_log_warn(CURL_TYPE_UPLOAD, "No url found, will not attempt to send");
     }
     return;
   }
@@ -109,8 +126,10 @@ static void send_data(std::wstring post_data)
   std::wstring httpResponseBody;
   CURL*        httpClient = curl_easy_init();
 
-  process_curl_response("set TLS", curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
-  process_curl_response("set UserAgent", curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
+  process_curl_response(CURL_TYPE_UPLOAD, "set TLS",
+                        curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
+  process_curl_response(CURL_TYPE_UPLOAD, "set UserAgent",
+                        curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
 
   struct curl_slist* list = NULL;
 
@@ -123,28 +142,26 @@ static void send_data(std::wstring post_data)
   }
 
   if (list) {
-    process_curl_response("set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
-  }
-
-  if (!loggedUrl) {
-    loggedUrl = true;
-    spdlog::debug("SYNC: Sending data to {}", Config::Get().sync_url);
+    process_curl_response(CURL_TYPE_UPLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
   }
 
   auto url = Config::Get().sync_url;
-  process_curl_response("set url", curl_easy_setopt(httpClient, CURLOPT_URL, url.c_str()));
+
+  sync_log_warn(CURL_TYPE_UPLOAD, "Sending data to " + url);
+  process_curl_response(CURL_TYPE_UPLOAD, "set url", curl_easy_setopt(httpClient, CURLOPT_URL, url.c_str()));
 
   auto post_data_str = to_string(post_data);
-  process_curl_response("set data", curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
+  process_curl_response(CURL_TYPE_UPLOAD, "set data",
+                        curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
 
-  process_curl_response("send data", curl_easy_perform(httpClient), true);
+  process_curl_response(CURL_TYPE_UPLOAD, "send data", curl_easy_perform(httpClient), true);
 
   long http_code = 0;
-  process_curl_response("get response code", curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
+  process_curl_response(CURL_TYPE_UPLOAD, "get response code",
+                        curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
 
   if (http_code != 200) {
-    spdlog::error("SYNC: Failed to communicate with server - {}", http_code);
-    throw std::runtime_error("SYNC: Failed to communicate with server - " + std::to_string((int)http_code));
+    process_curl_response(CURL_TYPE_UPLOAD, "communicate with server", http_code, true);
   }
 }
 
@@ -159,18 +176,20 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
 {
   static auto loggedUrl = false;
 
-  if (Config::Get().sync_url.empty()) {
+  if (Config::Get().sync_url.empty() && Config::Get().sync_file.empty()) {
     if (!loggedUrl) {
       loggedUrl = true;
-      spdlog::warn("SYNC: Not retreiving data, no sync url");
+      sync_log_warn(CURL_TYPE_DOWNLOAD, "Not retreiving data, no sync url or file");
     }
     return {};
   }
 
   CURL* httpClient = curl_easy_init();
 
-  process_curl_response("set TLS", curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
-  process_curl_response("set UserAGent", curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set TLS",
+                        curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set UserAGent",
+                        curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
 
   struct curl_slist* list = NULL;
 
@@ -195,9 +214,10 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
   }
 
   if (list) {
-    process_curl_response("set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
+    process_curl_response(CURL_TYPE_DOWNLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
   }
 
+  std::wstring original_url = url;
   if (url.ends_with(L"/")) {
     url = url.substr(0, url.length() - 1);
     url += path;
@@ -205,21 +225,27 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
     url += path;
   }
 
-  process_curl_response("set url", curl_easy_setopt(httpClient, CURLOPT_URL, to_string(url).c_str()));
-  process_curl_response("set data", curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, to_string(post_data).c_str()));
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set url",
+                        curl_easy_setopt(httpClient, CURLOPT_URL, to_string(url).c_str()));
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set data",
+                        curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, to_string(post_data).c_str()));
 
   std::string s;
 
-  process_curl_response("set write func", curl_easy_setopt(httpClient, CURLOPT_WRITEFUNCTION, curl_write_to_string));
-  process_curl_response("set write var", curl_easy_setopt(httpClient, CURLOPT_WRITEDATA, &s));
-  process_curl_response("send data", curl_easy_perform(httpClient), true);
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set write func",
+                        curl_easy_setopt(httpClient, CURLOPT_WRITEFUNCTION, curl_write_to_string));
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set write var", curl_easy_setopt(httpClient, CURLOPT_WRITEDATA, &s));
+
+  auto log_text = "Getting data for " + to_string(path) + " at " + to_string(original_url);
+  sync_log_warn(CURL_TYPE_UPLOAD, log_text);
+  process_curl_response(CURL_TYPE_DOWNLOAD, "send data", curl_easy_perform(httpClient), true);
 
   long http_code = 0;
-  process_curl_response("get response code", curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
+  process_curl_response(CURL_TYPE_DOWNLOAD, "get response code",
+                        curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
 
   if (http_code != 200) {
-    spdlog::error("SYNC: Failed to communicate with server - {}", http_code);
-    throw std::runtime_error("SYNC: Failed to communicate with server - " + std::to_string((int)http_code));
+    process_curl_response(CURL_TYPE_DOWNLOAD, "communicate with server", http_code, true);
   }
 
   return to_wstring(s);
@@ -586,20 +612,21 @@ void ship_sync_data()
       return data;
     })();
     try {
+      http::write_data(sync_data);
       http::send_data(sync_data);
 #if _WIN32
     } catch (winrt::hresult_error const& ex) {
-      spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+      spdlog::error("Failed to send ship sync data: {}", winrt::to_string(ex.message()).c_str());
     } catch (const std::wstring& sz) {
-      spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
+      spdlog::error("Failed to send ship sync data: {}", winrt::to_string(sz).c_str());
     }
 #else
     } catch (const std::wstring& sz) {
-      spdlog::error("Failed to send sync data: {}", to_string(sz));
+      spdlog::error("Failed to send ship sync data: {}", to_string(sz));
     }
 #endif
     catch (const std::runtime_error& e) {
-      spdlog::error("Failed to send sync data: {}", e.what());
+      spdlog::error("Failed to send ship sync data: {}", e.what());
     }
   }
 #if _WIN32
@@ -676,17 +703,17 @@ void ship_combat_log_data()
         http::send_data(ship_data);
 #if _WIN32
       } catch (winrt::hresult_error const& ex) {
-        spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+        spdlog::error("Failed to send combat sync data: {}", winrt::to_string(ex.message()).c_str());
       } catch (const std::wstring& sz) {
-        spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
+        spdlog::error("Failed to send combat sync data: {}", winrt::to_string(sz).c_str());
       }
 #else
       } catch (const std::wstring& sz) {
-        spdlog::error("Failed to send sync data: {}", to_string(sz));
+        spdlog::error("Failed to send combat sync data: {}", to_string(sz));
       }
 #endif
       catch (const std::runtime_error& e) {
-        spdlog::error("Failed to send sync data: {}", e.what());
+        spdlog::error("Failed to send combat sync data: {}", e.what());
       }
     } catch (...) {
     }
