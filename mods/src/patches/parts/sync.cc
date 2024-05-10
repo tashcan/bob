@@ -237,7 +237,7 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
   process_curl_response(CURL_TYPE_DOWNLOAD, "set write var", curl_easy_setopt(httpClient, CURLOPT_WRITEDATA, &s));
 
   auto log_text = "Getting data for " + to_string(path) + " at " + to_string(original_url);
-  sync_log_warn(CURL_TYPE_UPLOAD, log_text);
+  sync_log_warn(CURL_TYPE_DOWNLOAD, log_text);
   process_curl_response(CURL_TYPE_DOWNLOAD, "send data", curl_easy_perform(httpClient), true);
 
   long http_code = 0;
