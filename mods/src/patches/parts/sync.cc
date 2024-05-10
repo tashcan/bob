@@ -61,6 +61,9 @@ private:
 #include <uuid/uuid.h>
 #endif
 
+static std::wstring instanceSessionId;
+static std::wstring gameServerUrl;
+
 static std::string newUUID()
 {
 #ifdef WIN32
@@ -96,13 +99,46 @@ static void sync_log_warn(std::string type, std::string text)
   }
 }
 
+static void sync_log_info(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::info("SYNC-{}: {}", type, text);
+  }
+}
+
+static void sync_log_debug(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::debug("SYNC-{}: {}", type, text);
+  }
+}
+
+static struct curl_slist* sync_slist_append(std::string type, struct curl_slist* list, std::string header,
+                                            std::string data, bool mask = false)
+{
+  auto combined = header + ": " + data;
+  if (Config::Get().sync_logging) {
+    if (mask) {
+      if (spdlog::get_level() == spdlog::level::trace) {
+        spdlog::debug("SYNC-{}: Adding header - '{}' [not redacted]", type, combined);
+      } else {
+        spdlog::debug("SYNC-{}: Adding header - '{}: {}' [redacted]", type, header, "******");
+      }
+    } else {
+      spdlog::debug("SYNC-{}: Adding header - '{}'", type, combined);
+    }
+  }
+
+  return curl_slist_append(list, combined.c_str());
+}
+
 static void process_curl_response(std::string type, std::string label, long code, bool throw_error = false)
 {
   if (code != CURLE_OK) {
-    auto text = "Curl failed to " + label + " - Code " + std::to_string((long)code);
+    auto text = "Failed to " + label + " - Code " + std::to_string((long)code);
     text      = text;
 
-    sync_log_error(type, text);
+    sync_log_warn(type, text);
     if (throw_error) {
       throw std::runtime_error("Failed to " + label);
     }
@@ -133,12 +169,11 @@ static void send_data(std::wstring post_data)
 
   struct curl_slist* list = NULL;
 
-  list = curl_slist_append(list, "Content-Type: application/json");
+  list = sync_slist_append(CURL_TYPE_UPLOAD, list, "Content-Type", "application/json");
 
-  auto token             = Config::Get().sync_token;
-  auto sync_token_header = "stfc-sync-token: " + token;
+  auto token = Config::Get().sync_token;
   if (!token.empty()) {
-    list = curl_slist_append(list, sync_token_header.c_str());
+    list = sync_slist_append(CURL_TYPE_UPLOAD, list, "stfc-sync-token", token.c_str(), true);
   }
 
   if (list) {
@@ -147,7 +182,12 @@ static void send_data(std::wstring post_data)
 
   auto url = Config::Get().sync_url;
 
-  sync_log_warn(CURL_TYPE_UPLOAD, "Sending data to " + url);
+  if (spdlog::get_level() == spdlog::level::trace) {
+    sync_log_warn(CURL_TYPE_UPLOAD, "Sending data to " + url);
+  } else {
+    sync_log_info(CURL_TYPE_UPLOAD, "Sending data to " + url);
+  }
+
   process_curl_response(CURL_TYPE_UPLOAD, "set url", curl_easy_setopt(httpClient, CURLOPT_URL, url.c_str()));
 
   auto post_data_str = to_string(post_data);
@@ -193,24 +233,24 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
 
   struct curl_slist* list = NULL;
 
-  list = curl_slist_append(list, "Content-Type: application/json");
+  list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "Content-Type", "application/json");
 
-  auto token = Config::Get().sync_token;
-  if (!token.empty() && session.empty()) {
-    auto sync_token_header = "stfc-sync-token: " + token;
-
-    list = curl_slist_append(list, sync_token_header.c_str());
-  }
+  // auto token = Config::Get().sync_token;
+  // if (!token.empty() && session.empty()) {
+  //   list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "stfc-sync-token", token);
+  // }
 
   if (!session.empty()) {
-    auto session_id_header = "X-AUTH-SESSION-ID: " + to_string(session);
-    auto trans_id_header   = "X-TRANSACTION-ID: " + newUUID();
+    auto session_id_header = to_string(session);
+    auto game_server_url   = to_string(gameServerUrl);
+    game_server_url        = game_server_url.substr(8, game_server_url.length() - 8);
 
-    list = curl_slist_append(list, session_id_header.c_str());
-    list = curl_slist_append(list, trans_id_header.c_str());
-    list = curl_slist_append(list, "X-PRIME-VERSION: meh");
-    list = curl_slist_append(list, "X-Api-Key: meh");
-    list = curl_slist_append(list, "X-PRIME-SYNC: 0");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "Host", game_server_url.c_str());
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-AUTH-SESSION-ID", session_id_header.c_str(), true);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-TRANSACTION-ID", newUUID().c_str(), true);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-VERSION", "meh");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Api-Key", "meh");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-SYNC", "0");
   }
 
   if (list) {
@@ -236,8 +276,14 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
                         curl_easy_setopt(httpClient, CURLOPT_WRITEFUNCTION, curl_write_to_string));
   process_curl_response(CURL_TYPE_DOWNLOAD, "set write var", curl_easy_setopt(httpClient, CURLOPT_WRITEDATA, &s));
 
-  auto log_text = "Getting data for " + to_string(path) + " at " + to_string(original_url);
-  sync_log_warn(CURL_TYPE_DOWNLOAD, log_text);
+  auto log_text = "Getting data for " + to_string(path);
+  if (spdlog::get_level() == spdlog::level::trace) {
+    log_text = log_text + " at " + to_string(original_url);
+    sync_log_warn(CURL_TYPE_DOWNLOAD, log_text);
+  } else {
+    sync_log_info(CURL_TYPE_DOWNLOAD, log_text);
+  }
+
   process_curl_response(CURL_TYPE_DOWNLOAD, "send data", curl_easy_perform(httpClient), true);
 
   long http_code = 0;
@@ -591,9 +637,6 @@ void HandleEntityGroup(EntityGroup* entity_group)
   }
 }
 
-static std::wstring instanceSessionId;
-static std::wstring gameServerUrl;
-
 void ship_sync_data()
 {
 #if _WIN32
@@ -655,7 +698,7 @@ void ship_combat_log_data()
       })();
 
       auto body       = L"{{\"journal_id\":" + std::to_wstring(sync_data) + L"}}";
-      auto battle_log = http::get_data_data(instanceSessionId, gameServerUrl, L"/journals/get", body);
+      auto battle_log = http::get_data_data(http::instanceSessionId, http::gameServerUrl, L"/journals/get", body);
 
       using json = nlohmann::json;
 
@@ -688,8 +731,8 @@ void ship_combat_log_data()
                                                       return a + (a.length() > 0 ? "," : "") + b;
                                                     });
       auto        profiles_body   = "{{\"user_ids\":[" + profiles_joined + "]}}";
-      auto        profiles =
-          http::get_data_data(instanceSessionId, gameServerUrl, L"/user_profile/profiles", to_wstring(profiles_body));
+      auto profiles      = http::get_data_data(http::instanceSessionId, http::gameServerUrl, L"/user_profile/profiles",
+                                               to_wstring(profiles_body));
       auto profiles_json = json::parse(profiles);
       auto names         = json::object();
       for (const auto& profile : profiles_json["user_profiles"].get<json::object_t>()) {
@@ -728,8 +771,8 @@ void PrimeApp_InitPrimeServer(auto original, void* _this, Il2CppString* gameServ
                               Il2CppString* sessionId)
 {
   original(_this, gameServerUrl, gatewayServerUrl, sessionId);
-  ::instanceSessionId = to_wstring(sessionId);
-  ::gameServerUrl     = to_wstring(gameServerUrl);
+  http::instanceSessionId = to_wstring(sessionId);
+  http::gameServerUrl     = to_wstring(gameServerUrl);
 }
 
 void InstallSyncPatches()
