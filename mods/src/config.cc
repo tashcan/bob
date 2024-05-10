@@ -351,6 +351,7 @@ void Config::Load()
   this->fix_unity_web_requests = get_config_or_default(config, parsed, "tech", "fix_unity_web_requests", true);
 
   this->sync_url        = get_config_or_default<std::string>(config, parsed, "sync", "url", "");
+  this->sync_proxy      = get_config_or_default<std::string>(config, parsed, "sync", "proxy", "");
   this->sync_file       = get_config_or_default<std::string>(config, parsed, "sync", "file", "");
   this->sync_token      = get_config_or_default<std::string>(config, parsed, "sync", "token", "");
   this->sync_logging    = get_config_or_default(config, parsed, "sync", "logging", false);

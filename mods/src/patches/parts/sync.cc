@@ -145,6 +145,30 @@ static void process_curl_response(std::string type, std::string label, long code
   }
 }
 
+static CURL* sync_init(std::string type, std::string url)
+{
+  CURL* httpClient = curl_easy_init();
+
+  auto proxy = Config::Get().sync_proxy;
+  if (!proxy.empty()) {
+    process_curl_response(type, "set proxy", curl_easy_setopt(httpClient, CURLOPT_PROXY, proxy.c_str()), true);
+    process_curl_response(type, "set verifypeer", curl_easy_setopt(httpClient, CURLOPT_SSL_VERIFYPEER, false));
+  }
+
+  process_curl_response(type, "set TLS", curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
+  process_curl_response(type, "set UserAgent", curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
+
+  if (spdlog::get_level() == spdlog::level::trace) {
+    sync_log_warn(type, "Sending data to " + url);
+  } else {
+    sync_log_info(type, "Sending data to " + url);
+  }
+
+  process_curl_response(type, "set url", curl_easy_setopt(httpClient, CURLOPT_URL, url.c_str()));
+
+  return httpClient;
+}
+
 static const std::string CURL_TYPE_UPLOAD   = "UPLOAD";
 static const std::string CURL_TYPE_DOWNLOAD = "DOWNLOAD";
 static const std::string UNITY_VERSION      = "2020.3.18f1-digit-multiple-fixes-build";
@@ -163,12 +187,9 @@ static void send_data(std::wstring post_data)
   }
 
   std::wstring httpResponseBody;
-  CURL*        httpClient = curl_easy_init();
 
-  process_curl_response(CURL_TYPE_UPLOAD, "set TLS",
-                        curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
-  process_curl_response(CURL_TYPE_UPLOAD, "set UserAgent",
-                        curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
+  auto         url = Config::Get().sync_url;
+  CURL*        httpClient = sync_init(CURL_TYPE_UPLOAD, url);
 
   struct curl_slist* list = NULL;
 
@@ -182,16 +203,6 @@ static void send_data(std::wstring post_data)
   if (list) {
     process_curl_response(CURL_TYPE_UPLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
   }
-
-  auto url = Config::Get().sync_url;
-
-  if (spdlog::get_level() == spdlog::level::trace) {
-    sync_log_warn(CURL_TYPE_UPLOAD, "Sending data to " + url);
-  } else {
-    sync_log_info(CURL_TYPE_UPLOAD, "Sending data to " + url);
-  }
-
-  process_curl_response(CURL_TYPE_UPLOAD, "set url", curl_easy_setopt(httpClient, CURLOPT_URL, url.c_str()));
 
   auto post_data_str = to_string(post_data);
   process_curl_response(CURL_TYPE_UPLOAD, "set data",
@@ -227,28 +238,26 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
     return {};
   }
 
-  CURL* httpClient = curl_easy_init();
+  std::wstring original_url = url;
+  if (url.ends_with(L"/")) {
+    url = url.substr(0, url.length() - 1);
+    url += path;
+  } else {
+    url += path;
+  }
 
-  process_curl_response(CURL_TYPE_DOWNLOAD, "set TLS",
-                        curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
-  process_curl_response(CURL_TYPE_DOWNLOAD, "set UserAGent",
-                        curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
+  CURL* httpClient = sync_init(CURL_TYPE_DOWNLOAD, to_string(url));
 
   struct curl_slist* list = NULL;
 
   list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "Content-Type", "application/json");
-
-  // auto token = Config::Get().sync_token;
-  // if (!token.empty() && session.empty()) {
-  //   list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "stfc-sync-token", token);
-  // }
 
   if (!session.empty()) {
     auto session_id_header = to_string(session);
     auto user_agent        = "UnityPlayer/" + UNITY_VERSION + " (UnityWebRequest / 1.0, libcurl / 7.75.0 - DEV)";
 
     auto game_server_url = to_string(gameServerUrl);
-    game_server_url      = game_server_url.substr(8, game_server_url.length() - 8);
+    game_server_url      = game_server_url.substr(8);
 
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "Host", game_server_url.c_str());
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-AUTH-SESSION-ID", session_id_header.c_str(), true);
@@ -265,18 +274,12 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
     process_curl_response(CURL_TYPE_DOWNLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
   }
 
-  std::wstring original_url = url;
-  if (url.ends_with(L"/")) {
-    url = url.substr(0, url.length() - 1);
-    url += path;
-  } else {
-    url += path;
-  }
-
-  process_curl_response(CURL_TYPE_DOWNLOAD, "set url",
-                        curl_easy_setopt(httpClient, CURLOPT_URL, to_string(url).c_str()));
+  auto post_data_str = to_string(post_data);
   process_curl_response(CURL_TYPE_DOWNLOAD, "set data",
-                        curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, to_string(post_data).c_str()));
+                        curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
+  if (spdlog::get_level() == spdlog::level::trace) {
+    sync_log_warn(CURL_TYPE_DOWNLOAD, "Message body - " + post_data_str);
+  }
 
   std::string s;
 
@@ -705,7 +708,7 @@ void ship_combat_log_data()
         return data;
       })();
 
-      auto body       = L"{{\"journal_id\":" + std::to_wstring(sync_data) + L"}}";
+      auto body       = L"{\"journal_id\":" + std::to_wstring(sync_data) + L"}";
       auto battle_log = http::get_data_data(http::instanceSessionId, http::gameServerUrl, L"/journals/get", body);
 
       using json = nlohmann::json;
@@ -738,7 +741,7 @@ void ship_combat_log_data()
                                                     [](const std::string& a, const std::string& b) -> std::string {
                                                       return a + (a.length() > 0 ? "," : "") + b;
                                                     });
-      auto        profiles_body   = "{{\"user_ids\":[" + profiles_joined + "]}}";
+      auto        profiles_body   = "{\"user_ids\":[" + profiles_joined + "]}";
       auto profiles      = http::get_data_data(http::instanceSessionId, http::gameServerUrl, L"/user_profile/profiles",
                                                to_wstring(profiles_body));
       auto profiles_json = json::parse(profiles);
