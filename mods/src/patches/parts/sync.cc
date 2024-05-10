@@ -3,13 +3,13 @@
 
 #include <il2cpp/il2cpp_helper.h>
 
+#include <Digit.PrimeServer.Models.pb.h>
 #include <prime/EntityGroup.h>
 #include <prime/HttpResponse.h>
 #include <prime/Hub.h>
 #include <prime/LanguageManager.h>
 #include <prime/ServiceResponse.h>
 #include <str_utils.h>
-#include <Digit.PrimeServer.Models.pb.h>
 
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
@@ -55,47 +55,167 @@ private:
   CURL* handle_;
 };
 
+#ifdef WIN32
+#include <Rpc.h>
+#else
+#include <uuid/uuid.h>
+#endif
+
+static std::wstring instanceSessionId;
+static std::wstring gameServerUrl;
+
+static std::string newUUID()
+{
+#ifdef WIN32
+  UUID uuid;
+  UuidCreate(&uuid);
+
+  unsigned char* str;
+  UuidToStringA(&uuid, &str);
+
+  std::string s((char*)str);
+
+  RpcStringFreeA(&str);
+#else
+  uuid_t uuid;
+  uuid_generate_random(uuid);
+  char s[37];
+  uuid_unparse(uuid, s);
+#endif
+  return s;
+}
+
+static void sync_log_error(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::error("SYNC-{}: {}", type, text);
+  }
+}
+
+static void sync_log_warn(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::warn("SYNC-{}: {}", type, text);
+  }
+}
+
+static void sync_log_info(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::info("SYNC-{}: {}", type, text);
+  }
+}
+
+static void sync_log_debug(std::string type, std::string text)
+{
+  if (Config::Get().sync_logging) {
+    spdlog::debug("SYNC-{}: {}", type, text);
+  }
+}
+
+static struct curl_slist* sync_slist_append(std::string type, struct curl_slist* list, std::string header,
+                                            std::string data, bool mask = false)
+{
+  auto combined = header + ": " + data;
+  if (Config::Get().sync_logging) {
+    if (mask) {
+      if (spdlog::get_level() == spdlog::level::trace) {
+        spdlog::debug("SYNC-{}: Adding header - '{}' [not redacted]", type, combined);
+      } else {
+        spdlog::debug("SYNC-{}: Adding header - '{}: {}' [redacted]", type, header, "******");
+      }
+    } else {
+      spdlog::debug("SYNC-{}: Adding header - '{}'", type, combined);
+    }
+  }
+
+  return curl_slist_append(list, combined.c_str());
+}
+
+static void process_curl_response(std::string type, std::string label, long code, bool throw_error = false)
+{
+  if (code != CURLE_OK) {
+    auto text = "Failed to " + label + " - Code " + std::to_string((long)code);
+    text      = text;
+
+    sync_log_warn(type, text);
+    if (throw_error) {
+      throw std::runtime_error("Failed to " + label);
+    }
+  }
+}
+
+static CURL* sync_init(std::string type, std::string url)
+{
+  CURL* httpClient = curl_easy_init();
+
+  auto proxy = Config::Get().sync_proxy;
+  if (!proxy.empty()) {
+    process_curl_response(type, "set proxy", curl_easy_setopt(httpClient, CURLOPT_PROXY, proxy.c_str()), true);
+    process_curl_response(type, "set verifypeer", curl_easy_setopt(httpClient, CURLOPT_SSL_VERIFYPEER, false));
+  }
+
+  process_curl_response(type, "set TLS", curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS));
+  process_curl_response(type, "set UserAgent", curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch"));
+
+  if (spdlog::get_level() == spdlog::level::trace) {
+    sync_log_warn(type, "Sending data to " + url);
+  } else {
+    sync_log_info(type, "Sending data to " + url);
+  }
+
+  process_curl_response(type, "set url", curl_easy_setopt(httpClient, CURLOPT_URL, url.c_str()));
+
+  return httpClient;
+}
+
+static const std::string CURL_TYPE_UPLOAD   = "UPLOAD";
+static const std::string CURL_TYPE_DOWNLOAD = "DOWNLOAD";
+static const std::string UNITY_VERSION      = "2020.3.18f1-digit-multiple-fixes-build";
+static const std::string PRIME_VERSION      = "1.000.33037";
+static const std::string PRIME_API_KEY      = "meh";
+
 static void send_data(std::wstring post_data)
 {
+  static auto loggedUrl = false;
   if (Config::Get().sync_url.empty()) {
+    if (!loggedUrl) {
+      loggedUrl = true;
+      sync_log_warn(CURL_TYPE_UPLOAD, "No url found, will not attempt to send");
+    }
     return;
   }
 
   std::wstring httpResponseBody;
-  CURL*        httpClient = curl_easy_init();
 
-  curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
-  curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch");
+  auto         url = Config::Get().sync_url;
+  CURL*        httpClient = sync_init(CURL_TYPE_UPLOAD, url);
 
   struct curl_slist* list = NULL;
 
-  list = curl_slist_append(list, "Content-Type: application/json");
+  list = sync_slist_append(CURL_TYPE_UPLOAD, list, "Content-Type", "application/json");
 
-  auto token             = Config::Get().sync_token;
-  auto sync_token_header = "stfc-sync-token: " + token;
+  auto token = Config::Get().sync_token;
   if (!token.empty()) {
-    list = curl_slist_append(list, sync_token_header.c_str());
+    list = sync_slist_append(CURL_TYPE_UPLOAD, list, "stfc-sync-token", token.c_str(), true);
   }
 
   if (list) {
-    curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list);
-  }
-
-  auto url = Config::Get().sync_url;
-  if (auto r = curl_easy_setopt(httpClient, CURLOPT_URL, url.c_str()); r != CURLE_OK) {
-    auto text = "Curl failed with: " + std::to_string((int)r);
-    text      = text;
-    throw std::runtime_error("Failed to send data");
+    process_curl_response(CURL_TYPE_UPLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
   }
 
   auto post_data_str = to_string(post_data);
-  if (curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()) != CURLE_OK) {
-    throw std::runtime_error("Failed to send data");
-  }
+  process_curl_response(CURL_TYPE_UPLOAD, "set data",
+                        curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
 
-  auto res = curl_easy_perform(httpClient);
-  if (res != CURLE_OK) {
-    throw std::runtime_error("Failed to send data");
+  process_curl_response(CURL_TYPE_UPLOAD, "send data", curl_easy_perform(httpClient), true);
+
+  long http_code = 0;
+  process_curl_response(CURL_TYPE_UPLOAD, "get response code",
+                        curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
+
+  if (http_code != 200) {
+    process_curl_response(CURL_TYPE_UPLOAD, "communicate with server", http_code, true);
   }
 }
 
@@ -108,37 +228,17 @@ static size_t curl_write_to_string(void* contents, size_t size, size_t nmemb, st
 
 static std::wstring get_data_data(std::wstring session, std::wstring url, std::wstring path, std::wstring post_data)
 {
-  if (Config::Get().sync_url.empty()) {
+  static auto loggedUrl = false;
+
+  if (Config::Get().sync_url.empty() && Config::Get().sync_file.empty()) {
+    if (!loggedUrl) {
+      loggedUrl = true;
+      sync_log_warn(CURL_TYPE_DOWNLOAD, "Not retreiving data, no sync url or file");
+    }
     return {};
   }
 
-  CURL* httpClient = curl_easy_init();
-
-  curl_easy_setopt(httpClient, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_2TLS);
-  curl_easy_setopt(httpClient, CURLOPT_USERAGENT, "stfc community patch");
-
-  struct curl_slist* list = NULL;
-
-  list = curl_slist_append(list, "Content-Type: application/json");
-
-  auto token             = Config::Get().sync_token;
-  auto sync_token_header = "stfc-sync-token: " + token;
-  if (!token.empty() && session.empty()) {
-    list = curl_slist_append(list, sync_token_header.c_str());
-  }
-
-  auto session_id_header = "X-AUTH-SESSION-ID: " + to_string(session);
-  if (!session.empty()) {
-    list = curl_slist_append(list, session_id_header.c_str());
-    list = curl_slist_append(list, "X-PRIME-VERSION: meh");
-    list = curl_slist_append(list, "X-Api-Key: meh");
-    list = curl_slist_append(list, "X-PRIME-SYNC: 0");
-  }
-
-  if (list) {
-    curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list);
-  }
-
+  std::wstring original_url = url;
   if (url.ends_with(L"/")) {
     url = url.substr(0, url.length() - 1);
     url += path;
@@ -146,23 +246,63 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
     url += path;
   }
 
-  curl_easy_setopt(httpClient, CURLOPT_URL, to_string(url).c_str());
-  curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, to_string(post_data).c_str());
+  CURL* httpClient = sync_init(CURL_TYPE_DOWNLOAD, to_string(url));
+
+  struct curl_slist* list = NULL;
+
+  list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "Content-Type", "application/json");
+
+  if (!session.empty()) {
+    auto session_id_header = to_string(session);
+    auto user_agent        = "UnityPlayer/" + UNITY_VERSION + " (UnityWebRequest / 1.0, libcurl / 7.75.0 - DEV)";
+
+    auto game_server_url = to_string(gameServerUrl);
+    game_server_url      = game_server_url.substr(8);
+
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "Host", game_server_url.c_str());
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-AUTH-SESSION-ID", session_id_header.c_str(), true);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-TRANSACTION-ID", newUUID().c_str(), true);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Api-Key", PRIME_API_KEY);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Unity-Version", UNITY_VERSION);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-VERSION", PRIME_VERSION);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-SYNC", "0");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Suppress-Codes", "1");
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "User-Agent", user_agent);
+  }
+
+  if (list) {
+    process_curl_response(CURL_TYPE_DOWNLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
+  }
+
+  auto post_data_str = to_string(post_data);
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set data",
+                        curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
+  if (spdlog::get_level() == spdlog::level::trace) {
+    sync_log_warn(CURL_TYPE_DOWNLOAD, "Message body - " + post_data_str);
+  }
 
   std::string s;
 
-  curl_easy_setopt(httpClient, CURLOPT_WRITEFUNCTION, curl_write_to_string);
-  curl_easy_setopt(httpClient, CURLOPT_WRITEDATA, &s);
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set write func",
+                        curl_easy_setopt(httpClient, CURLOPT_WRITEFUNCTION, curl_write_to_string));
+  process_curl_response(CURL_TYPE_DOWNLOAD, "set write var", curl_easy_setopt(httpClient, CURLOPT_WRITEDATA, &s));
 
-  auto res = curl_easy_perform(httpClient);
-  if (res != CURLE_OK) {
-    throw std::runtime_error("Failed to send data");
+  auto log_text = "Getting data for " + to_string(path);
+  if (spdlog::get_level() == spdlog::level::trace) {
+    log_text = log_text + " at " + to_string(original_url);
+    sync_log_warn(CURL_TYPE_DOWNLOAD, log_text);
+  } else {
+    sync_log_info(CURL_TYPE_DOWNLOAD, log_text);
   }
 
+  process_curl_response(CURL_TYPE_DOWNLOAD, "send data", curl_easy_perform(httpClient), true);
+
   long http_code = 0;
-  curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code);
+  process_curl_response(CURL_TYPE_DOWNLOAD, "get response code",
+                        curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
+
   if (http_code != 200) {
-    throw std::runtime_error("Failed to send data");
+    process_curl_response(CURL_TYPE_DOWNLOAD, "communicate with server", http_code, true);
   }
 
   return to_wstring(s);
@@ -508,9 +648,6 @@ void HandleEntityGroup(EntityGroup* entity_group)
   }
 }
 
-static std::wstring instanceSessionId;
-static std::wstring gameServerUrl;
-
 void ship_sync_data()
 {
 #if _WIN32
@@ -529,20 +666,21 @@ void ship_sync_data()
       return data;
     })();
     try {
+      http::write_data(sync_data);
       http::send_data(sync_data);
 #if _WIN32
     } catch (winrt::hresult_error const& ex) {
-      spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+      spdlog::error("Failed to send ship sync data: {}", winrt::to_string(ex.message()).c_str());
     } catch (const std::wstring& sz) {
-      spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
+      spdlog::error("Failed to send ship sync data: {}", winrt::to_string(sz).c_str());
     }
 #else
     } catch (const std::wstring& sz) {
-      spdlog::error("Failed to send sync data: {}", to_string(sz));
+      spdlog::error("Failed to send ship sync data: {}", to_string(sz));
     }
 #endif
     catch (const std::runtime_error& e) {
-      spdlog::error("Failed to send sync data: {}", e.what());
+      spdlog::error("Failed to send ship sync data: {}", e.what());
     }
   }
 #if _WIN32
@@ -570,8 +708,8 @@ void ship_combat_log_data()
         return data;
       })();
 
-      auto body       = L"{{\"journal_id\":" + std::to_wstring(sync_data) + L"}}";
-      auto battle_log = http::get_data_data(instanceSessionId, gameServerUrl, L"/journals/get", body);
+      auto body       = L"{\"journal_id\":" + std::to_wstring(sync_data) + L"}";
+      auto battle_log = http::get_data_data(http::instanceSessionId, http::gameServerUrl, L"/journals/get", body);
 
       using json = nlohmann::json;
 
@@ -603,9 +741,9 @@ void ship_combat_log_data()
                                                     [](const std::string& a, const std::string& b) -> std::string {
                                                       return a + (a.length() > 0 ? "," : "") + b;
                                                     });
-      auto        profiles_body   = "{{\"user_ids\":[" + profiles_joined + "]}}";
-      auto        profiles =
-          http::get_data_data(instanceSessionId, gameServerUrl, L"/user_profile/profiles", to_wstring(profiles_body));
+      auto        profiles_body   = "{\"user_ids\":[" + profiles_joined + "]}";
+      auto profiles      = http::get_data_data(http::instanceSessionId, http::gameServerUrl, L"/user_profile/profiles",
+                                               to_wstring(profiles_body));
       auto profiles_json = json::parse(profiles);
       auto names         = json::object();
       for (const auto& profile : profiles_json["user_profiles"].get<json::object_t>()) {
@@ -619,17 +757,17 @@ void ship_combat_log_data()
         http::send_data(ship_data);
 #if _WIN32
       } catch (winrt::hresult_error const& ex) {
-        spdlog::error("Failed to send sync data: {}", winrt::to_string(ex.message()).c_str());
+        spdlog::error("Failed to send combat sync data: {}", winrt::to_string(ex.message()).c_str());
       } catch (const std::wstring& sz) {
-        spdlog::error("Failed to send sync data: {}", winrt::to_string(sz).c_str());
+        spdlog::error("Failed to send combat sync data: {}", winrt::to_string(sz).c_str());
       }
 #else
       } catch (const std::wstring& sz) {
-        spdlog::error("Failed to send sync data: {}", to_string(sz));
+        spdlog::error("Failed to send combat sync data: {}", to_string(sz));
       }
 #endif
       catch (const std::runtime_error& e) {
-        spdlog::error("Failed to send sync data: {}", e.what());
+        spdlog::error("Failed to send combat sync data: {}", e.what());
       }
     } catch (...) {
     }
@@ -644,8 +782,8 @@ void PrimeApp_InitPrimeServer(auto original, void* _this, Il2CppString* gameServ
                               Il2CppString* sessionId)
 {
   original(_this, gameServerUrl, gatewayServerUrl, sessionId);
-  ::instanceSessionId = to_wstring(sessionId);
-  ::gameServerUrl     = to_wstring(gameServerUrl);
+  http::instanceSessionId = to_wstring(sessionId);
+  http::gameServerUrl     = to_wstring(gameServerUrl);
 }
 
 void InstallSyncPatches()
