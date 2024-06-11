@@ -333,6 +333,7 @@ void Config::Load()
   this->disable_escape_exit    = get_config_or_default(config, parsed, "ui", "disable_escape_exit", false);
   this->disable_preview_locate = get_config_or_default(config, parsed, "ui", "disable_preview_locate", false);
   this->disable_preview_recall = get_config_or_default(config, parsed, "ui", "disable_preview_recall", false);
+  this->disable_first_popup    = get_config_or_default(config, parsed, "ui", "disable_first_popup", false);
   this->disable_move_keys      = get_config_or_default(config, parsed, "ui", "disable_move_keys", false);
   this->disable_toast_banners  = get_config_or_default(config, parsed, "ui", "disable_toast_banners", true);
   this->extend_donation_slider = get_config_or_default(config, parsed, "ui", "extend_donation_slider", false);

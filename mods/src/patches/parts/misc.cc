@@ -16,6 +16,7 @@
 #endif
 
 #include <algorithm>
+#include <prime/InterstitialViewController.h>
 
 int64_t InventoryForPopup_set_MaxItemsToUse(auto original, InventoryForPopup* a1, int64_t a2)
 {
@@ -316,6 +317,18 @@ void ShopSummaryDirectorCtr(auto original, ShopSummaryDirector* _this)
   original(_this);
 }
 
+bool isFirstInterstitial = true;
+
+void InterstitialViewController_AboutToShow(auto original, InterstitialViewController* _this)
+{
+  if (Config::Get().disable_first_popup && isFirstInterstitial && _this != nullptr) {
+    isFirstInterstitial = false;
+    _this->CloseWhenReady();
+  } else {
+    original(_this);
+  }
+}
+
 //   const auto section_data = Hub::get_SectionManager()->_sectionStorage->GetState(sectionID);
 
 void InstallTempCrashFixes()
@@ -336,4 +349,11 @@ void InstallTempCrashFixes()
   SPUD_STATIC_DETOUR(reveal_show, ShopSummaryDirectorCtr);
   reveal_show = shop_summary_director.GetMethod("GoBackBehaviour");
   SPUD_STATIC_DETOUR(reveal_show, ShopSummaryDirectorGoBackBehavior);
+
+  static auto interstitial_controller =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "InterstitialViewController");
+  auto interstitial_show = interstitial_controller.GetMethod("AboutToShow");
+  if (interstitial_show) {
+    SPUD_STATIC_DETOUR(interstitial_show, InterstitialViewController_AboutToShow);
+  }
 }

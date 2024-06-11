@@ -64,6 +64,7 @@ public:
   bool disable_preview_recall;
   bool disable_escape_exit;
   bool disable_galaxy_chat;
+  bool disable_first_popup;
   bool disable_toast_banners;
   bool fix_unity_web_requests;
 
