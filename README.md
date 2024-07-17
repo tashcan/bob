@@ -110,7 +110,7 @@ The most common problems getting the DLL to work are:
 1. Not installed in the correct location.  This must be:
 
    ```console
-   C:\Games\Star Trek Fleet Command\Star Trek Fleet Command\default\game
+   C:\Games\Star Trek Fleet Command\STFC\default\game
    ```
 
 2. Windows is blocking the DLL.  Right-click the file and select Properties.  On the `General` tab
