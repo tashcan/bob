@@ -603,7 +603,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
         for (const auto& resource : result["resources"].get<json::object_t>()) {
           auto id     = std::stoll(resource.first);
           auto amount = resource.second["current_amount"].get<int64_t>();
-          if (amount == 0) {
+          if (amount == 0 && !resource_states.contains(id)) {
             continue;
           }
           if (resource_states[id] != amount) {
