@@ -63,6 +63,7 @@ private:
 
 static std::wstring instanceSessionId;
 static std::wstring gameServerUrl;
+static int32_t instanceId;
 
 static std::string newUUID()
 {
@@ -265,6 +266,7 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Api-Key", PRIME_API_KEY);
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Unity-Version", UNITY_VERSION);
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-VERSION", PRIME_VERSION);
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Instance-ID", std::to_string(instanceId).c_str());
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-SYNC", "0");
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Suppress-Codes", "1");
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "User-Agent", user_agent);
@@ -786,6 +788,12 @@ void PrimeApp_InitPrimeServer(auto original, void* _this, Il2CppString* gameServ
   http::gameServerUrl     = to_wstring(gameServerUrl);
 }
 
+void GameServer_SetInstanceIdHeader(auto original, void* _this, int32_t instanceId)
+{
+  original(_this, instanceId);
+  http::instanceId = instanceId;
+}
+
 void InstallSyncPatches()
 {
   curl_global_init(CURL_GLOBAL_ALL);
@@ -825,6 +833,10 @@ void InstallSyncPatches()
   auto authentication_service = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.Core", "PrimeApp");
   ptr                         = authentication_service.GetMethod("InitPrimeServer");
   SPUD_STATIC_DETOUR(ptr, PrimeApp_InitPrimeServer);
+
+  auto game_server = il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Core", "GameServer");
+  ptr = game_server.GetMethod("SetInstanceIdHeader");
+  SPUD_STATIC_DETOUR(ptr, GameServer_SetInstanceIdHeader);
 
   std::thread(ship_sync_data).detach();
   std::thread(ship_combat_log_data).detach();
