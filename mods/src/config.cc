@@ -17,6 +17,9 @@
 
 #if !_WIN32
 #include "folder_manager.h"
+#else
+#include <shellapi.h>
+#include <windows.h>
 #endif
 
 static auto make_config_path(auto filename, bool create_dir = false)
@@ -76,8 +79,9 @@ void Config::Save(toml::table config, std::string_view filename, bool apply_warn
 
   config_file.open(config_path);
   if (apply_warning) {
-    char buff[44];
-    snprintf(buff, 44, "%-44s", CONFIG_FILE_DEFAULT);
+    char defaultFile[44], configFile[44];
+    snprintf(defaultFile, 44, "%-44s", CONFIG_FILE_DEFAULT);
+    snprintf(configFile, 44, "%-44s", Config::Filename());
 
     config_file << "#######################################################################\n";
     config_file << "#######################################################################\n";
@@ -86,11 +90,14 @@ void Config::Save(toml::table config, std::string_view filename, bool apply_warn
     config_file << "####       by the STFC community patch.  It is provided to help    ####\n";
     config_file << "####       see what configuration is being used by the runtime     ####\n";
     config_file << "####       and any desired settings should be copied to the same   ####\n";
-    config_file << "####       section in: " << buff << " ####\n";
+    config_file << "####       section in: " << defaultFile << " ####\n";
+    config_file << "####                                                               ####\n";
+    config_file << "####        Config in: " << configFile << " ####\n";
     config_file << "####                                                               ####\n";
     config_file << "#######################################################################\n";
     config_file << "#######################################################################\n\n";
-  }
+  } 
+
   config_file << config;
   config_file.close();
 }
@@ -274,15 +281,62 @@ void parse_config_shortcut(toml::table config, toml::table& new_config, std::str
   spdlog::info("shortcut value {}.{} value: {}", section, item, shortcut);
 }
 
+std::string_view Config::Filename()
+{
+  static std::string configFile = "";
+
+  if (configFile.empty()) {
+#if _WIN32
+    // Get the command line
+    LPCWSTR cmdLine = GetCommandLineW();
+
+    // Parse command line into individual arguments
+    int     argc;
+    LPWSTR* argv = CommandLineToArgvW(cmdLine, &argc);
+
+    // If we have some arguments, lets see what we got
+    std::wstring argValue;
+    if (argv != nullptr) {
+      // Output the arguments (for example purposes, we'll just print them)
+      for (int i = 0; i < argc - 1; ++i) {
+        if (std::wstring(argv[i]) == L"-ccm" && i + 1 < argc) {
+          // Found "-ccm", so take the next argument as the value
+          argValue = argv[i + 1];
+          break;
+        }
+      }
+
+      if (!argValue.empty()) {
+        configFile.assign(argValue.begin(), argValue.end());
+      }
+
+      // Clean up
+      LocalFree(argv);
+    }
+#endif
+
+    // Second check here is because on windows, it may still be
+    // unset at this point.  On the mac, we do not currently
+    // support multiple configuration files
+    if (configFile.empty()) {
+      configFile = CONFIG_FILE_DEFAULT;
+    }
+  }
+
+  return configFile;
+}
+
 void Config::Load()
 {
-  spdlog::info("Loading Config");
+  spdlog::info("=-=-=-==-=-=-=-=-=-=-=-=-=-=");
+  spdlog::info("Loading Config :: {}", Config::Filename());
+  spdlog::info("=-=-=-==-=-=-=-=-=-=-=-=-=-=");
 
   toml::table config;
   toml::table parsed;
   bool        write_config = false;
   try {
-    config       = std::move(toml::parse_file(make_config_path(CONFIG_FILE_DEFAULT)));
+    config       = std::move(toml::parse_file(make_config_path(Config::Filename())));
     write_config = true;
   } catch (const toml::parse_error& e) {
     spdlog::warn("Failed to load config file, falling back to default settings: {}", e.description());
@@ -504,10 +558,10 @@ void Config::Load()
 
   if (!std::filesystem::exists(make_config_path(CONFIG_FILE_RUNTIME))) {
     message.str("");
-    message << "Creating " << CONFIG_FILE_DEFAULT << " (default config file)";
+    message << "Creating " << Config::Filename() << " (default config file)";
     spdlog::warn(message.str());
 
-    Config::Save(config, CONFIG_FILE_DEFAULT, false);
+    Config::Save(config, Config::Filename(), false);
   }
 
   message.str("");

@@ -17,6 +17,8 @@ public:
   static float   GetDPI();
   static float   RefreshDPI();
 
+  static std::string_view Filename();
+
   static void Save(toml::table config, std::string_view filename, bool apply_warning = true);
   void        Load();
   void        AdjustUiScale(bool scaleUp);
