@@ -33,7 +33,7 @@
 #include <string>
 
 #if !__cpp_lib_format
-#include <fmt/format.h>
+#include <spdlog/fmt/fmt.h>
 #endif
 
 namespace http
