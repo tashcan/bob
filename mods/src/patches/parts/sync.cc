@@ -32,6 +32,10 @@
 #include <queue>
 #include <string>
 
+#if !__cpp_lib_format
+#include <spdlog/fmt/fmt.h>
+#endif
+
 namespace http
 {
 
@@ -266,7 +270,11 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Api-Key", PRIME_API_KEY);
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Unity-Version", UNITY_VERSION);
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-VERSION", PRIME_VERSION);
+#if __cpp_lib_format
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Instance-ID", std::format("{:03}", instanceId));
+#else
+    list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Instance-ID", fmt::format("{:03}", instanceId));
+#endif
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-PRIME-SYNC", "0");
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "X-Suppress-Codes", "1");
     list = sync_slist_append(CURL_TYPE_DOWNLOAD, list, "User-Agent", user_agent);
