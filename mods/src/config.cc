@@ -281,6 +281,20 @@ void parse_config_shortcut(toml::table config, toml::table& new_config, std::str
   spdlog::info("shortcut value {}.{} value: {}", section, item, shortcut);
 }
 
+#if _WIN32
+std::string ConvertWStringToString(const std::wstring& wstr)
+{
+  if (wstr.empty())
+    return std::string();
+
+  int         sizeNeeded = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), nullptr, 0, nullptr, nullptr);
+  std::string str(sizeNeeded, 0);
+  WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &str[0], sizeNeeded, nullptr, nullptr);
+
+  return str;
+}
+#endif
+
 std::string_view Config::Filename()
 {
   static std::string configFile = "";
@@ -307,7 +321,7 @@ std::string_view Config::Filename()
       }
 
       if (!argValue.empty()) {
-        configFile.assign(argValue.begin(), argValue.end());
+        configFile = ConvertWStringToString(argValue);
       }
 
       // Clean up
