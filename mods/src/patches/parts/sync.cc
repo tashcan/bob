@@ -534,7 +534,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
         if (officer_states[officer.id()] != RankLevelState{officer.rankindex(), officer.level()}) {
           officer_states[officer.id()] = RankLevelState{officer.rankindex(), officer.level()};
           officers_array.push_back(
-              {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}});
+              {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}, {"shard_count", officer.shardcount()}});
         }
       }
       if (Config::Get().sync_officer) {
@@ -548,7 +548,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
       for (const auto& ft : response.forbiddentechs()) {
         if (ft_states[ft.id()] != RankLevelState{ft.tier(), ft.level()}) {
           ft_states[ft.id()] = RankLevelState{ft.tier(), ft.level()};
-          ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}});
+          ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}, {"shard_count", ft.shardcount()}});
         }
       }
       if (Config::Get().sync_tech) {
