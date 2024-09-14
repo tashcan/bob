@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <vector>
 
 #include <toml++/toml.h>
@@ -77,10 +78,9 @@ public:
   bool always_skip_reveal_sequence;
   bool stay_in_bundle_after_summary;
 
+  std::map<std::string, std::string> sync_targets;
   std::string sync_proxy;
-  std::string sync_url;
   std::string sync_file;
-  std::string sync_token;
   bool        sync_logging;
   bool        sync_resources;
   bool        sync_battlelogs;
