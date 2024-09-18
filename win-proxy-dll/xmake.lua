@@ -9,6 +9,7 @@ do
     set_exceptions("cxx")
     if is_plat("windows") then
         add_cxflags("/bigobj")
+        add_links("Shell32.lib")
     end
     set_policy("build.optimization.lto", true)
     add_links("User32.lib", "Ole32.lib", "OleAut32.lib")
