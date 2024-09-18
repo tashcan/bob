@@ -613,10 +613,13 @@ void HandleEntityGroup(EntityGroup* entity_group)
         for (const auto& resource : result["resources"].get<json::object_t>()) {
           auto id     = std::stoll(resource.first);
           auto amount = resource.second["current_amount"].get<int64_t>();
-          if (amount == 0) {
-            continue;
-          }
-          if (resource_states[id] != amount) {
+
+          const auto prevResourceAmountIter = resource_states.find(id);
+          const auto hadResource = (prevResourceAmountIter != resource_states.end() && prevResourceAmountIter->second != 0);
+          const auto amountChanged = amount > 0 && (prevResourceAmountIter == resource_states.end() || prevResourceAmountIter->second != amount);
+          const auto resourceDepleted = hadResource && amount == 0;
+
+          if (resourceDepleted || amountChanged) {
             resource_states[id] = amount;
             resource_array.push_back({{"type", "resource"}, {"rid", id}, {"amount", amount}});
           }
