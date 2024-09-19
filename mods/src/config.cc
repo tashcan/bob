@@ -464,9 +464,13 @@ void Config::Load()
   auto sync_token = config["sync"]["token"].value<std::string>();
 
   if (sync_url.has_value() && sync_token.has_value()) {
-    if (this->sync_targets.emplace(sync_url.value(), sync_url.value()).second) {
+    spdlog::warn("Depreciation Warning: Legacy config options 'sync_url' and 'sync_token' have been moved to [sync.targets.<name>] sections and may be removed in a future version.");
+
+    if (this->sync_targets.emplace(sync_url.value(), sync_token.value()).second) {
       parsed["sync"]["targets"].as_table()->emplace<toml::table>("default", toml::table{ {"url", sync_url.value()}, {"token", sync_token.value()} });
-      spdlog::info("config value sync.targets.default url: {}, token: {}", sync_url.value(), sync_token.value());
+      spdlog::info("Legacy config options 'sync_url' and 'sync_token' were converted to sync.targets.default url: {}, token: {}", sync_url.value(), sync_token.value());
+    } else {
+      spdlog::error("Failed to convert legacy config options sync_url: {} and sync_token: {} as [sync.targets.default] was already specified.", sync_url.value(), sync_token.value());
     }
   }
 
