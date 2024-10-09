@@ -183,7 +183,7 @@ static const std::string PRIME_API_KEY      = "meh";
 static void send_data(std::wstring post_data)
 {
   static auto loggedUrl = false;
-  if (Config::Get().sync_url.empty()) {
+  if (Config::Get().sync_targets.empty()) {
     if (!loggedUrl) {
       loggedUrl = true;
       sync_log_warn(CURL_TYPE_UPLOAD, "No url found, will not attempt to send");
@@ -191,36 +191,37 @@ static void send_data(std::wstring post_data)
     return;
   }
 
-  std::wstring httpResponseBody;
+  for (const auto& sync_target : Config::Get().sync_targets) {
+    const auto& url = sync_target.first;
+    const auto& token = sync_target.second;
 
-  auto         url = Config::Get().sync_url;
-  CURL*        httpClient = sync_init(CURL_TYPE_UPLOAD, url);
+    CURL*        httpClient = sync_init(CURL_TYPE_UPLOAD, url);
 
-  struct curl_slist* list = NULL;
+    struct curl_slist* list = NULL;
 
-  list = sync_slist_append(CURL_TYPE_UPLOAD, list, "Content-Type", "application/json");
+    list = sync_slist_append(CURL_TYPE_UPLOAD, list, "Content-Type", "application/json");
 
-  auto token = Config::Get().sync_token;
-  if (!token.empty()) {
-    list = sync_slist_append(CURL_TYPE_UPLOAD, list, "stfc-sync-token", token.c_str(), true);
-  }
+    if (!token.empty()) {
+      list = sync_slist_append(CURL_TYPE_UPLOAD, list, "stfc-sync-token", token, true);
+    }
 
-  if (list) {
-    process_curl_response(CURL_TYPE_UPLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
-  }
+    if (list) {
+      process_curl_response(CURL_TYPE_UPLOAD, "set headers", curl_easy_setopt(httpClient, CURLOPT_HTTPHEADER, list));
+    }
 
-  auto post_data_str = to_string(post_data);
-  process_curl_response(CURL_TYPE_UPLOAD, "set data",
-                        curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
+    auto post_data_str = to_string(post_data);
+    process_curl_response(CURL_TYPE_UPLOAD, "set data",
+                          curl_easy_setopt(httpClient, CURLOPT_POSTFIELDS, post_data_str.c_str()));
 
-  process_curl_response(CURL_TYPE_UPLOAD, "send data", curl_easy_perform(httpClient), true);
+    process_curl_response(CURL_TYPE_UPLOAD, "send data", curl_easy_perform(httpClient), true);
 
-  long http_code = 0;
-  process_curl_response(CURL_TYPE_UPLOAD, "get response code",
-                        curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
+    long http_code = 0;
+    process_curl_response(CURL_TYPE_UPLOAD, "get response code",
+                          curl_easy_getinfo(httpClient, CURLINFO_RESPONSE_CODE, &http_code));
 
-  if (http_code != 200) {
-    process_curl_response(CURL_TYPE_UPLOAD, "communicate with server", http_code, true);
+    if (http_code != 200) {
+      process_curl_response(CURL_TYPE_UPLOAD, "communicate with server", http_code, true);
+    }
   }
 }
 
@@ -235,7 +236,7 @@ static std::wstring get_data_data(std::wstring session, std::wstring url, std::w
 {
   static auto loggedUrl = false;
 
-  if (Config::Get().sync_url.empty() && Config::Get().sync_file.empty()) {
+  if (Config::Get().sync_targets.empty() && Config::Get().sync_file.empty()) {
     if (!loggedUrl) {
       loggedUrl = true;
       sync_log_warn(CURL_TYPE_DOWNLOAD, "Not retreiving data, no sync url or file");
@@ -533,7 +534,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
         if (officer_states[officer.id()] != RankLevelState{officer.rankindex(), officer.level()}) {
           officer_states[officer.id()] = RankLevelState{officer.rankindex(), officer.level()};
           officers_array.push_back(
-              {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}});
+              {{"type", "officer"}, {"oid", officer.id()}, {"rank", officer.rankindex()}, {"level", officer.level()}, {"shard_count", officer.shardcount()}});
         }
       }
       if (Config::Get().sync_officer) {
@@ -547,7 +548,7 @@ void HandleEntityGroup(EntityGroup* entity_group)
       for (const auto& ft : response.forbiddentechs()) {
         if (ft_states[ft.id()] != RankLevelState{ft.tier(), ft.level()}) {
           ft_states[ft.id()] = RankLevelState{ft.tier(), ft.level()};
-          ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}});
+          ft_array.push_back({{"type", "ft"}, {"fid", ft.id()}, {"tier", ft.tier()}, {"level", ft.level()}, {"shard_count", ft.shardcount()}});
         }
       }
       if (Config::Get().sync_tech) {

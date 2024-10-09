@@ -63,12 +63,6 @@ vsync = 1
 zoom = 2500
 
 [sync]
-# Token for auth on remote system
-token = ''
-
-# Url to post sync data to
-url = ''
-
 # Do you want to sync battlelogs?
 battlelogs = false
 
@@ -96,6 +90,13 @@ tech = false
 # Do you want to sync trait data?
 traits = false
 
+    [sync.target.default]
+    # Token for auth on remote system
+    token = ''
+
+    # Url to post sync data to
+    url = ''
+
 
 [tech]
 # NOTE: The following is currently disabled in InstallWebRequestHooks() which instantly returns
@@ -118,7 +119,7 @@ disable_toast_banners = true
 # This specifies the types of Banners you DON'T want to see, This must be a comma seperated list enclosed in single quotes.
 disabled_banner_types = 'Event,Victory,Defeat'
 
-# Here is a list of POSSIBLE Banner types, I think they are relatively self explanatory.
+# Here is a list of POSSIBLE Banner types, I think they are relatively self-explanatory.
 #
 # Standard
 # FactionWarning

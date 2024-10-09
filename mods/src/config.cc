@@ -365,6 +365,8 @@ void Config::Load()
   this->use_scopely_hotkeys = get_config_or_default(config, parsed, "control", "use_scopely_hotkeys", false);
 #if DEBUG
   this->enable_experimental = get_config_or_default(config, parsed, "control", "enable_experimental", false);
+#else
+  this->enable_experimental = false;
 #endif
 
   this->ui_scale            = get_config_or_default(config, parsed, "graphics", "ui_scale", 0.9f);
@@ -419,10 +421,8 @@ void Config::Load()
 
   this->fix_unity_web_requests = get_config_or_default(config, parsed, "tech", "fix_unity_web_requests", true);
 
-  this->sync_url        = get_config_or_default<std::string>(config, parsed, "sync", "url", "");
   this->sync_proxy      = get_config_or_default<std::string>(config, parsed, "sync", "proxy", "");
   this->sync_file       = get_config_or_default<std::string>(config, parsed, "sync", "file", "");
-  this->sync_token      = get_config_or_default<std::string>(config, parsed, "sync", "token", "");
   this->sync_logging    = get_config_or_default(config, parsed, "sync", "logging", false);
   this->sync_battlelogs = get_config_or_default(config, parsed, "sync", "battlelogs", false);
   this->sync_resources  = get_config_or_default(config, parsed, "sync", "resources", false);
@@ -434,7 +434,47 @@ void Config::Load()
   this->sync_buildings  = get_config_or_default(config, parsed, "sync", "buildings", false);
   this->sync_ships      = get_config_or_default(config, parsed, "sync", "ships", false);
 
-  // must explicitly included std::string typing here or we get back char * which fails us!
+  config["sync"].as_table()->emplace<toml::table>("targets", toml::table());
+  parsed["sync"].as_table()->emplace<toml::table>("targets", toml::table());
+
+  for (const auto& sync_iter : *config["sync"]["targets"].as_table()) {
+    if (!sync_iter.second.is_table()) {
+      continue;
+    }
+
+    const auto& values = *sync_iter.second.as_table();
+    if (!values.contains("url") || !values.contains("token")) {
+      continue;
+    }
+
+    auto key = sync_iter.first.str();
+    auto url = values["url"].value<std::string>();
+    auto token = values["token"].value<std::string>();
+
+    if (url.has_value() && token.has_value()) {
+      if (this->sync_targets.emplace(url.value(), token.value()).second) {
+        parsed["sync"]["targets"].as_table()->emplace<toml::table>(key, toml::table{ {"url", url.value()}, {"token", token.value()} });
+        spdlog::info("config value sync.targets.{} url: {}, token: {}", key, url.value(), token.value());
+      }
+    }
+  }
+
+  // handle legacy sync options
+  auto sync_url = config["sync"]["url"].value<std::string>();
+  auto sync_token = config["sync"]["token"].value<std::string>();
+
+  if (sync_url.has_value() && sync_token.has_value()) {
+    spdlog::warn("Depreciation Warning: Legacy config options 'sync_url' and 'sync_token' have been moved to [sync.targets.<name>] sections and may be removed in a future version.");
+
+    if (this->sync_targets.emplace(sync_url.value(), sync_token.value()).second) {
+      parsed["sync"]["targets"].as_table()->emplace<toml::table>("default", toml::table{ {"url", sync_url.value()}, {"token", sync_token.value()} });
+      spdlog::info("Legacy config options 'sync_url' and 'sync_token' were converted to sync.targets.default url: {}, token: {}", sync_url.value(), sync_token.value());
+    } else {
+      spdlog::error("Failed to convert legacy config options sync_url: {} and sync_token: {} as [sync.targets.default] was already specified.", sync_url.value(), sync_token.value());
+    }
+  }
+
+  // must explicitly include std::string typing here, or we get back char * which fails us!
   std::string disabled_banner_types_str =
       get_config_or_default<std::string>(config, parsed, "ui", "disabled_banner_types", "");
 
