@@ -23,8 +23,8 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
-          actions-cache-folder: '.xmake-cache'
-          actions-cache-key: 'win-ci'
+          actions-cache-folder: ".xmake-cache"
+          actions-cache-key: "win-ci"
 
       - name: Configure
         run: xmake f -m releasedbg -y
@@ -36,7 +36,7 @@ jobs:
         run: |
           mv build/windows/x64/releasedbg/stfc-community-patch.dll version.dll
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: stfc-community-patch
           path: version.dll
@@ -51,8 +51,8 @@ jobs:
       - uses: xmake-io/github-action-setup-xmake@v1
         with:
           xmake-version: latest
-          actions-cache-folder: '.xmake-cache'
-          actions-cache-key: 'mac-ci'
+          actions-cache-folder: ".xmake-cache"
+          actions-cache-key: "mac-ci"
 
       - name: Set up Homebrew
         id: set-up-homebrew
@@ -67,7 +67,7 @@ jobs:
       - name: Create App Bundle
         run: scripts/create-mac-dmg.sh releasedbg
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: stfc-community-patch-installer
           path: stfc-community-patch-installer.dmg
