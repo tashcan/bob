@@ -34,12 +34,12 @@ on_fetch(function(package, opt)
 end)
 package_end()
 
-add_requires("spud v0.2.0.alpha.5")
+add_requires("spud v0.2.0.alpha.12")
 add_requires("libil2cpp")
 add_requires("simdutf")
 
 -- includes("launcher")
 includes("mods")
 
-
+-- add_repositories("local-repo build")
 add_repositories("stfc-community-patch-repo xmake-packages")
