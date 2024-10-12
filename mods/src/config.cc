@@ -224,15 +224,16 @@ template <typename T>
 inline T get_config_or_default(toml::table config, toml::table& new_config, std::string_view section,
                                std::string_view item, T default_value)
 {
-  config.emplace<toml::table>(section, toml::table());
   new_config.emplace<toml::table>(section, toml::table());
 
   auto sectionTable = new_config[section];
   T    final_value  = default_value;
 
   try {
-    auto parsed_value = (T)config[section][item].value_or(default_value);
-    final_value       = parsed_value;
+    if (config.contains(section)) {
+      auto parsed_value = (T)config[section][item].value_or(default_value);
+      final_value       = parsed_value;
+    }
   } catch (...) {
     spdlog::warn("invalid config value {}.{}", section, item);
   }
@@ -242,6 +243,47 @@ inline T get_config_or_default(toml::table config, toml::table& new_config, std:
   spdlog::info("config value {}.{} value: {}", section, item, final_value);
 
   return (T)final_value;
+}
+
+void read_sync_targets(toml::table config, toml::table& new_config, std::map<std::string, std::string>& sync_targets)
+{
+  if (!config.contains("sync")) {
+    return;
+  }
+
+  const auto sync = config["sync"].as_table();
+  if (!sync || !sync->contains("targets")) {
+    return;
+  }
+
+  const auto targets = config["sync"]["targets"].as_table();
+  if (!targets) {
+    return;
+  }
+
+  for (const auto& sync_iter : *targets) {
+    if (!sync_iter.second.is_table()) {
+      continue;
+    }
+
+    const auto& values = *sync_iter.second.as_table();
+    if (!values.contains("url") || !values.contains("token")) {
+      continue;
+    }
+
+    auto key   = sync_iter.first.str();
+    auto url   = values["url"].value<std::string>();
+    auto token = values["token"].value<std::string>();
+
+    if (!url.has_value() || !token.has_value()) {
+      continue;
+    }
+    if (sync_targets.emplace(url.value(), token.value()).second) {
+      new_config["sync"]["targets"].as_table()->emplace<toml::table>(
+          key, toml::table{{"url", url.value()}, {"token", token.value()}});
+      spdlog::info("config value sync.targets.{} url: {}, token: {}", key, url.value(), token.value());
+    }
+  }
 }
 
 void parse_config_shortcut(toml::table config, toml::table& new_config, std::string_view item,
@@ -434,43 +476,28 @@ void Config::Load()
   this->sync_buildings  = get_config_or_default(config, parsed, "sync", "buildings", false);
   this->sync_ships      = get_config_or_default(config, parsed, "sync", "ships", false);
 
-  config["sync"].as_table()->emplace<toml::table>("targets", toml::table());
   parsed["sync"].as_table()->emplace<toml::table>("targets", toml::table());
 
-  for (const auto& sync_iter : *config["sync"]["targets"].as_table()) {
-    if (!sync_iter.second.is_table()) {
-      continue;
-    }
-
-    const auto& values = *sync_iter.second.as_table();
-    if (!values.contains("url") || !values.contains("token")) {
-      continue;
-    }
-
-    auto key = sync_iter.first.str();
-    auto url = values["url"].value<std::string>();
-    auto token = values["token"].value<std::string>();
-
-    if (url.has_value() && token.has_value()) {
-      if (this->sync_targets.emplace(url.value(), token.value()).second) {
-        parsed["sync"]["targets"].as_table()->emplace<toml::table>(key, toml::table{ {"url", url.value()}, {"token", token.value()} });
-        spdlog::info("config value sync.targets.{} url: {}, token: {}", key, url.value(), token.value());
-      }
-    }
-  }
+  read_sync_targets(config, parsed, this->sync_targets);
 
   // handle legacy sync options
-  auto sync_url = config["sync"]["url"].value<std::string>();
+  auto sync_url   = config["sync"]["url"].value<std::string>();
   auto sync_token = config["sync"]["token"].value<std::string>();
 
   if (sync_url.has_value() && sync_token.has_value()) {
-    spdlog::warn("Depreciation Warning: Legacy config options 'sync_url' and 'sync_token' have been moved to [sync.targets.<name>] sections and may be removed in a future version.");
+    spdlog::warn("Depreciation Warning: Legacy config options 'sync_url' and 'sync_token' have been moved to "
+                 "[sync.targets.<name>] sections and may be removed in a future version.");
 
     if (this->sync_targets.emplace(sync_url.value(), sync_token.value()).second) {
-      parsed["sync"]["targets"].as_table()->emplace<toml::table>("default", toml::table{ {"url", sync_url.value()}, {"token", sync_token.value()} });
-      spdlog::info("Legacy config options 'sync_url' and 'sync_token' were converted to sync.targets.default url: {}, token: {}", sync_url.value(), sync_token.value());
+      parsed["sync"]["targets"].as_table()->emplace<toml::table>(
+          "default", toml::table{{"url", sync_url.value()}, {"token", sync_token.value()}});
+      spdlog::info(
+          "Legacy config options 'sync_url' and 'sync_token' were converted to sync.targets.default url: {}, token: {}",
+          sync_url.value(), sync_token.value());
     } else {
-      spdlog::error("Failed to convert legacy config options sync_url: {} and sync_token: {} as [sync.targets.default] was already specified.", sync_url.value(), sync_token.value());
+      spdlog::error("Failed to convert legacy config options sync_url: {} and sync_token: {} as [sync.targets.default] "
+                    "was already specified.",
+                    sync_url.value(), sync_token.value());
     }
   }
 
