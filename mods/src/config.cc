@@ -81,7 +81,7 @@ void Config::Save(toml::table config, std::string_view filename, bool apply_warn
   if (apply_warning) {
     char defaultFile[44], configFile[44];
     snprintf(defaultFile, 44, "%-44s", CONFIG_FILE_DEFAULT);
-    snprintf(configFile, 44, "%-44s", Config::Filename());
+    snprintf(configFile, 44, "%-44s", Config::Filename().data());
 
     config_file << "#######################################################################\n";
     config_file << "#######################################################################\n";
@@ -96,7 +96,7 @@ void Config::Save(toml::table config, std::string_view filename, bool apply_warn
     config_file << "####                                                               ####\n";
     config_file << "#######################################################################\n";
     config_file << "#######################################################################\n\n";
-  } 
+  }
 
   config_file << config;
   config_file.close();

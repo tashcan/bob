@@ -114,7 +114,7 @@ void ApplyPatches()
   _NSGetExecutablePath(buf, &bufsize);
 
   char assembly_path[PATH_MAX];
-  sprintf(assembly_path, "%s/%s", dirname(buf), "../Frameworks/GameAssembly.dylib");
+  snprintf(assembly_path, sizeof(assembly_path), "%s/%s", dirname(buf), "../Frameworks/GameAssembly.dylib");
   printf("Loading %s\n", assembly_path);
   auto assembly = dlopen(assembly_path, RTLD_LAZY | RTLD_GLOBAL);
 
