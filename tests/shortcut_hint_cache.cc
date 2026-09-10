@@ -1,22 +1,53 @@
-// Link against the built mods library. Only Unity-dependent Key operations are stubbed;
-// MapKey parsing, ModifierKey parsing, binding detection, and hint caching are production code.
+// Link production MapKey/ModifierKey parsing, action dispatch and hint caching from mods.lib.
+// Key token parsing and input are test fixtures; layout lookup is injected below.
+// These tests do not exercise Unity lookup, native notifications or legacy input caching.
 #include "patches/mapkey.h"
+#include "patches/keyboard_layout.h"
+#include "patches/keyboard_layout_mapping.h"
 
 #include <cstdlib>
 #include <iostream>
+#include <utility>
+
+static std::array<bool, static_cast<int>(KeyCode::Max)> pressed{};
+static std::array<bool, static_cast<int>(KeyCode::Max)> down{};
+static keyboard_layout::BindingState layout_bindings;
+static bool layout_enabled = false;
+static std::array<keyboard_layout::ResolvedChord, keyboard_layout::LayoutKeyCount> chords;
 
 KeyCode Key::Parse(std::string_view key)
 {
-  if (key == "F7") return KeyCode::F7;
-  if (key == "F8") return KeyCode::F8;
-  if (key == "G") return KeyCode::G;
+  static constexpr std::pair<std::string_view, KeyCode> tokens[] = {
+      {"=", KeyCode::Equals}, {"Z", KeyCode::Z}, {"LSHIFT", KeyCode::LeftShift},
+      {"F7", KeyCode::F7}, {"F8", KeyCode::F8}, {"G", KeyCode::G}, {"+", KeyCode::Plus},
+      {"/", KeyCode::Slash}, {"(", KeyCode::LeftParen}, {"1", KeyCode::Alpha1},
+  };
+  for (const auto& [token, code] : tokens) {
+    if (key == token)
+      return code;
+  }
   return KeyCode::None;
 }
-bool Key::IsModifier(KeyCode) { return false; }
-bool Key::Pressed(KeyCode) { return false; }
-bool Key::Down(KeyCode) { return false; }
-bool Key::IsModified() { return false; }
+bool Key::IsModifier(KeyCode key) { return key == KeyCode::LeftShift; }
+bool Key::Pressed(KeyCode key) { return pressed[static_cast<int>(key)]; }
+bool Key::Down(KeyCode key) { return down[static_cast<int>(key)]; }
+bool Key::IsModified() {
+  for (auto key : {KeyCode::LeftShift, KeyCode::RightShift, KeyCode::LeftControl, KeyCode::RightControl,
+                   KeyCode::LeftAlt, KeyCode::RightAlt, KeyCode::AltGr, KeyCode::LeftCommand,
+                   KeyCode::RightCommand, KeyCode::LeftWindows, KeyCode::RightWindows})
+    if (Key::Pressed(key)) return true;
+  return false;
+}
 void Key::ClaimDirectionalInput(KeyCode) {}
+
+namespace keyboard_layout
+{
+KeyCode Resolve(KeyCode configured) { return layout_enabled ? layout_bindings.Resolve(configured, [] { return 1; }, Key::Pressed) : configured; }
+ResolvedChord ResolveChord(KeyCode configured) {
+  return {Resolve(configured), layout_enabled && IsLayoutKey(configured)
+                               && (chords[static_cast<int>(configured)].shift) != 0};
+}
+} // namespace keyboard_layout
 
 void Check(bool condition, const char* message)
 {
@@ -28,6 +59,7 @@ void Check(bool condition, const char* message)
 
 int main()
 {
+
   constexpr auto toggle = GameFunction::ToggleShortcutHints;
   constexpr auto galaxy = GameFunction::ShowGalaxy;
   Check(!MapKey::HasBinding(toggle), "Absent binding must not enable hints");
@@ -56,5 +88,83 @@ int main()
   Check(MapKey::GetShortcutHint(GameFunction::ShowResearch).empty(), "Unbound action acquired a badge");
   MapKey::CacheShortcutHints();
   Check(MapKey::GetShortcutHint(galaxy) == "^G", "Repeated cache preparation changed label");
+
+  // Supply a mapping fixture to test action dispatch through BindingState.
+  // This does not assert that Unity returns these mappings on any real layout.
+  keyboard_layout::LayoutKeys keys{};
+  keys[static_cast<int>(KeyCode::Plus)] = KeyCode::RightBracket;
+  keys[static_cast<int>(KeyCode::Slash)] = KeyCode::Alpha7;
+  keys[static_cast<int>(KeyCode::Alpha1)] = KeyCode::Alpha1;
+  layout_bindings.Replace(keys, Key::Pressed, 0);
+  layout_enabled = true;
+  MapKey::AddMappedKey(GameFunction::ShowDaily, MapKey::Parse("+"));
+  MapKey::AddMappedKey(GameFunction::ShowScrapYard, MapKey::Parse("SHIFT-/"));
+  MapKey::AddMappedKey(GameFunction::ShowResearch, MapKey::Parse("("));
+  MapKey::AddMappedKey(GameFunction::ShowInventory, MapKey::Parse("1"));
+  pressed[static_cast<int>(KeyCode::RightBracket)] = true;
+  down[static_cast<int>(KeyCode::RightBracket)] = true;
+  Check(MapKey::IsDown(GameFunction::ShowDaily) && MapKey::IsPressed(GameFunction::ShowDaily),
+        "Punctuation action did not use resolved physical key");
+  down[static_cast<int>(KeyCode::RightBracket)] = false;
+  Check(!MapKey::IsDown(GameFunction::ShowDaily) && MapKey::IsPressed(GameFunction::ShowDaily),
+        "Held action was mistaken for a new key-down edge");
+  down[static_cast<int>(KeyCode::RightBracket)] = true;
+  pressed[static_cast<int>(KeyCode::LeftShift)] = true;
+  Check(!MapKey::IsDown(GameFunction::ShowDaily), "Unmodified symbol unexpectedly accepts Shift");
+  pressed[static_cast<int>(KeyCode::Alpha7)] = true;
+  down[static_cast<int>(KeyCode::Alpha7)] = true;
+  Check(MapKey::IsDown(GameFunction::ShowScrapYard), "Explicit Shift chord did not use resolved symbol key");
+  pressed[static_cast<int>(KeyCode::LeftShift)] = false;
+  Check(!MapKey::IsDown(GameFunction::ShowScrapYard), "Explicit modifier requirement was lost");
+  pressed[static_cast<int>(KeyCode::LeftParen)] = true;
+  down[static_cast<int>(KeyCode::LeftParen)] = true;
+  Check(!MapKey::IsDown(GameFunction::ShowResearch), "Unresolved symbol silently fell back to physical");
+  pressed[static_cast<int>(KeyCode::Alpha1)] = true;
+  down[static_cast<int>(KeyCode::Alpha1)] = true;
+  Check(MapKey::IsDown(GameFunction::ShowInventory), "Digit action did not use resolved mapping");
+  Check(MapKey::GetShortcuts(GameFunction::ShowScrapYard) == "SHIFT-/", "Resolution rewrote configured chord");
+
+  // German slash needs Shift on either side; plain 7 must not fire slash.
+  auto& slash = chords[static_cast<int>(KeyCode::Slash)];
+  slash.shift = true;
+  constexpr auto slashAction = GameFunction::ShowAlliance;
+  MapKey::AddMappedKey(slashAction, MapKey::Parse("/"));
+  MapKey::CacheShortcutHints();
+  pressed.fill(false);
+  down.fill(false);
+  pressed[static_cast<int>(KeyCode::Alpha7)] = down[static_cast<int>(KeyCode::Alpha7)] = true;
+  Check(!MapKey::IsDown(slashAction), "Bare 7 fired German slash");
+  for (const auto shift : {KeyCode::LeftShift, KeyCode::RightShift}) {
+    pressed[static_cast<int>(shift)] = true;
+    Check(MapKey::IsDown(slashAction) && MapKey::IsPressed(slashAction), "Inferred Shift chord did not dispatch");
+    for (const auto extra : {KeyCode::LeftControl, KeyCode::RightAlt, KeyCode::AltGr, KeyCode::LeftWindows}) {
+      pressed[static_cast<int>(extra)] = true;
+      Check(!MapKey::IsDown(slashAction), "Bare slash stole modified chord");
+      pressed[static_cast<int>(extra)] = false;
+    }
+    pressed[static_cast<int>(shift)] = false;
+  }
+  Check(MapKey::GetShortcutHint(slashAction) == "/", "Hint replaced configured slash with physical recipe");
+  Check(MapKey::GetShortcutHint(GameFunction::ShowScrapYard) == "+/", "Hint changed explicit configured Shift");
+  Check(MapKey::GetShortcuts(slashAction) == "/", "Display rewrote configuration");
+  const auto explicitCtrl = MapKey::Parse("CTRL-/");
+  pressed[static_cast<int>(KeyCode::LeftControl)] = true;
+  Check(!MapKey::HasCorrectModifiers(explicitCtrl, true), "Explicit Ctrl bypassed inferred Shift");
+  pressed[static_cast<int>(KeyCode::RightShift)] = true;
+  Check(MapKey::HasCorrectModifiers(explicitCtrl, true), "Explicit Ctrl was not combined with inferred Shift");
+  const auto explicitSide = MapKey::Parse("LSHIFT-/");
+  Check(!MapKey::HasCorrectModifiers(explicitSide, true), "Inferred Shift bypassed explicit left side");
+  pressed[static_cast<int>(KeyCode::LeftShift)] = true;
+  Check(MapKey::HasCorrectModifiers(explicitSide, true), "Explicit left Shift was not accepted");
+  Check(MapKey::GetShortcutHint(slashAction) == "/", "Resolution status rewrote configured hint");
+  // Simulate the next US generation; no stale German recipe may remain cached.
+  slash.shift = false;
+  Check(MapKey::GetShortcutHint(slashAction) == "/", "Hint retained previous layout's Shift");
+  layout_enabled = false;
+  pressed.fill(false);
+  down.fill(false);
+  pressed[static_cast<int>(KeyCode::Plus)] = true;
+  down[static_cast<int>(KeyCode::Plus)] = true;
+  Check(MapKey::IsDown(GameFunction::ShowDaily), "Physical mode no longer uses configured key");
   std::cout << "Shortcut hint cache tests passed\n";
 }
