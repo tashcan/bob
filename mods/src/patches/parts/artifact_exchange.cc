@@ -33,10 +33,14 @@ void InstallArtifactExchangeHooks()
     spdlog::warn("[ArtifactExchange] popup class unavailable; leaving game unchanged");
     return;
   }
-  auto field      = controller.GetField("_convertAllButton");
-  auto bind       = controller.GetMethod("OnDidBindCanvasContext", 0);
-  get_game_object = il2cpp_resolve_icall_typed<void*(void*)>("UnityEngine.Component::get_gameObject()");
-  set_active      = il2cpp_resolve_icall_typed<void(void*, bool)>("UnityEngine.GameObject::SetActive(System.Boolean)");
+  auto field = controller.GetField("_convertAllButton");
+  auto bind  = controller.GetMethod("OnDidBindCanvasContext", 0);
+  // Current Unity exposes injected native entry points; use the managed wrappers
+  // that accept component/GameObject instances, as the other UI patches do.
+  auto component   = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "Component");
+  auto game_object = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "GameObject");
+  get_game_object  = component.GetMethod<void*(void*)>("get_gameObject", 0);
+  set_active       = game_object.GetMethod<void(void*, bool)>("SetActive", 1);
   if (!field.isValidHelper() || field.offset() < sizeof(Il2CppObject) || !bind || !get_game_object || !set_active) {
     spdlog::warn("[ArtifactExchange] required popup API unavailable; leaving game unchanged");
     return;
