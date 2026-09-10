@@ -48,7 +48,7 @@ int main()
     Check(FindUnshiftedDeadKey(symbol, german) == KeyCode::None, "shifted and non-dead symbols excluded");
   Check(FindUnshiftedDeadKey('^', american) == KeyCode::None, "US shifted caret excluded");
   Check(FindUnshiftedDeadKey('^', nullptr) == KeyCode::None, "missing Windows layout fails closed");
-  Check(ResolveWindowsDeadKey('^', "not-the-active-layout") == KeyCode::None, "layout disagreement fails closed");
+  Check(ResolveWindowsChord('^', "not-the-active-layout").key == KeyCode::None, "layout disagreement fails closed");
   Check(GetKeyboardLayout(0) == before, "lookup does not activate a layout");
   } else {
     std::cout << "SKIP: native dead-key fixtures require already-loaded US and German layouts\n";

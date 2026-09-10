@@ -21,6 +21,7 @@ KeyCode Key::Parse(std::string_view key)
       {"=", KeyCode::Equals}, {"Z", KeyCode::Z}, {"LSHIFT", KeyCode::LeftShift},
       {"F7", KeyCode::F7}, {"F8", KeyCode::F8}, {"G", KeyCode::G}, {"+", KeyCode::Plus},
       {"/", KeyCode::Slash}, {"(", KeyCode::LeftParen}, {"1", KeyCode::Alpha1},
+      {"'", KeyCode::Quote}, {"^", KeyCode::Caret},
   };
   for (const auto& [token, code] : tokens) {
     if (key == token)
@@ -160,6 +161,33 @@ int main()
   // Simulate the next US generation; no stale German recipe may remain cached.
   slash.shift = false;
   Check(MapKey::GetShortcutHint(slashAction) == "/", "Hint retained previous layout's Shift");
+
+  // The upstream German defaults overlap under minimum modifier matching.
+  // Preserve that policy; verify the documented Help remap makes Armada distinct.
+  pressed.fill(false);
+  down.fill(false);
+  keys[static_cast<int>(KeyCode::Quote)] = KeyCode::Backslash;
+  keys[static_cast<int>(KeyCode::Caret)] = KeyCode::BackQuote;
+  chords[static_cast<int>(KeyCode::Quote)].shift = true;
+  layout_bindings.Replace(keys, Key::Pressed, 0);
+  MapKey::AddMappedKey(GameFunction::ShowAllianceHelp, MapKey::Parse("SHIFT-'"));
+  MapKey::AddMappedKey(GameFunction::ShowAllianceArmada, MapKey::Parse("CTRL-'"));
+  pressed[static_cast<int>(KeyCode::LeftControl)] = true;
+  pressed[static_cast<int>(KeyCode::LeftShift)] = true;
+  pressed[static_cast<int>(KeyCode::Backslash)] = down[static_cast<int>(KeyCode::Backslash)] = true;
+  Check(MapKey::IsDown(GameFunction::ShowAllianceHelp) && MapKey::IsDown(GameFunction::ShowAllianceArmada),
+        "German default overlap changed without an explicit modifier policy change");
+  // Use a spare action slot for the alternative configuration; the public API
+  // intentionally has no live binding replacement operation.
+  constexpr auto remappedHelp = GameFunction::ShowOfficers;
+  MapKey::AddMappedKey(remappedHelp, MapKey::Parse("SHIFT-^"));
+  Check(!MapKey::IsDown(remappedHelp) && MapKey::IsDown(GameFunction::ShowAllianceArmada),
+        "Documented Help remap still captures Armada");
+  pressed[static_cast<int>(KeyCode::LeftControl)] = false;
+  pressed[static_cast<int>(KeyCode::Backslash)] = down[static_cast<int>(KeyCode::Backslash)] = false;
+  pressed[static_cast<int>(KeyCode::BackQuote)] = down[static_cast<int>(KeyCode::BackQuote)] = true;
+  Check(MapKey::IsDown(remappedHelp) && !MapKey::IsDown(GameFunction::ShowAllianceArmada),
+        "Documented Shift-caret Help chord failed");
   layout_enabled = false;
   pressed.fill(false);
   down.fill(false);

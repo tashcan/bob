@@ -21,6 +21,24 @@ explicit configured modifiers. Side-specific modifiers retain their requirements
 Existing explicitly modified bindings accept extra modifiers; avoid overlapping
 chords, since action dispatch order determines which matching action wins.
 
+**German users enabling experimental shortcuts:** the upstream defaults
+`show_alliance_help = "SHIFT-'"` and `show_alliance_armada = "CTRL-'"` overlap
+because German apostrophe already requires Shift. Help is checked first and
+captures the Armada chord. Use the tested remap below in the existing sections:
+
+```toml
+[control]
+keyboard_layout_mode = "layout"
+enable_experimental = true
+
+[shortcuts]
+show_alliance = "ALT-^"
+show_alliance_help = "SHIFT-^"
+show_alliance_armada = "CTRL-'"
+```
+
+This keeps upstream modifier matching and shortcut defaults unchanged.
+
 Hints and runtime shortcut values retain configured TOML text. The internal
 physical mapping is not a replacement hint. Named controls (function keys, arrows,
 Space, mouse and numpad keys), hardcoded controls and Scopely shortcuts are unchanged.

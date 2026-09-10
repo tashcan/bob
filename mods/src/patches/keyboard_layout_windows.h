@@ -35,16 +35,6 @@ inline KeyCode FindUnshiftedDeadKey(char character, HKL layout)
   return result;
 }
 
-inline KeyCode ResolveWindowsDeadKey(char character, std::string_view unity_layout)
-{
-  const auto layout = GetKeyboardLayout(0);
-  char       name[KL_NAMELENGTH]{};
-  if (!layout || !GetKeyboardLayoutNameA(name) || unity_layout != name)
-    return KeyCode::None;
-  const auto result = FindUnshiftedDeadKey(character, layout);
-  return GetKeyboardLayout(0) == layout ? result : KeyCode::None;
-}
-
 inline ResolvedChord FindWindowsChord(char character, HKL layout)
 {
   if (!layout)
