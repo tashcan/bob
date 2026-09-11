@@ -4,12 +4,14 @@
 #include <atomic>
 #include <cerrno>
 #include <cstdint>
+#include <cstring>
 #include <limits>
 #include <string>
 #include <vector>
 
 #if _WIN32
 #include <Windows.h>
+#include <Aclapi.h>
 #include <sddl.h>
 #pragma comment(lib, "advapi32.lib")
 #elif __APPLE__
@@ -131,6 +133,60 @@ namespace
     {
       if (descriptor)
         LocalFree(descriptor);
+    }
+  };
+  struct StagingDirectorySecurity {
+    SECURITY_DESCRIPTOR descriptor{};
+    std::vector<unsigned char> aclBytes;
+    SECURITY_ATTRIBUTES attributes{sizeof(SECURITY_ATTRIBUTES), &descriptor, FALSE};
+    StagingDirectorySecurity(HANDLE original, PrivateSecurity& privateSecurity)
+    {
+      // ReplaceFile merges inherited ACEs using the replacement's parent. A
+      // private staging directory with no inheritable ACEs otherwise turns an
+      // inherited-only target DACL into an empty DACL. Mirror only the target's
+      // inherited file ACEs as inherit-only entries on our PRIVATE container.
+      // They grant no access to the container; staged payload stays protected.
+      PACL privateAcl = nullptr, originalAcl = nullptr;
+      BOOL present = FALSE, defaulted = FALSE;
+      if (!GetSecurityDescriptorDacl(privateSecurity.descriptor, &present, &privateAcl, &defaulted) || !privateAcl)
+        WinFail();
+      struct Descriptor {
+        PSECURITY_DESCRIPTOR value = nullptr;
+        ~Descriptor() { if (value) LocalFree(value); }
+      } source;
+      if (original != INVALID_HANDLE_VALUE) {
+        const auto error = GetSecurityInfo(original, SE_FILE_OBJECT, DACL_SECURITY_INFORMATION, nullptr, nullptr,
+                                          &originalAcl, nullptr, &source.value);
+        if (error != ERROR_SUCCESS) throw Failure{{static_cast<int>(error), std::system_category()}};
+        if (!originalAcl) Fail(std::errc::operation_not_supported);
+      }
+      const size_t capacity = privateAcl->AclSize + (originalAcl ? originalAcl->AclSize : 0);
+      if (capacity > 65535) Fail(std::errc::operation_not_supported);
+      aclBytes.resize(capacity);
+      auto* acl = reinterpret_cast<PACL>(aclBytes.data());
+      if (!InitializeAcl(acl, static_cast<DWORD>(capacity), ACL_REVISION_DS)) WinFail();
+      for (DWORD i = 0; i < privateAcl->AceCount; ++i) {
+        void* ace = nullptr;
+        if (!GetAce(privateAcl, i, &ace) ||
+            !AddAce(acl, ACL_REVISION_DS, MAXDWORD, ace, static_cast<ACE_HEADER*>(ace)->AceSize)) WinFail();
+      }
+      if (originalAcl) for (DWORD i = 0; i < originalAcl->AceCount; ++i) {
+        void* raw = nullptr;
+        if (!GetAce(originalAcl, i, &raw)) WinFail();
+        const auto* ace = static_cast<ACE_HEADER*>(raw);
+        if (!(ace->AceFlags & INHERITED_ACE)) continue;
+        // Do not guess semantics of propagating/object/conditional file ACEs.
+        if (ace->AceFlags != INHERITED_ACE ||
+            (ace->AceType != ACCESS_ALLOWED_ACE_TYPE && ace->AceType != ACCESS_DENIED_ACE_TYPE))
+          Fail(std::errc::operation_not_supported);
+        std::vector<unsigned char> copy(ace->AceSize);
+        std::memcpy(copy.data(), raw, copy.size());
+        reinterpret_cast<ACE_HEADER*>(copy.data())->AceFlags = INHERIT_ONLY_ACE | OBJECT_INHERIT_ACE;
+        if (!AddAce(acl, ACL_REVISION_DS, MAXDWORD, copy.data(), static_cast<DWORD>(copy.size()))) WinFail();
+      }
+      if (!InitializeSecurityDescriptor(&descriptor, SECURITY_DESCRIPTOR_REVISION) ||
+          !SetSecurityDescriptorDacl(&descriptor, TRUE, acl, FALSE) ||
+          !SetSecurityDescriptorControl(&descriptor, SE_DACL_PROTECTED, SE_DACL_PROTECTED)) WinFail();
     }
   };
   void Regular(HANDLE handle)
@@ -260,11 +316,14 @@ Result Write(const fs::path& destination, std::string_view bytes, Mode mode)
       Fail(std::errc::file_exists, State::Conflict);
     result.stage = Stage::StageFile;
     Checkpoint(result.stage);
+#if _WIN32
+    StagingDirectorySecurity directorySecurity(existing.value, security);
+#endif
     for (int attempt = 0; attempt < 16; ++attempt) {
       auto candidate = target.parent_path() / (".stfc-save-" + std::to_string(++sequence));
 #if _WIN32
       candidate += "-" + std::to_string(GetCurrentProcessId());
-      if (CreateDirectoryW(candidate.c_str(), &security.attributes)) {
+      if (CreateDirectoryW(candidate.c_str(), &directorySecurity.attributes)) {
         transaction = candidate;
         break;
       }

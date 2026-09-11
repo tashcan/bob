@@ -76,3 +76,18 @@ contention through a symlink while the canonical lock is held. These are specifi
 cases, not exhaustive ACL or filesystem coverage. Interrupted-process recovery
 and storage behavior under real faults still require follow-up evidence. Runtime
 latency/queue tests belong to the asynchronous phase.
+# Windows inherited-permission correction
+
+Windows `ReplaceFileW` can rebuild inherited entries against the replacement's
+parent directory. A private staging container with no inheritable entries caused
+an ordinary inherited-only target ACL to become empty after a successful replace.
+The writer now gives that container inherit-only copies of the target's inherited
+file allow/deny entries. These entries grant no access to the container, and the
+payload retains its protected private ACL until replacement. The resulting target
+retains the original explicit/inherited permission policy, including inherited denies.
+
+Unknown inherited ACE forms/propagation flags, oversized ACLs and null target DACLs
+are rejected before staging; the writer does not guess their inheritance behavior.
+The Windows regression fixture creates an external file with inherited allow/deny
+permissions and verifies two consecutive replacements preserve both content access
+and the ordered ACL. Existing protected explicit-ACL coverage remains in place.

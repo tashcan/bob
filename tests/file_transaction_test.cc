@@ -35,19 +35,21 @@ std::string Read(const std::filesystem::path& path)
 #if _WIN32
 std::pair<bool, std::wstring> Dacl(const std::filesystem::path& path)
 {
-  DWORD needed = 0;
-  GetFileSecurityW(path.c_str(), DACL_SECURITY_INFORMATION, nullptr, 0, &needed);
-  assert(needed);
-  std::vector<unsigned char> descriptor(needed);
-  assert(GetFileSecurityW(path.c_str(), DACL_SECURITY_INFORMATION, descriptor.data(), needed, &needed));
+  // Use the same ACL API family as the writer: querying a legacy descriptor can
+  // canonicalize its auto-inheritance flags before the operation being tested.
+  PSECURITY_DESCRIPTOR descriptor = nullptr;
+  auto name = path.native();
+  assert(GetNamedSecurityInfoW(name.data(), SE_FILE_OBJECT, DACL_SECURITY_INFORMATION, nullptr, nullptr,
+                               nullptr, nullptr, &descriptor) == ERROR_SUCCESS);
   LPWSTR text = nullptr;
-  assert(ConvertSecurityDescriptorToStringSecurityDescriptorW(descriptor.data(), SDDL_REVISION_1,
+  assert(ConvertSecurityDescriptorToStringSecurityDescriptorW(descriptor, SDDL_REVISION_1,
                                                               DACL_SECURITY_INFORMATION, &text, nullptr));
   std::wstring result(text);
   LocalFree(text);
   SECURITY_DESCRIPTOR_CONTROL control{};
   DWORD                       revision = 0;
-  assert(GetSecurityDescriptorControl(descriptor.data(), &control, &revision));
+  assert(GetSecurityDescriptorControl(descriptor, &control, &revision));
+  LocalFree(descriptor);
   const auto entries = result.find(L'(');
   assert(entries != std::wstring::npos);
   // ReplaceFile may add the informational AUTO_INHERITED marker. Compare the
@@ -117,6 +119,23 @@ int main()
   const auto metadata = root / "metadata.toml";
   assert(Write(metadata, "old", Mode::CreateOnly).committed());
 #if _WIN32
+  // Ordinary externally created files can have only inherited permissions.
+  // Replacing through a private subdirectory must not erase those entries.
+  PSECURITY_DESCRIPTOR inheritedSecurity = nullptr;
+  assert(ConvertStringSecurityDescriptorToSecurityDescriptorW(
+      L"D:PAI(D;OICI;FW;;;BG)(A;OICI;FA;;;OW)(A;OICI;FR;;;BU)", SDDL_REVISION_1,
+      &inheritedSecurity, nullptr));
+  SECURITY_ATTRIBUTES inheritedAttributes{sizeof(SECURITY_ATTRIBUTES), inheritedSecurity, FALSE};
+  const auto inheritedRoot = root / "inherited";
+  assert(CreateDirectoryW(inheritedRoot.c_str(), &inheritedAttributes));
+  LocalFree(inheritedSecurity);
+  const auto inheritedFile = inheritedRoot / "existing.toml";
+  { std::ofstream out(inheritedFile); out << "old"; assert(out.good()); }
+  const auto inheritedDacl = Dacl(inheritedFile);
+  assert(Write(inheritedFile, "first", Mode::ReplaceSnapshot).committed());
+  assert(Read(inheritedFile) == "first" && Dacl(inheritedFile) == inheritedDacl);
+  assert(Write(inheritedFile, "second", Mode::ReplaceSnapshot).committed());
+  assert(Read(inheritedFile) == "second" && Dacl(inheritedFile) == inheritedDacl);
   PSECURITY_DESCRIPTOR restricted = nullptr;
   assert(
       ConvertStringSecurityDescriptorToSecurityDescriptorW(L"D:P(A;;FA;;;OW)", SDDL_REVISION_1, &restricted, nullptr));
