@@ -233,11 +233,17 @@ is still an adapter responsibility; this is not a preserving user-TOML editor.
 Initialization runs after `il2cpp_init`, outside `DllMain`. It registers with the
 existing ScreenManager.Update owner but starts no thread. When inactive, its
 callback does no logging, timing capture or filesystem work. The quit detour is
-installed only on the first real registration attempt. Admission requires an
+installed during initialization so it can close registration even when a quit
+request arrives before the first consumer. Admission requires an
 observed Update callback, the build261 Windows x64 method RVA, full instruction
 fingerprint, and native unwind extent. Mismatch leaves runtime saves unavailable.
 macOS and other architectures reject registration until their shutdown seam is
 validated; this does not disable the synchronous checked startup outputs.
+
+Registration, quit votes, native-stop observation and automatic resume consumption
+share one atomic lifecycle state. Registration either claims ownership before quit
+is permitted or is rejected permanently. A delayed vote cannot re-arm an automatic
+resume that has already been consumed.
 
 An allowed game quit vote closes admission and wakes the supervisor. The game
 callback returns without waiting on storage. The supervisor removes borrowed

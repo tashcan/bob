@@ -16,7 +16,7 @@ SnapshotSaveHost::~SnapshotSaveHost()
   if (!PollStopped()) std::terminate();
 }
 
-bool SnapshotSaveHost::Start(std::vector<std::filesystem::path>&& paths)
+bool SnapshotSaveHost::Start(std::vector<std::filesystem::path>&& paths) noexcept
 {
   if (state_.load() != State::Idle) return false;
   state_.store(State::Unavailable);

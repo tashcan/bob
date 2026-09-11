@@ -22,7 +22,7 @@ public:
   // Trusted enrollment only. Takes ownership after successful launch; max four
   // paths, each bounded to 32767 native code units (including retained capacity).
   // An unsuccessful start is terminal. No retry/new session during shutdown.
-  [[nodiscard]] bool Start(std::vector<std::filesystem::path>&& paths);
+  [[nodiscard]] bool Start(std::vector<std::filesystem::path>&& paths) noexcept;
   [[nodiscard]] State Status() const noexcept { return state_.load(); }
   [[nodiscard]] std::optional<SnapshotSaveService::Destination> TryGetDestination(std::size_t index);
   [[nodiscard]] SnapshotSaveQueue::Submission TrySubmit(SnapshotSaveService::Destination destination,

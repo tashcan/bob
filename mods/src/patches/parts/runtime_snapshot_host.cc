@@ -45,7 +45,7 @@ bool WantsQuit(auto original)
   const bool gameAllows = original();
   // Preserve the game's vote. Save failures are separate from whether native
   // code is still executing. No join, filesystem call, logging or timer here.
-  const bool result = gate.Vote(gameAllows, started.load());
+  const bool result = gate.Vote(gameAllows);
   if (gate.DrainRequested() && !gate.Stopped()) host->RequestStop();
   return result;
 }
@@ -70,7 +70,10 @@ void UpdateHost()
 void InstallRuntimeSnapshotHost()
 {
 #if defined(_WIN32) && defined(_M_X64)
-  if (available) return;
+  static bool installedAttempt = false;
+  if (installedAttempt) return;
+  installedAttempt = true;
+  try {
   auto helper = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "Application");
   if (!helper.isValidHelper()) return;
   wantsMethod = helper.GetMethodInfo("Internal_ApplicationWantsToQuit", 0);
@@ -80,7 +83,11 @@ void InstallRuntimeSnapshotHost()
   requestQuit = reinterpret_cast<void (*)(int)>(quit->methodPointer);
   // Existing single Update owner; no additional Update detour. Observing its
   // callback is a prerequisite for Start, not just trusting an install return.
-  if (install_screen_manager_update_hook() && register_screen_manager_update_callback(UpdateHost)) available = true;
+  if (install_screen_manager_update_hook() && register_screen_manager_update_callback(UpdateHost) &&
+      SPUD_STATIC_DETOUR(wantsMethod->methodPointer, WantsQuit)) available = true;
+  } catch (...) {
+    available.store(false);
+  }
 #endif
 }
 
@@ -92,15 +99,21 @@ bool Start(std::vector<std::filesystem::path>&& paths)
   if (!available || updateThread.load() != GetCurrentThreadId() || attempted || wantsDepth != 0) return false;
   attempted = true;
   try {
-    // Install only when a real consumer enrolls, and recheck for client/other-hook
-    // drift immediately beforehand. A rejected seam cannot launch any worker.
-    if (!MatchesQuitMethod() || !SPUD_STATIC_DETOUR(wantsMethod->methodPointer, WantsQuit)) return false;
+    // The startup-installed quit gate serializes registration against a permitted
+    // quit, even before any consumer exists. Claiming after quit has begun fails.
     host = new Host;
-    // Publish stable control ownership BEFORE native launch. An off-thread quit
-    // during launch must be held too. Keep the control block even if launch fails;
-    // a concurrent callback may already reference it, and Update reaps/resumes.
+    if (!gate.TryActivate()) {
+      delete host;
+      host = nullptr;
+      return false;
+    }
+    // The gate publishes control ownership before launch, permitting only atomic
+    // RequestStop during Start. Publish consumer access AFTER Start returns so
+    // initialization cannot race completion readers. Keep failed-launch control
+    // too: a quit callback may reference it, and Update must reap/resume.
+    const bool launched = host->Start(std::move(paths));
     started.store(true);
-    return host->Start(std::move(paths));
+    return launched;
   } catch (...) {
     return false;
   }
@@ -114,7 +127,7 @@ persistence::SnapshotSaveHost::State Status() noexcept
 {
 #if defined(_WIN32) && defined(_M_X64)
   if (started.load()) return host->Status();
-  if (available && !attempted) return persistence::SnapshotSaveHost::State::Idle;
+  if (available && !attempted && !gate.Stopped()) return persistence::SnapshotSaveHost::State::Idle;
 #endif
   return persistence::SnapshotSaveHost::State::Unavailable;
 }

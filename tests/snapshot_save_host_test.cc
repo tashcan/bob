@@ -5,6 +5,7 @@
 #include "snapshot_save_worker.cc"
 #include "snapshot_save_service.cc"
 #include "snapshot_save_host.cc"
+#define MOD_QUIT_DRAIN_GATE_TESTING
 #include "quit_drain_gate.h"
 #include <cassert>
 #include <condition_variable>
@@ -22,6 +23,16 @@ bool backendEntered = false, releaseBackend = false;
 bool returnEntered = false, releaseReturn = false;
 #endif
 bool blockConstruction = false, constructionEntered = false, releaseConstruction = false;
+std::atomic_bool blockVote{false};
+bool voteEntered = false, releaseVote = false;
+void BeforeQuitVoteCompareExchange()
+{
+  if (!blockVote.exchange(false)) return;
+  std::unique_lock lock(testMutex);
+  voteEntered = true;
+  changed.notify_all();
+  changed.wait(lock, [] { return releaseVote; });
+}
 void BeforeServiceWorkerStart(std::size_t)
 {
   std::unique_lock lock(testMutex);
@@ -62,16 +73,39 @@ int main()
     if (future.wait_for(std::chrono::seconds(15)) == std::future_status::timeout) std::abort();
   });
   QuitDrainGate gate;
-  assert(gate.Vote(true, false));
-  assert(!gate.Vote(false, true) && !gate.DrainRequested());
+  QuitDrainGate dormant;
+  assert(dormant.Vote(true));
+  assert(!dormant.TryActivate()); // A quit granted before launch forbids launch.
+  assert(gate.TryActivate());
+  assert(!gate.Vote(false) && !gate.DrainRequested());
   assert(!gate.TakeResumeRequest());
   {
     QuitDrainGate cancelled;
-    assert(!cancelled.Vote(true, true) && cancelled.DrainRequested());
-    assert(!cancelled.Vote(false, true));
+    assert(cancelled.TryActivate());
+    assert(!cancelled.Vote(true) && cancelled.DrainRequested());
+    assert(!cancelled.Vote(false));
     cancelled.ObserveStopped();
     assert(!cancelled.TakeResumeRequest()); // A later genuine veto cancels resume.
-    assert(cancelled.DrainRequested()); // It does not resurrect stopped workers.
+    assert(!cancelled.TryActivate()); // It does not resurrect stopped workers.
+  }
+  {
+    QuitDrainGate racing;
+    assert(racing.TryActivate() && !racing.Vote(true));
+    blockVote.store(true);
+    std::thread staleVote([&] { assert(racing.Vote(true)); });
+    {
+      std::unique_lock lock(testMutex);
+      changed.wait(lock, [] { return voteEntered; });
+    }
+    racing.ObserveStopped();
+    assert(racing.TakeResumeRequest());
+    {
+      std::lock_guard lock(testMutex);
+      releaseVote = true;
+      changed.notify_all();
+    }
+    staleVote.join();
+    assert(!racing.TakeResumeRequest()); // Stale CAS cannot re-arm a consumed resume.
   }
   const auto destination = std::filesystem::temp_directory_path() / "stfc-host-fixture.vars";
 #if defined(_WIN32)
@@ -89,7 +123,7 @@ int main()
       changed.wait(lock, [] { return backendEntered; });
     }
     assert(host.TrySubmit(*handle, 2, std::string("success")).state == Admission::Accepted);
-    assert(!gate.Vote(true, true) && gate.DrainRequested());
+    assert(!gate.Vote(true) && gate.DrainRequested());
     host.RequestStop();
     std::string late = "unchanged";
     assert(host.TrySubmit(*handle, 3, std::move(late)).state == Admission::Stopping && late == "unchanged");
@@ -124,8 +158,8 @@ int main()
     gate.ObserveStopped();
     assert(gate.TakeResumeRequest() && !gate.TakeResumeRequest());
     // Save failure cannot strand shutdown, but a real subscriber veto survives.
-    assert(!gate.Vote(false, true) && !gate.TakeResumeRequest());
-    assert(gate.Vote(true, true));
+    assert(!gate.Vote(false) && !gate.TakeResumeRequest());
+    assert(gate.Vote(true));
     assert(!host.Start({destination}));
   }
   {
@@ -199,10 +233,10 @@ int main()
   assert(unsupported.Status() == State::Unavailable && unsupported.PollStopped());
   std::string bytes = "untouched";
   assert(unsupported.TrySubmit({}, 1, std::move(bytes)).state == Admission::InvalidRequest && bytes == "untouched");
-  assert(!gate.Vote(true, true));
+  assert(!gate.Vote(true));
   gate.ObserveStopped();
   assert(gate.TakeResumeRequest() && !gate.TakeResumeRequest());
-  assert(!gate.Vote(false, true) && gate.Vote(true, true));
+  assert(!gate.Vote(false) && gate.Vote(true));
   std::cout << "quit gate and unsupported native host rejection passed (no macOS lifecycle claim)\n";
 #endif
   done.set_value();
