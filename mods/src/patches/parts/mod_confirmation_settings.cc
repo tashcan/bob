@@ -267,7 +267,8 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
   throw std::runtime_error("settings view capacity");
 }
 
-View* renderingView = nullptr;
+View* renderingView  = nullptr;
+View* requestingView = nullptr;
 bool  GetEnabled(Il2CppObject*, const MethodInfo*)
 {
   // Native bool signatures cannot express unknown. Only the owned render scope
@@ -329,7 +330,7 @@ Il2CppObject* Item(Il2CppObject* list, int index)
 bool HasLabel(Il2CppObject* row, const char* id)
 {
   Root label(Call(row, "get_LabelContext"));
-  return Equals(Call(label.get(), "get_Identifier"), id);
+  return label.get() && Equals(Call(label.get(), "get_Identifier"), id);
 }
 Il2CppObject* Category(Il2CppObject* container, int depth, int& remaining)
 {
@@ -488,6 +489,26 @@ void RefreshHook(auto original, Il2CppObject* widget)
   }
   original(widget);
 }
+void RefreshViews()
+{
+  if (!OnThread())
+    return;
+  for (auto& view : Views()) {
+    if (&view == requestingView || view.rendering)
+      continue;
+    Root widget(Target(view.widget));
+    if (!widget.get())
+      continue;
+    try {
+      Root context(Invoke(Meta().getContext, widget.get()));
+      if (Target(view.context) != context.get() || !Owned(context.get()))
+        continue;
+      Invoke(Meta().refresh, widget.get());
+    } catch (...) {
+      HideUnsupported(widget.get());
+    }
+  }
+}
 void ChangedHook(auto original, Il2CppObject* widget, bool desired)
 {
   if (!OnThread()) {
@@ -502,6 +523,13 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
       auto* view = Find(widget);
       if (!view || view->rendering || Target(view->context) != context.get())
         return;
+      struct RequestScope {
+        View* previous = requestingView;
+        explicit RequestScope(View* view)
+        { requestingView = view; }
+        ~RequestScope()
+        { requestingView = previous; }
+      } requestScope(view);
       auto result = view->state.Request(desired);
       if (result.outcome == Outcome::Suppressed || result.outcome == Outcome::Busy)
         return;
@@ -509,19 +537,6 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
       // here would erase an unverified outcome merely because a later read works.
       view->preserveNextRefresh = true;
       Invoke(Meta().refresh, widget);
-      if (result.outcome == Outcome::AppliedVerified || result.outcome == Outcome::Unchanged) {
-        for (auto& other : Views()) {
-          if (&other == view)
-            continue;
-          Root otherWidget(Target(other.widget));
-          if (!otherWidget.get())
-            continue;
-          Root otherContext(Invoke(Meta().getContext, otherWidget.get()));
-          if (Target(other.context) != otherContext.get() || !Owned(otherContext.get()))
-            continue;
-          Invoke(Meta().refresh, otherWidget.get());
-        }
-      }
       return;
     }
   } catch (...) {
@@ -622,6 +637,8 @@ void InstallModConfirmationSettings()
         || !setter.Initialize(setSchema, SetEnabled) || !query.Initialize(querySchema, QueryState))
       throw std::runtime_error("settings callback schema");
     uiThread = std::this_thread::get_id();
+    if (!FleetCommanderConfirmationSetting().SetChangeObserver(RefreshViews))
+      throw std::runtime_error("settings observer ownership");
     SPUD_STATIC_DETOUR(m.refresh->methodPointer, RefreshHook);
     SPUD_STATIC_DETOUR(m.changed->methodPointer, ChangedHook);
     SPUD_STATIC_DETOUR(m.release->methodPointer, ReleaseHook);

@@ -3,6 +3,19 @@
 #include <iostream>
 
 using namespace mod_settings;
+namespace
+{
+BooleanView*    observedView    = nullptr;
+BooleanSetting* observedSetting = nullptr;
+int             notifications   = 0;
+void            Refresh()
+{
+  ++notifications;
+  observedView->Bind();
+  assert(observedSetting->SetFromUser(false, observedSetting->Observe()).outcome == Outcome::Busy);
+}
+void OtherObserver() {}
+} // namespace
 int main()
 {
   bool           available = true, value = true;
@@ -54,5 +67,18 @@ int main()
   first.Unbind();
   assert(!first.value() && first.Request(false).outcome == Outcome::Rejected);
   assert(writes == count);
+  apply = ApplyResult::Applied;
+  value = false;
+  first.Bind();
+  observedView    = &first;
+  observedSetting = &setting;
+  assert(setting.SetChangeObserver(Refresh));
+  assert(setting.SetChangeObserver(Refresh));
+  assert(!setting.SetChangeObserver(OtherObserver));
+  // Recovery shortcut uses the shared setting directly, outside BooleanView.
+  assert(setting.SetFromUser(true, setting.Observe()).outcome == Outcome::AppliedVerified);
+  assert(first.value() == true && notifications == 1 && writes == count + 1);
+  assert(setting.SetFromUser(true, setting.Observe()).outcome == Outcome::Unchanged);
+  assert(first.value() == true && notifications == 2 && writes == count + 1);
   std::cout << "PASS boolean view: render, stale views, unavailable, uncertain writes and teardown\n";
 }

@@ -57,6 +57,17 @@ public:
   const std::string& label() const
   { return definition_.label; }
 
+  // One process-lifetime presentation adapter. Notifications are synchronous,
+  // bounded and run under the write reentry guard; rendering cannot write back.
+  bool SetChangeObserver(void (*observer)())
+  {
+    CheckThread();
+    if (change_observer_ && change_observer_ != observer)
+      return false;
+    change_observer_ = observer;
+    return true;
+  }
+
   class RenderScope
   {
   public:
@@ -142,8 +153,12 @@ public:
         || observed.revision != before.revision || observed.state.generation != before.state.generation
         || observed.state.value != before.state.value)
       return {Outcome::Conflict, before};
-    if (*before.state.value == desired)
+    if (*before.state.value == desired) {
+      NotifyChanged();
+      if (epoch_ != before.epoch)
+        return {Outcome::Unverified, current_};
       return {Outcome::Unchanged, before};
+    }
     ApplyResult applied = ApplyResult::Unverified;
     try {
       applied = definition_.write(desired, before.state.generation);
@@ -154,13 +169,26 @@ public:
     const auto after = Observe();
     if (!after.state.known() || after.state.generation != before.state.generation)
       return {Outcome::Unverified, after};
-    if (applied == ApplyResult::Applied && *after.state.value == desired)
+    if (applied == ApplyResult::Applied && *after.state.value == desired) {
+      NotifyChanged();
+      if (epoch_ != before.epoch)
+        return {Outcome::Unverified, current_};
       return {Outcome::AppliedVerified, after};
+    }
     // Preserve the authoritative readback even when the adapter reports failure.
     return {applied == ApplyResult::Rejected ? Outcome::Rejected : Outcome::Unverified, after};
   }
 
 private:
+  void NotifyChanged()
+  {
+    // Presentation failure does not undo or misreport an authoritative write.
+    try {
+      if (change_observer_)
+        change_observer_();
+    } catch (...) {
+    }
+  }
   void CheckThread() const
   {
     if (std::this_thread::get_id() != thread_)
@@ -175,6 +203,7 @@ private:
   unsigned                                 render_depth_ = 0;
   bool                                     applying_     = false;
   bool                                     observing_    = false;
+  void (*change_observer_)()                             = nullptr;
 };
 
 enum class Registration { Added, Duplicate, Invalid, Frozen };
