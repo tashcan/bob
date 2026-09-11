@@ -307,6 +307,10 @@ toggle_cargo_station = "ALT-3"
 # Alterna la confirmación automática de curvatura instantánea entre ninguna, curvatura y salto
 toggle_instant_warp = "ALT-I"
 
+# Restablecer las confirmaciones de habilidades activas de comandantes de flota (no activa ninguna habilidad).
+# NONE = unassigned. Result is logged; the game handles cloud persistence.
+enable_fc_ability_confirmation = "NONE"
+
 # Indica si se permite localizar cuando se muestran vistas previas
 toggle_preview_locate = "CTRL-R"
 

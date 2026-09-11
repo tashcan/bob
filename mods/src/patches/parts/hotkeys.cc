@@ -40,6 +40,7 @@
 #include "patches/mapkey.h"
 #include "patches/parts/daily_faction_bulk_claim.h"
 #include "patches/parts/focus_search.h"
+#include "patches/parts/fc_confirmation_reset.h"
 #include "str_utils.h"
 
 #include <il2cpp-tabledefs.h>
@@ -586,6 +587,11 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
   if (!is_in_chat) {
     if (!Key::IsInputFocused()) {
+      if (MapKey::IsDown(GameFunction::EnableFcAbilityConfirmation)) {
+        EnableFleetCommanderAbilityConfirmation();
+        return;
+      }
+
       if (MapKey::IsDown(GameFunction::SelectCurrent)) {
         auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
         if (fleet_bar) {

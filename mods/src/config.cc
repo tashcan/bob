@@ -1373,6 +1373,8 @@ void Config::Load()
   parse_config_shortcut(config, parsed, "toggle_queue", GameFunction::ToggleQueue, DCSH::toggle_queue);
   parse_config_shortcut(config, parsed, "toggle_instant_warp", GameFunction::ToggleAutoConfirmInstantWarp,
                         DCSH::toggle_instant_warp);
+  parse_config_shortcut(config, parsed, "enable_fc_ability_confirmation", GameFunction::EnableFcAbilityConfirmation,
+                        DCSH::enable_fc_ability_confirmation);
 
   if (this->hotkeys_extended) {
     parse_config_shortcut(config, parsed, "show_alliance", GameFunction::ShowAlliance, DCSH::show_alliance);
