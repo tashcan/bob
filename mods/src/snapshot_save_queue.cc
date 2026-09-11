@@ -84,8 +84,12 @@ std::optional<SnapshotSaveQueue::Completion> SnapshotSaveQueue::TryTakeCompletio
   return completion;
 }
 
-void SnapshotSaveQueue::RequestStop() noexcept
-{ stopping_.store(true); }
+void SnapshotSaveQueue::RequestStop(StopMode mode) noexcept
+{
+  if (mode == StopMode::CancelQueued)
+    cancelQueued_.store(true);
+  stopping_.store(true);
+}
 
 bool SnapshotSaveQueue::RunOne()
 {
@@ -108,7 +112,7 @@ bool SnapshotSaveQueue::RunOne()
       return false;
     // Once selected, this request is in-flight; a later stop cannot claim to
     // cancel an OS operation that may already have committed.
-    cancelled       = stopping_.load();
+    cancelled       = cancelQueued_.load();
     selected->phase = Phase::Running;
     bytes.swap(selected->bytes);
   }
@@ -132,7 +136,7 @@ bool SnapshotSaveQueue::RunOne()
     selected->completion.result  = std::move(result);
     selected->phase              = Phase::Done;
     if (!cancelled && selected->completion.result.state == file_transaction::State::RecoveryRequired)
-      stopping_.store(true);
+      RequestStop(StopMode::CancelQueued);
   }
   return true;
 }

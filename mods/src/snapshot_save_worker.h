@@ -21,13 +21,14 @@ public:
 
   [[nodiscard]] SnapshotSaveQueue::Submission                TrySubmit(std::uint64_t revision, std::string&& bytes);
   [[nodiscard]] std::optional<SnapshotSaveQueue::Completion> TryTakeCompletion();
-  void                                                       RequestStop() noexcept;
+  void RequestStop(StopMode mode = StopMode::CancelQueued) noexcept;
   // Informational: true means queue execution has ended, NOT that the native
   // thread has exited or that destroying this object is safe. Join is mandatory.
   [[nodiscard]] bool WorkEnded() const noexcept;
   // Sole lifecycle owner only; may wait indefinitely for an in-flight OS call.
   // Idempotent after join. Never call concurrently or from the worker itself.
-  void StopAndJoin();
+  // Require mode explicitly so a join cannot accidentally cancel an earlier drain.
+  void StopAndJoin(StopMode mode);
 
 private:
   void              Wake() noexcept;

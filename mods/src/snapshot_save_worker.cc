@@ -36,21 +36,20 @@ void SnapshotSaveWorker::Wake() noexcept
   wake_.notify_one();
 }
 
-void SnapshotSaveWorker::RequestStop() noexcept
+void SnapshotSaveWorker::RequestStop(StopMode mode) noexcept
 {
   stopping_.store(true);
-  // Close queue selection immediately: queued work must not start merely because
-  // the active backend has not yet returned to the worker's outer loop.
-  queue_.RequestStop();
+  // Drain closes admission; cancellation additionally closes queued selection.
+  queue_.RequestStop(mode);
   Wake();
 }
 
 bool SnapshotSaveWorker::WorkEnded() const noexcept
 { return workEnded_.load(); }
 
-void SnapshotSaveWorker::StopAndJoin()
+void SnapshotSaveWorker::StopAndJoin(StopMode mode)
 {
-  RequestStop();
+  RequestStop(mode);
   if (worker_.joinable())
     worker_.join();
 }
@@ -63,10 +62,11 @@ void SnapshotSaveWorker::Run()
     if (stopping_.load()) {
       // Synchronize with a producer that passed its stop check before stop was
       // requested. After this barrier no accepted ticket can appear behind the
-      // final cancellation drain. Only the worker waits for this short lock.
+      // final stop drain. Only the worker waits for this short lock.
       {
         std::lock_guard lock(admission_);
-        queue_.RequestStop();
+        // Preserve draining; concurrent cancellation remains sticky in the queue.
+        queue_.RequestStop(StopMode::DrainAccepted);
       }
       while (queue_.RunOne()) {}
       workEnded_.store(true);

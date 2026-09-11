@@ -11,6 +11,7 @@
 
 namespace persistence
 {
+enum class StopMode { DrainAccepted, CancelQueued };
 // Internal scheduling core for ONE trusted generated-output destination. This
 // is not a user-TOML editor or a thread owner. Construct outside gameplay; the
 // future host must own/join its worker before destroying this object or unloading.
@@ -45,11 +46,12 @@ public:
   // Poll on the owning consumer thread. No callbacks or borrowed UI objects.
   // Empty means no completion available OR transient lock contention; retry later.
   [[nodiscard]] std::optional<Completion> TryTakeCompletion();
-  void                                    RequestStop() noexcept;
+  // Cancellation is sticky and wins over concurrent drain requests.
+  void RequestStop(StopMode mode = StopMode::CancelQueued) noexcept;
 
   // Worker-only, synchronous; runs at most one transaction (or cancellation).
   // Concurrent invocations do not overlap disk writes. False means no work or
-  // another worker is active. Stopping still requires pumping queued cancellations.
+  // another worker is active. Stopping still requires pumping pending outcomes.
   // This does not create a thread, wait for disk at teardown, or detach anything.
   [[nodiscard]] bool RunOne();
 
@@ -65,6 +67,7 @@ private:
   std::array<Slot, MaxOutstanding> slots_;
   std::mutex                       mutex_;
   std::atomic_bool                 stopping_{false};
+  std::atomic_bool                 cancelQueued_{false};
   std::atomic_flag                 running_       = ATOMIC_FLAG_INIT;
   std::size_t                      retainedBytes_ = 0;
   std::uint64_t                    lastRevision_  = 0;

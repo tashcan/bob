@@ -42,12 +42,19 @@ any continuation; closing a page must not destroy the queue.
 
 ## Stop and lifetime
 
-`RequestStop` closes admission without waiting for storage. A submission overlapping
+`RequestStop(CancelQueued)` (the default) closes admission without waiting for storage. A submission overlapping
 stop may already have passed its admission check; it remains an accounted ticket
 and is cancelled by the worker if it has not started. `RunOne` produces explicit
 CancelledBeforeStart completions for queued requests after stop. Already selected
 work is in-flight and reports its actual result, even if stop arrives meanwhile.
 The host must keep pumping until queued cancellation is accounted for.
+
+`RequestStop(DrainAccepted)` instead closes admission while finishing accepted
+snapshots in ticket order. Every accepted ticket still gets its actual completion;
+drain is not a promise that all writes succeed. Cancellation is sticky: an explicit
+CancelQueued request, before or after a drain request, cancels work not yet selected.
+A later drain request cannot re-enable those writes. RecoveryRequired also forces
+cancellation, even during a drain; already selected storage reports its result.
 
 RecoveryRequired (including an unexpected backend exception whose commit point is
 unknown) closes admission and cancels later queued snapshots. Known pre-commit
@@ -99,16 +106,17 @@ flag before draining, retaining a notification that arrives during or after the
 drain. Only the worker waits. Producer admission uses try-locks; snapshot
 preparation and actual platform notification latency still require measurement.
 
-`RequestStop` immediately closes both owner admission and queue selection, then
-wakes an idle worker. The worker synchronizes with any submission already inside
+`RequestStop(mode)` immediately closes owner admission and, for CancelQueued,
+queue selection, then wakes an idle worker. The worker synchronizes with any submission already inside
 admission before its final cancellation drain, preventing a late accepted ticket
 from being left behind after worker exit. In-flight storage finishes normally;
-pending work is cancelled, and all completions remain available for central
+pending work follows the requested drain/cancel mode, and all completions remain available for central
 consumption after join. A settings page closing does not stop this owner.
 
-The sole lifecycle owner calls `StopAndJoin` explicitly outside gameplay and
+The sole lifecycle owner calls `StopAndJoin(mode)` explicitly outside gameplay and
 loader callbacks. It may wait indefinitely for an in-flight OS call, and must not
-run concurrently or on the worker. `WorkEnded` means queue execution ended, not
+run concurrently or on the worker. The mode argument is required so joining an
+earlier drain cannot silently select default cancellation. `WorkEnded` means queue execution ended, not
 that the native thread has fully exited: it never authorizes destruction or
 unload. Joining and quiescing all producer/consumer calls are required first.
 Like `std::thread`, destroying an unjoined owner terminates; the destructor does
@@ -134,3 +142,10 @@ game files. Compile with the same standalone command as the queue fixture using
 the worker test filename. The Persistence fixtures workflow runs all three
 fixtures on native Windows, macOS ARM and macOS Intel; adding the workflow does
 not itself count as a successful CI run.
+
+Drain fixtures additionally hold the first write behind a barrier and verify that
+the second accepted write finishes, that cancellation before/after drain wins,
+and that known failure, durability uncertainty and recovery-required results keep
+their distinct meaning. Late admission across the final stop check is tested in
+both modes. This supplies a worker policy for future orderly quit integration;
+it does not change F10, defer Unity quitting, or wire any game callbacks.

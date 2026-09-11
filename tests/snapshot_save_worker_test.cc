@@ -30,6 +30,7 @@ namespace
   std::condition_variable  backendChanged;
   bool                     entered = false, allow = false, block = true;
   std::vector<std::string> writes;
+  file_transaction::State  backendState = file_transaction::State::Committed;
   file_transaction::Result Execute(const std::filesystem::path&, std::string_view bytes)
   {
     std::unique_lock lock(backendMutex);
@@ -39,7 +40,7 @@ namespace
       backendChanged.wait(lock, [] { return allow; });
     writes.emplace_back(bytes);
     file_transaction::Result result;
-    result.state = file_transaction::State::Committed;
+    result.state = backendState;
     return result;
   }
 } // namespace
@@ -75,17 +76,62 @@ int main()
       allow = true;
       backendChanged.notify_all();
     }
-    owner.StopAndJoin();
+    owner.StopAndJoin(StopMode::CancelQueued);
     assert(owner.WorkEnded());
     auto done = owner.TryTakeCompletion();
     assert(done && done->ticket == first.ticket && done->outcome == Outcome::Executed && done->result.committed());
     done = owner.TryTakeCompletion();
     assert(done && done->ticket == second.ticket && done->outcome == Outcome::CancelledBeforeStart);
     assert(!owner.TryTakeCompletion());
-    owner.StopAndJoin(); // Explicit lifecycle operation is idempotent.
+    owner.StopAndJoin(StopMode::CancelQueued); // Explicit lifecycle operation is idempotent.
   }
   assert(writes == std::vector<std::string>{"first"});
   block = false;
+  // A drain keeps accepted work executable while closing admission. Explicit
+  // cancellation (before OR after drain) and uncertain storage failures override
+  // that policy. Ordinary failure/durability outcomes must not become "saved".
+  for (auto state : {file_transaction::State::Committed, file_transaction::State::NotCommitted,
+                     file_transaction::State::DurabilityUnverified, file_transaction::State::RecoveryRequired}) {
+    for (int cancelOrder : {0, 1, 2}) {
+      entered = allow = false;
+      block           = true;
+      backendState    = state;
+      writes.clear();
+      SnapshotSaveWorker owner(destination);
+      assert(owner.TrySubmit(1, std::string("active")).state == Admission::Accepted);
+      {
+        std::unique_lock lock(backendMutex);
+        assert(backendChanged.wait_for(lock, std::chrono::seconds(3), [] { return entered; }));
+      }
+      assert(owner.TrySubmit(2, std::string("accepted")).state == Admission::Accepted);
+      if (cancelOrder == 1)
+        owner.RequestStop(StopMode::CancelQueued);
+      owner.RequestStop(StopMode::DrainAccepted);
+      if (cancelOrder == 2)
+        owner.RequestStop(StopMode::CancelQueued);
+      owner.RequestStop(StopMode::DrainAccepted); // Cannot undo cancellation.
+      assert(!owner.WorkEnded());
+      assert(owner.TrySubmit(3, std::string("late")).state == Admission::Stopping);
+      {
+        std::lock_guard lock(backendMutex);
+        allow = true;
+        backendChanged.notify_all();
+      }
+      owner.StopAndJoin(StopMode::DrainAccepted);
+      auto active = owner.TryTakeCompletion();
+      auto queued = owner.TryTakeCompletion();
+      assert(active && active->outcome == Outcome::Executed && active->result.state == state);
+      const bool cancelled = cancelOrder != 0 || state == file_transaction::State::RecoveryRequired;
+      assert(queued && queued->revision == 2);
+      assert(queued->outcome == (cancelled ? Outcome::CancelledBeforeStart : Outcome::Executed));
+      if (!cancelled)
+        assert(queued->result.state == state);
+      assert(writes.size() == (cancelled ? 1u : 2u));
+      assert(!owner.TryTakeCompletion());
+    }
+  }
+  block        = false;
+  backendState = file_transaction::State::Committed;
   {
     // Repeated empty-to-nonempty transitions exercise wake coalescing; no sleep
     // is needed on the producer to make a notification visible to the worker.
@@ -104,16 +150,17 @@ int main()
         std::this_thread::yield();
       assert(done->revision == revision && done->result.committed());
     }
-    owner.StopAndJoin(); // Wakes an idle worker too.
+    owner.StopAndJoin(StopMode::CancelQueued); // Wakes an idle worker too.
     assert(owner.WorkEnded());
   }
   // Deterministically admit a ticket AFTER stop, by holding the producer just
   // past the queue's final stop check. The worker must not exit ahead of it.
-  {
+  for (auto mode : {StopMode::CancelQueued, StopMode::DrainAccepted}) {
     SnapshotSaveWorker owner(destination);
     {
       std::lock_guard lock(admissionTestMutex);
-      pauseAdmission = true;
+      pauseAdmission   = true;
+      admissionEntered = allowAdmission = false;
     }
     SnapshotSaveQueue::Submission submitted{Admission::Busy};
     std::thread                   producer([&] { submitted = owner.TrySubmit(1, std::string("late ticket")); });
@@ -121,7 +168,7 @@ int main()
       std::unique_lock lock(admissionTestMutex);
       assert(admissionChanged.wait_for(lock, std::chrono::seconds(3), [] { return admissionEntered; }));
     }
-    owner.RequestStop();
+    owner.RequestStop(mode);
     assert(!owner.WorkEnded());
     {
       std::lock_guard lock(admissionTestMutex);
@@ -129,10 +176,11 @@ int main()
       admissionChanged.notify_all();
     }
     producer.join();
-    owner.StopAndJoin();
+    owner.StopAndJoin(mode);
     assert(submitted.state == Admission::Accepted);
     auto done = owner.TryTakeCompletion();
-    assert(done && done->ticket == submitted.ticket && done->outcome == Outcome::CancelledBeforeStart);
+    assert(done && done->ticket == submitted.ticket);
+    assert(done->outcome == (mode == StopMode::CancelQueued ? Outcome::CancelledBeforeStart : Outcome::Executed));
     assert(!owner.TryTakeCompletion());
     pauseAdmission = false;
   }
@@ -149,7 +197,7 @@ int main()
     go.store(true);
     owner.RequestStop();
     producer.join();
-    owner.StopAndJoin();
+    owner.StopAndJoin(StopMode::CancelQueued);
     auto done = owner.TryTakeCompletion();
     if (submitted.state == Admission::Accepted)
       assert(done && done->ticket == submitted.ticket);
