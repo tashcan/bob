@@ -136,10 +136,21 @@ int main()
   const auto ordinary = root / "ordinary.toml";
   { std::ofstream out(ordinary); out << "old"; assert(out.good()); }
   const auto ordinaryDacl = Dacl(ordinary);
-  assert(Write(ordinary, "first", Mode::ReplaceSnapshot).committed());
-  assert(Read(ordinary) == "first" && Dacl(ordinary) == ordinaryDacl);
-  assert(Write(ordinary, "second", Mode::ReplaceSnapshot).committed());
-  assert(Read(ordinary) == "second" && Dacl(ordinary) == ordinaryDacl);
+  const auto ordinaryNativeDacl = NativeDacl(ordinary);
+  const auto ordinaryResult = Write(ordinary, "first", Mode::ReplaceSnapshot);
+  if (ordinaryNativeDacl.find(L"AI") == std::wstring::npos &&
+      ordinaryNativeDacl.substr(0, ordinaryNativeDacl.find(L'(')).find(L'P') == std::wstring::npos) {
+    // Some Windows installations create legacy descriptors even under their
+    // normal temp directory. Verify the precise supported rejection there.
+    assert(ordinaryResult.state == State::NotCommitted && ordinaryResult.stage == Stage::StageFile);
+    assert(ordinaryResult.error == std::make_error_code(std::errc::operation_not_supported));
+    assert(Read(ordinary) == "old" && NativeDacl(ordinary) == ordinaryNativeDacl);
+  } else {
+    assert(ordinaryResult.committed());
+    assert(Read(ordinary) == "first" && Dacl(ordinary) == ordinaryDacl);
+    assert(Write(ordinary, "second", Mode::ReplaceSnapshot).committed());
+    assert(Read(ordinary) == "second" && Dacl(ordinary) == ordinaryDacl);
+  }
   // Ordinary externally created files can have only inherited permissions.
   // Replacing through a private subdirectory must not erase those entries.
   PSECURITY_DESCRIPTOR inheritedSecurity = nullptr;
