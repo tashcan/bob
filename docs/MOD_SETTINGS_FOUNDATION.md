@@ -1,7 +1,8 @@
-# Boolean settings foundation (P1)
+# Boolean settings foundation and native FC control
 
-This is the controller and Fleet Commander preference adapter for a forthcoming
-native settings UI. It does not yet insert rows or persist mod-owned TOML settings.
+The controller and Fleet Commander preference adapter are shared by the recovery
+shortcut and a Windows x64 native confirmation-page adapter. Mod-owned TOML
+persistence and the Community Mod category are separate work.
 
 `settings/boolean_settings.h` is independent of Unity and storage. Definitions have
 a stable ID, readable label, read callback, and immediate-write callback. Registry
@@ -34,13 +35,12 @@ replacement of the preference manager or saved-data object without retaining
 account data. Unavailability invalidates the observed generation. One process-wide
 root holds the constant, non-sensitive preference key; no work runs while idle.
 
-P2 **must** wire `InvalidateFleetCommanderConfirmationSession()` to reliable
-account/reload lifecycle notifications before retaining UI snapshots. Observed
-object identity alone cannot prove that an account transition did not happen
-between two reads. The current shortcut takes and consumes a fresh snapshot in
-one game-thread operation; this change introduces no long-lived native UI snapshot.
-Context teardown, widget ownership, native error presentation and per-platform UI
-hook evidence are P2 work, not claims of this foundation.
+The UI calls `InvalidateFleetCommanderConfirmationSession()` before the native
+preference manager's RegisterEvents (initialization/reload), session-start handler,
+and cloud-load entry. It immediately invalidates live view snapshots. These are
+substantive functions; neither the tiny OnApplicationReload wrapper nor the
+LifecycleUpdatedEventHandler save-timer path is hooked. Exact-client account
+transition validation is still required; object identity alone is insufficient.
 
 The existing Ctrl+Alt+F8 shortcut remains one-way and keeps its input/config guards.
 Its log distinguishes already-enabled, verified application and unverified failure.
@@ -62,3 +62,52 @@ Before extending the UI, measure the baseline and candidate with the same scene,
 FPS cap and diagnostics: no scheduled closed-menu work or per-frame allocations;
 initial target <=1 ms added normal bind/refresh work at p95, <=2 ms per normal
 operation. These are proposed UI acceptance budgets, not measured P1 results.
+
+## Native UI adapter (P2 candidate)
+
+The first registered control is `[MOD] Confirm Fleet Commander abilities`, under
+the existing confirmation category. ON means show confirmations; OFF means skip.
+The adapter is independent of mod hotkeys and does not install a global localization
+hook. It overrides TextLocalizer after native binding and clears its own overrides
+on release/rebind, using weak ownership records rather than matching visible text.
+
+`BooleanView` retains the displayed snapshot. Rendering suppresses writes; stale
+clicks conflict; an uncertain apply remains unresolved until a subsequent bind.
+Rejected writes with known readback retain that value and show a retry message.
+Unknown values suppress both native switch/state visual nodes while retaining the
+label. The prefab must prove that those nodes are descendants of the row and do
+not contain the label; otherwise that UI is unsupported. Exact visual validation
+of this behavior remains a release gate.
+
+Eight weak view records bound bookkeeping. Native contexts own rows/delegates;
+there are no strong roots retaining historical settings pages. Native release
+clears records, with dead-record reclamation on binding as a fallback. A successful
+write refreshes other live framework views. No polling or file work is scheduled.
+
+Each callback registration owns a permanent MethodInfo copy with replaced direct,
+virtual and runtime-invoker pointers. Matching native schema supplies reflection
+metadata only; the donor MethodInfo remains untouched. Closed delegates must point
+to that owned descriptor. The native setter delegate is deliberately inert:
+only a live widget's explicit change handler can submit its displayed snapshot.
+Reflection and refresh callbacks cannot authorize writes. This does not claim a
+general managed-method registration API.
+
+All seven hook bodies are preflighted for signatures, distinct addresses, exact
+Windows unwind-table entries and at least 64 bytes of native extent. Hooks remain
+inert until installation completes. Other platforms retain the independent FC
+shortcut; UI support awaits their own native extent and runtime evidence.
+
+Additional standalone tests:
+
+```powershell
+clang++ -std=c++23 -Wall -Wextra -Werror -I mods/src tests/boolean_view_test.cc -o boolean_view_test.exe
+./boolean_view_test.exe
+clang++ -std=c++23 -Wall -Wextra -Werror -Wno-unused-parameter -I mods/src -I third_party/libil2cpp tests/native_boolean_callback_test.cc -o native_boolean_callback_test.exe
+./native_boolean_callback_test.exe
+```
+
+These cover view failure transitions and owned native callback invocation pointers.
+They do not establish delegate construction, DynamicInvoke, Unity pooling, unknown
+prefab presentation, account transitions, cloud durability or frame-time budgets
+on a running game. Those require the exact candidate artifact, not the earlier
+play prototype's successful tests.
