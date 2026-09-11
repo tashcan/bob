@@ -494,13 +494,14 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     return;
   }
 
-#ifdef _WIN32
+#if defined(_WIN32) || defined(__APPLE__)
   if (MapKey::IsDown(GameFunction::Quit)) {
-    TerminateProcess(GetCurrentProcess(), 1);
-  }
-#elif defined(__APPLE__)
-  if (MapKey::IsDown(GameFunction::Quit)) {
-    Hub::get_App()->Quit();
+    // Use the normal game lifecycle on both platforms. Forced termination
+    // bypasses quit subscribers and any pending-save shutdown coordination.
+    // If the app/method is unavailable, do not fall back to killing the process.
+    if (auto* app = Hub::get_App()) {
+      app->Quit();
+    }
     return;
   }
 #endif

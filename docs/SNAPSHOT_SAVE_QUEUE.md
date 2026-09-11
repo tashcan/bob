@@ -206,8 +206,12 @@ Shutdown policy: distinguish the attempt's result from whether worker shutdown
 finished. A failed save remains failed; once workers terminate, save failure alone
 must not veto process exit. In-flight OS I/O cannot safely be cancelled by a queue
 flag. Preserve transaction-owned recovery artifacts when an outcome is uncertain.
-Host shutdown/F10 routing, result presentation and targeted user-TOML editing remain
-separate integration work; no game path constructs this service yet.
+The mod Quit shortcut now calls `PrimeApp::Quit` on Windows as it already did on
+macOS. Windows no longer uses `TerminateProcess`, which bypassed Unity quit
+subscribers. An unavailable app or method does not trigger a force-kill fallback.
+This routing change alone does not drain saves: host ownership/shutdown, result
+presentation and targeted user-TOML editing remain separate integration work;
+no game path constructs this service yet. No new quit detour is installed here.
 
 The service fixture exercises exclusive ownership, constructor rollback after a
 worker has started, destination ambiguity, stale handles across replacement,
