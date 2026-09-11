@@ -412,9 +412,9 @@ void Render(View& view, auto original, Il2CppObject* widget)
   Root        label(Target(view.label));
   std::string text = view.state.setting().label();
   if (!view.state.value())
-    text += " — Unavailable; reopen settings";
+    text += " — Reopen to retry";
   else if (view.state.failed())
-    text += " — Change not applied; try again";
+    text += " — Retry";
   Root  message(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(text.c_str())));
   void* args[] = {message.get()};
   Call(label.get(), "OverrideLocalizedText", 1, args);
