@@ -124,7 +124,7 @@ namespace
     PrivateSecurity()
     {
       // Restrict staged data to its owner, administrators and SYSTEM.
-      if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(L"D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;OW)",
+      if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(L"D:P(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;OW)",
                                                                 SDDL_REVISION_1, &descriptor, nullptr))
         WinFail();
       attributes.lpSecurityDescriptor = descriptor;
@@ -155,6 +155,21 @@ namespace
         ~Descriptor() { if (value) LocalFree(value); }
       } source;
       if (original != INVALID_HANDLE_VALUE) {
+        // GetSecurityInfo can synthesize modern inherited flags from a legacy
+        // descriptor without changing the file. ReplaceFile does not interpret
+        // that legacy policy consistently across Windows versions. Reject it
+        // before staging rather than convert permissions on the original file.
+        DWORD required = 0;
+        GetKernelObjectSecurity(original, DACL_SECURITY_INFORMATION, nullptr, 0, &required);
+        if (!required) WinFail();
+        std::vector<unsigned char> nativeDescriptor(required);
+        if (!GetKernelObjectSecurity(original, DACL_SECURITY_INFORMATION, nativeDescriptor.data(), required,
+                                     &required)) WinFail();
+        SECURITY_DESCRIPTOR_CONTROL control{};
+        DWORD revision = 0;
+        if (!GetSecurityDescriptorControl(nativeDescriptor.data(), &control, &revision)) WinFail();
+        if (!(control & (SE_DACL_PROTECTED | SE_DACL_AUTO_INHERITED)))
+          Fail(std::errc::operation_not_supported);
         const auto error = GetSecurityInfo(original, SE_FILE_OBJECT, DACL_SECURITY_INFORMATION, nullptr, nullptr,
                                           &originalAcl, nullptr, &source.value);
         if (error != ERROR_SUCCESS) throw Failure{{static_cast<int>(error), std::system_category()}};
@@ -186,8 +201,7 @@ namespace
       }
       if (!InitializeSecurityDescriptor(&descriptor, SECURITY_DESCRIPTOR_REVISION) ||
           !SetSecurityDescriptorDacl(&descriptor, TRUE, acl, FALSE) ||
-          !SetSecurityDescriptorControl(&descriptor, SE_DACL_PROTECTED | SE_DACL_AUTO_INHERITED,
-                                        SE_DACL_PROTECTED | SE_DACL_AUTO_INHERITED)) WinFail();
+          !SetSecurityDescriptorControl(&descriptor, SE_DACL_PROTECTED, SE_DACL_PROTECTED)) WinFail();
     }
   };
   void Regular(HANDLE handle)

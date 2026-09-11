@@ -33,7 +33,7 @@ std::string Read(const std::filesystem::path& path)
 }
 
 #if _WIN32
-void PrintNativeDacl(const std::filesystem::path& path)
+std::wstring NativeDacl(const std::filesystem::path& path)
 {
   DWORD bytes = 0;
   GetFileSecurityW(path.c_str(), DACL_SECURITY_INFORMATION, nullptr, 0, &bytes);
@@ -43,8 +43,9 @@ void PrintNativeDacl(const std::filesystem::path& path)
   LPWSTR text = nullptr;
   assert(ConvertSecurityDescriptorToStringSecurityDescriptorW(descriptor.data(), SDDL_REVISION_1,
                                                               DACL_SECURITY_INFORMATION, &text, nullptr));
-  std::wcerr << L"Native DACL: " << text << std::endl;
+  std::wstring result(text);
   LocalFree(text);
+  return result;
 }
 std::pair<bool, std::wstring> Dacl(const std::filesystem::path& path)
 {
@@ -132,6 +133,13 @@ int main()
   const auto metadata = root / "metadata.toml";
   assert(Write(metadata, "old", Mode::CreateOnly).committed());
 #if _WIN32
+  const auto ordinary = root / "ordinary.toml";
+  { std::ofstream out(ordinary); out << "old"; assert(out.good()); }
+  const auto ordinaryDacl = Dacl(ordinary);
+  assert(Write(ordinary, "first", Mode::ReplaceSnapshot).committed());
+  assert(Read(ordinary) == "first" && Dacl(ordinary) == ordinaryDacl);
+  assert(Write(ordinary, "second", Mode::ReplaceSnapshot).committed());
+  assert(Read(ordinary) == "second" && Dacl(ordinary) == ordinaryDacl);
   // Ordinary externally created files can have only inherited permissions.
   // Replacing through a private subdirectory must not erase those entries.
   PSECURITY_DESCRIPTOR inheritedSecurity = nullptr;
@@ -144,12 +152,27 @@ int main()
   LocalFree(inheritedSecurity);
   const auto inheritedFile = inheritedRoot / "existing.toml";
   { std::ofstream out(inheritedFile); out << "old"; assert(out.good()); }
-  PrintNativeDacl(inheritedRoot);
-  PrintNativeDacl(inheritedFile);
+  // The create APIs above produce a legacy inheritance descriptor. The modern
+  // query API can synthesize inherited flags that ReplaceFile interprets
+  // differently on Windows client/server. Such originals must stay untouched.
+  const auto legacyDacl = NativeDacl(inheritedFile);
+  const auto legacyResult = Write(inheritedFile, "rejected", Mode::ReplaceSnapshot);
+  assert(legacyResult.state == State::NotCommitted && legacyResult.stage == Stage::StageFile);
+  assert(legacyResult.error == std::make_error_code(std::errc::operation_not_supported));
+  assert(Read(inheritedFile) == "old" && NativeDacl(inheritedFile) == legacyDacl);
+  // Explicit fixture setup opts the parent into modern inheritance. Production
+  // never migrates an existing user's security policy as a side effect of save.
+  auto parentName = inheritedRoot.native();
+  PSECURITY_DESCRIPTOR parentDescriptor = nullptr;
+  PACL parentDacl = nullptr;
+  assert(GetNamedSecurityInfoW(parentName.data(), SE_FILE_OBJECT, DACL_SECURITY_INFORMATION,
+                               nullptr, nullptr, &parentDacl, nullptr, &parentDescriptor) == ERROR_SUCCESS);
+  assert(SetNamedSecurityInfoW(parentName.data(), SE_FILE_OBJECT,
+                               DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION,
+                               nullptr, nullptr, parentDacl, nullptr) == ERROR_SUCCESS);
+  LocalFree(parentDescriptor);
   const auto inheritedDacl = Dacl(inheritedFile);
-  PrintNativeDacl(inheritedFile);
   assert(Write(inheritedFile, "first", Mode::ReplaceSnapshot).committed());
-  PrintNativeDacl(inheritedFile);
   const auto firstContent = Read(inheritedFile);
   const auto firstDacl = Dacl(inheritedFile);
   if (firstContent != "first" || firstDacl != inheritedDacl) {

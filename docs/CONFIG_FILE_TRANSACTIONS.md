@@ -86,6 +86,12 @@ file allow/deny entries. These entries grant no access to the container, and the
 payload retains its protected private ACL until replacement. The resulting target
 retains the original explicit/inherited permission policy, including inherited denies.
 
+Unprotected legacy descriptors without native `SE_DACL_AUTO_INHERITED` are also
+rejected before staging. `GetSecurityInfo` can synthesize inherited entries for
+such a descriptor without updating the file; Windows client and server replacement
+behavior differs for this case. The writer checks the native descriptor using
+`GetKernelObjectSecurity` and does not migrate the original's permissions.
+
 Unknown inherited ACE forms/propagation flags, oversized ACLs and null target DACLs
 are rejected before staging; the writer does not guess their inheritance behavior.
 The Windows regression fixture creates an external file with inherited allow/deny
