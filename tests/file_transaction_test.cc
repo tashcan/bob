@@ -133,7 +133,15 @@ int main()
   { std::ofstream out(inheritedFile); out << "old"; assert(out.good()); }
   const auto inheritedDacl = Dacl(inheritedFile);
   assert(Write(inheritedFile, "first", Mode::ReplaceSnapshot).committed());
-  assert(Read(inheritedFile) == "first" && Dacl(inheritedFile) == inheritedDacl);
+  const auto firstContent = Read(inheritedFile);
+  const auto firstDacl = Dacl(inheritedFile);
+  if (firstContent != "first" || firstDacl != inheritedDacl) {
+    std::cerr << "Inherited replacement content matches: " << (firstContent == "first") << '\n';
+    std::wcerr << L"Before protected=" << inheritedDacl.first << L" " << inheritedDacl.second << L'\n'
+               << L"After protected=" << firstDacl.first << L" " << firstDacl.second << std::endl;
+  }
+  assert(firstContent == "first");
+  assert(firstDacl == inheritedDacl);
   assert(Write(inheritedFile, "second", Mode::ReplaceSnapshot).committed());
   assert(Read(inheritedFile) == "second" && Dacl(inheritedFile) == inheritedDacl);
   PSECURITY_DESCRIPTOR restricted = nullptr;
