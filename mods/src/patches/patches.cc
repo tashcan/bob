@@ -1,6 +1,7 @@
 #include "patches.h"
 #include "file.h"
 #include "version.h"
+#include "patches/runtime_snapshot_host.h"
 
 #include <il2cpp/il2cpp-functions.h>
 
@@ -170,6 +171,8 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       patch_func();
     }
   }
+
+  InstallRuntimeSnapshotHost();
 
   spdlog::info("");
 

@@ -209,12 +209,67 @@ flag. Preserve transaction-owned recovery artifacts when an outcome is uncertain
 The mod Quit shortcut now calls `PrimeApp::Quit` on Windows as it already did on
 macOS. Windows no longer uses `TerminateProcess`, which bypassed Unity quit
 subscribers. An unavailable app or method does not trigger a force-kill fallback.
-This routing change alone does not drain saves: host ownership/shutdown, result
-presentation and targeted user-TOML editing remain separate integration work;
-no game path constructs this service yet. No new quit detour is installed here.
+This routing change alone does not drain saves. The lazy host described below
+supplies shutdown coordination when a runtime consumer starts it. Result presentation
+and targeted user-TOML editing remain separate integration work; no current feature
+registers a runtime destination or submits runtime saves.
 
 The service fixture exercises exclusive ownership, constructor rollback after a
 worker has started, destination ambiguity, stale handles across replacement,
 bounded retained tickets, independent progress under stalled storage, and admission
 closure with retained outcomes after join. It uses an isolated backend and the
 native CI matrix; it is not game runtime or filesystem interruption evidence.
+
+## Lazy game host and shutdown
+
+`runtime_snapshots` is the internal game-facing registration/submission adapter.
+Trusted registration takes up to four paths on the observed Update thread. It
+launches a native supervisor; the supervisor enrolls paths and constructs the
+existing service and workers. Status remains Starting until enrollment completes.
+Registration is one-shot, including failed attempts. Ordinary consumers receive
+destination handles and never supply a path with a save request. Preparing bytes
+is still an adapter responsibility; this is not a preserving user-TOML editor.
+
+Initialization runs after `il2cpp_init`, outside `DllMain`. It registers with the
+existing ScreenManager.Update owner but starts no thread. When inactive, its
+callback does no logging, timing capture or filesystem work. The quit detour is
+installed only on the first real registration attempt. Admission requires an
+observed Update callback, the build261 Windows x64 method RVA, full instruction
+fingerprint, and native unwind extent. Mismatch leaves runtime saves unavailable.
+macOS and other architectures reject registration until their shutdown seam is
+validated; this does not disable the synchronous checked startup outputs.
+
+An allowed game quit vote closes admission and wakes the supervisor. The game
+callback returns without waiting on storage. The supervisor removes borrowed
+service access under its mutex, drains accepted work, joins every worker, retains
+unconsumed completions, and destroys the service. Producer and completion access
+use try-lock operations; consumers cannot race service destruction. Retained
+completions preserve their destination index and ticket, including failed saves.
+No game object or callback crosses onto the supervisor or workers.
+
+The Update callback polls the native supervisor handle with a zero timeout during
+shutdown. A published Stopped state alone cannot authorize quitting. After actual
+native thread exit it closes the handle, releases the temporary loader reference,
+and requests Unity quit once. The game's real subscriber vote is preserved, and
+a later genuine veto cancels automatic resumption; a resumed veto does not cause
+an automatic retry loop. The stopped service remains
+unavailable for new requests if the game vetoes exit; it is not automatically restarted.
+Failed saves do not veto exit once workers have terminated. Indefinitely stalled
+OS I/O can still delay normal exit: no timer pretends to cancel an in-flight write.
+
+The supervisor uses an ordinary scoped module reference, not a permanent module
+PIN. The small adapter control block and detour have process lifetime; there is no
+static thread destructor, detached worker, or loader-lock join. Hot module unloading
+is unsupported, as it is for the installed game hooks. Force termination/crash can
+bypass this lifecycle; no power-loss or guaranteed shutdown-duration claim is made.
+
+The Windows host fixture verifies stop during startup, concurrent admission versus
+shutdown, retained failure/success outcomes, rejection after stop, and the interval
+between service destruction and native supervisor exit. Other platform fixtures
+verify the quit gate and unsupported-host rejection only. These are isolated native
+tests, not evidence of exact-artifact F10/window-X runtime behavior.
+
+Native lifecycle references: Microsoft documents the retained caller-owned handle
+and automatic CRT cleanup for [_beginthreadex](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/beginthread-beginthreadex),
+zero-timeout [WaitForSingleObject](https://learn.microsoft.com/en-us/windows/win32/api/synchapi/nf-synchapi-waitforsingleobject),
+and scoped versus pinned [module references](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulehandleexw).
