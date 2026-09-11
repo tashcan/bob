@@ -176,7 +176,6 @@ namespace Shortcuts
   constexpr const char* toggle_cargo_player   = "ALT-2";
   constexpr const char* toggle_cargo_station  = "ALT-3";
   constexpr const char* toggle_instant_warp   = "ALT-I";
-  constexpr const char* enable_fc_ability_confirmation = "CTRL-ALT-F8";
   constexpr const char* toggle_preview_locate = "CTRL-R";
   constexpr const char* toggle_preview_recall = "CTRL-T";
   constexpr const char* ui_scaledown          = "PGDOWN";

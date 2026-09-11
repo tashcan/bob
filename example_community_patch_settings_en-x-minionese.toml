@@ -307,10 +307,6 @@ toggle_cargo_station = "ALT-3"
 # Whether to automatically warp, jump or display the dialog
 toggle_instant_warp = "ALT-I"
 
-# Re-enable Fleet Commander active ability confirmations (one-way reset; never activates an ability).
-# NONE = unassigned. Result is logged; the game handles cloud persistence.
-enable_fc_ability_confirmation = "CTRL-ALT-F8"
-
 # Whether to allow locate when previews are displayed
 toggle_preview_locate = "CTRL-R"
 

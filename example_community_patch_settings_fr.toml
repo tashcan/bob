@@ -307,10 +307,6 @@ toggle_cargo_station = "ALT-3"
 # Faire défiler la confirmation automatique entre none, warp et jump
 toggle_instant_warp = "ALT-I"
 
-# Réactiver les confirmations des capacités actives des commandants de flotte (sans activer de capacité).
-# NONE = unassigned. Result is logged; the game handles cloud persistence.
-enable_fc_ability_confirmation = "CTRL-ALT-F8"
-
 # Autoriser la localisation lorsque les aperçus sont affichés
 toggle_preview_locate = "CTRL-R"
 

@@ -2,7 +2,7 @@
 #include "settings/boolean_view.h"
 
 // Native extents are checked against Windows unwind records. Other platforms
-// keep the shared FC shortcut until equivalent UI hook evidence is available.
+// omit the native UI until equivalent hook evidence is available.
 #if defined(_WIN32) && defined(_M_X64)
 #include "settings/native_boolean_callback.h"
 #include <Windows.h>
@@ -31,7 +31,7 @@ void Warn()
 {
   if (!warned) {
     warned = true;
-    spdlog::warn("[ModSettings] Native confirmation UI unavailable; FC recovery shortcut remains independent");
+    spdlog::warn("[ModSettings] Native confirmation UI unavailable; no mod control added");
   }
 }
 

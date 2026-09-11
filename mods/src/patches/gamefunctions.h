@@ -103,7 +103,6 @@ enum GameFunction {
   ShowShipConstruction,
   ShowShields,
   ShowBattlelogs,
-  EnableFcAbilityConfirmation,
 
   // Automatic max value
   Max

@@ -2,7 +2,6 @@
 #include "settings/boolean_settings.h"
 #include <il2cpp-tabledefs.h>
 #include <il2cpp/il2cpp_helper.h>
-#include <spdlog/spdlog.h>
 
 namespace
 {
@@ -160,26 +159,7 @@ mod_settings::BooleanSetting& FleetCommanderConfirmationSetting()
 
 void InvalidateFleetCommanderConfirmationSession()
 {
-  // P2 must connect this to account/context lifecycle before retaining UI snapshots.
+  // The native UI calls this before preference-session boundaries.
   FleetCommanderConfirmationSetting().InvalidateSession();
   Backend().invalidate();
-}
-
-void EnableFleetCommanderAbilityConfirmation()
-{
-  auto&      setting = FleetCommanderConfirmationSetting();
-  const auto result  = setting.SetFromUser(true, setting.Observe());
-  using mod_settings::Outcome;
-  switch (result.outcome) {
-    case Outcome::AppliedVerified:
-      spdlog::info("[FCConfirmation] Fleet Commander ability confirmation enabled; cloud persistence game-managed");
-      break;
-    case Outcome::Unchanged:
-      spdlog::info("[FCConfirmation] Fleet Commander ability confirmation is already enabled");
-      break;
-    default:
-      spdlog::warn("[FCConfirmation] Confirmation recovery not verified (status={}); retry after loading",
-                   static_cast<int>(result.outcome));
-      break;
-  }
 }

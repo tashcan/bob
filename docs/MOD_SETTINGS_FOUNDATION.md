@@ -1,7 +1,7 @@
 # Boolean settings foundation and native FC control
 
-The controller and Fleet Commander preference adapter are shared by the recovery
-shortcut and a Windows x64 native confirmation-page adapter. Mod-owned TOML
+The controller and Fleet Commander preference adapter back a Windows x64 native
+confirmation-page control. Mod-owned TOML
 persistence and the Community Mod category are separate work.
 
 `settings/boolean_settings.h` is independent of Unity and storage. Definitions have
@@ -23,8 +23,7 @@ not a claim of cloud durability.
 
 ## Fleet Commander adapter
 
-`FleetCommanderConfirmationSetting()` provides one shared setting for the recovery
-shortcut and future UI. ON means show confirmation. Reads use the existing
+`FleetCommanderConfirmationSetting()` provides the native UI setting. ON means show confirmation. Reads use the existing
 PersistentPrefsManager's `GetBool(key, false, false)`: the final false prevents
 insertion of a missing preference while preserving the game's default. Writes use
 the native FC setter. The adapter never instantiates managers, invokes abilities,
@@ -42,8 +41,8 @@ substantive functions; neither the tiny OnApplicationReload wrapper nor the
 LifecycleUpdatedEventHandler save-timer path is hooked. Exact-client account
 transition validation is still required; object identity alone is insufficient.
 
-The existing Ctrl+Alt+F8 shortcut remains one-way and keeps its input/config guards.
-Its log distinguishes already-enabled, verified application and unverified failure.
+The prototype recovery shortcut has been removed. Use the native settings row;
+legacy `enable_fc_ability_confirmation` entries are no longer consumed.
 
 ## Standalone controller tests
 
@@ -94,8 +93,8 @@ general managed-method registration API.
 
 All seven hook bodies are preflighted for signatures, distinct addresses, exact
 Windows unwind-table entries and at least 64 bytes of native extent. Hooks remain
-inert until installation completes. Other platforms retain the independent FC
-shortcut; UI support awaits their own native extent and runtime evidence.
+inert until installation completes. Other platforms omit this control; support
+awaits their own native extent and runtime evidence.
 
 Additional standalone tests:
 

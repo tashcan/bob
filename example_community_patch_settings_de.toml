@@ -307,10 +307,6 @@ toggle_cargo_station = "ALT-3"
 # Wechselt die automatische Sofort-Warp-Bestätigung zwischen none, warp und jump
 toggle_instant_warp = "ALT-I"
 
-# Bestätigungen für aktive Flottenkommandanten-Fähigkeiten wieder einschalten (aktiviert keine Fähigkeit).
-# NONE = unassigned. Result is logged; the game handles cloud persistence.
-enable_fc_ability_confirmation = "CTRL-ALT-F8"
-
 # Legt fest, ob Orten bei angezeigten Vorschauen erlaubt ist
 toggle_preview_locate = "CTRL-R"
 
