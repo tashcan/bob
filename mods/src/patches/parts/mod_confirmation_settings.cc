@@ -600,7 +600,7 @@ bool Extent(const MethodInfo* method)
   DWORD64    base    = 0;
   const auto address = reinterpret_cast<DWORD64>(method->methodPointer);
   auto*      entry   = RtlLookupFunctionEntry(address, &base, nullptr);
-  // x64 SPUD needs 14 bytes; 64-byte minimum plus exact function entry rejects
+  // Bundled x64 SPUD reserves 24 bytes; the 64-byte minimum and exact entry reject
   // shared tiny accessors/thunks. Only Windows x64 is enabled by this adapter.
   return entry && base + entry->BeginAddress == address && entry->EndAddress - entry->BeginAddress >= 64;
 }
