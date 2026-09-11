@@ -411,6 +411,9 @@ void Render(View& view, auto original, Il2CppObject* widget)
   original(widget);
   Root        label(Target(view.label));
   std::string text = view.state.setting().label();
+  // The native row has limited label width: "Change not applied; try again" was
+  // visibly truncated after "; tr" alongside the FC label. Keep these suffixes
+  // short; recheck the full label at supported UI scales when changing wording.
   if (!view.state.value())
     text += " — Reopen to retry";
   else if (view.state.failed())
