@@ -23,7 +23,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: pwsh
         run: |
-          foreach ($fixture in @('file_transaction', 'snapshot_save_queue', 'snapshot_save_worker')) {
+          foreach ($fixture in @('file_transaction', 'snapshot_save_queue', 'snapshot_save_worker', 'snapshot_save_service')) {
             clang++ -std=c++23 -Wall -Wextra -Werror -I mods/src "tests/${fixture}_test.cc" -o "${fixture}_test.exe" -ladvapi32
             if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
             & "./${fixture}_test.exe"
@@ -35,7 +35,7 @@ jobs:
         env:
           MACOSX_DEPLOYMENT_TARGET: '13.5'
         run: |
-          for fixture in file_transaction snapshot_save_queue snapshot_save_worker; do
+          for fixture in file_transaction snapshot_save_queue snapshot_save_worker snapshot_save_service; do
             clang++ -std=c++23 -Wall -Wextra -Werror -pthread -I mods/src "tests/${fixture}_test.cc" -o "${fixture}_test"
             "./${fixture}_test"
           done

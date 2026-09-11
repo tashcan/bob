@@ -149,3 +149,68 @@ and that known failure, durability uncertainty and recovery-required results kee
 their distinct meaning. Late admission across the final stop check is tested in
 both modes. This supplies a worker policy for future orderly quit integration;
 it does not change F10, defer Unity quitting, or wire any game callbacks.
+
+## Bounded registered service
+
+Enrollment reserves each destination together with its derived `.lock` identity.
+A destination cannot replace another destination's lock file, even when declared
+in reverse order or with an equivalent spelling. Replacing a held lock could
+otherwise let another process lock a new inode while the old inode remains held.
+
+`SnapshotSaveService` owns one process-wide lease and up to four registered
+generated-snapshot destinations. Construction validates every destination before
+starting any worker. A second live service is refused, including after the first
+service joins but before it is destroyed. Partial startup failure joins already
+created workers before releasing the lease. Construction and explicit teardown
+belong to the supervisor/startup scope, never a settings/input or loader callback.
+
+Each destination has one worker and its existing eight-ticket/eight-MiB capacity
+limit. The process service therefore permits at most four worker threads,
+32 outstanding tickets and32MiB of retained payload capacity. A stalled destination
+does not stop other destinations from progressing; each file remains serialized.
+These limits cover service-owned requests, not buffers callers prepare before
+submission. Idle workers sleep. Existing low-level queue/worker types remain
+internal implementation components, not alternate feature-facing save APIs.
+
+Trusted startup supplies the path list once. Callers receive an opaque destination
+handle and submit only revisions and owned bytes; submission never resolves paths
+or serializes config. A monotonically assigned session prevents handles from a
+destroyed service being accepted by its replacement. Invalid handles preserve the
+input buffer. Ticket numbers are scoped to the destination and service session,
+not globally unique. Consumers must retain that identity with their requests.
+
+Enrollment requires existing parents, canonicalizes supported aliases and rejects
+duplicate/ambiguous destinations and existing nonregular or hardlinked files.
+Windows compares leaf names ordinally without case. Other platforms conservatively
+reject case-equivalent ASCII names, and multiple names containing non-ASCII bytes
+in the same parent, rather than guess volume case/normalization rules for absent
+files. A single Unicode destination is supported. This may reject distinct files
+on a case-sensitive volume. The native transaction still performs write-time path
+validation; this registry is not protection against uncooperative directory/link
+replacement or malicious native code bypassing the internal API.
+
+Windows also rejects components ending in dots/spaces before and after
+canonicalization, because Win32 target normalization could otherwise diverge
+from the sibling lock's identity. An absent leaf containing a tilde is rejected
+conservatively: creating another destination on an 8.3-enabled volume could turn
+it into that file's short alias. Existing aliases remain subject to filesystem
+equivalence checks. The rule does not depend on permission to query volume policy.
+
+Stopping first closes service admission, then requests every worker's stop before
+joining any worker. Completions remain readable after join. The host must quiesce
+callers before destruction; a destination handle does not extend service lifetime.
+Destruction without explicit joining still terminates rather than hiding a blocking
+join or allowing a detached thread to outlive the module.
+
+Shutdown policy: distinguish the attempt's result from whether worker shutdown
+finished. A failed save remains failed; once workers terminate, save failure alone
+must not veto process exit. In-flight OS I/O cannot safely be cancelled by a queue
+flag. Preserve transaction-owned recovery artifacts when an outcome is uncertain.
+Host shutdown/F10 routing, result presentation and targeted user-TOML editing remain
+separate integration work; no game path constructs this service yet.
+
+The service fixture exercises exclusive ownership, constructor rollback after a
+worker has started, destination ambiguity, stale handles across replacement,
+bounded retained tickets, independent progress under stalled storage, and admission
+closure with retained outcomes after join. It uses an isolated backend and the
+native CI matrix; it is not game runtime or filesystem interruption evidence.
