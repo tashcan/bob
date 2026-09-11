@@ -70,6 +70,9 @@ when unavailable. Production builds contain no fault-injection interface.
 On macOS, FIFO destination and lock fixtures run in child processes with a
 three-second deadline, verifying rejection without blocking on a FIFO peer.
 
-Required follow-up evidence includes macOS native execution, permission/ACL
-preservation, alias contention, interrupted-process recovery and storage behavior
-under real faults. Runtime latency/queue tests belong to the asynchronous phase.
+Native fixture CI runs Windows and macOS ARM/Intel. Fixtures check preservation of
+a restrictive Windows DACL and macOS mode/owner/group/extended attribute, plus
+contention through a symlink while the canonical lock is held. These are specific
+cases, not exhaustive ACL or filesystem coverage. Interrupted-process recovery
+and storage behavior under real faults still require follow-up evidence. Runtime
+latency/queue tests belong to the asynchronous phase.

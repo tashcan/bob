@@ -10,6 +10,7 @@
 #if __APPLE__
 #include <signal.h>
 #include <sys/wait.h>
+#include <sys/xattr.h>
 #endif
 
 namespace file_transaction
@@ -30,6 +31,30 @@ std::string Read(const std::filesystem::path& path)
   std::ifstream in(path, std::ios::binary);
   return {std::istreambuf_iterator<char>(in), std::istreambuf_iterator<char>()};
 }
+
+#if _WIN32
+std::pair<bool, std::wstring> Dacl(const std::filesystem::path& path)
+{
+  DWORD needed = 0;
+  GetFileSecurityW(path.c_str(), DACL_SECURITY_INFORMATION, nullptr, 0, &needed);
+  assert(needed);
+  std::vector<unsigned char> descriptor(needed);
+  assert(GetFileSecurityW(path.c_str(), DACL_SECURITY_INFORMATION, descriptor.data(), needed, &needed));
+  LPWSTR text = nullptr;
+  assert(ConvertSecurityDescriptorToStringSecurityDescriptorW(descriptor.data(), SDDL_REVISION_1,
+                                                              DACL_SECURITY_INFORMATION, &text, nullptr));
+  std::wstring result(text);
+  LocalFree(text);
+  SECURITY_DESCRIPTOR_CONTROL control{};
+  DWORD                       revision = 0;
+  assert(GetSecurityDescriptorControl(descriptor.data(), &control, &revision));
+  const auto entries = result.find(L'(');
+  assert(entries != std::wstring::npos);
+  // ReplaceFile may add the informational AUTO_INHERITED marker. Compare the
+  // actual ordered ACEs and protected-inheritance bit, not that history marker.
+  return {(control & SE_DACL_PROTECTED) != 0, result.substr(entries)};
+}
+#endif
 
 int main()
 {
@@ -87,12 +112,41 @@ int main()
   assert(Read(path) == "value = 3\n");
   fs::remove(hard);
 
+  // Replace preserves deliberately restrictive destination metadata, rather
+  // than widening it to the staging file's defaults.
+  const auto metadata = root / "metadata.toml";
+  assert(Write(metadata, "old", Mode::CreateOnly).committed());
+#if _WIN32
+  PSECURITY_DESCRIPTOR restricted = nullptr;
+  assert(
+      ConvertStringSecurityDescriptorToSecurityDescriptorW(L"D:P(A;;FA;;;OW)", SDDL_REVISION_1, &restricted, nullptr));
+  assert(
+      SetFileSecurityW(metadata.c_str(), DACL_SECURITY_INFORMATION | PROTECTED_DACL_SECURITY_INFORMATION, restricted));
+  LocalFree(restricted);
+  const auto beforeDacl = Dacl(metadata);
+  assert(Write(metadata, "new", Mode::ReplaceSnapshot).committed());
+  assert(Dacl(metadata) == beforeDacl && Read(metadata) == "new");
+#elif __APPLE__
+  assert(chmod(metadata.c_str(), 0640) == 0);
+  constexpr const char* attribute = "com.stfc-mod.fixture";
+  assert(setxattr(metadata.c_str(), attribute, "kept", 4, 0, 0) == 0);
+  struct stat beforeMetadata{}, afterMetadata{};
+  assert(stat(metadata.c_str(), &beforeMetadata) == 0);
+  assert(Write(metadata, "new", Mode::ReplaceSnapshot).committed());
+  assert(stat(metadata.c_str(), &afterMetadata) == 0);
+  assert(beforeMetadata.st_mode == afterMetadata.st_mode && beforeMetadata.st_uid == afterMetadata.st_uid
+         && beforeMetadata.st_gid == afterMetadata.st_gid);
+  char attributeValue[4]{};
+  assert(getxattr(metadata.c_str(), attribute, attributeValue, sizeof(attributeValue), 0, 0) == 4);
+  assert(std::string_view(attributeValue, 4) == "kept" && Read(metadata) == "new");
+#endif
+
 #if __APPLE__
   // A nonregular destination (or lock) must be rejected before waiting for a
   // FIFO peer. Bound the child so a regression fails instead of hanging CI.
   for (bool lockFixture : {false, true}) {
     const auto fifoTarget = root / (lockFixture ? "fifo-lock.toml" : "fifo.toml");
-    auto fifo = fifoTarget;
+    auto       fifo       = fifoTarget;
     if (lockFixture)
       fifo += ".lock";
     assert(mkfifo(fifo.c_str(), 0600) == 0);
@@ -102,11 +156,12 @@ int main()
       const auto rejected = Write(fifoTarget, "bad", Mode::ReplaceSnapshot);
       _exit(rejected.state == State::NotCommitted
                     && rejected.error == std::make_error_code(std::errc::operation_not_supported)
-                ? 0 : 1);
+                ? 0
+                : 1);
     }
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
-    int status = 0;
-    pid_t waited;
+    int        status   = 0;
+    pid_t      waited;
     do {
       waited = waitpid(child, &status, WNOHANG);
       if (waited == child || (waited < 0 && errno != EINTR))
@@ -155,6 +210,23 @@ int main()
   const auto      alias = root / "alias.toml";
   fs::create_symlink(path, alias, linkError);
   if (!linkError) {
+    auto canonicalLock = path;
+    canonicalLock += ".lock";
+#if _WIN32
+    auto aliasLock =
+        CreateFileW(canonicalLock.c_str(), GENERIC_READ | GENERIC_WRITE, 0, nullptr, OPEN_EXISTING, 0, nullptr);
+    assert(aliasLock != INVALID_HANDLE_VALUE);
+#elif __APPLE__
+    auto aliasLock = open(canonicalLock.c_str(), O_RDWR | O_CLOEXEC);
+    assert(aliasLock >= 0 && flock(aliasLock, LOCK_EX | LOCK_NB) == 0);
+#endif
+    assert(Write(alias, "must not write", Mode::ReplaceSnapshot).state == State::Busy);
+    assert(Read(path) == "value = 3\n");
+#if _WIN32
+    CloseHandle(aliasLock);
+#elif __APPLE__
+    close(aliasLock);
+#endif
     assert(Write(alias, "value = 4\n", Mode::ReplaceSnapshot).committed());
     assert(fs::is_symlink(alias) && Read(path) == "value = 4\n");
   } else {
