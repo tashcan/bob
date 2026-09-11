@@ -124,7 +124,7 @@ namespace
     PrivateSecurity()
     {
       // Restrict staged data to its owner, administrators and SYSTEM.
-      if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(L"D:P(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;OW)",
+      if (!ConvertStringSecurityDescriptorToSecurityDescriptorW(L"D:PAI(A;;FA;;;SY)(A;;FA;;;BA)(A;;FA;;;OW)",
                                                                 SDDL_REVISION_1, &descriptor, nullptr))
         WinFail();
       attributes.lpSecurityDescriptor = descriptor;
@@ -186,7 +186,8 @@ namespace
       }
       if (!InitializeSecurityDescriptor(&descriptor, SECURITY_DESCRIPTOR_REVISION) ||
           !SetSecurityDescriptorDacl(&descriptor, TRUE, acl, FALSE) ||
-          !SetSecurityDescriptorControl(&descriptor, SE_DACL_PROTECTED, SE_DACL_PROTECTED)) WinFail();
+          !SetSecurityDescriptorControl(&descriptor, SE_DACL_PROTECTED | SE_DACL_AUTO_INHERITED,
+                                        SE_DACL_PROTECTED | SE_DACL_AUTO_INHERITED)) WinFail();
     }
   };
   void Regular(HANDLE handle)
