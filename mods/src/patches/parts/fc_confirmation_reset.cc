@@ -1,104 +1,185 @@
 #include "fc_confirmation_reset.h"
-
+#include "settings/boolean_settings.h"
 #include <il2cpp-tabledefs.h>
 #include <il2cpp/il2cpp_helper.h>
 #include <spdlog/spdlog.h>
 
 namespace
 {
+using namespace mod_settings;
+constexpr const char* PreferenceKey = "options/hide_fcaa_use_confirmation";
 
-// Read the existing singleton rather than calling Instance, which can instantiate one during login/reload.
+bool ReferenceField(const FieldInfo* field)
+{
+  if (!field || field->type->byref)
+    return false;
+  const auto type = field->type->type;
+  return type == IL2CPP_TYPE_CLASS || type == IL2CPP_TYPE_GENERICINST || type == IL2CPP_TYPE_OBJECT;
+}
 Il2CppObject* ExistingSingleton(IL2CppClassHelper& helper)
 {
-  auto  parent = helper.GetParent("MonoSingleton`1");
-  auto* cls    = parent.get_cls();
-  auto* field  = cls ? il2cpp_class_get_field_from_name(cls, "s_instance") : nullptr;
-  if (!field || !(field->type->attrs & FIELD_ATTRIBUTE_STATIC))
-    return nullptr;
-
-  auto* initialized_field = il2cpp_class_get_field_from_name(cls, "s_initialized");
-  if (!initialized_field || initialized_field->type->type != IL2CPP_TYPE_BOOLEAN
-      || !(initialized_field->type->attrs & FIELD_ATTRIBUTE_STATIC))
+  auto  parent           = helper.GetParent("MonoSingleton`1");
+  auto* cls              = parent.get_cls();
+  auto* instanceField    = cls ? il2cpp_class_get_field_from_name(cls, "s_instance") : nullptr;
+  auto* initializedField = cls ? il2cpp_class_get_field_from_name(cls, "s_initialized") : nullptr;
+  if (!ReferenceField(instanceField) || !(instanceField->type->attrs & FIELD_ATTRIBUTE_STATIC) || !initializedField
+      || initializedField->type->type != IL2CPP_TYPE_BOOLEAN
+      || !(initializedField->type->attrs & FIELD_ATTRIBUTE_STATIC))
     return nullptr;
   bool initialized = false;
-  il2cpp_field_static_get_value(initialized_field, &initialized);
+  il2cpp_field_static_get_value(initializedField, &initialized);
   if (!initialized)
     return nullptr;
-
   Il2CppObject* instance = nullptr;
-  il2cpp_field_static_get_value(field, &instance);
-  return instance;
+  il2cpp_field_static_get_value(instanceField, &instance);
+  return instance && il2cpp_class_is_assignable_from(helper.get_cls(), instance->klass) ? instance : nullptr;
+}
+bool BoolField(const FieldInfo* field)
+{
+  return field && field->type->type == IL2CPP_TYPE_BOOLEAN && !field->type->byref
+         && !(field->type->attrs & FIELD_ATTRIBUTE_STATIC);
+}
+bool InstanceMethod(const MethodInfo* method, int count, int result)
+{
+  return method && method->parameters_count == count && method->return_type->type == result
+         && !method->return_type->byref && !(method->flags & METHOD_ATTRIBUTE_STATIC);
 }
 
-bool ReadBoolField(Il2CppObject* object, const char* name, bool& value)
+struct Binding {
+  IL2CppClassHelper prefs =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.PersistentPrefs", "PersistentPrefsManager");
+  IL2CppClassHelper fc =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.FleetCommander", "FleetCommanderManager");
+  const MethodInfo* get = prefs.GetMethodInfo("GetBool", 3);
+  const MethodInfo* set = fc.GetMethodInfo("set_HideFleetCommanderAbilityUseConfirmationHidden", 1);
+  FieldInfo*        loaded =
+      prefs.get_cls() ? il2cpp_class_get_field_from_name(prefs.get_cls(), "_isCloudFileLoaded") : nullptr;
+  FieldInfo* loading = prefs.get_cls() ? il2cpp_class_get_field_from_name(prefs.get_cls(), "_isLoading") : nullptr;
+  FieldInfo* saved   = prefs.get_cls() ? il2cpp_class_get_field_from_name(prefs.get_cls(), "_savedData") : nullptr;
+  // Two bounded weak roots track storage replacement without retaining account data.
+  // Cleared on invalidation while IL2CPP is live, not in a process-exit destructor.
+  Il2CppGCHandle owner = nullptr, data = nullptr, key = nullptr;
+  std::uint64_t  generation = 1;
+  bool           supported() const
+  {
+    return BoolField(loaded) && BoolField(loading) && ReferenceField(saved)
+           && !(saved->type->attrs & FIELD_ATTRIBUTE_STATIC) && InstanceMethod(get, 3, IL2CPP_TYPE_BOOLEAN)
+           && get->parameters[0]->type == IL2CPP_TYPE_STRING && !get->parameters[0]->byref
+           && get->parameters[1]->type == IL2CPP_TYPE_BOOLEAN && !get->parameters[1]->byref
+           && get->parameters[2]->type == IL2CPP_TYPE_BOOLEAN && !get->parameters[2]->byref
+           && InstanceMethod(set, 1, IL2CPP_TYPE_VOID) && set->parameters[0]->type == IL2CPP_TYPE_BOOLEAN
+           && !set->parameters[0]->byref;
+  }
+  void invalidate()
+  {
+    if (owner)
+      il2cpp_gchandle_free(owner);
+    if (data)
+      il2cpp_gchandle_free(data);
+    owner = data = nullptr;
+    ++generation;
+  }
+  Il2CppObject* ready()
+  {
+    auto*         p        = ExistingSingleton(prefs);
+    bool          isLoaded = false, isLoading = true;
+    Il2CppObject* state = nullptr;
+    if (p) {
+      il2cpp_field_get_value(p, loaded, &isLoaded);
+      il2cpp_field_get_value(p, loading, &isLoading);
+      il2cpp_field_get_value(p, saved, &state);
+    }
+    if (!p || !state || !isLoaded || isLoading) {
+      if (owner || data)
+        invalidate();
+      return nullptr;
+    }
+    if (!owner || !data || il2cpp_gchandle_get_target(owner) != p || il2cpp_gchandle_get_target(data) != state) {
+      invalidate();
+      owner = il2cpp_gchandle_new_weakref(p, false);
+      data  = il2cpp_gchandle_new_weakref(state, false);
+      if (!owner || !data) {
+        invalidate();
+        return nullptr;
+      }
+    }
+    return p;
+  }
+};
+Binding& Backend()
 {
-  auto* field = il2cpp_class_get_field_from_name(object->klass, name);
-  if (!field || field->type->type != IL2CPP_TYPE_BOOLEAN || (field->type->attrs & FIELD_ATTRIBUTE_STATIC))
-    return false;
-  il2cpp_field_get_value(object, field, &value);
-  return true;
+  static Binding binding;
+  return binding;
 }
 
-bool ReadHidden(const MethodInfo* getter, Il2CppObject* manager, bool& hidden)
+ReadResult ReadConfirmation()
 {
+  auto& b = Backend();
+  if (!b.supported())
+    return {Availability::Unsupported};
+  auto* prefs = b.ready();
+  if (!prefs)
+    return {};
+  if (!b.key)
+    b.key = il2cpp_gchandle_new(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(PreferenceKey)), false);
+  if (!b.key)
+    return {};
+  // FC's native property uses GetBool(key,false,true). Display reads must not insert
+  // a missing preference: preserve its default but explicitly pass shouldAddKey=false.
+  bool             defaultHidden = false, addKey = false;
+  void*            args[]    = {il2cpp_gchandle_get_target(b.key), &defaultHidden, &addKey};
   Il2CppException* exception = nullptr;
-  auto*            result    = il2cpp_runtime_invoke(getter, manager, nullptr, &exception);
-  if (exception || !result)
-    return false;
-  hidden = *static_cast<bool*>(il2cpp_object_unbox(result));
-  return true;
+  auto*            value     = il2cpp_runtime_invoke(b.get, prefs, args, &exception);
+  if (exception || !value)
+    return {};
+  return ReadResult::Known(!*static_cast<bool*>(il2cpp_object_unbox(value)), b.generation);
+}
+ApplyResult WriteConfirmation(bool enabled, std::uint64_t expectedGeneration)
+{
+  auto& b = Backend();
+  if (!b.supported() || !b.ready() || b.generation != expectedGeneration)
+    return ApplyResult::Rejected;
+  auto* manager = ExistingSingleton(b.fc);
+  if (!manager)
+    return ApplyResult::Rejected;
+  bool             hidden    = !enabled;
+  void*            args[]    = {&hidden};
+  Il2CppException* exception = nullptr;
+  il2cpp_runtime_invoke(b.set, manager, args, &exception);
+  return exception ? ApplyResult::Unverified : ApplyResult::Applied;
+}
+} // namespace
+
+mod_settings::BooleanSetting& FleetCommanderConfirmationSetting()
+{
+  static mod_settings::BooleanSetting setting({"community_mod.fc_ability_confirmation",
+                                               "[MOD] Confirm Fleet Commander abilities", ReadConfirmation,
+                                               WriteConfirmation});
+  return setting;
 }
 
-} // namespace
+void InvalidateFleetCommanderConfirmationSession()
+{
+  // P2 must connect this to account/context lifecycle before retaining UI snapshots.
+  FleetCommanderConfirmationSetting().InvalidateSession();
+  Backend().invalidate();
+}
 
 void EnableFleetCommanderAbilityConfirmation()
 {
-  auto prefs_class =
-      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.PersistentPrefs", "PersistentPrefsManager");
-  auto  fc_class = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.FleetCommander", "FleetCommanderManager");
-  auto* prefs    = ExistingSingleton(prefs_class);
-  auto* manager  = ExistingSingleton(fc_class);
-  bool  loaded   = false;
-  bool  loading  = true;
-  if (!prefs || !manager || !ReadBoolField(prefs, "_isCloudFileLoaded", loaded)
-      || !ReadBoolField(prefs, "_isLoading", loading) || !loaded || loading) {
-    spdlog::warn("[FCConfirmation] Reset unavailable: account preferences are not ready; try again after loading");
-    return;
+  auto&      setting = FleetCommanderConfirmationSetting();
+  const auto result  = setting.SetFromUser(true, setting.Observe());
+  using mod_settings::Outcome;
+  switch (result.outcome) {
+    case Outcome::AppliedVerified:
+      spdlog::info("[FCConfirmation] Fleet Commander ability confirmation enabled; cloud persistence game-managed");
+      break;
+    case Outcome::Unchanged:
+      spdlog::info("[FCConfirmation] Fleet Commander ability confirmation is already enabled");
+      break;
+    default:
+      spdlog::warn("[FCConfirmation] Confirmation recovery not verified (status={}); retry after loading",
+                   static_cast<int>(result.outcome));
+      break;
   }
-
-  const auto* getter = fc_class.GetMethodInfo("get_HideFleetCommanderAbilityUseConfirmationHidden", 0);
-  const auto* setter = fc_class.GetMethodInfo("set_HideFleetCommanderAbilityUseConfirmationHidden", 1);
-  if (!getter || !setter || getter->return_type->type != IL2CPP_TYPE_BOOLEAN || getter->return_type->byref
-      || setter->return_type->type != IL2CPP_TYPE_VOID || setter->parameters[0]->type != IL2CPP_TYPE_BOOLEAN
-      || setter->parameters[0]->byref || (getter->flags & METHOD_ATTRIBUTE_STATIC)
-      || (setter->flags & METHOD_ATTRIBUTE_STATIC)) {
-    spdlog::error("[FCConfirmation] Reset unavailable: client confirmation methods are missing or incompatible");
-    return;
-  }
-
-  bool hidden = false;
-  if (!ReadHidden(getter, manager, hidden)) {
-    spdlog::error("[FCConfirmation] Could not read confirmation preference; no reset attempted");
-    return;
-  }
-  spdlog::info("[FCConfirmation] Before reset: hide_fcaa_use_confirmation={}", hidden);
-  if (!hidden) {
-    spdlog::info("[FCConfirmation] Fleet Commander ability confirmation is already enabled");
-    return;
-  }
-
-  // Use the same client setter as the preference UI. Never activate an ability or force a cloud upload.
-  bool             hide_confirmation = false;
-  void*            args[]            = {&hide_confirmation};
-  Il2CppException* exception         = nullptr;
-  il2cpp_runtime_invoke(setter, manager, args, &exception);
-  if (exception) {
-    spdlog::error("[FCConfirmation] Client setter failed; confirmation state is unverified");
-    return;
-  }
-  if (!ReadHidden(getter, manager, hidden) || hidden) {
-    spdlog::error("[FCConfirmation] Reset readback failed; confirmation state is unverified");
-    return;
-  }
-  spdlog::info("[FCConfirmation] Fleet Commander ability confirmation enabled (hide=false); cloud persistence pending");
 }
