@@ -83,3 +83,54 @@ reuse with exactly one ordered completion per admission. A watchdog terminates a
 hung fixture. This validates scheduling logic, not native
 storage durability, production frame latency, UI lifetime integration, or host
 shutdown. Those remain separate gates, alongside native macOS transaction tests.
+
+## Explicit worker owner
+
+`SnapshotSaveWorker` owns one queue and one joinable thread. It is an internal
+component, not an application singleton; no game path constructs it yet. Trusted
+construction resolves the destination and starts the worker, and may throw before
+any request is accepted. Start it outside loader callbacks and input handling.
+The host must limit owner instances and enforce unique destination enrollment;
+this component does not create a registry or a globally bounded worker pool.
+
+Accepted admission wakes the worker with a coalesced atomic notification. There
+is no idle polling or unbounded notification counter. The worker clears the wake
+flag before draining, retaining a notification that arrives during or after the
+drain. Only the worker waits. Producer admission uses try-locks; snapshot
+preparation and actual platform notification latency still require measurement.
+
+`RequestStop` immediately closes both owner admission and queue selection, then
+wakes an idle worker. The worker synchronizes with any submission already inside
+admission before its final cancellation drain, preventing a late accepted ticket
+from being left behind after worker exit. In-flight storage finishes normally;
+pending work is cancelled, and all completions remain available for central
+consumption after join. A settings page closing does not stop this owner.
+
+The sole lifecycle owner calls `StopAndJoin` explicitly outside gameplay and
+loader callbacks. It may wait indefinitely for an in-flight OS call, and must not
+run concurrently or on the worker. `WorkEnded` means queue execution ended, not
+that the native thread has fully exited: it never authorizes destruction or
+unload. Joining and quiescing all producer/consumer calls are required first.
+Like `std::thread`, destroying an unjoined owner terminates; the destructor does
+not silently detach or hide a blocking join. It must not be installed as a
+page-local or static-destructor-managed service.
+
+The host integration gate remains open: identify a pre-teardown supervisor that
+can join off the game thread while keeping the mod loaded, drain outcomes, and
+validate process exit and explicit unload separately. A forced process exit is
+an interruption with potentially retained staging, not a successful final flush.
+Do not wire this owner into startup until that contract is satisfied on each
+enabled platform. Windows process detach is too late for this coordination, as
+other threads may already have been terminated. See [Microsoft's DllMain
+contract](https://learn.microsoft.com/en-us/windows/win32/dlls/dllmain) and the
+[C++ thread lifetime contract](https://eel.is/c%2B%2Bdraft/thread.thread.class).
+
+`tests/snapshot_save_worker_test.cc` exercises actual worker startup, stalled
+storage and non-waiting stop, retained completions after join, 500 wake cycles,
+and admission racing with stop. A test-only barrier also pauses admission after
+its final stop check, proving a late accepted ticket is cancelled before join
+returns. It uses an isolated backend and a watchdog, not
+game files. Compile with the same standalone command as the queue fixture using
+the worker test filename. The Persistence fixtures workflow runs all three
+fixtures on native Windows, macOS ARM and macOS Intel; adding the workflow does
+not itself count as a successful CI run.

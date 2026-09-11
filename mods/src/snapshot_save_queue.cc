@@ -8,6 +8,9 @@ namespace persistence
 {
 namespace
 {
+#ifdef MOD_SNAPSHOT_QUEUE_ADMISSION_TESTING
+  void BeforeSnapshotEnqueue();
+#endif
   std::filesystem::path Resolve(const std::filesystem::path& path)
   {
     if (path.empty() || path.native().find(std::filesystem::path::value_type{}) != path.native().npos)
@@ -38,6 +41,10 @@ SnapshotSaveQueue::Submission SnapshotSaveQueue::TrySubmit(std::uint64_t revisio
     return {Admission::Busy};
   if (stopping_.load())
     return {Admission::Stopping};
+#ifdef MOD_SNAPSHOT_QUEUE_ADMISSION_TESTING
+  // Pause after the final stop check to exercise admission overlapping shutdown.
+  BeforeSnapshotEnqueue();
+#endif
   if (revision <= lastRevision_)
     return {Admission::StaleRevision};
   // Never wrap ticket/revision identity. A new owner/session is required.
