@@ -33,6 +33,19 @@ std::string Read(const std::filesystem::path& path)
 }
 
 #if _WIN32
+void PrintNativeDacl(const std::filesystem::path& path)
+{
+  DWORD bytes = 0;
+  GetFileSecurityW(path.c_str(), DACL_SECURITY_INFORMATION, nullptr, 0, &bytes);
+  assert(bytes);
+  std::vector<unsigned char> descriptor(bytes);
+  assert(GetFileSecurityW(path.c_str(), DACL_SECURITY_INFORMATION, descriptor.data(), bytes, &bytes));
+  LPWSTR text = nullptr;
+  assert(ConvertSecurityDescriptorToStringSecurityDescriptorW(descriptor.data(), SDDL_REVISION_1,
+                                                              DACL_SECURITY_INFORMATION, &text, nullptr));
+  std::wcerr << L"Native DACL: " << text << std::endl;
+  LocalFree(text);
+}
 std::pair<bool, std::wstring> Dacl(const std::filesystem::path& path)
 {
   // Use the same ACL API family as the writer: querying a legacy descriptor can
@@ -131,8 +144,12 @@ int main()
   LocalFree(inheritedSecurity);
   const auto inheritedFile = inheritedRoot / "existing.toml";
   { std::ofstream out(inheritedFile); out << "old"; assert(out.good()); }
+  PrintNativeDacl(inheritedRoot);
+  PrintNativeDacl(inheritedFile);
   const auto inheritedDacl = Dacl(inheritedFile);
+  PrintNativeDacl(inheritedFile);
   assert(Write(inheritedFile, "first", Mode::ReplaceSnapshot).committed());
+  PrintNativeDacl(inheritedFile);
   const auto firstContent = Read(inheritedFile);
   const auto firstDacl = Dacl(inheritedFile);
   if (firstContent != "first" || firstDacl != inheritedDacl) {
