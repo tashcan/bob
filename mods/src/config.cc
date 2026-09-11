@@ -18,6 +18,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <ranges>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -91,35 +92,55 @@ Config::Config()
   Load();
 }
 
-void Config::Save(const toml::table& config, const std::string_view filename, bool apply_warning)
+file_transaction::Result Config::SaveStartup(const toml::table& config, const std::string_view filename,
+                                             bool apply_warning, file_transaction::Mode mode)
 {
-  std::ofstream config_file;
+  using namespace file_transaction;
+  try {
+    std::ostringstream config_file;
+    config_file.exceptions(std::ios::badbit | std::ios::failbit);
+    if (apply_warning) {
+      char defaultFile[255], configFile[255];
+      snprintf(defaultFile, 255, "%s", File::Default());
+      snprintf(configFile, 255, "%s", File::Config());
 
-  auto config_path = File::MakePath(filename, true);
-  config_file.open(config_path);
+      config_file << "#######################################################################\n";
+      config_file << "#######################################################################\n";
+      config_file << "####                                                               ####\n";
+      config_file << "#### NOTE: This file is not the configuration file that is used    ####\n";
+      config_file << "####       by the STFC Community Mod.  It is provided to help      ####\n";
+      config_file << "####       see what configuration is being used by the runtime     ####\n";
+      config_file << "####       and any desired settings should be copied to the same   ####\n";
+      config_file << "####       section in: " << defaultFile << "\n";
+      config_file << "####                                                               ####\n";
+      config_file << "####        Config in: " << configFile << "\n";
+      config_file << "####                                                               ####\n";
+      config_file << "#######################################################################\n";
+      config_file << "#######################################################################\n\n";
+    }
 
-  if (apply_warning) {
-    char defaultFile[255], configFile[255];
-    snprintf(defaultFile, 255, "%s", File::Default());
-    snprintf(configFile, 255, "%s", File::Config());
-
-    config_file << "#######################################################################\n";
-    config_file << "#######################################################################\n";
-    config_file << "####                                                               ####\n";
-    config_file << "#### NOTE: This file is not the configuration file that is used    ####\n";
-    config_file << "####       by the STFC Community Mod.  It is provided to help      ####\n";
-    config_file << "####       see what configuration is being used by the runtime     ####\n";
-    config_file << "####       and any desired settings should be copied to the same   ####\n";
-    config_file << "####       section in: " << defaultFile << "\n";
-    config_file << "####                                                               ####\n";
-    config_file << "####        Config in: " << configFile << "\n";
-    config_file << "####                                                               ####\n";
-    config_file << "#######################################################################\n";
-    config_file << "#######################################################################\n\n";
+    config_file << config;
+    auto bytes = config_file.str();
+    (void)toml::parse(bytes);
+#if _WIN32
+    // Match the former ofstream text-mode output, including the warning header.
+    std::string windows_bytes;
+    windows_bytes.reserve(bytes.size());
+    for (char c : bytes) {
+      if (c == '\n')
+        windows_bytes += '\r';
+      windows_bytes += c;
+    }
+    bytes = std::move(windows_bytes);
+#endif
+    return Write(std::filesystem::path(File::MakePath(filename, true)), bytes, mode);
+  } catch (const toml::parse_error&) {
+    return {State::NotCommitted, Stage::Validate, std::make_error_code(std::errc::invalid_argument), {}};
+  } catch (const std::filesystem::filesystem_error& error) {
+    return {State::NotCommitted, Stage::Resolve, error.code(), {}};
+  } catch (...) {
+    return {State::NotCommitted, Stage::Validate, std::make_error_code(std::errc::io_error), {}};
   }
-
-  config_file << config;
-  config_file.close();
 }
 
 Config& Config::Get()
@@ -1414,12 +1435,23 @@ void Config::Load()
 
   spdlog::debug("");
 
+  const auto report_save = [](const char* purpose, const file_transaction::Result& result) {
+    using namespace file_transaction;
+    if (result.state == State::Committed && !result.error)
+      return;
+    spdlog::warn("[Config] {} save: {} at {} (error={}); initialization continues", purpose,
+                 Name(result.state), Name(result.stage), result.error.value());
+    if (!result.recovery_directory.empty())
+      spdlog::warn("[Config] Retained transaction directory '{}' beside the destination; do not discard before recovery",
+                   result.recovery_directory.filename().string());
+  };
+
   if (!std::filesystem::exists(File::MakePath(File::Config()))) {
     message.str("");
     message << "Creating " << File::Config() << " (default config file)";
     spdlog::warn(message.str());
 
-    Config::Save(parsed, File::Config(), false);
+    report_save("initial config", SaveStartup(parsed, File::Config(), false, file_transaction::Mode::CreateOnly));
   }
 
   message.str("");
@@ -1434,7 +1466,7 @@ void Config::Load()
     std::filesystem::remove(FILE_DEF_PARSED);
   }
 
-  Config::Save(parsed, File::Vars());
+  report_save("runtime vars", SaveStartup(parsed, File::Vars(), true, file_transaction::Mode::ReplaceSnapshot));
 
   std::cout << "\n\n-----------------------------\n\n"
             << parsed << "\n\n-----------------------------\nVersion "

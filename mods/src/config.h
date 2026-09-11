@@ -1,4 +1,5 @@
 #pragma once
+#include "file_transaction.h"
 
 #include <array>
 #include <map>
@@ -144,11 +145,16 @@ public:
   [[nodiscard]] static HWND WindowHandle();
 #endif
 
-  static void Save(const toml::table& config, std::string_view filename, bool apply_warning = true);
-  void        Load();
-  void        AdjustUiScale(bool scaleUp);
-  void        AdjustUiShipScale(bool scaleUp);
-  void        AdjustUiViewerScale(bool scaleUp);
+private:
+  // Startup-only whole-table output; runtime/user edits require the future coordinator.
+  static file_transaction::Result SaveStartup(const toml::table& config, std::string_view filename, bool apply_warning,
+                                              file_transaction::Mode mode);
+
+public:
+  void Load();
+  void AdjustUiScale(bool scaleUp);
+  void AdjustUiShipScale(bool scaleUp);
+  void AdjustUiViewerScale(bool scaleUp);
 
   [[nodiscard]] MissionHudVisibility MissionHudButtonVisibility(std::string_view button_name) const;
   [[nodiscard]] bool                 MissionHudTweaksEnabled() const;
