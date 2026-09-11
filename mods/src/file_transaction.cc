@@ -242,13 +242,14 @@ Result Write(const fs::path& destination, std::string_view bytes, Mode mode)
     if (existing.valid())
       Regular(existing.value);
 #else
-    lock.value = open(lockPath.c_str(), O_CREAT | O_RDWR | O_NOFOLLOW | O_CLOEXEC, 0600);
+    // Validate descriptors without waiting for a FIFO peer or acquiring a tty.
+    lock.value = open(lockPath.c_str(), O_CREAT | O_RDWR | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK | O_NOCTTY, 0600);
     if (!lock.valid())
       PosixFail();
     Regular(lock.value);
     if (flock(lock.value, LOCK_EX | LOCK_NB))
       PosixFail(errno == EWOULDBLOCK || errno == EAGAIN ? State::Busy : State::NotCommitted);
-    existing.value = open(target.c_str(), O_RDONLY | O_NOFOLLOW | O_CLOEXEC);
+    existing.value = open(target.c_str(), O_RDONLY | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK | O_NOCTTY);
     if (!existing.valid() && errno != ENOENT)
       PosixFail();
     if (existing.valid())

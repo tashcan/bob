@@ -7,6 +7,11 @@
 #include <optional>
 #include <thread>
 
+#if __APPLE__
+#include <signal.h>
+#include <sys/wait.h>
+#endif
+
 namespace file_transaction
 {
 namespace
@@ -15,7 +20,7 @@ namespace
   thread_local bool                 partialReplace = false;
   bool                              InjectFailure(Stage stage)
   { return failureStage == stage; }
-[[maybe_unused]] bool InjectPartialReplace()
+  [[maybe_unused]] bool InjectPartialReplace()
   { return partialReplace; }
 } // namespace
 } // namespace file_transaction
@@ -81,6 +86,43 @@ int main()
   assert(!Write(hard, "bad", Mode::ReplaceSnapshot).committed());
   assert(Read(path) == "value = 3\n");
   fs::remove(hard);
+
+#if __APPLE__
+  // A nonregular destination (or lock) must be rejected before waiting for a
+  // FIFO peer. Bound the child so a regression fails instead of hanging CI.
+  for (bool lockFixture : {false, true}) {
+    const auto fifoTarget = root / (lockFixture ? "fifo-lock.toml" : "fifo.toml");
+    auto fifo = fifoTarget;
+    if (lockFixture)
+      fifo += ".lock";
+    assert(mkfifo(fifo.c_str(), 0600) == 0);
+    const auto child = fork();
+    assert(child >= 0);
+    if (child == 0) {
+      const auto rejected = Write(fifoTarget, "bad", Mode::ReplaceSnapshot);
+      _exit(rejected.state == State::NotCommitted
+                    && rejected.error == std::make_error_code(std::errc::operation_not_supported)
+                ? 0 : 1);
+    }
+    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+    int status = 0;
+    pid_t waited;
+    do {
+      waited = waitpid(child, &status, WNOHANG);
+      if (waited == child || (waited < 0 && errno != EINTR))
+        break;
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    } while (std::chrono::steady_clock::now() < deadline);
+    if (waited != child) {
+      kill(child, SIGKILL);
+      while (waitpid(child, &status, 0) < 0 && errno == EINTR) {}
+      assert(false && "FIFO rejection exceeded deadline");
+    }
+    assert(WIFEXITED(status) && WEXITSTATUS(status) == 0);
+    assert(fs::is_fifo(fifo));
+    fs::remove(fifo);
+  }
+#endif
 
 #if _WIN32
   auto lockPath = path;

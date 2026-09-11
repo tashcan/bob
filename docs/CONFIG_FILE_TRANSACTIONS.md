@@ -67,6 +67,8 @@ tests held locks/targets and emulates the documented1177 partial-replacement
 postcondition, checking that the old copy survives. This is not a naturally
 triggered OS1177 or power-loss test. Symlink creation explicitly reports a skip
 when unavailable. Production builds contain no fault-injection interface.
+On macOS, FIFO destination and lock fixtures run in child processes with a
+three-second deadline, verifying rejection without blocking on a FIFO peer.
 
 Required follow-up evidence includes macOS native execution, permission/ACL
 preservation, alias contention, interrupted-process recovery and storage behavior
