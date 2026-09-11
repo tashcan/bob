@@ -309,7 +309,7 @@ toggle_instant_warp = "ALT-I"
 
 # Bevestigingen voor actieve vlootcommandantvaardigheden herstellen (activeert geen vaardigheid).
 # NONE = unassigned. Result is logged; the game handles cloud persistence.
-enable_fc_ability_confirmation = "NONE"
+enable_fc_ability_confirmation = "CTRL-ALT-F8"
 
 # Bepaald of je lokaliseren wilt toelaten als je vracht bekijkt
 toggle_preview_locate = "CTRL-R"

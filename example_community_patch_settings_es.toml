@@ -309,7 +309,7 @@ toggle_instant_warp = "ALT-I"
 
 # Restablecer las confirmaciones de habilidades activas de comandantes de flota (no activa ninguna habilidad).
 # NONE = unassigned. Result is logged; the game handles cloud persistence.
-enable_fc_ability_confirmation = "NONE"
+enable_fc_ability_confirmation = "CTRL-ALT-F8"
 
 # Indica si se permite localizar cuando se muestran vistas previas
 toggle_preview_locate = "CTRL-R"

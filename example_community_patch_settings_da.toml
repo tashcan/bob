@@ -309,7 +309,7 @@ toggle_instant_warp = "ALT-I"
 
 # Genaktivér bekræftelser for flådekommandørers aktive evner (aktiverer ikke en evne).
 # NONE = unassigned. Result is logged; the game handles cloud persistence.
-enable_fc_ability_confirmation = "NONE"
+enable_fc_ability_confirmation = "CTRL-ALT-F8"
 
 # Om lokalisering skal tillades, når forhåndsvisninger vises
 toggle_preview_locate = "CTRL-R"
