@@ -28,7 +28,12 @@ public:
   [[nodiscard]] SnapshotSaveQueue::Submission TrySubmit(SnapshotSaveService::Destination destination,
                                                        std::uint64_t revision, std::string&& bytes);
   [[nodiscard]] std::optional<SnapshotSaveQueue::Completion> TryTakeCompletion(std::size_t index);
-  void RequestStop() noexcept;
+  void RequestStop(StopMode mode = StopMode::DrainAccepted) noexcept;
+#if defined(_WIN32)
+  // Owner-thread snapshot of the native supervisor handle. Caller closes the
+  // duplicate; observing it needs no owner Update callback or host lock.
+  [[nodiscard]] bool DuplicateThread(void*& duplicate) const noexcept;
+#endif
   // Zero-timeout native thread observation, NOT WorkEnded or a std::thread join.
   // Reclaims native handle/reference only after the supervisor actually exits.
   // False includes a failed native wait; never authorize exit on an uncertain wait.
@@ -41,8 +46,10 @@ private:
 #endif
   std::atomic<State> state_{State::Idle};
   std::atomic_bool stop_{false};
+  std::atomic_bool cancelQueued_{false};
   std::mutex access_;
   SnapshotSaveService* service_ = nullptr; // borrowed only while access_ is held
+  SnapshotSaveService* draining_ = nullptr; // cancellation only, same lock/lifetime
   std::vector<std::filesystem::path> paths_;
   std::size_t count_ = 0;
   std::array<std::array<std::optional<SnapshotSaveQueue::Completion>, SnapshotSaveQueue::MaxOutstanding>,

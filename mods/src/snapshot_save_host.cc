@@ -81,11 +81,28 @@ std::optional<SnapshotSaveQueue::Completion> SnapshotSaveHost::TryTakeCompletion
   return std::nullopt;
 }
 
-void SnapshotSaveHost::RequestStop() noexcept
+void SnapshotSaveHost::RequestStop(StopMode mode) noexcept
 {
+  if (mode == StopMode::CancelQueued) cancelQueued_.store(true);
   stop_.store(true);
   stop_.notify_all();
+  if (cancelQueued_.load()) {
+    std::unique_lock lock(access_, std::try_to_lock);
+    if (lock) {
+      auto* target = service_ ? service_ : draining_;
+      if (target) target->RequestStop(StopMode::CancelQueued);
+    }
+  }
 }
+
+#if defined(_WIN32)
+bool SnapshotSaveHost::DuplicateThread(void*& duplicate) const noexcept
+{
+  duplicate = nullptr;
+  return !thread_ || DuplicateHandle(GetCurrentProcess(), static_cast<HANDLE>(thread_), GetCurrentProcess(),
+                                     reinterpret_cast<HANDLE*>(&duplicate), SYNCHRONIZE, FALSE, 0);
+}
+#endif
 
 bool SnapshotSaveHost::PollStopped() noexcept
 {
@@ -130,10 +147,12 @@ void SnapshotSaveHost::Run() noexcept
       std::lock_guard lock(access_);
       state_.store(State::Stopping);
       service_ = nullptr;
+      draining_ = service.get();
     }
-    service->StopAndJoin(StopMode::DrainAccepted);
+    service->StopAndJoin(cancelQueued_.load() ? StopMode::CancelQueued : StopMode::DrainAccepted);
     {
       std::lock_guard lock(access_);
+      draining_ = nullptr;
       for (std::size_t i = 0; i < count_; ++i)
         for (auto& slot : retained_[i]) {
           slot = service->TryTakeCompletion(service->GetDestination(i));
@@ -146,12 +165,14 @@ void SnapshotSaveHost::Run() noexcept
     {
       std::lock_guard lock(access_);
       service_ = nullptr;
+      draining_ = service.get();
     }
     // Constructor rollback already joins partial workers. If a later operation
     // throws, still finish accepted work before allowing native thread exit.
     if (service) {
-      try { service->StopAndJoin(StopMode::DrainAccepted); }
+      try { service->StopAndJoin(cancelQueued_.load() ? StopMode::CancelQueued : StopMode::DrainAccepted); }
       catch (...) { std::terminate(); } // Never destroy possibly joinable workers.
+      { std::lock_guard lock(access_); draining_ = nullptr; }
       service.reset();
     }
     state_.store(State::Unavailable);

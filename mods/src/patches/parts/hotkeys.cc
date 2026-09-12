@@ -1,4 +1,5 @@
 #include "config.h"
+#include "patches/runtime_snapshot_host.h"
 
 #include <spud/detour.h>
 
@@ -496,8 +497,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
 #if defined(_WIN32)
   if (MapKey::IsDown(GameFunction::Quit)) {
-    // Keep the existing emergency force-close shortcut independent of Unity quit.
-    TerminateProcess(GetCurrentProcess(), 1);
+    runtime_snapshots::ForceClose();
     return;
   }
 #elif defined(__APPLE__)

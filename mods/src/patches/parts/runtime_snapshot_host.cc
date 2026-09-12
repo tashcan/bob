@@ -1,4 +1,5 @@
 #include "patches/runtime_snapshot_host.h"
+#include "force_close.h"
 
 #if defined(_WIN32) && defined(_M_X64)
 #include "patches/screen_update_hook.h"
@@ -21,6 +22,7 @@ std::atomic<DWORD> updateThread{0};
 const MethodInfo* wantsMethod = nullptr;
 void (*requestQuit)(int) = nullptr;
 std::atomic_bool available{false}, attempted{false};
+std::atomic_bool forceClosing{false};
 thread_local unsigned wantsDepth = 0;
 
 // Exact build261 Windows x64 discovery: native extent411 bytes, SPUD overwrite24.
@@ -52,6 +54,7 @@ bool WantsQuit(auto original)
 
 void UpdateHost()
 {
+  if (forceClosing.load()) return;
   DWORD unset = 0;
   updateThread.compare_exchange_strong(unset, GetCurrentThreadId());
   if (updateThread.load() != GetCurrentThreadId() || wantsDepth != 0 || !started.load()) return;
@@ -93,10 +96,25 @@ void InstallRuntimeSnapshotHost()
 
 namespace runtime_snapshots
 {
+#if defined(_WIN32)
+void ForceClose() noexcept
+{
+#if defined(_M_X64)
+  // Start and handle reaping belong to this same observed owner. Never borrow
+  // its native handle from an unknown/concurrent callback.
+  if (updateThread.load() == GetCurrentThreadId() && wantsDepth == 0) {
+    forceClosing.store(true);
+    persistence::ForceClose(started.load() ? host : nullptr);
+    return;
+  }
+#endif
+  persistence::ForceClose(nullptr);
+}
+#endif
 bool Start(std::vector<std::filesystem::path>&& paths)
 {
 #if defined(_WIN32) && defined(_M_X64)
-  if (!available || updateThread.load() != GetCurrentThreadId() || attempted || wantsDepth != 0) return false;
+  if (forceClosing.load() || !available || updateThread.load() != GetCurrentThreadId() || attempted || wantsDepth != 0) return false;
   attempted = true;
   try {
     // The startup-installed quit gate serializes registration against a permitted

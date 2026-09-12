@@ -7,6 +7,11 @@ void InstallRuntimeSnapshotHost();
 
 namespace runtime_snapshots
 {
+#if defined(_WIN32)
+// F10 owner callback: best-effort native cancellation, then force close <=500ms
+// of grace without requiring another Unity callback.
+void ForceClose() noexcept;
+#endif
 // Internal trusted registration, called on the observed game Update thread after
 // installation. False leaves input owned by the caller. One attempt per process.
 // Unsupported clients/platforms cannot start a worker through this adapter.

@@ -206,9 +206,17 @@ Shutdown policy: distinguish the attempt's result from whether worker shutdown
 finished. A failed save remains failed; once workers terminate, save failure alone
 must not veto process exit. In-flight OS I/O cannot safely be cancelled by a queue
 flag. Preserve transaction-owned recovery artifacts when an outcome is uncertain.
-The Windows mod Quit shortcut (F10 by default) retains its existing immediate
-`TerminateProcess` behavior. It bypasses the normal quit/drain lifecycle described
-below. The macOS shortcut continues to call `PrimeApp::Quit`. Result presentation
+The Windows mod Quit shortcut (F10 by default) force-closes independently of Unity
+after up to 500 ms of best-effort save cleanup. With no active supervisor it exits
+immediately. Otherwise a native deadline thread requests cancellation of queued
+writes and waits on a duplicated supervisor handle. It terminates the process as
+soon as that handle signals or the grace period expires; it never joins a writer
+or needs another Update callback. Cancellation can escalate an existing normal
+drain. Active writes finish normally during the grace period. Thread/handle setup
+failure falls back to immediate termination. The deadline begins when the shortcut
+is received; OS scheduling still affects when termination actually executes.
+F10 detection itself remains in the existing game input handler.
+The macOS shortcut continues to call `PrimeApp::Quit`. Result presentation
 and targeted user-TOML editing remain separate integration work; no current feature
 registers a runtime destination or submits runtime saves.
 
@@ -272,6 +280,13 @@ shutdown, retained failure/success outcomes, rejection after stop, and the inter
 between service destruction and native supervisor exit. Other platform fixtures
 verify the quit gate and unsupported-host rejection only. These are isolated native
 tests, not evidence of exact-artifact F10/window-X runtime behavior.
+
+The Windows force-close fixture launches isolated child processes with no further
+owner updates after F10. It checks idle exit, an indefinitely blocked writer, an
+active writer that finishes, and escalation of normal draining to queued-write
+cancellation. Children must terminate through the force-close path; the queued
+second write must never execute. This is native process evidence, not a live-game
+input or forced-write durability test.
 
 Native lifecycle references: Microsoft documents the retained caller-owned handle
 and automatic CRT cleanup for [_beginthreadex](https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/beginthread-beginthreadex),
