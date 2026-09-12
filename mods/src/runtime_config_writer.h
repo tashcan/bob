@@ -23,8 +23,10 @@ public:
   ~RuntimeConfigWriter(); // Tests/explicit owners only; game adapter has process lifetime.
   std::uint64_t Submit(std::string mode);
   void          Stop(bool cancel_pending);
-  Completion    LastCompletion();
-  bool          HasWork() const
+  // Publish force-close cancellation before native deadline setup, without a lock.
+  void       RequestCancelPending();
+  Completion LastCompletion();
+  bool       HasWork() const
   { return has_work_.load(); }
   // Owner thread only, like Submit. On Windows this observes native thread exit
   // before joining; it never joins a still-running worker on a game callback.
@@ -49,6 +51,6 @@ private:
   Completion              completion_;
   std::uint64_t           revision_ = 0;
   bool                    stopping_ = false;
-  std::atomic_bool        has_work_{false}, finished_{false};
+  std::atomic_bool        has_work_{false}, finished_{false}, cancel_pending_{false};
 };
 } // namespace config_edit

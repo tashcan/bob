@@ -14,7 +14,8 @@ bool                    entered = false, released = false;
 Outcome                 first_result = Outcome::Saved;
 std::vector<Request>    requests;
 std::thread::id         save_thread;
-int                     reports = 0;
+int                     reports      = 0;
+bool                    block_report = false, release_report = false;
 
 void Check(bool value)
 {
@@ -37,8 +38,11 @@ Outcome Save(TomlEditor&, const std::filesystem::path&, const Request& request)
 }
 void Report(Outcome)
 {
-  std::lock_guard lock(gate);
+  std::unique_lock lock(gate);
   ++reports;
+  changed.notify_all();
+  if (block_report)
+    Check(changed.wait_for(lock, 5s, [] { return release_report; }));
 }
 void Begin(Outcome result)
 {
@@ -46,6 +50,7 @@ void Begin(Outcome result)
   requests.clear();
   reports      = 0;
   first_result = result;
+  block_report = release_report = false;
 }
 void AwaitSave()
 {
@@ -101,9 +106,11 @@ int main()
       writer.Submit("warp");
       AwaitSave();
       writer.Submit("jump");
-      writer.Stop(true);
-      Check(writer.LastCompletion().revision == 2);
-      Check(writer.LastCompletion().outcome == Outcome::Cancelled);
+      writer.Stop(false); // Force-close may arrive during an orderly drain.
+      writer.RequestCancelPending();
+      Check(writer.Submit("none") == 0);
+      // Hold the force-close caller before Stop(true), while the active save
+      // completes. Publication alone must prevent the queued save from starting.
       Release();
       auto deadline = std::chrono::steady_clock::now() + 5s;
       while (!writer.PollStopped()) {
@@ -113,6 +120,24 @@ int main()
       Check(requests.size() == 1);
       Check(writer.LastCompletion().revision == 2);
       Check(writer.LastCompletion().outcome == Outcome::Cancelled);
+      writer.Stop(true);
+    }
+    Begin(Outcome::IoError);
+    {
+      block_report = true;
+      RuntimeConfigWriter writer("unused", Value{std::string("none")}, Report);
+      writer.Submit("warp");
+      AwaitSave();
+      Release();
+      {
+        std::unique_lock lock(gate);
+        Check(changed.wait_for(lock, 5s, [] { return reports == 1; }));
+        Check(writer.HasWork()); // Logging still executing must not look idle.
+        writer.Stop(false);
+        Check(!writer.PollStopped());
+        release_report = true;
+        changed.notify_all();
+      }
     }
     RuntimeConfigWriter idle("unused", std::nullopt);
     idle.Stop(false);

@@ -20,6 +20,8 @@ struct RuntimeConfigWriter {
   HANDLE   handle       = nullptr;
   bool     HasWork() const
   { return work; }
+  void RequestCancelPending()
+  { cancelled = true; }
   void Stop(bool cancel)
   {
     stopped   = true;

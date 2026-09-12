@@ -78,7 +78,9 @@ they do not establish native game-hook compatibility.
 An idle normal quit closes admission and passes the original vote through without
 replaying quit. When work is active, normal quit stops admission, drains accepted work, then resumes the game's quit
 request after observing native worker termination. Save failures do not prevent
-exit. A genuine game veto is respected and is not retried automatically. A stalled
+exit. A genuine game veto is respected and is not retried automatically. If the
+game vetoes after draining, persistence remains stopped for that session;
+subsequent mode shortcuts still affect gameplay but are session-only. A stalled
 OS write can delay normal quit; F10 remains the escape path. With pending work,
 F10 cancels queued requests and allows the active write up to 500 ms on an
 independent native thread before terminating. With no pending/active write it

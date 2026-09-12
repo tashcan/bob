@@ -29,7 +29,7 @@ std::uint64_t RuntimeConfigWriter::Submit(std::string mode)
   if (mode != "none" && mode != "warp" && mode != "jump")
     return 0;
   std::lock_guard lock(mutex_);
-  if (stopping_)
+  if (stopping_ || cancel_pending_.load())
     return 0;
   pending_ = Pending{++revision_, {"ui", "auto_confirm_instant_warp", saved_, std::move(mode)}};
   has_work_.store(true);
@@ -49,12 +49,20 @@ std::uint64_t RuntimeConfigWriter::Submit(std::string mode)
 
 void RuntimeConfigWriter::Stop(bool cancel_pending)
 {
+  if (cancel_pending)
+    RequestCancelPending();
   std::lock_guard lock(mutex_);
   stopping_ = true;
   if (cancel_pending && pending_) {
     completion_ = {pending_->revision, Outcome::Cancelled};
     pending_.reset();
   }
+  wake_.notify_one();
+}
+
+void RuntimeConfigWriter::RequestCancelPending()
+{
+  cancel_pending_.store(true);
   wake_.notify_one();
 }
 
@@ -70,7 +78,13 @@ void RuntimeConfigWriter::Run()
     Pending work;
     {
       std::unique_lock lock(mutex_);
-      wake_.wait(lock, [&] { return stopping_ || pending_.has_value(); });
+      wake_.wait(lock, [&] { return stopping_ || cancel_pending_.load() || pending_.has_value(); });
+      if (cancel_pending_.load()) {
+        stopping_ = true;
+        if (pending_)
+          completion_ = {pending_->revision, Outcome::Cancelled};
+        pending_.reset();
+      }
       if (!pending_)
         break;
       work = std::move(*pending_);
@@ -93,13 +107,17 @@ void RuntimeConfigWriter::Run()
       }
       if (work.revision >= completion_.revision)
         completion_ = {work.revision, outcome};
-      has_work_.store(pending_.has_value());
     }
     if (report_ && outcome != Outcome::Saved && outcome != Outcome::AlreadySaved) {
       try {
         report_(outcome);
       } catch (...) { /* Diagnostics cannot kill the worker. */
       }
+    }
+    {
+      std::lock_guard lock(mutex_);
+      // A diagnostic callback is still active worker work, even after disk I/O.
+      has_work_.store(pending_.has_value());
     }
   }
   has_work_.store(false);

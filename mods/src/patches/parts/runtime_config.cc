@@ -205,7 +205,8 @@ void ForceClose() noexcept
 {
 #if defined(_M_X64)
   if (writer && owner == GetCurrentThreadId() && !quit_depth && writer->HasWork()) {
-    forcing          = true;
+    forcing = true;
+    writer->RequestCancelPending();
     HANDLE duplicate = nullptr;
     if (auto handle = writer->NativeHandle();
         handle
