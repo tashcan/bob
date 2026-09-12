@@ -52,7 +52,8 @@ exactly the intended document. Values are typed booleans or strings and encoded
 by toml++; quotes, backslashes and newlines cannot become new TOML instructions.
 
 Each request compares the selected value against the last acknowledged disk value,
-including its original spelling and whether it was absent. Unrelated external
+including whether it was absent. String quoting/escape spelling is not part of
+that semantic comparison. Unrelated external
 changes survive. A value already equal to the requested value succeeds without a
 write; a different external value reports a conflict. Invalid TOML, unsupported
 value types and I/O errors leave the live mode alone and log one message per failed
@@ -74,7 +75,8 @@ clients keep the shortcut's existing session-only behavior and log that persiste
 is unavailable. The editor/storage fixtures run on all supported build platforms;
 they do not establish native game-hook compatibility.
 
-Normal quit stops admission, drains accepted work, then resumes the game's quit
+An idle normal quit closes admission and passes the original vote through without
+replaying quit. When work is active, normal quit stops admission, drains accepted work, then resumes the game's quit
 request after observing native worker termination. Save failures do not prevent
 exit. A genuine game veto is respected and is not retried automatically. A stalled
 OS write can delay normal quit; F10 remains the escape path. With pending work,
@@ -88,3 +90,8 @@ hot unloading the mod is unsupported.
 The fixture runners also cover preserving edits, escaped values, conflicts,
 coalescing, failed-save baselines, draining and cancellation. They use isolated
 files and compile-time seams; no test switches or artificial delays ship in the mod.
+The Windows adapter fixture executes the production lifecycle functions with
+controlled worker/Unity boundaries. Separate child processes exercise real native
+force-close calls, including a stalled cancellation caller and the 500 ms wait.
+Its 5-second watchdog allows scheduling overhead; this is not a hard real-time
+deadline guarantee or evidence that the current game detour fired.

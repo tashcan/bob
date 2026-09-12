@@ -3,7 +3,7 @@
 
 namespace runtime_config
 {
-// Startup only: retain the raw disk spelling as the optimistic comparison base.
+// Startup only: retain the semantic disk value as the optimistic comparison base.
 void Configure(const toml::table& loaded);
 void Install();
 void SaveWarpMode(const char* mode) noexcept;

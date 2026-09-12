@@ -62,6 +62,16 @@ int main(int argc, char** argv)
   auto              combining_expected = combining;
   combining_expected.replace(combining_expected.find("'none'"), 6, "\"warp\"");
   assert(editor.Prepare(combining, request).text == combining_expected);
+  const Request boolean{"ui", "enabled", Value{false}, true};
+  assert(editor.Prepare("[ui]\nenabled = false # keep\n", boolean).text == "[ui]\nenabled = true # keep\n");
+  assert(editor.Prepare("[ui]\nenabled = true", boolean).outcome == Outcome::AlreadySaved);
+  assert(editor.Prepare("[ui]\nenabled = 'false'", boolean).outcome == Outcome::Conflict);
+  const std::string escaped_key = "a.\"b\\c";
+  for (const std::string document : {"[ui]\n", "ui = {}\n"}) {
+    const auto inserted = editor.Prepare(document, {"ui", escaped_key, std::nullopt, true});
+    assert(inserted.outcome == Outcome::Prepared);
+    assert(toml::parse(inserted.text)["ui"][escaped_key].value<bool>() == true);
+  }
 
   const std::filesystem::path root(argv[1]);
   std::filesystem::create_directories(root);

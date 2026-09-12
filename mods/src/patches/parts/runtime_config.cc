@@ -1,3 +1,6 @@
+#ifdef CONFIG_RUNTIME_TEST
+#include CONFIG_RUNTIME_TEST // Isolated fixture substitutes Unity/worker boundaries only.
+#else
 #include "patches/runtime_config.h"
 #include "file.h"
 #include "runtime_config_writer.h"
@@ -9,6 +12,10 @@
 #include <cstring>
 #include <il2cpp/il2cpp_helper.h>
 #include <spud/detour.h>
+#endif
+#endif
+
+#if defined(_WIN32) && defined(_M_X64)
 
 namespace
 {
@@ -64,8 +71,16 @@ bool WantsQuit(auto original)
   if (this_vote == vote)
     resume = allows;
   if (allows) {
-    draining = true;
     writer->Stop(false);
+    // Close admission before checking: Submit shares lifecycle, so no later
+    // request can race an idle exit. An already-deferred quit still observes
+    // native thread exit through Update before resuming.
+    if (!draining && !writer->HasWork() && resume) {
+      stopped = true;
+      resume  = false;
+      return true;
+    }
+    draining = true;
   }
   return false; // Resume only after observing native worker exit, even after failure.
 }
@@ -89,6 +104,7 @@ void Update()
     request_quit(0);
 }
 
+#ifndef CONFIG_RUNTIME_TEST
 bool MatchesQuitMethod(const MethodInfo* method)
 {
   // Verified build261 Windows x64: 411-byte native body vs SPUD's 24-byte
@@ -104,6 +120,7 @@ bool MatchesQuitMethod(const MethodInfo* method)
   return extent && image_base == base && extent->BeginAddress == 0x43548c0 && extent->EndAddress == 0x4354a5b
          && std::memcmp(method->methodPointer, bytes, sizeof(bytes)) == 0;
 }
+#endif
 
 DWORD WINAPI FinishForceClose(void* handle)
 {
@@ -119,6 +136,7 @@ DWORD WINAPI FinishForceClose(void* handle)
 
 namespace runtime_config
 {
+#ifndef CONFIG_RUNTIME_TEST
 void Configure(const toml::table& loaded)
 {
 #if defined(_WIN32) && defined(_M_X64)
@@ -159,6 +177,7 @@ void Install()
   }
 #endif
 }
+#endif
 
 void SaveWarpMode(const char* mode) noexcept
 {
