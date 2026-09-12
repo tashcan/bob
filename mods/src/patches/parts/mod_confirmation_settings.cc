@@ -246,38 +246,75 @@ void RestoreTint(RowTint& tint)
   }
   Free(tint.image);
 }
-void TintRow(RowTint& tint, Il2CppObject* widget, color multiplier)
+// The build261 settings prefabs put backgrounds on a direct BG child (category
+// rows use Background). Do not search arbitrary descendants such as a checkbox.
+Il2CppObject* RowImage(Il2CppObject* widget, const char* child = "BG")
+{
+  static auto images  = il2cpp_get_class_helper("UnityEngine.UI", "UnityEngine.UI", "Image");
+  static auto objects = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "GameObject");
+  static auto get     = objects.GetMethodInfoSpecial("GetComponent", [](auto count, auto params) {
+    return count == 1 && Type(params[0], IL2CPP_TYPE_CLASS)
+           && std::strcmp(il2cpp_class_get_name(il2cpp_class_from_type(params[0])), "Type") == 0;
+  });
+  Root        transform(Call(widget, "get_transform"));
+  Root        name(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(child)));
+  void*       findArgs[] = {name.get()};
+  Root        background(Call(transform.get(), "Find", 1, findArgs));
+  if (!background.get())
+    return nullptr;
+  Root  object(Call(background.get(), "get_gameObject"));
+  void* args[] = {images.GetType()};
+  return Invoke(get, object.get(), args);
+}
+void TintImage(RowTint& tint, Il2CppObject* image, color value, bool multiply = true)
 {
   RestoreTint(tint);
+  if (!image)
+    return;
+  static auto colors = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "Color");
+  Root        boxed(Call(image, "get_color"));
+  const auto* set = il2cpp_class_get_method_from_name(image->klass, "set_color", 1);
+  if (!boxed.get() || boxed.get()->klass != colors.get_cls() || !Instance(set, 1, IL2CPP_TYPE_VOID)
+      || set->parameters[0]->byref || il2cpp_class_from_type(set->parameters[0]) != colors.get_cls())
+    return;
+  tint.before = *static_cast<color*>(il2cpp_object_unbox(boxed.get()));
+  tint.image  = il2cpp_gchandle_new_weakref(image, false);
+  if (!tint.image)
+    return;
+  if (multiply) {
+    value.r *= tint.before.r;
+    value.g *= tint.before.g;
+    value.b *= tint.before.b;
+  }
+  value.a      = tint.before.a;
+  void* args[] = {&value};
+  Invoke(set, image, args);
+}
+void TintRow(RowTint& tint, Il2CppObject* widget, color multiplier)
+{
   try {
-    static auto images  = il2cpp_get_class_helper("UnityEngine.UI", "UnityEngine.UI", "Image");
-    static auto colors  = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "Color");
-    static auto objects = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "GameObject");
-    static auto get     = objects.GetMethodInfoSpecial("GetComponent", [](auto count, auto params) {
-      return count == 1 && Type(params[0], IL2CPP_TYPE_CLASS)
-             && std::strcmp(il2cpp_class_get_name(il2cpp_class_from_type(params[0])), "Type") == 0;
-    });
-    Root        object(Call(widget, "get_gameObject"));
-    void*       args[] = {images.GetType()};
-    Root        image(Invoke(get, object.get(), args));
-    if (!image.get())
-      return; // Different prefab: text styling still works without a row tint.
-    Root        boxed(Call(image.get(), "get_color"));
-    const auto* set = il2cpp_class_get_method_from_name(image.get()->klass, "set_color", 1);
-    if (!boxed.get() || boxed.get()->klass != colors.get_cls() || !Instance(set, 1, IL2CPP_TYPE_VOID)
-        || set->parameters[0]->byref || il2cpp_class_from_type(set->parameters[0]) != colors.get_cls())
-      return;
-    tint.before = *static_cast<color*>(il2cpp_object_unbox(boxed.get()));
-    tint.image  = il2cpp_gchandle_new_weakref(image.get(), false);
-    if (!tint.image)
-      return;
-    color value{tint.before.r * multiplier.r, tint.before.g * multiplier.g, tint.before.b * multiplier.b,
-                tint.before.a};
-    void* colorArgs[] = {&value};
-    Invoke(set, image.get(), colorArgs);
+    Root image(RowImage(widget));
+    TintImage(tint, image.get(), multiplier);
   } catch (...) {
     RestoreTint(tint);
     Warn("settings row tint unavailable");
+  }
+}
+// Reuse sprites already rendered by these native settings widgets. Weak handles
+// do not keep a scene/bundle alive. No asset loading, animation sampling or polling.
+Il2CppGCHandle normalChoiceSprite = nullptr, pressedChoiceSprite = nullptr;
+void           RememberChoiceSprite(Il2CppObject* background)
+{
+  if (!background || (Target(normalChoiceSprite) && Target(pressedChoiceSprite)))
+    return;
+  Root sprite(Call(background, "get_sprite"));
+  if (!sprite.get())
+    return;
+  Root  name(Call(sprite.get(), "get_name"));
+  auto& handle = Equals(name.get(), "SelectedBG_raw") ? pressedChoiceSprite : normalChoiceSprite;
+  if (!Target(handle)) {
+    Free(handle);
+    handle = il2cpp_gchandle_new_weakref(sprite.get(), false);
   }
 }
 
@@ -285,7 +322,9 @@ void TintRow(RowTint& tint, Il2CppObject* widget, color multiplier)
 // account is retained by UI bookkeeping. Records are released on native unbind and reclaimed on next bind if Unity
 // destroys a widget without sending that notification.
 struct View {
-  RowTint                        tint;
+  RowTint                        tint, checkTint;
+  Il2CppGCHandle                 choiceBackground = nullptr, choiceOverrideBefore = nullptr, choiceCheck = nullptr;
+  bool                           choiceStyled = false, pressed = false;
   Il2CppGCHandle                 widget = nullptr, context = nullptr, label = nullptr;
   Il2CppGCHandle                 selectionControl = nullptr;
   std::array<Il2CppGCHandle, 2>  indicators{};
@@ -334,8 +373,28 @@ void Restore(View& view)
     view.hidden = false;
   }
 }
+void ClearChoiceStyle(View& view)
+{
+  RestoreTint(view.checkTint);
+  try {
+    if (view.choiceStyled) {
+      if (auto* background = Target(view.choiceBackground)) {
+        Root  before(Target(view.choiceOverrideBefore));
+        void* args[] = {before.get()};
+        Call(background, "set_overrideSprite", 1, args);
+      }
+    }
+  } catch (...) {
+    Warn("settings selection style restoration unavailable");
+  }
+  Free(view.choiceBackground);
+  Free(view.choiceOverrideBefore);
+  Free(view.choiceCheck);
+  view.choiceStyled = view.pressed = false;
+}
 void Clear(View& view)
 {
+  ClearChoiceStyle(view);
   try {
     Restore(view);
   } catch (...) {
@@ -578,6 +637,65 @@ void AddRow(Il2CppObject* director, Il2CppObject* context)
   AddBooleanRow(director, context, category.get(), FleetCommanderConfirmationSetting());
   AddBooleanRow(director, context, category.get(), ForbiddenTechConfirmationSetting());
 }
+void StyleChoice(View& view)
+{
+  auto* widget = Target(view.widget);
+  if (!widget || !view.state || !WidgetMeta(widget).selection)
+    return;
+  if (!view.choiceStyled) {
+    Root background(RowImage(widget));
+    Root check(RowImage(widget, "Arrow"));
+    if (!background.get() || !check.get())
+      return;
+    RememberChoiceSprite(background.get());
+    if (!Target(normalChoiceSprite))
+      return;
+    Root before(ReadField(background.get(), Field(background.get()->klass, "m_OverrideSprite")));
+    view.choiceBackground     = il2cpp_gchandle_new_weakref(background.get(), false);
+    view.choiceCheck          = il2cpp_gchandle_new_weakref(check.get(), false);
+    view.choiceOverrideBefore = before.get() ? il2cpp_gchandle_new_weakref(before.get(), false) : nullptr;
+    if (!view.choiceBackground || !view.choiceCheck || (before.get() && !view.choiceOverrideBefore))
+      throw std::runtime_error("settings selection style roots");
+    view.choiceStyled = true;
+  }
+  Root background(Target(view.choiceBackground));
+  // Selection animation still updates sprite, geometry and the actual checkmark.
+  // Image.overrideSprite changes only the drawn background, so the native isOn
+  // animation can keep running. Pointer events provide transient pressed feedback.
+  RememberChoiceSprite(background.get());
+  Root sprite(Target(view.pressed ? pressedChoiceSprite : normalChoiceSprite));
+  if (!sprite.get())
+    return;
+  void* args[] = {sprite.get()};
+  Call(background.get(), "set_overrideSprite", 1, args);
+  Root check(Target(view.choiceCheck));
+  TintImage(view.checkTint, check.get(), view.pressed ? color{0.22f, 0.22f, 0.22f, 1} : color{0.88f, 0.95f, 0.97f, 1},
+            false);
+  std::string text = view.state->label();
+  if (!view.state->known())
+    text += " — Reopen to retry";
+  else if (view.state->failed())
+    text += " — Retry";
+  if (view.state->value().value_or(false))
+    text = "<b>" + text + "</b>";
+  text = std::string(view.pressed ? "<color=#383838>" : "<color=#E1F2F7>") + text + "</color>";
+  Root  label(Target(view.label));
+  Root  message(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(text.c_str())));
+  void* textArgs[] = {message.get()};
+  Call(label.get(), "OverrideLocalizedText", 1, textArgs);
+  view.overridden = true;
+}
+
+void TryStyleChoice(View& view)
+{
+  try {
+    StyleChoice(view);
+  } catch (...) {
+    ClearChoiceStyle(view);
+    Warn("settings selection presentation unavailable");
+  }
+}
+
 void Render(View& view, auto original, Il2CppObject* widget)
 {
   if (view.rendering)
@@ -626,6 +744,7 @@ void Render(View& view, auto original, Il2CppObject* widget)
   void* args[] = {message.get()};
   Call(label.get(), "OverrideLocalizedText", 1, args);
   view.overridden = true;
+  TryStyleChoice(view);
   if (!view.state->enabled()) {
     if (auto* control = Target(view.selectionControl)) {
       view.interactableBefore = Boolean(Call(control, "get_interactable"));
@@ -742,6 +861,12 @@ void CategoryBindHook(auto original, Il2CppObject* widget)
   try {
     Root context(Call(widget, "get_Context"));
     if (auto* page = PageFor(context.get())) {
+      try {
+        Root background(RowImage(widget, "Background"));
+        RememberChoiceSprite(background.get());
+      } catch (...) {
+        Warn("settings background unavailable");
+      }
       Root label(ReadField(widget, PageMeta().label));
       SetPageText(widget, label.get(), page->label);
     }
@@ -1073,6 +1198,48 @@ void RefreshHook(auto original, Il2CppObject* widget)
   }
   original(widget);
 }
+void SelectionTransitionHook(auto original, Il2CppObject* control, int state, bool instant)
+{
+  original(control, state, instant);
+  if (!OnThread() || !selectionActive)
+    return;
+  static auto* toggleClass = il2cpp_class_from_type(SelectionMeta().toggleField->type);
+  if (!control || control->klass != toggleClass)
+    return;
+  for (auto& view : Views()) {
+    if (Target(view.selectionControl) != control || !view.state)
+      continue;
+    view.pressed = state == 2; // Selectable.SelectionState.Pressed, not Selected/focus.
+    if (view.rendering || view.binding || view.requesting)
+      return;
+    try {
+      Root widget(Target(view.widget));
+      Root context(widget.get() ? Invoke(WidgetMeta(widget.get()).getContext, widget.get()) : nullptr);
+      if (!context.get() || Target(view.context) != context.get() || !Owned(context.get()))
+        return;
+      struct Scope {
+        View&                        view;
+        NativeViewState::RenderScope suppress;
+        Scope(View& view)
+            : view(view)
+            , suppress(*view.state)
+        { view.rendering = true; }
+        ~Scope()
+        { view.rendering = false; }
+      } scope(view);
+      // On/Off animation may have first published its sprite since the last
+      // bind. Learn it on input, never through an Update hook or timer.
+      if (!Target(pressedChoiceSprite))
+        for (auto& sibling : Views())
+          if (auto* background = Target(sibling.choiceBackground))
+            RememberChoiceSprite(background);
+      TryStyleChoice(view);
+    } catch (...) {
+      Warn("settings selection presentation unavailable");
+    }
+    return;
+  }
+}
 void RefreshViews()
 {
   if (!OnThread())
@@ -1355,9 +1522,16 @@ void InstallPages()
         || !Instance(selection.getContext, 0, selection.getContext->return_type->type)
         || !selectionGetter.Initialize(get, GetSelected) || !selectionSetter.Initialize(set, SetSelected))
       throw std::runtime_error("selection callback schema");
-    const std::array targets{selection.refresh, selection.changed, selection.release};
+    static auto selectable = il2cpp_get_class_helper("UnityEngine.UI", "UnityEngine.UI", "Selectable");
+    const auto* transition = selectable.GetMethodInfo("DoStateTransition", 2);
+    if (!Instance(transition, 2, IL2CPP_TYPE_VOID) || !Type(transition->parameters[0], IL2CPP_TYPE_VALUETYPE)
+        || !il2cpp_class_is_enum(il2cpp_class_from_type(transition->parameters[0]))
+        || !Type(il2cpp_class_enum_basetype(il2cpp_class_from_type(transition->parameters[0])), IL2CPP_TYPE_I4)
+        || !Type(transition->parameters[1], IL2CPP_TYPE_BOOLEAN))
+      throw std::runtime_error("selection transition signature");
+    const std::array targets{selection.refresh, selection.changed, selection.release, transition};
     for (std::size_t i = 0; i < targets.size(); ++i) {
-      if (!Instance(targets[i], i == 1 ? 1 : 0, IL2CPP_TYPE_VOID) || !Extent(targets[i]))
+      if (!Instance(targets[i], i == 3 ? 2 : i == 1 ? 1 : 0, IL2CPP_TYPE_VOID) || !Extent(targets[i]))
         throw std::runtime_error("selection hook metadata/extent");
       if (i == 1 && !Type(targets[i]->parameters[0], IL2CPP_TYPE_BOOLEAN))
         throw std::runtime_error("selection changed signature");
@@ -1377,6 +1551,7 @@ void InstallPages()
     SPUD_STATIC_DETOUR(selection.refresh->methodPointer, RefreshHook);
     SPUD_STATIC_DETOUR(selection.changed->methodPointer, ChangedHook);
     SPUD_STATIC_DETOUR(selection.release->methodPointer, ReleaseHook);
+    SPUD_STATIC_DETOUR(transition->methodPointer, SelectionTransitionHook);
     selectionActive = true;
   }
   if (std::any_of(pages.begin(), pages.end(),

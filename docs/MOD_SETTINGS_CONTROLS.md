@@ -33,6 +33,15 @@ read the current owner, and shortcut changes must refresh a visible selector.
 Native selection callbacks need the same rendering, stale-context and reentry
 protection already exercised for boolean controls.
 
+Selected options use bold text and the native checkmark on a normal background,
+including instant warp and both Fleet Labels profiles. White fill is transient
+pressed feedback, not persistent selection or keyboard focus. The scoped adapter
+uses native sprites already rendered by settings rows and restores each Image's
+previous override before pooling. A Windows-only `Selectable.DoStateTransition`
+hook observes input-state changes, calls the original once, then updates only
+owned selection rows. Other controls take the native path; there is no frame
+polling, animation replacement, asset loading or setting write in this hook.
+
 ## Fleet Labels and Forbidden Tech
 
 One Fleet Labels page contains a non-clickable Player heading, its Native /
@@ -41,7 +50,7 @@ same controls under a Non-player heading. Each profile has its own owner and
 selection; native text rows provide the headings without navigation or actions.
 Headings use larger bold cyan text and a darkened row background. An enabled
 threshold slider uses a subtle cyan accent to connect it to the selected mode,
-without a white selection fill. Tints affect only the row's own Image component,
+without a white selection fill. Tints affect the row's direct `BG` Image child,
 when present; other prefab layouts retain the text styling. Native colors and
 text are restored before refresh and pooling. Styling uses the existing bind,
 refresh and release hooks, with no frame polling or shared-material changes.
@@ -85,6 +94,7 @@ Exact Windows build261 unwind extents, checked before expanding installation:
 | MessageBox.Show(context, callback) | 70B650 | 257 |
 | TextOptionWidget.SetWidgetData | D0A470 | 293 |
 | TextOptionWidget.ClearWidgetData | D0A680 | 271 |
+| Selectable.DoStateTransition | 47A9650 | 805 |
 
 These exceed the bundled x64 SPUD 24-byte overwrite. Runtime also rejects tiny
 or interior entries using unwind metadata. Client SHA256:
