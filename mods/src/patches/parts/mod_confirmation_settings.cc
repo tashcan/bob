@@ -171,6 +171,7 @@ struct View {
   bool                          overridden          = false;
   bool                          hidden              = false;
   bool                          rendering           = false;
+  bool                          binding             = false;
   bool                          preserveNextRefresh = false;
   std::optional<BooleanView>    state;
 };
@@ -181,6 +182,7 @@ std::array<View, ViewLimit>& Views()
 }
 View*         renderingView  = nullptr;
 View*         requestingView = nullptr;
+View*         bindingView    = nullptr;
 Il2CppObject* Target(Il2CppGCHandle handle)
 { return handle ? il2cpp_gchandle_get_target(handle) : nullptr; }
 void Free(Il2CppGCHandle& handle)
@@ -249,7 +251,7 @@ bool ChildOf(Il2CppObject* transform, Il2CppObject* parent)
 View& Track(Il2CppObject* widget, Il2CppObject* context)
 {
   for (auto& view : Views()) {
-    if (Target(view.widget) || view.rendering || requestingView == &view)
+    if (Target(view.widget) || view.rendering || view.binding || requestingView == &view)
       continue;
     Clear(view);
     Root                         label(ReadField(widget, Meta().labelField));
@@ -667,7 +669,7 @@ void RefreshHook(auto original, Il2CppObject* widget)
     Root context(Invoke(Meta().getContext, widget));
     owned      = Owned(context.get());
     auto* view = Find(widget);
-    if (view && view->rendering)
+    if (view && (view->rendering || view->binding))
       return;
     if (view && Target(view->context) != context.get()) {
       Clear(*view);
@@ -679,8 +681,21 @@ void RefreshHook(auto original, Il2CppObject* widget)
     } else {
       if (!view)
         view = &Track(widget, context.get());
+      // Observe calls a feature-owned reader. It may synchronously release this
+      // widget and bind another, so protect the slot before calling Bind too.
+      struct Binding {
+        View& view;
+        View* previous;
+        explicit Binding(View& view) : view(view), previous(bindingView)
+        { view.binding = true; bindingView = &view; }
+        ~Binding() { view.binding = false; bindingView = previous; }
+      } binding(*view);
       if (!view->preserveNextRefresh)
         view->state->Bind();
+      if (Target(view->widget) != widget || Target(view->context) != context.get()) {
+        view->state->Unbind();
+        return;
+      }
       view->preserveNextRefresh = false;
       Render(*view, original, widget);
       return;
@@ -699,7 +714,7 @@ void RefreshViews()
   if (!OnThread())
     return;
   for (auto& view : Views()) {
-    if (&view == requestingView || view.rendering)
+    if (&view == requestingView || view.rendering || view.binding)
       continue;
     Root widget(Target(view.widget));
     if (!widget.get())
@@ -726,7 +741,7 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
     owned = Owned(context.get());
     if (owned) {
       auto* view = Find(widget);
-      if (!view || view->rendering || Target(view->context) != context.get())
+      if (!view || view->rendering || view->binding || Target(view->context) != context.get())
         return;
       struct RequestScope {
         View* previous = requestingView;
@@ -818,6 +833,26 @@ bool Extent(const MethodInfo* method)
   return entry && base + entry->BeginAddress == address && entry->EndAddress - entry->BeginAddress >= 64;
 }
 
+#ifdef _MODDBG
+void ExerciseReadReentry()
+{
+  static bool exercised = false;
+  const auto* enabled = std::getenv("STFC_MOD_SETTINGS_NAV_REENTRY_TEST");
+  if (exercised || !bindingView || !enabled || std::strcmp(enabled, "1") != 0)
+    return;
+  exercised = true;
+  auto* previous = bindingView;
+  Root widget(Target(previous->widget));
+  // Exercise the actual release bookkeeping and refresh path inside a reader.
+  // Keep the native context bound so this is independent of game navigation.
+  Clear(*previous);
+  Invoke(Meta().refresh, widget.get());
+  auto* rebound = Find(widget.get());
+  spdlog::info("[ModSettings] Read reentry fixture: {}",
+               rebound && rebound != previous && previous->binding ? "PASS" : "FAIL");
+}
+#endif
+
 void InstallPages()
 {
 #ifdef _MODDBG
@@ -830,7 +865,7 @@ void InstallPages()
     catalog.AddBoolean("community_mod.test.nested", FleetCommanderConfirmationSetting());
     static bool value = false;
     static BooleanSetting fixture({"community_mod.test.enabled", "[MOD] Infrastructure test toggle",
-      [] { return ReadResult::Known(value, 1); },
+      [] { ExerciseReadReentry(); return ReadResult::Known(value, 1); },
       [](bool desired, std::uint64_t generation) {
         if (generation != 1) return ApplyResult::Rejected;
         value = desired;

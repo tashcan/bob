@@ -44,6 +44,9 @@ placement proposal; native confirmation placement remains unchanged.
 The current native bridge shares the `ModConfirmationSettings` patch installation
 and its debug installation switch. Disabling that patch disables both native UI
 surfaces. Settings retain their own identity and persistence independently of it.
+The shared native adapter currently supports eight simultaneously bound mod
+boolean rows across pages. Plan populated groups within that existing limit;
+catalog registration does not itself guarantee native widget capacity.
 
 For a temporary Windows debug navigation fixture, launch with
 `STFC_MOD_SETTINGS_NAV_TEST=1`. It builds Mod Settings > Infrastructure Test >
@@ -54,6 +57,10 @@ switch alone when checking labels, nesting and Back; it writes the real FC
 preference if intentionally clicked. The synthetic toggle writes no file. The
 environment option is absent from release builds and defaults off. Remove it and
 restart to return to the empty production catalog. No data is cleared.
+For the read-callback lifecycle check, additionally set
+`STFC_MOD_SETTINGS_NAV_REENTRY_TEST=1`. The synthetic reader once releases its
+own bookkeeping and rebinds the same native widget. A bounded PASS/FAIL log checks
+that the in-flight slot is not reused. This probe does not run for real settings.
 
 Persistence stays with explicit feature adapters. A live mod change and its
 asynchronous save result are distinct; page construction never calls the TOML
