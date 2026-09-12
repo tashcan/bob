@@ -40,6 +40,7 @@
 #include "patches/key.h"
 #include "patches/mapkey.h"
 #include "patches/parts/daily_faction_bulk_claim.h"
+#include "patches/parts/double_click_assign_ship.h"
 #include "patches/parts/focus_search.h"
 #include "str_utils.h"
 
@@ -522,6 +523,11 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     spdlog::warn("Setting hotkeys to ENABLED");
     return;
   }
+
+  // Per-frame driver - must run every frame, before the hotkey-mode
+  // early-returns below (it must also run in Scopely-hotkey mode and
+  // while hotkeys are toggled off).
+  AssignShipEnterKeyUpdate();
 
   if (Config::Get().use_scopely_hotkeys && Config::Get().hotkeys_enabled) {
     return original(_this);
