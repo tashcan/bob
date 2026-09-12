@@ -1,5 +1,6 @@
 #define MOD_SNAPSHOT_QUEUE_TESTING
 #define MOD_SNAPSHOT_HOST_TESTING
+#define MOD_SNAPSHOT_FORCE_CLOSE_TESTING
 #include "snapshot_save_queue.cc"
 #include "snapshot_save_worker.cc"
 #include "snapshot_save_service.cc"
@@ -12,7 +13,7 @@
 struct Capture { volatile LONG calls; ULONGLONG began; };
 Capture* capture;
 int mode;
-std::atomic_bool releaseActive{false}, accessHeld{false};
+std::atomic_bool releaseActive{false}, accessHeld{false}, workersJoined{false};
 namespace persistence
 {
 struct SnapshotHostTestAccess {
@@ -21,6 +22,7 @@ struct SnapshotHostTestAccess {
 namespace
 {
 void BeforeHostThreadReturn() {}
+void AfterHostWorkersJoined() { workersJoined.store(true); }
 file_transaction::Result Execute(const std::filesystem::path&, std::string_view)
 {
   InterlockedIncrement(&capture->calls);
@@ -67,7 +69,7 @@ int wmain(int argc, wchar_t** argv)
           std::lock_guard lock(persistence::SnapshotHostTestAccess::Access(*host));
           accessHeld.store(true);
           while (!releaseActive.load()) Sleep(1);
-          Sleep(200);
+          while (!workersJoined.load()) Sleep(1);
         });
         while (!accessHeld.load()) Sleep(1);
       }
@@ -108,6 +110,7 @@ int wmain(int argc, wchar_t** argv)
 }
 #else
 namespace persistence { namespace {
+void AfterHostWorkersJoined() {}
 file_transaction::Result Execute(const std::filesystem::path&, std::string_view) { return {}; }
 } }
 int main() { std::cout << "Windows-only force-close fixture skipped\n"; }

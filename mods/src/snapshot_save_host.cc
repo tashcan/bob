@@ -10,6 +10,9 @@ namespace persistence
 #if defined(MOD_SNAPSHOT_HOST_TESTING) && defined(_WIN32)
 namespace { void BeforeHostThreadReturn(); }
 #endif
+#if defined(MOD_SNAPSHOT_FORCE_CLOSE_TESTING)
+namespace { void AfterHostWorkersJoined(); }
+#endif
 SnapshotSaveHost::~SnapshotSaveHost()
 {
   // Never hide a blocking destructor or permit code to outlive its module.
@@ -144,6 +147,9 @@ void SnapshotSaveHost::Run() noexcept
       service_ = nullptr;
     }
     service->StopAndJoin(cancelQueued_.load() ? StopMode::CancelQueued : StopMode::DrainAccepted);
+#if defined(MOD_SNAPSHOT_FORCE_CLOSE_TESTING)
+    AfterHostWorkersJoined();
+#endif
     {
       std::lock_guard lock(access_);
       for (std::size_t i = 0; i < count_; ++i)
