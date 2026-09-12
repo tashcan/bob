@@ -205,6 +205,7 @@ jobs:
             Where-Object { $_.Directory.Name -eq 'toml++' } | Select-Object -First 1
           if (-not $header) { throw 'Built toml++ package not found.' }
           ./tests/run-config-save.ps1 -TomlInclude $header.Directory.Parent.FullName
+          ./tests/run-settings.ps1
 
       - name: Package
         shell: pwsh
@@ -496,6 +497,7 @@ jobs:
           TOML_HEADER=$(find "$PACKAGE_DIR/t/toml++" -path '*/include/toml++/toml.h' -print -quit)
           test -n "$TOML_HEADER"
           bash tests/run-config-save.sh "$(dirname "$(dirname "$TOML_HEADER")")"
+          bash tests/run-settings.sh
 
       - name: Report Swift module cache
         shell: bash

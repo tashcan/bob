@@ -1,5 +1,6 @@
 #include "fc_confirmation_reset.h"
 #include "settings/boolean_view.h"
+#include "settings/mod_pages.h"
 
 // Native extents are checked against Windows unwind records. Other platforms
 // omit the native UI until equivalent hook evidence is available.
@@ -7,6 +8,7 @@
 #include "settings/native_boolean_callback.h"
 #include <Windows.h>
 #include <array>
+#include <cstdlib>
 #include <cstring>
 #include <il2cpp/il2cpp_helper.h>
 #include <spdlog/spdlog.h>
@@ -17,15 +19,29 @@
 namespace
 {
 using namespace mod_settings;
-constexpr const char*      CategoryKey = "game_settings_category_7";
-constexpr std::size_t      ViewLimit   = 8;
-bool                       active      = false;
-bool                       installing  = false;
-bool                       warned      = false;
-std::thread::id            uiThread;
-NativeCallback<bool>       getter;
-NativeCallback<void, bool> setter;
-NativeCallback<int>        query;
+constexpr const char*          CategoryKey = "game_settings_category_7";
+constexpr std::size_t          ViewLimit   = 8;
+bool                           active      = false;
+bool                           installing  = false;
+bool                           warned      = false;
+std::thread::id                uiThread;
+NativeCallback<bool>           getter;
+NativeCallback<void, bool>     setter;
+NativeCallback<int>            query;
+std::vector<PageCatalog::Page> pages;
+bool                           pagesActive = false;
+bool                           HasLabel(Il2CppObject* row, const char* id);
+BooleanSetting*                SettingFor(Il2CppObject* context)
+{
+  auto& fc = FleetCommanderConfirmationSetting();
+  if (HasLabel(context, fc.id().c_str()))
+    return &fc;
+  for (const auto& page : pages)
+    for (auto* setting : page.booleans)
+      if (HasLabel(context, setting->id().c_str()))
+        return setting;
+  return nullptr;
+}
 
 void Warn()
 {
@@ -156,13 +172,15 @@ struct View {
   bool                          hidden              = false;
   bool                          rendering           = false;
   bool                          preserveNextRefresh = false;
-  BooleanView                   state{FleetCommanderConfirmationSetting()};
+  std::optional<BooleanView>    state;
 };
 std::array<View, ViewLimit>& Views()
 {
   static std::array<View, ViewLimit> views;
   return views;
 }
+View*         renderingView  = nullptr;
+View*         requestingView = nullptr;
 Il2CppObject* Target(Il2CppGCHandle handle)
 { return handle ? il2cpp_gchandle_get_target(handle) : nullptr; }
 void Free(Il2CppGCHandle& handle)
@@ -202,7 +220,10 @@ void Clear(View& view)
   Free(view.label);
   for (auto& handle : view.indicators)
     Free(handle);
-  view.state.Unbind();
+  if (view.state)
+    view.state->Unbind();
+  // Keep this object alive through reentrant release during read/write.
+  // Track replaces it only after its rendering/request scope has returned.
   view.overridden = view.hidden = view.preserveNextRefresh = false;
 }
 View* Find(Il2CppObject* widget)
@@ -217,7 +238,8 @@ bool Owned(Il2CppObject* context)
   if (!context || context->klass != Meta().row.get_cls())
     return false;
   auto* callback = reinterpret_cast<Il2CppDelegate*>(ReadField(context, Meta().queryField));
-  return callback && callback->method == query.method() && callback->method_ptr == query.method()->methodPointer;
+  return callback && callback->method == query.method() && callback->method_ptr == query.method()->methodPointer
+         && SettingFor(context);
 }
 bool ChildOf(Il2CppObject* transform, Il2CppObject* parent)
 {
@@ -227,7 +249,7 @@ bool ChildOf(Il2CppObject* transform, Il2CppObject* parent)
 View& Track(Il2CppObject* widget, Il2CppObject* context)
 {
   for (auto& view : Views()) {
-    if (Target(view.widget))
+    if (Target(view.widget) || view.rendering || requestingView == &view)
       continue;
     Clear(view);
     Root                         label(ReadField(widget, Meta().labelField));
@@ -253,9 +275,13 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
           throw std::runtime_error("settings weak root");
         return handle;
       };
-      view.widget  = weak(widget);
-      view.context = weak(context);
-      view.label   = weak(label.get());
+      view.widget   = weak(widget);
+      view.context  = weak(context);
+      auto* setting = SettingFor(context);
+      if (!setting)
+        throw std::runtime_error("settings owner missing");
+      view.state.emplace(*setting);
+      view.label = weak(label.get());
       for (std::size_t i = 0; i < indicators.size(); ++i)
         view.indicators[i] = weak(indicators[i]);
     } catch (...) {
@@ -267,13 +293,11 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
   throw std::runtime_error("settings view capacity");
 }
 
-View* renderingView  = nullptr;
-View* requestingView = nullptr;
-bool  GetEnabled(Il2CppObject*, const MethodInfo*)
+bool GetEnabled(Il2CppObject*, const MethodInfo*)
 {
   // Native bool signatures cannot express unknown. Only the owned render scope
   // consumes this placeholder; its indicators are suppressed when value is empty.
-  return renderingView ? renderingView->state.value().value_or(false) : false;
+  return renderingView && renderingView->state ? renderingView->state->value().value_or(false) : false;
 }
 void SetEnabled(Il2CppObject*, bool, const MethodInfo*)
 {
@@ -346,20 +370,14 @@ Il2CppObject* Category(Il2CppObject* container, int depth, int& remaining)
       return found;
   return nullptr;
 }
-void AddRow(Il2CppObject* director, Il2CppObject* context)
+void AddBooleanRow(Il2CppObject* director, Il2CppObject* context, Il2CppObject* category, BooleanSetting& setting)
 {
-  auto& setting = FleetCommanderConfirmationSetting();
   if (setting.Observe().state.availability == Availability::Unsupported)
     return;
-  Root root(Call(context, "get_RootOption"));
-  int  remaining = 128;
-  Root category(Category(root.get(), 0, remaining));
-  if (!category.get())
-    throw std::runtime_error("settings confirmation category");
-  Root      children(Call(category.get(), "get_Children"));
+  Root      children(Call(category, "get_Children"));
   const int before = Count(children.get());
   for (int i = 0; i < before; ++i)
-    if (Owned(Item(children.get(), i)) || HasLabel(Item(children.get(), i), setting.id().c_str()))
+    if (HasLabel(Item(children.get(), i), setting.id().c_str()))
       return;
   if (before == 128)
     throw std::runtime_error("settings category full");
@@ -368,7 +386,7 @@ void AddRow(Il2CppObject* director, Il2CppObject* context)
   Root  set(MakeDelegate(il2cpp_class_from_type(m.addToggle->parameters[3]), director, setter.method()));
   Root  state(MakeDelegate(il2cpp_class_from_type(m.querySetter->parameters[0]), director, query.method()));
   Root  label(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.id().c_str())));
-  void* args[] = {category.get(), label.get(), get.get(), set.get()};
+  void* args[] = {category, label.get(), get.get(), set.get()};
   Invoke(m.addToggle, context, args);
   if (Count(children.get()) != before + 1)
     throw std::runtime_error("settings row insertion");
@@ -380,15 +398,25 @@ void AddRow(Il2CppObject* director, Il2CppObject* context)
     Invoke(m.querySetter, row.get(), stateArgs);
   } catch (...) {
     void* removeArgs[] = {row.get()};
-    Call(category.get(), "RemoveChild", 1, removeArgs);
+    Call(category, "RemoveChild", 1, removeArgs);
     throw;
   }
 }
 
+void AddRow(Il2CppObject* director, Il2CppObject* context)
+{
+  Root root(Call(context, "get_RootOption"));
+  int  remaining = 128;
+  Root category(Category(root.get(), 0, remaining));
+  if (!category.get())
+    throw std::runtime_error("settings confirmation category");
+  AddBooleanRow(director, context, category.get(), FleetCommanderConfirmationSetting());
+}
 void Render(View& view, auto original, Il2CppObject* widget)
 {
   if (view.rendering)
     return;
+  Root boundContext(Target(view.context));
   struct Scope {
     View&                       view;
     View*                       previous;
@@ -396,7 +424,7 @@ void Render(View& view, auto original, Il2CppObject* widget)
     Scope(View& view)
         : view(view)
         , previous(renderingView)
-        , suppress(view.state.setting())
+        , suppress(view.state->setting())
     {
       view.rendering = true;
       renderingView  = &view;
@@ -409,20 +437,22 @@ void Render(View& view, auto original, Il2CppObject* widget)
   } scope(view);
   Restore(view);
   original(widget);
+  if (Target(view.widget) != widget || Target(view.context) != boundContext.get())
+    return;
   Root        label(Target(view.label));
-  std::string text = view.state.setting().label();
+  std::string text = view.state->setting().label();
   // The native row has limited label width: "Change not applied; try again" was
   // visibly truncated after "; tr" alongside the FC label. Keep these suffixes
   // short; recheck the full label at supported UI scales when changing wording.
-  if (!view.state.value())
+  if (!view.state->value())
     text += " — Reopen to retry";
-  else if (view.state.failed())
+  else if (view.state->failed())
     text += " — Retry";
   Root  message(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(text.c_str())));
   void* args[] = {message.get()};
   Call(label.get(), "OverrideLocalizedText", 1, args);
   view.overridden = true;
-  if (!view.state.value()) {
+  if (!view.state->value()) {
     // Capture all native values first (the two components may share a node).
     for (std::size_t i = 0; i < view.indicators.size(); ++i)
       view.activeBefore[i] = Boolean(Call(Target(view.indicators[i]), "get_activeSelf"));
@@ -443,6 +473,173 @@ void HideUnsupported(Il2CppObject* widget)
 bool OnThread()
 { return active && std::this_thread::get_id() == uiThread; }
 
+struct PageMetadata {
+  IL2CppClassHelper categoryWidget =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "CategoryOptionWidget");
+  IL2CppClassHelper controller =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "GameSettingsViewController");
+  const MethodInfo* add       = Meta().context.GetMethodInfo("AddCategory", 4);
+  const MethodInfo* bind      = categoryWidget.GetMethodInfo("OnDidBindContext", 0);
+  const MethodInfo* release   = categoryWidget.GetMethodInfo("OnAboutToReleaseContext", 0);
+  const MethodInfo* selected  = controller.GetMethodInfo("OnCategorySelected", 1);
+  const MethodInfo* destroyed = controller.GetMethodInfo("OnDestroy", 0);
+  FieldInfo*        label     = Field(categoryWidget.get_cls(), "_label");
+  FieldInfo*        title     = Field(controller.get_cls(), "_title");
+};
+PageMetadata& PageMeta()
+{
+  static PageMetadata metadata;
+  return metadata;
+}
+const PageCatalog::Page* PageFor(Il2CppObject* context)
+{
+  if (!context)
+    return nullptr;
+  for (const auto& page : pages)
+    if (HasLabel(context, page.id.c_str()))
+      return &page;
+  return nullptr;
+}
+
+struct PageText {
+  Il2CppGCHandle owner = nullptr, label = nullptr;
+};
+std::vector<PageText> pageText;
+void                  ClearPageText(Il2CppObject* owner)
+{
+  for (auto it = pageText.begin(); it != pageText.end();) {
+    auto* live = Target(it->owner);
+    if (live && live != owner) {
+      ++it;
+      continue;
+    }
+    try {
+      if (auto* label = Target(it->label))
+        Call(label, "ClearTextOverride");
+    } catch (...) {
+      Warn();
+    }
+    Free(it->owner);
+    Free(it->label);
+    it = pageText.erase(it);
+  }
+}
+void SetPageText(Il2CppObject* owner, Il2CppObject* label, const std::string& text)
+{
+  if (!owner || !label)
+    throw std::runtime_error("settings text missing");
+  ClearPageText(owner);
+  PageText record{il2cpp_gchandle_new_weakref(owner, false), il2cpp_gchandle_new_weakref(label, false)};
+  try {
+    if (!record.owner || !record.label)
+      throw std::runtime_error("settings text weak root");
+    pageText.push_back(record);
+  } catch (...) {
+    Free(record.owner);
+    Free(record.label);
+    throw;
+  }
+  Root  message(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(text.c_str())));
+  void* args[] = {message.get()};
+  Call(label, "OverrideLocalizedText", 1, args);
+}
+
+void CategoryBindHook(auto original, Il2CppObject* widget)
+{
+  if (OnThread())
+    ClearPageText(widget);
+  original(widget);
+  if (!OnThread() || !pagesActive)
+    return;
+  try {
+    Root context(Call(widget, "get_Context"));
+    if (auto* page = PageFor(context.get())) {
+      Root label(ReadField(widget, PageMeta().label));
+      SetPageText(widget, label.get(), page->label);
+    }
+  } catch (...) {
+    Warn();
+  }
+}
+void CategoryReleaseHook(auto original, Il2CppObject* widget)
+{
+  if (OnThread())
+    ClearPageText(widget);
+  original(widget);
+}
+void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* context)
+{
+  if (OnThread())
+    ClearPageText(controller);
+  original(controller, context);
+  if (!OnThread() || !pagesActive)
+    return;
+  try {
+    if (auto* page = PageFor(context)) {
+      Root label(ReadField(controller, PageMeta().title));
+      SetPageText(controller, label.get(), page->label);
+    }
+  } catch (...) {
+    Warn();
+  }
+}
+void PageDestroyedHook(auto original, Il2CppObject* controller)
+{
+  if (OnThread())
+    ClearPageText(controller);
+  original(controller);
+}
+
+void AddPages(Il2CppObject* director, Il2CppObject* context)
+{
+  if (!pagesActive || pages.empty())
+    return;
+  Root root(Call(context, "get_RootOption"));
+  Root children(Call(root.get(), "get_Children"));
+  for (int i = 0, count = Count(children.get()); i < count; ++i)
+    if (HasLabel(Item(children.get(), i), pages.front().id.c_str()))
+      return;
+  std::map<std::string, Il2CppObject*> parents;
+  Il2CppObject*                        addedRoot = nullptr;
+  std::optional<Root>                  addedRootGuard;
+  try {
+    for (const auto& page : pages) {
+      auto* parent = page.parent.empty() ? root.get() : parents.at(page.parent);
+      Root  id(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(page.id.c_str())));
+      Root  state(MakeDelegate(il2cpp_class_from_type(PageMeta().add->parameters[3]), director, query.method()));
+      void* args[] = {parent, id.get(), id.get(), state.get()};
+      Root  category(Invoke(PageMeta().add, context, args));
+      if (!category.get())
+        throw std::runtime_error("settings category construction");
+      if (!addedRoot) {
+        addedRoot = category.get();
+        addedRootGuard.emplace(addedRoot);
+      }
+      if (!HasLabel(category.get(), page.id.c_str()))
+        throw std::runtime_error("settings category identity");
+      parents.emplace(page.id, category.get()); // Native root owns all added contexts.
+      for (auto* setting : page.booleans)
+        AddBooleanRow(director, context, category.get(), *setting);
+    }
+    // Unsupported leaf adapters can leave empty groups; remove them bottom-up.
+    for (auto it = pages.rbegin(); it != pages.rend(); ++it) {
+      auto* category = parents.at(it->id);
+      Root  items(Call(category, "get_Children"));
+      if (Count(items.get()) != 0)
+        continue;
+      auto* parent = it->parent.empty() ? root.get() : parents.at(it->parent);
+      void* args[] = {category};
+      Call(parent, "RemoveChild", 1, args);
+    }
+  } catch (...) {
+    if (addedRoot) {
+      void* args[] = {addedRoot};
+      Call(root.get(), "RemoveChild", 1, args);
+    }
+    throw;
+  }
+}
+
 void AddGeneralHook(auto original, Il2CppObject* director, Il2CppObject* context)
 {
   original(director, context);
@@ -450,6 +647,11 @@ void AddGeneralHook(auto original, Il2CppObject* director, Il2CppObject* context
     return;
   try {
     AddRow(director, context);
+  } catch (...) {
+    Warn();
+  }
+  try {
+    AddPages(director, context);
   } catch (...) {
     Warn();
   }
@@ -478,7 +680,7 @@ void RefreshHook(auto original, Il2CppObject* widget)
       if (!view)
         view = &Track(widget, context.get());
       if (!view->preserveNextRefresh)
-        view->state.Bind();
+        view->state->Bind();
       view->preserveNextRefresh = false;
       Render(*view, original, widget);
       return;
@@ -533,7 +735,9 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
         ~RequestScope()
         { requestingView = previous; }
       } requestScope(view);
-      auto result = view->state.Request(desired);
+      auto result = view->state->Request(desired);
+      if (Target(view->widget) != widget || Target(view->context) != context.get())
+        return;
       if (result.outcome == Outcome::Suppressed || result.outcome == Outcome::Busy)
         return;
       // Refresh through the hook once, preserving the write result. A fresh Bind
@@ -566,8 +770,14 @@ void ReleaseHook(auto original, Il2CppObject* widget)
 void Invalidate()
 {
   InvalidateFleetCommanderConfirmationSession();
+  for (const auto& page : pages)
+    for (auto* setting : page.booleans)
+      if (setting != &FleetCommanderConfirmationSetting())
+        setting->InvalidateSession();
   for (auto& view : Views()) {
-    view.state.Invalidate();
+    if (!view.state)
+      continue;
+    view.state->Invalidate();
     // Re-rendering during a native account transition can read the old account.
     // Hide the indicators immediately; next explicit bind may establish readiness.
     if (auto* widget = Target(view.widget)) {
@@ -606,6 +816,63 @@ bool Extent(const MethodInfo* method)
   // Bundled x64 SPUD reserves 24 bytes; the 64-byte minimum and exact entry reject
   // shared tiny accessors/thunks. Only Windows x64 is enabled by this adapter.
   return entry && base + entry->BeginAddress == address && entry->EndAddress - entry->BeginAddress >= 64;
+}
+
+void InstallPages()
+{
+#ifdef _MODDBG
+  // Temporary opt-in navigation fixture; no real mod feature placement is chosen.
+  // It mirrors the existing FC owner so rebuilds never introduce a second value.
+  if (const auto* probe = std::getenv("STFC_MOD_SETTINGS_NAV_TEST"); probe && std::strcmp(probe, "1") == 0) {
+    auto& catalog = ModPages();
+    catalog.AddPage("community_mod.test", "Infrastructure Test", "community_mod.settings");
+    catalog.AddPage("community_mod.test.nested", "Nested Group", "community_mod.test");
+    catalog.AddBoolean("community_mod.test.nested", FleetCommanderConfirmationSetting());
+    static bool value = false;
+    static BooleanSetting fixture({"community_mod.test.enabled", "[MOD] Infrastructure test toggle",
+      [] { return ReadResult::Known(value, 1); },
+      [](bool desired, std::uint64_t generation) {
+        if (generation != 1) return ApplyResult::Rejected;
+        value = desired;
+        return ApplyResult::Applied;
+      }});
+    catalog.AddBoolean("community_mod.test.nested", fixture);
+  }
+#endif
+  pages = ModPages().Build();
+  if (pages.empty())
+    return;
+  auto&            m = PageMeta();
+  const std::array hooks{m.bind, m.release, m.selected, m.destroyed};
+  for (std::size_t i = 0; i < hooks.size(); ++i) {
+    if (!Instance(hooks[i], i == 2 ? 1 : 0, IL2CPP_TYPE_VOID) || !Extent(hooks[i]))
+      throw std::runtime_error("settings page hook metadata/extent");
+    for (std::size_t j = 0; j < i; ++j)
+      if (hooks[i]->methodPointer == hooks[j]->methodPointer)
+        throw std::runtime_error("settings page shared hook");
+    const auto& core = Meta();
+    for (auto* owned :
+         {core.addGeneral, core.refresh, core.changed, core.release, core.reload, core.session, core.load})
+      if (hooks[i]->methodPointer == owned->methodPointer)
+        throw std::runtime_error("settings page overlaps existing hook");
+  }
+  if (!Instance(m.add, 4, IL2CPP_TYPE_CLASS) || !Reference(m.add->parameters[0])
+      || !Type(m.add->parameters[1], IL2CPP_TYPE_STRING) || !Type(m.add->parameters[2], IL2CPP_TYPE_STRING)
+      || !Reference(m.add->parameters[3]) || !Reference(m.selected->parameters[0]))
+    throw std::runtime_error("settings category signature");
+  for (const auto& page : pages)
+    for (auto* setting : page.booleans) {
+      if (setting->id() == FleetCommanderConfirmationSetting().id() && setting != &FleetCommanderConfirmationSetting())
+        throw std::runtime_error("settings owner collision");
+      if (!setting->SetChangeObserver(RefreshViews))
+        throw std::runtime_error("settings observer ownership");
+    }
+  SPUD_STATIC_DETOUR(m.bind->methodPointer, CategoryBindHook);
+  SPUD_STATIC_DETOUR(m.release->methodPointer, CategoryReleaseHook);
+  SPUD_STATIC_DETOUR(m.selected->methodPointer, PageSelectedHook);
+  SPUD_STATIC_DETOUR(m.destroyed->methodPointer, PageDestroyedHook);
+  pagesActive = true;
+  spdlog::info("[ModSettings] Native navigation installed: {} registered pages", pages.size());
 }
 } // namespace
 
@@ -650,6 +917,12 @@ void InstallModConfirmationSettings()
     SPUD_STATIC_DETOUR(m.load->methodPointer, LoadHook);
     SPUD_STATIC_DETOUR(m.addGeneral->methodPointer, AddGeneralHook);
     active = true;
+    try {
+      InstallPages();
+    } catch (...) {
+      pagesActive = false;
+      spdlog::warn("[ModSettings] Navigation unavailable; native confirmation control remains available");
+    }
     spdlog::info("[ModSettings] Native FC confirmation adapter installed (Windows x64)");
   } catch (...) {
     Warn();
