@@ -61,6 +61,10 @@ For the read-callback lifecycle check, additionally set
 `STFC_MOD_SETTINGS_NAV_REENTRY_TEST=1`. The synthetic reader once releases its
 own bookkeeping and rebinds the same native widget. A bounded PASS/FAIL log checks
 that the in-flight slot is not reused. This probe does not run for real settings.
+That option also adds a second synthetic toggle. Changing the Infrastructure test
+toggle once invokes the second setter, which releases and rebinds the first row
+while both requests are active. A separate nested-write PASS/FAIL log verifies
+that the outer request's slot stays protected. Revisit afterward to check readback.
 
 Persistence stays with explicit feature adapters. A live mod change and its
 asynchronous save result are distinct; page construction never calls the TOML

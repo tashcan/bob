@@ -172,6 +172,7 @@ struct View {
   bool                          hidden              = false;
   bool                          rendering           = false;
   bool                          binding             = false;
+  bool                          requesting          = false;
   bool                          preserveNextRefresh = false;
   std::optional<BooleanView>    state;
 };
@@ -181,7 +182,6 @@ std::array<View, ViewLimit>& Views()
   return views;
 }
 View*         renderingView  = nullptr;
-View*         requestingView = nullptr;
 View*         bindingView    = nullptr;
 Il2CppObject* Target(Il2CppGCHandle handle)
 { return handle ? il2cpp_gchandle_get_target(handle) : nullptr; }
@@ -251,7 +251,7 @@ bool ChildOf(Il2CppObject* transform, Il2CppObject* parent)
 View& Track(Il2CppObject* widget, Il2CppObject* context)
 {
   for (auto& view : Views()) {
-    if (Target(view.widget) || view.rendering || view.binding || requestingView == &view)
+    if (Target(view.widget) || view.rendering || view.binding || view.requesting)
       continue;
     Clear(view);
     Root                         label(ReadField(widget, Meta().labelField));
@@ -714,7 +714,7 @@ void RefreshViews()
   if (!OnThread())
     return;
   for (auto& view : Views()) {
-    if (&view == requestingView || view.rendering || view.binding)
+    if (view.requesting || view.rendering || view.binding)
       continue;
     Root widget(Target(view.widget));
     if (!widget.get())
@@ -741,14 +741,15 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
     owned = Owned(context.get());
     if (owned) {
       auto* view = Find(widget);
-      if (!view || view->rendering || view->binding || Target(view->context) != context.get())
+      if (!view || view->rendering || view->binding || view->requesting || Target(view->context) != context.get())
         return;
       struct RequestScope {
-        View* previous = requestingView;
+        View& view;
         explicit RequestScope(View* view)
-        { requestingView = view; }
+            : view(*view)
+        { view->requesting = true; }
         ~RequestScope()
-        { requestingView = previous; }
+        { view.requesting = false; }
       } requestScope(view);
       auto result = view->state->Request(desired);
       if (Target(view->widget) != widget || Target(view->context) != context.get())
@@ -834,11 +835,16 @@ bool Extent(const MethodInfo* method)
 }
 
 #ifdef _MODDBG
+View* writeProbeOuter = nullptr;
+bool ReentryProbeEnabled()
+{
+  const auto* enabled = std::getenv("STFC_MOD_SETTINGS_NAV_REENTRY_TEST");
+  return enabled && std::strcmp(enabled, "1") == 0;
+}
 void ExerciseReadReentry()
 {
   static bool exercised = false;
-  const auto* enabled = std::getenv("STFC_MOD_SETTINGS_NAV_REENTRY_TEST");
-  if (exercised || !bindingView || !enabled || std::strcmp(enabled, "1") != 0)
+  if (exercised || !bindingView || !ReentryProbeEnabled())
     return;
   exercised = true;
   auto* previous = bindingView;
@@ -850,6 +856,44 @@ void ExerciseReadReentry()
   auto* rebound = Find(widget.get());
   spdlog::info("[ModSettings] Read reentry fixture: {}",
                rebound && rebound != previous && previous->binding ? "PASS" : "FAIL");
+}
+void ExerciseNestedWrite()
+{
+  static bool exercised = false;
+  if (exercised || !ReentryProbeEnabled())
+    return;
+  View* outer = nullptr;
+  View* nested = nullptr;
+  for (auto& view : Views()) {
+    if (!Target(view.widget) || !view.state)
+      continue;
+    if (view.requesting && view.state->setting().id() == "community_mod.test.enabled")
+      outer = &view;
+    if (view.state->setting().id() == "community_mod.test.nested_write")
+      nested = &view;
+  }
+  if (!outer || !nested)
+    return;
+  exercised = true;
+  struct Scope {
+    explicit Scope(View* outer) { writeProbeOuter = outer; }
+    ~Scope() { writeProbeOuter = nullptr; }
+  } scope(outer);
+  Root widget(Target(nested->widget));
+  bool desired = !nested->state->value().value_or(false);
+  void* args[] = {&desired};
+  Invoke(Meta().changed, widget.get(), args);
+}
+void RebindOuterWrite()
+{
+  if (!writeProbeOuter)
+    return;
+  Root widget(Target(writeProbeOuter->widget));
+  Clear(*writeProbeOuter);
+  Invoke(Meta().refresh, widget.get());
+  auto* rebound = Find(widget.get());
+  spdlog::info("[ModSettings] Nested write reentry fixture: {}",
+               rebound && rebound != writeProbeOuter && writeProbeOuter->requesting ? "PASS" : "FAIL");
 }
 #endif
 
@@ -868,10 +912,23 @@ void InstallPages()
       [] { ExerciseReadReentry(); return ReadResult::Known(value, 1); },
       [](bool desired, std::uint64_t generation) {
         if (generation != 1) return ApplyResult::Rejected;
+        ExerciseNestedWrite();
         value = desired;
         return ApplyResult::Applied;
       }});
     catalog.AddBoolean("community_mod.test.nested", fixture);
+    if (ReentryProbeEnabled()) {
+      static bool nestedValue = false;
+      static BooleanSetting nestedFixture({"community_mod.test.nested_write", "[MOD] Nested write test toggle",
+        [] { return ReadResult::Known(nestedValue, 1); },
+        [](bool desired, std::uint64_t generation) {
+          if (generation != 1) return ApplyResult::Rejected;
+          RebindOuterWrite();
+          nestedValue = desired;
+          return ApplyResult::Applied;
+        }});
+      catalog.AddBoolean("community_mod.test.nested", nestedFixture);
+    }
   }
 #endif
   pages = ModPages().Build();
