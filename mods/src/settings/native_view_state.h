@@ -1,6 +1,7 @@
 #pragma once
 #include "boolean_view.h"
 #include "choice_setting.h"
+#include "slider_setting.h"
 
 namespace mod_settings
 {
@@ -19,33 +20,52 @@ public:
       , index_(index)
   {
   }
+  explicit NativeViewState(SliderSetting& setting)
+      : slider_(std::in_place, setting.state())
+      , sliderSetting_(&setting)
+  {
+  }
   void Bind()
   {
     if (boolean_)
       boolean_->Bind();
-    else
+    else if (choice_)
       choice_->Bind();
+    else
+      slider_->Bind();
   }
   void Unbind()
   {
     if (boolean_)
       boolean_->Unbind();
-    else
+    else if (choice_)
       choice_->Unbind();
+    else
+      slider_->Unbind();
   }
   void Invalidate()
   {
     if (boolean_)
       boolean_->Invalidate();
-    else
+    else if (choice_)
       choice_->Invalidate();
+    else
+      slider_->Invalidate();
   }
   bool failed() const
-  { return boolean_ ? boolean_->failed() : choice_->failed(); }
+  { return boolean_ ? boolean_->failed() : choice_ ? choice_->failed() : slider_->failed(); }
+  bool known() const
+  { return slider_ ? slider_->value().has_value() : value().has_value(); }
+  bool enabled() const
+  { return known() && (!sliderSetting_ || sliderSetting_->enabled()); }
+  float number() const
+  { return slider_ ? slider_->value().value_or(sliderSetting_->minimum()) : 0.0f; }
   std::optional<bool> value() const
   {
     if (boolean_)
       return boolean_->value();
+    if (!choice_)
+      return std::nullopt;
     auto selected = choice_->value();
     return selected ? std::optional<bool>(*selected == index_) : std::nullopt;
   }
@@ -55,12 +75,21 @@ public:
   {
     if (boolean_)
       return boolean_->Request(desired).outcome;
-    return desired ? choice_->Request(index_).outcome : Outcome::Unchanged;
+    return choice_ ? (desired ? choice_->Request(index_).outcome : Outcome::Unchanged) : Outcome::Rejected;
+  }
+  Outcome Request(float desired)
+  {
+    if (!slider_ || !enabled() || !std::isfinite(desired) || desired < sliderSetting_->minimum()
+        || desired > sliderSetting_->maximum())
+      return Outcome::Rejected;
+    return slider_->Request(sliderSetting_->Snap(desired)).outcome;
   }
   std::string id() const
-  { return boolean_ ? boolean_->setting().id() : group_->item_id(index_); }
+  { return boolean_ ? boolean_->setting().id() : choice_ ? group_->item_id(index_) : slider_->setting().id(); }
   std::string label() const
-  { return boolean_ ? boolean_->setting().label() : group_->labels().at(index_); }
+  {
+    return boolean_ ? boolean_->setting().label() : choice_ ? group_->labels().at(index_) : slider_->setting().label();
+  }
   class RenderScope
   {
   public:
@@ -68,19 +97,24 @@ public:
     {
       if (state.boolean_)
         boolean_.emplace(state.boolean_->setting());
-      else
+      else if (state.choice_)
         choice_.emplace(state.choice_->setting());
+      else
+        slider_.emplace(state.slider_->setting());
     }
 
   private:
-    std::optional<BooleanSetting::RenderScope>    boolean_;
-    std::optional<ValueSetting<int>::RenderScope> choice_;
+    std::optional<BooleanSetting::RenderScope>      boolean_;
+    std::optional<ValueSetting<int>::RenderScope>   choice_;
+    std::optional<ValueSetting<float>::RenderScope> slider_;
   };
 
 private:
-  std::optional<BooleanView>    boolean_;
-  std::optional<ValueView<int>> choice_;
-  ChoiceSetting*                group_ = nullptr;
-  int                           index_ = 0;
+  std::optional<BooleanView>      boolean_;
+  std::optional<ValueView<int>>   choice_;
+  std::optional<ValueView<float>> slider_;
+  SliderSetting*                  sliderSetting_ = nullptr;
+  ChoiceSetting*                  group_         = nullptr;
+  int                             index_         = 0;
 };
 } // namespace mod_settings

@@ -1,5 +1,6 @@
 #include "fc_confirmation_reset.h"
 #include "settings/boolean_view.h"
+#include "settings/forbidden_tech.h"
 #include "settings/mod_pages.h"
 #include "settings/native_view_state.h"
 
@@ -32,6 +33,9 @@ NativeCallback<int>            query;
 NativeCallback<int>            selectionGetter;
 NativeCallback<void, int>      selectionSetter;
 bool                           selectionActive = false;
+NativeCallback<float>          sliderGetter;
+NativeCallback<void, float>    sliderSetter;
+bool                           sliderActive = false;
 std::vector<PageCatalog::Page> pages;
 bool                           pagesActive = false;
 bool                           HasLabel(Il2CppObject* row, const char* id);
@@ -40,6 +44,9 @@ BooleanSetting*                SettingFor(Il2CppObject* context)
   auto& fc = FleetCommanderConfirmationSetting();
   if (HasLabel(context, fc.id().c_str()))
     return &fc;
+  auto& ft = ForbiddenTechConfirmationSetting();
+  if (HasLabel(context, ft.id().c_str()))
+    return &ft;
   for (const auto& page : pages)
     for (auto* setting : page.booleans)
       if (HasLabel(context, setting->id().c_str()))
@@ -136,20 +143,29 @@ bool Equals(Il2CppObject* value, const char* ascii)
 }
 
 struct Metadata {
-  bool selection;
-  explicit Metadata(bool selection = false) : selection(selection) {}
+  bool selection, slider;
+  explicit Metadata(bool selection = false, bool slider = false)
+      : selection(selection)
+      , slider(slider)
+  {
+  }
   IL2CppClassHelper director =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "SettingsSectionDirector");
-  IL2CppClassHelper widget =
-      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", selection ? "SelectionItemOptionWidget" : "ToggleOptionWidget");
+  IL2CppClassHelper widget  = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings",
+                                                      slider      ? "SliderOptionWidget"
+                                                      : selection ? "SelectionItemOptionWidget"
+                                                                  : "ToggleOptionWidget");
   IL2CppClassHelper context = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "SettingsContext");
-  IL2CppClassHelper row = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", selection ? "SelectionItemOptionContext" : "ToggleOptionContext");
+  IL2CppClassHelper row     = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings",
+                                                      slider      ? "SliderOptionContext"
+                                                      : selection ? "SelectionItemOptionContext"
+                                                                  : "ToggleOptionContext");
   IL2CppClassHelper prefs =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.PersistentPrefs", "PersistentPrefsManager");
   const MethodInfo* addGeneral  = director.GetMethodInfo("AddGeneralSettings", 1);
   const MethodInfo* addToggle   = context.GetMethodInfo("AddToggle", 4);
   const MethodInfo* refresh     = widget.GetMethodInfo("SetWidgetData", 0);
-  const MethodInfo* changed     = widget.GetMethodInfo("OnToggleValueChanged", 1);
+  const MethodInfo* changed     = widget.GetMethodInfo(slider ? "OnSliderValueChanged" : "OnToggleValueChanged", 1);
   const MethodInfo* release     = widget.GetMethodInfo("OnAboutToReleaseContext", 0);
   const MethodInfo* reload      = prefs.GetMethodInfo("RegisterEvents", 0);
   const MethodInfo* session     = prefs.GetMethodInfo("GameSessionStartedEventHandler", 0);
@@ -158,8 +174,8 @@ struct Metadata {
   const MethodInfo* querySetter = row.GetMethodInfo("set_QueryOptionState", 1);
   FieldInfo*        queryField  = Field(row.get_cls(), "<QueryOptionState>k__BackingField");
   FieldInfo*        labelField  = Field(widget.get_cls(), "_label");
-  FieldInfo*        toggleField = Field(widget.get_cls(), "_toggle");
-  FieldInfo*        stateField  = Field(widget.get_cls(), "_toggleStateAnimator");
+  FieldInfo*        toggleField = Field(widget.get_cls(), slider ? "_slider" : "_toggle");
+  FieldInfo*        stateField  = Field(widget.get_cls(), slider ? "_valueLabel" : "_toggleStateAnimator");
 };
 Metadata& Meta()
 {
@@ -171,8 +187,15 @@ Metadata& SelectionMeta()
   static Metadata metadata(true);
   return metadata;
 }
+Metadata& SliderMeta()
+{
+  static Metadata metadata(false, true);
+  return metadata;
+}
 Metadata& WidgetMeta(Il2CppObject* widget)
 {
+  if (sliderActive && widget && widget->klass == SliderMeta().widget.get_cls())
+    return SliderMeta();
   return selectionActive && widget && widget->klass == SelectionMeta().widget.get_cls() ? SelectionMeta() : Meta();
 }
 std::pair<ChoiceSetting*, int> ChoiceFor(Il2CppObject* context)
@@ -180,26 +203,36 @@ std::pair<ChoiceSetting*, int> ChoiceFor(Il2CppObject* context)
   for (const auto& page : pages)
     if (page.choice)
       for (int i = 0; i < static_cast<int>(page.choice->labels().size()); ++i)
-        if (HasLabel(context, page.choice->item_id(i).c_str())) return {page.choice, i};
+        if (HasLabel(context, page.choice->item_id(i).c_str()))
+          return {page.choice, i};
   return {nullptr, 0};
+}
+
+SliderSetting* SliderFor(Il2CppObject* context)
+{
+  for (const auto& page : pages)
+    for (auto* setting : page.sliders)
+      if (HasLabel(context, setting->state().id().c_str()))
+        return setting;
+  return nullptr;
 }
 
 // Fixed weak records: no page, context, delegate, or account is retained by UI
 // bookkeeping. Records are released on native unbind and reclaimed on next bind
 // if Unity destroys a widget without sending that notification.
 struct View {
-  Il2CppGCHandle                widget = nullptr, context = nullptr, label = nullptr;
-  Il2CppGCHandle                selectionControl = nullptr;
-  std::array<Il2CppGCHandle, 2> indicators{};
-  std::array<bool, 2>           activeBefore{};
-  bool                          overridden          = false;
-  bool                          hidden              = false;
-  bool                          disabled            = false;
-  bool                          interactableBefore  = false;
-  bool                          rendering           = false;
-  bool                          binding             = false;
-  bool                          requesting          = false;
-  bool                          preserveNextRefresh = false;
+  Il2CppGCHandle                 widget = nullptr, context = nullptr, label = nullptr;
+  Il2CppGCHandle                 selectionControl = nullptr;
+  std::array<Il2CppGCHandle, 2>  indicators{};
+  std::array<bool, 2>            activeBefore{};
+  bool                           overridden          = false;
+  bool                           hidden              = false;
+  bool                           disabled            = false;
+  bool                           interactableBefore  = false;
+  bool                           rendering           = false;
+  bool                           binding             = false;
+  bool                           requesting          = false;
+  bool                           preserveNextRefresh = false;
   std::optional<NativeViewState> state;
 };
 std::array<View, ViewLimit>& Views()
@@ -207,8 +240,8 @@ std::array<View, ViewLimit>& Views()
   static std::array<View, ViewLimit> views;
   return views;
 }
-View*         renderingView  = nullptr;
-View*         bindingView    = nullptr;
+View*         renderingView = nullptr;
+View*         bindingView   = nullptr;
 Il2CppObject* Target(Il2CppGCHandle handle)
 { return handle ? il2cpp_gchandle_get_target(handle) : nullptr; }
 void Free(Il2CppGCHandle& handle)
@@ -274,11 +307,15 @@ bool Owned(Il2CppObject* context)
   if (!context)
     return false;
   const bool selection = selectionActive && context->klass == SelectionMeta().row.get_cls();
-  if (!selection && context->klass != Meta().row.get_cls()) return false;
-  auto& meta = selection ? SelectionMeta() : Meta();
+  const bool slider    = sliderActive && context->klass == SliderMeta().row.get_cls();
+  if (!selection && !slider && context->klass != Meta().row.get_cls())
+    return false;
+  auto& meta     = slider ? SliderMeta() : selection ? SelectionMeta() : Meta();
   auto* callback = reinterpret_cast<Il2CppDelegate*>(ReadField(context, meta.queryField));
   return callback && callback->method == query.method() && callback->method_ptr == query.method()->methodPointer
-         && (selection ? ChoiceFor(context).first != nullptr : SettingFor(context) != nullptr);
+         && (slider      ? SliderFor(context) != nullptr
+             : selection ? ChoiceFor(context).first != nullptr
+                         : SettingFor(context) != nullptr);
 }
 bool ChildOf(Il2CppObject* transform, Il2CppObject* parent)
 {
@@ -291,7 +328,7 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
     if (Target(view.widget) || view.rendering || view.binding || view.requesting)
       continue;
     Clear(view);
-    auto& metadata = WidgetMeta(widget);
+    auto&                        metadata = WidgetMeta(widget);
     Root                         label(ReadField(widget, metadata.labelField));
     Root                         widgetTransform(Call(widget, "get_transform"));
     Root                         labelTransform(Call(label.get(), "get_transform"));
@@ -300,13 +337,12 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
     Root                         first(Call(indicators[0], "get_gameObject"));
     Root                         second(Call(indicators[1], "get_gameObject"));
     indicators = {first.get(), second.get()};
-    Root selectionControl(metadata.selection ? ReadField(widget, metadata.toggleField) : nullptr);
+    Root selectionControl(metadata.selection || metadata.slider ? ReadField(widget, metadata.toggleField) : nullptr);
     if (metadata.selection) {
       // Selection prefabs can put the toggle/animator on the entire row. Never
       // hide those containers: unknown selection renders -1 and disables input.
       Root transform(Call(selectionControl.get(), "get_transform"));
-      if (!ChildOf(transform.get(), widgetTransform.get())
-          || !ChildOf(labelTransform.get(), widgetTransform.get()))
+      if (!ChildOf(transform.get(), widgetTransform.get()) || !ChildOf(labelTransform.get(), widgetTransform.get()))
         throw std::runtime_error("selection control hierarchy");
       (void)Boolean(Call(selectionControl.get(), "get_interactable"));
     } else {
@@ -325,21 +361,28 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
           throw std::runtime_error("settings weak root");
         return handle;
       };
-      view.widget   = weak(widget);
-      view.context  = weak(context);
-      if (metadata.selection) {
+      view.widget  = weak(widget);
+      view.context = weak(context);
+      if (metadata.slider) {
+        auto* setting = SliderFor(context);
+        if (!setting)
+          throw std::runtime_error("slider owner missing");
+        view.state.emplace(*setting);
+      } else if (metadata.selection) {
         auto [setting, index] = ChoiceFor(context);
-        if (!setting) throw std::runtime_error("selection owner missing");
+        if (!setting)
+          throw std::runtime_error("selection owner missing");
         view.state.emplace(*setting, index);
       } else {
         auto* setting = SettingFor(context);
-        if (!setting) throw std::runtime_error("settings owner missing");
+        if (!setting)
+          throw std::runtime_error("settings owner missing");
         view.state.emplace(*setting);
       }
       view.label = weak(label.get());
-      if (metadata.selection)
+      if (metadata.selection || metadata.slider)
         view.selectionControl = weak(selectionControl.get());
-      else
+      if (!metadata.selection)
         for (std::size_t i = 0; i < indicators.size(); ++i)
           view.indicators[i] = weak(indicators[i]);
     } catch (...) {
@@ -359,7 +402,10 @@ bool GetEnabled(Il2CppObject*, const MethodInfo*)
 }
 int GetSelected(Il2CppObject*, const MethodInfo*)
 { return renderingView && renderingView->state ? renderingView->state->selected() : -1; }
-void SetSelected(Il2CppObject*, int, const MethodInfo*) {}
+void  SetSelected(Il2CppObject*, int, const MethodInfo*) {}
+float GetNumber(Il2CppObject*, const MethodInfo*)
+{ return renderingView && renderingView->state ? renderingView->state->number() : 0.0f; }
+void SetNumber(Il2CppObject*, float, const MethodInfo*) {}
 void SetEnabled(Il2CppObject*, bool, const MethodInfo*)
 {
   // Deliberately inert. Only OnToggleValueChanged with a live view snapshot can
@@ -472,6 +518,7 @@ void AddRow(Il2CppObject* director, Il2CppObject* context)
   if (!category.get())
     throw std::runtime_error("settings confirmation category");
   AddBooleanRow(director, context, category.get(), FleetCommanderConfirmationSetting());
+  AddBooleanRow(director, context, category.get(), ForbiddenTechConfirmationSetting());
 }
 void Render(View& view, auto original, Il2CppObject* widget)
 {
@@ -479,8 +526,8 @@ void Render(View& view, auto original, Il2CppObject* widget)
     return;
   Root boundContext(Target(view.context));
   struct Scope {
-    View&                       view;
-    View*                       previous;
+    View&                        view;
+    View*                        previous;
     NativeViewState::RenderScope suppress;
     Scope(View& view)
         : view(view)
@@ -505,22 +552,25 @@ void Render(View& view, auto original, Il2CppObject* widget)
   // The native row has limited label width: "Change not applied; try again" was
   // visibly truncated after "; tr" alongside the FC label. Keep these suffixes
   // short; recheck the full label at supported UI scales when changing wording.
-  if (!view.state->value())
+  if (!view.state->known())
     text += " — Reopen to retry";
   else if (view.state->failed())
     text += " — Retry";
+  else if (!view.state->enabled())
+    text += " — Select Threshold";
   Root  message(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(text.c_str())));
   void* args[] = {message.get()};
   Call(label.get(), "OverrideLocalizedText", 1, args);
   view.overridden = true;
-  if (!view.state->value()) {
+  if (!view.state->enabled()) {
     if (auto* control = Target(view.selectionControl)) {
       view.interactableBefore = Boolean(Call(control, "get_interactable"));
-      view.disabled = true;
-      bool interactable = false;
-      void* controlArgs[] = {&interactable};
+      view.disabled           = true;
+      bool  interactable      = false;
+      void* controlArgs[]     = {&interactable};
       Call(control, "set_interactable", 1, controlArgs);
-      return;
+      if (WidgetMeta(widget).selection || view.state->known())
+        return;
     }
     // Capture all native values first (the two components may share a node).
     for (std::size_t i = 0; i < view.indicators.size(); ++i)
@@ -661,43 +711,74 @@ void PageDestroyedHook(auto original, Il2CppObject* controller)
 
 void AddChoiceRows(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent, ChoiceSetting& setting)
 {
-  if (!selectionActive) return;
-  auto& m = SelectionMeta();
+  if (!selectionActive)
+    return;
+  auto&       m   = SelectionMeta();
   const auto* add = m.context.GetMethodInfo("AddSelection", 6);
-  Root children(Call(parent, "get_Children"));
-  const int before = Count(children.get());
-  const auto count = setting.labels().size();
-  if (before + count > 128) throw std::runtime_error("selection category capacity");
-  Root values(reinterpret_cast<Il2CppObject*>(il2cpp_array_new(
-      il2cpp_class_from_name(il2cpp_get_corlib(), "System", "String"), count)));
+  Root        children(Call(parent, "get_Children"));
+  const int   before = Count(children.get());
+  const auto  count  = setting.labels().size();
+  if (before + count > 128)
+    throw std::runtime_error("selection category capacity");
+  Root values(reinterpret_cast<Il2CppObject*>(
+      il2cpp_array_new(il2cpp_class_from_name(il2cpp_get_corlib(), "System", "String"), count)));
   for (std::size_t i = 0; i < count; ++i) {
-    Root value(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.item_id(static_cast<int>(i)).c_str())));
+    Root  value(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.item_id(static_cast<int>(i)).c_str())));
     auto* array = reinterpret_cast<Il2CppArraySize*>(values.get());
     il2cpp_gc_wbarrier_set_field(values.get(), reinterpret_cast<void**>(&array->vector[i]), value.get());
   }
-  Root label(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.state().id().c_str())));
-  Root category(reinterpret_cast<Il2CppObject*>(il2cpp_string_new("")));
-  Root get(MakeDelegate(il2cpp_class_from_type(add->parameters[3]), director, selectionGetter.method()));
-  Root set(MakeDelegate(il2cpp_class_from_type(add->parameters[4]), director, selectionSetter.method()));
+  Root  label(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.state().id().c_str())));
+  Root  category(reinterpret_cast<Il2CppObject*>(il2cpp_string_new("")));
+  Root  get(MakeDelegate(il2cpp_class_from_type(add->parameters[3]), director, selectionGetter.method()));
+  Root  set(MakeDelegate(il2cpp_class_from_type(add->parameters[4]), director, selectionSetter.method()));
   void* args[] = {parent, label.get(), values.get(), get.get(), set.get(), category.get()};
   Invoke(add, context, args);
   if (Count(children.get()) != before + static_cast<int>(count))
     throw std::runtime_error("selection row insertion");
   for (int i = 0; i < static_cast<int>(count); ++i) {
     Root row(Item(children.get(), before + i));
-    if (row.get()->klass != m.row.get_cls()) throw std::runtime_error("selection row class");
+    if (row.get()->klass != m.row.get_cls())
+      throw std::runtime_error("selection row class");
     Root index(Call(row.get(), "get_Index"));
     if (!index.get() || !Type(il2cpp_class_get_type(index.get()->klass), IL2CPP_TYPE_I4)
         || *static_cast<int*>(il2cpp_object_unbox(index.get())) != i)
       throw std::runtime_error("selection row index");
-    Root text(Call(row.get(), "get_LabelContext"));
-    Root id(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.item_id(i).c_str())));
+    Root  text(Call(row.get(), "get_LabelContext"));
+    Root  id(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.item_id(i).c_str())));
     void* labelArgs[] = {id.get()};
     Call(text.get(), "set_Identifier", 1, labelArgs);
-    Root state(MakeDelegate(il2cpp_class_from_type(m.querySetter->parameters[0]), director, query.method()));
+    Root  state(MakeDelegate(il2cpp_class_from_type(m.querySetter->parameters[0]), director, query.method()));
     void* stateArgs[] = {state.get()};
     Invoke(m.querySetter, row.get(), stateArgs);
   }
+}
+
+void AddSliderRow(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent, SliderSetting& setting)
+{
+  if (!sliderActive)
+    return;
+  auto&       m   = SliderMeta();
+  const auto* add = m.context.GetMethodInfo("AddSlider", 9);
+  Root        children(Call(parent, "get_Children"));
+  const int   before = Count(children.get());
+  if (before == 128)
+    throw std::runtime_error("slider category capacity");
+  Root  label(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.state().id().c_str())));
+  Root  get(MakeDelegate(il2cpp_class_from_type(add->parameters[2]), director, sliderGetter.method()));
+  Root  set(MakeDelegate(il2cpp_class_from_type(add->parameters[3]), director, sliderSetter.method()));
+  Root  state(MakeDelegate(il2cpp_class_from_type(add->parameters[4]), director, query.method()));
+  bool  whole   = false;
+  float minimum = setting.minimum(), maximum = setting.maximum();
+  void* args[] = {parent, label.get(), get.get(), set.get(), state.get(), nullptr, &whole, &minimum, &maximum};
+  Invoke(add, context, args);
+  if (Count(children.get()) != before + 1)
+    throw std::runtime_error("slider row insertion");
+  Root row(Item(children.get(), before));
+  if (row.get()->klass != m.row.get_cls() || !HasLabel(row.get(), setting.state().id().c_str()))
+    throw std::runtime_error("slider row identity");
+  int   percentage  = 1; // SliderOptionLabelType.Percentage; value stays normalized 0..1.
+  void* labelArgs[] = {&percentage};
+  Call(row.get(), "set_LabelType", 1, labelArgs);
 }
 
 void AddPages(Il2CppObject* director, Il2CppObject* context)
@@ -732,6 +813,8 @@ void AddPages(Il2CppObject* director, Il2CppObject* context)
         AddBooleanRow(director, context, category.get(), *setting);
       if (page.choice)
         AddChoiceRows(director, context, category.get(), *page.choice);
+      for (auto* setting : page.sliders)
+        AddSliderRow(director, context, category.get(), *setting);
     }
     // Unsupported leaf adapters can leave empty groups; remove them bottom-up.
     for (auto it = pages.rbegin(); it != pages.rend(); ++it) {
@@ -796,9 +879,18 @@ void RefreshHook(auto original, Il2CppObject* widget)
       struct Binding {
         View& view;
         View* previous;
-        explicit Binding(View& view) : view(view), previous(bindingView)
-        { view.binding = true; bindingView = &view; }
-        ~Binding() { view.binding = false; bindingView = previous; }
+        explicit Binding(View& view)
+            : view(view)
+            , previous(bindingView)
+        {
+          view.binding = true;
+          bindingView  = &view;
+        }
+        ~Binding()
+        {
+          view.binding = false;
+          bindingView  = previous;
+        }
       } binding(*view);
       if (!view->preserveNextRefresh)
         view->state->Bind();
@@ -845,7 +937,7 @@ void RefreshViews()
     }
   }
 }
-void ChangedHook(auto original, Il2CppObject* widget, bool desired)
+void ChangeValue(auto original, Il2CppObject* widget, auto desired)
 {
   if (!OnThread()) {
     original(widget, desired);
@@ -887,6 +979,10 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
   }
   original(widget, desired);
 }
+void ChangedHook(auto original, Il2CppObject* widget, bool desired)
+{ ChangeValue(original, widget, desired); }
+void SliderChangedHook(auto original, Il2CppObject* widget, float desired)
+{ ChangeValue(original, widget, desired); }
 void ReleaseHook(auto original, Il2CppObject* widget)
 {
   if (OnThread()) {
@@ -902,8 +998,13 @@ void ReleaseHook(auto original, Il2CppObject* widget)
 void Invalidate()
 {
   InvalidateFleetCommanderConfirmationSession();
+  ForbiddenTechConfirmationSetting().InvalidateSession();
   for (const auto& page : pages)
-    if (page.choice) page.choice->state().InvalidateSession();
+    for (auto* setting : page.sliders)
+      setting->state().InvalidateSession();
+  for (const auto& page : pages)
+    if (page.choice)
+      page.choice->state().InvalidateSession();
   for (const auto& page : pages)
     for (auto* setting : page.booleans)
       if (setting != &FleetCommanderConfirmationSetting())
@@ -954,7 +1055,7 @@ bool Extent(const MethodInfo* method)
 
 #ifdef _MODDBG
 View* writeProbeOuter = nullptr;
-bool ReentryProbeEnabled()
+bool  ReentryProbeEnabled()
 {
   const auto* enabled = std::getenv("STFC_MOD_SETTINGS_NAV_REENTRY_TEST");
   return enabled && std::strcmp(enabled, "1") == 0;
@@ -964,9 +1065,9 @@ void ExerciseReadReentry()
   static bool exercised = false;
   if (exercised || !bindingView || !ReentryProbeEnabled())
     return;
-  exercised = true;
+  exercised      = true;
   auto* previous = bindingView;
-  Root widget(Target(previous->widget));
+  Root  widget(Target(previous->widget));
   // Exercise the actual release bookkeeping and refresh path inside a reader.
   // Keep the native context bound so this is independent of game navigation.
   Clear(*previous);
@@ -980,7 +1081,7 @@ void ExerciseNestedWrite()
   static bool exercised = false;
   if (exercised || !ReentryProbeEnabled())
     return;
-  View* outer = nullptr;
+  View* outer  = nullptr;
   View* nested = nullptr;
   for (auto& view : Views()) {
     if (!Target(view.widget) || !view.state)
@@ -994,12 +1095,14 @@ void ExerciseNestedWrite()
     return;
   exercised = true;
   struct Scope {
-    explicit Scope(View* outer) { writeProbeOuter = outer; }
-    ~Scope() { writeProbeOuter = nullptr; }
+    explicit Scope(View* outer)
+    { writeProbeOuter = outer; }
+    ~Scope()
+    { writeProbeOuter = nullptr; }
   } scope(outer);
-  Root widget(Target(nested->widget));
-  bool desired = !nested->state->value().value_or(false);
-  void* args[] = {&desired};
+  Root  widget(Target(nested->widget));
+  bool  desired = !nested->state->value().value_or(false);
+  void* args[]  = {&desired};
   Invoke(Meta().changed, widget.get(), args);
 }
 void RebindOuterWrite()
@@ -1026,26 +1129,31 @@ void InstallPages()
     catalog.AddPage("community_mod.test", "Infrastructure Test", "community_mod.settings");
     catalog.AddPage("community_mod.test.nested", "Nested Group", "community_mod.test");
     catalog.AddBoolean("community_mod.test.nested", FleetCommanderConfirmationSetting());
-    static bool value = false;
+    static bool           value = false;
     static BooleanSetting fixture({"community_mod.test.enabled", "[MOD] Infrastructure test toggle",
-      [] { ExerciseReadReentry(); return ReadResult::Known(value, 1); },
-      [](bool desired, std::uint64_t generation) {
-        if (generation != 1) return ApplyResult::Rejected;
-        ExerciseNestedWrite();
-        value = desired;
-        return ApplyResult::Applied;
-      }});
+                                   [] {
+                                     ExerciseReadReentry();
+                                     return ReadResult::Known(value, 1);
+                                   },
+                                   [](bool desired, std::uint64_t generation) {
+                                     if (generation != 1)
+                                       return ApplyResult::Rejected;
+                                     ExerciseNestedWrite();
+                                     value = desired;
+                                     return ApplyResult::Applied;
+                                   }});
     catalog.AddBoolean("community_mod.test.nested", fixture);
     if (ReentryProbeEnabled()) {
-      static bool nestedValue = false;
+      static bool           nestedValue = false;
       static BooleanSetting nestedFixture({"community_mod.test.nested_write", "[MOD] Nested write test toggle",
-        [] { return ReadResult::Known(nestedValue, 1); },
-        [](bool desired, std::uint64_t generation) {
-          if (generation != 1) return ApplyResult::Rejected;
-          RebindOuterWrite();
-          nestedValue = desired;
-          return ApplyResult::Applied;
-        }});
+                                           [] { return ReadResult::Known(nestedValue, 1); },
+                                           [](bool desired, std::uint64_t generation) {
+                                             if (generation != 1)
+                                               return ApplyResult::Rejected;
+                                             RebindOuterWrite();
+                                             nestedValue = desired;
+                                             return ApplyResult::Applied;
+                                           }});
       catalog.AddBoolean("community_mod.test.nested", nestedFixture);
     }
   }
@@ -1072,10 +1180,10 @@ void InstallPages()
       || !Reference(m.add->parameters[3]) || !Reference(m.selected->parameters[0]))
     throw std::runtime_error("settings category signature");
   if (std::any_of(pages.begin(), pages.end(), [](const auto& page) { return page.choice; })) {
-    auto& selection = SelectionMeta();
-    const auto* get = selection.director.GetMethodInfo("GetQualityOptionSelectedIndex", 0);
-    const auto* set = selection.director.GetMethodInfo("OnQualityOptionSelected", 1);
-    const auto* add = selection.context.GetMethodInfo("AddSelection", 6);
+    auto&       selection = SelectionMeta();
+    const auto* get       = selection.director.GetMethodInfo("GetQualityOptionSelectedIndex", 0);
+    const auto* set       = selection.director.GetMethodInfo("OnQualityOptionSelected", 1);
+    const auto* add       = selection.context.GetMethodInfo("AddSelection", 6);
     if (!Instance(get, 0, IL2CPP_TYPE_I4) || !Instance(set, 1, IL2CPP_TYPE_VOID)
         || !Type(set->parameters[0], IL2CPP_TYPE_I4) || !Instance(add, 6, IL2CPP_TYPE_VOID)
         || !Reference(add->parameters[0]) || !Type(add->parameters[1], IL2CPP_TYPE_STRING)
@@ -1093,11 +1201,13 @@ void InstallPages()
       if (i == 1 && !Type(targets[i]->parameters[0], IL2CPP_TYPE_BOOLEAN))
         throw std::runtime_error("selection changed signature");
       for (std::size_t j = 0; j < i; ++j)
-        if (targets[i]->methodPointer == targets[j]->methodPointer) throw std::runtime_error("selection shared hook");
+        if (targets[i]->methodPointer == targets[j]->methodPointer)
+          throw std::runtime_error("selection shared hook");
       const auto& core = Meta();
       for (auto* existing : {core.refresh, core.changed, core.release, core.addGeneral, core.reload, core.session,
-                            core.load, m.bind, m.release, m.selected, m.destroyed})
-        if (targets[i]->methodPointer == existing->methodPointer) throw std::runtime_error("selection hook overlap");
+                             core.load, m.bind, m.release, m.selected, m.destroyed})
+        if (targets[i]->methodPointer == existing->methodPointer)
+          throw std::runtime_error("selection hook overlap");
     }
     for (const auto& page : pages)
       if (page.choice && !page.choice->state().SetChangeObserver(RefreshViews))
@@ -1106,6 +1216,53 @@ void InstallPages()
     SPUD_STATIC_DETOUR(selection.changed->methodPointer, ChangedHook);
     SPUD_STATIC_DETOUR(selection.release->methodPointer, ReleaseHook);
     selectionActive = true;
+  }
+  if (std::any_of(pages.begin(), pages.end(), [](const auto& page) { return !page.sliders.empty(); })) {
+    auto&       slider    = SliderMeta();
+    const auto* get       = slider.director.GetMethodInfo("GetCurrentShadowsIndex", 0);
+    const auto* set       = slider.director.GetMethodInfo("OnShadowsSettingChanged", 1);
+    const auto* add       = slider.context.GetMethodInfo("AddSlider", 9);
+    const auto* labelType = slider.row.GetMethodInfo("set_LabelType", 1);
+    if (!Instance(get, 0, IL2CPP_TYPE_R4) || !Instance(set, 1, IL2CPP_TYPE_VOID)
+        || !Type(set->parameters[0], IL2CPP_TYPE_R4) || !Instance(add, 9, IL2CPP_TYPE_VOID)
+        || !Reference(add->parameters[0]) || !Type(add->parameters[1], IL2CPP_TYPE_STRING)
+        || !Reference(add->parameters[2]) || !Reference(add->parameters[3]) || !Reference(add->parameters[4])
+        || !Type(add->parameters[5], IL2CPP_TYPE_SZARRAY) || !Type(add->parameters[6], IL2CPP_TYPE_BOOLEAN)
+        || !Type(add->parameters[7], IL2CPP_TYPE_R4) || !Type(add->parameters[8], IL2CPP_TYPE_R4)
+        || !Instance(labelType, 1, IL2CPP_TYPE_VOID) || !Type(labelType->parameters[0], IL2CPP_TYPE_VALUETYPE)
+        || !il2cpp_class_is_enum(il2cpp_class_from_type(labelType->parameters[0]))
+        || !Type(il2cpp_class_enum_basetype(il2cpp_class_from_type(labelType->parameters[0])), IL2CPP_TYPE_I4)
+        || !slider.getContext || !Reference(slider.getContext->return_type)
+        || !Instance(slider.getContext, 0, slider.getContext->return_type->type)
+        || !sliderGetter.Initialize(get, GetNumber) || !sliderSetter.Initialize(set, SetNumber))
+      throw std::runtime_error("slider callback schema");
+    const std::array targets{slider.refresh, slider.changed, slider.release};
+    for (std::size_t i = 0; i < targets.size(); ++i) {
+      if (!Instance(targets[i], i == 1 ? 1 : 0, IL2CPP_TYPE_VOID) || !Extent(targets[i]))
+        throw std::runtime_error("slider hook metadata/extent");
+      if (i == 1 && !Type(targets[i]->parameters[0], IL2CPP_TYPE_R4))
+        throw std::runtime_error("slider changed signature");
+      for (std::size_t j = 0; j < i; ++j)
+        if (targets[i]->methodPointer == targets[j]->methodPointer)
+          throw std::runtime_error("slider shared hook");
+      const auto& core = Meta();
+      for (auto* existing : {core.refresh, core.changed, core.release, core.addGeneral, core.reload, core.session,
+                             core.load, m.bind, m.release, m.selected, m.destroyed})
+        if (targets[i]->methodPointer == existing->methodPointer)
+          throw std::runtime_error("slider hook overlap");
+      if (selectionActive)
+        for (auto* existing : {SelectionMeta().refresh, SelectionMeta().changed, SelectionMeta().release})
+          if (targets[i]->methodPointer == existing->methodPointer)
+            throw std::runtime_error("slider selection overlap");
+    }
+    for (const auto& page : pages)
+      for (auto* setting : page.sliders)
+        if (!setting->state().SetChangeObserver(RefreshViews))
+          throw std::runtime_error("slider observer ownership");
+    SPUD_STATIC_DETOUR(slider.refresh->methodPointer, RefreshHook);
+    SPUD_STATIC_DETOUR(slider.changed->methodPointer, SliderChangedHook);
+    SPUD_STATIC_DETOUR(slider.release->methodPointer, ReleaseHook);
+    sliderActive = true;
   }
   for (const auto& page : pages)
     for (auto* setting : page.booleans) {
@@ -1155,6 +1312,8 @@ void InstallModConfirmationSettings()
       throw std::runtime_error("settings callback schema");
     uiThread = std::this_thread::get_id();
     if (!FleetCommanderConfirmationSetting().SetChangeObserver(RefreshViews))
+      throw std::runtime_error("settings observer ownership");
+    if (!ForbiddenTechConfirmationSetting().SetChangeObserver(RefreshViews))
       throw std::runtime_error("settings observer ownership");
     SPUD_STATIC_DETOUR(m.refresh->methodPointer, RefreshHook);
     SPUD_STATIC_DETOUR(m.changed->methodPointer, ChangedHook);

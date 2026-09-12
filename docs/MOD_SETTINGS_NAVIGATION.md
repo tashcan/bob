@@ -7,7 +7,8 @@ its stored setting or introduce another copy of its value. Confirmation controls
 continue to belong on the native confirmation page.
 
 `PageCatalog` holds stable page IDs, labels, parent IDs and references to existing
-`BooleanSetting` instances or a `ChoiceSetting` per selection page. Parents register first; invalid parents, duplicate
+`BooleanSetting` instances, a `ChoiceSetting` per selection page, and `SliderSetting`
+instances alongside those controls. Parents register first; invalid parents, duplicate
 pages and conflicting setting owners are rejected. The same setting can appear
 on different pages, with the same authoritative read/write adapter. Registration
 freezes at the first build. Definitions and setting owners outlive their views.
@@ -38,7 +39,9 @@ callback lifetime; repeated navigation/pooling remains a runtime gate.
 
 Register through `ModPages()` before settings installation. The first production
 group is Navigation > Instant warp mode, sharing Alt+I's owner and persistence.
-Other groups remain undecided. Native confirmation placement remains unchanged.
+Fleet Labels adds player/non-player pages with detail choices and a percentage
+slider. Future grouping follows the section-based direction in
+[MOD_SETTINGS_CONTROLS.md](MOD_SETTINGS_CONTROLS.md). Native confirmation placement remains unchanged.
 Selection controls share the typed setting/view guards with booleans and retain
 the whole integer value in each row snapshot. Three selection-widget hooks have
 verified Windows x64 extents of 146, 355 and 281 bytes. Selection prefabs may put
@@ -49,7 +52,7 @@ The current native bridge shares the `ModConfirmationSettings` patch installatio
 and its debug installation switch. Disabling that patch disables both native UI
 surfaces. Settings retain their own identity and persistence independently of it.
 The shared native adapter currently supports eight simultaneously bound mod
-rows across pages (boolean and selection). Plan populated groups within that existing limit;
+rows across pages (boolean, selection and slider). Plan populated groups within that existing limit;
 catalog registration does not itself guarantee native widget capacity.
 
 For a temporary Windows debug navigation fixture, launch with
@@ -72,9 +75,9 @@ that the outer request's slot stays protected. Revisit afterward to check readba
 
 Persistence stays with explicit feature adapters. A live mod change and its
 asynchronous save result are distinct; page construction never calls the TOML
-writer. The current writer supports its one known mode setting. This work does
-not add arbitrary TOML browsing, a second save worker, automatic config hot reload,
-sliders/selection abstractions without a consumer, or speculative profiler options.
+writer. The writer registers the mode, fleet-label and FT keys and keeps pending
+changes per setting on one worker. This work does not add arbitrary TOML browsing,
+a second save worker, automatic config hot reload, or speculative profiler options.
 
 Run `tests/run-settings.ps1` on Windows or `bash tests/run-settings.sh` on macOS.
 The catalog fixture covers repeated builds, empty branches, registration failures,

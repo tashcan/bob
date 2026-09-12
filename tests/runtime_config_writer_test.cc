@@ -36,7 +36,7 @@ Outcome Save(TomlEditor&, const std::filesystem::path&, const Request& request)
   }
   return Outcome::Saved;
 }
-void Report(Outcome)
+void Report(std::string_view, std::string_view, Outcome)
 {
   std::unique_lock lock(gate);
   ++reports;
@@ -138,6 +138,30 @@ int main()
         release_report = true;
         changed.notify_all();
       }
+    }
+    Begin(Outcome::Saved);
+    {
+      RuntimeConfigWriter writer("unused", Value{std::string("none")});
+      Check(writer.Register("graphics", "threshold", Value{0.5}));
+      Check(!writer.Submit("other", "unregistered", true));
+      writer.Submit("warp");
+      AwaitSave();
+      Check(!writer.Register("graphics", "late", Value{true}));
+      writer.Submit("graphics", "threshold", 0.6, 150ms);
+      writer.Submit("jump");
+      writer.Submit("graphics", "threshold", 0.7, 150ms);
+      writer.Stop(false); // Drain also flushes a slider whose delay has not expired.
+      Release();
+      const auto deadline = std::chrono::steady_clock::now() + 5s;
+      while (!writer.PollStopped()) {
+        Check(std::chrono::steady_clock::now() < deadline);
+        std::this_thread::yield();
+      }
+      Check(requests.size() == 3);
+      Check(requests[1].key == "auto_confirm_instant_warp" && requests[1].desired == Value{std::string("jump")});
+      Check(requests[1].expected == std::optional<Value>{std::string("warp")});
+      Check(requests[2].key == "threshold" && requests[2].desired == Value{0.7});
+      Check(requests[2].expected == std::optional<Value>{0.5});
     }
     RuntimeConfigWriter idle("unused", std::nullopt);
     idle.Stop(false);

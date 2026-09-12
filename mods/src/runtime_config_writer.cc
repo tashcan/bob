@@ -1,4 +1,5 @@
 #include "runtime_config_writer.h"
+#include <algorithm>
 
 #if _WIN32
 #include <Windows.h>
@@ -12,10 +13,8 @@ namespace config_edit
 {
 RuntimeConfigWriter::RuntimeConfigWriter(std::filesystem::path path, std::optional<Value> initial, Reporter report)
     : path_(std::move(path))
-    , saved_(std::move(initial))
     , report_(report)
-{
-}
+{ saved_.emplace(Key{"ui", "auto_confirm_instant_warp"}, std::move(initial)); }
 
 RuntimeConfigWriter::~RuntimeConfigWriter()
 {
@@ -28,16 +27,34 @@ std::uint64_t RuntimeConfigWriter::Submit(std::string mode)
 {
   if (mode != "none" && mode != "warp" && mode != "jump")
     return 0;
+  return Submit("ui", "auto_confirm_instant_warp", std::move(mode));
+}
+
+bool RuntimeConfigWriter::Register(std::string section, std::string key, std::optional<Value> initial)
+{
   std::lock_guard lock(mutex_);
-  if (stopping_ || cancel_pending_.load())
+  if (worker_.joinable() || stopping_ || section.empty() || key.empty())
+    return false;
+  return saved_.emplace(Key{std::move(section), std::move(key)}, std::move(initial)).second;
+}
+
+std::uint64_t RuntimeConfigWriter::Submit(std::string section, std::string key, Value desired,
+                                          std::chrono::milliseconds delay)
+{
+  std::lock_guard lock(mutex_);
+  const Key       identity{section, key};
+  const auto      saved = saved_.find(identity);
+  if (stopping_ || cancel_pending_.load() || saved == saved_.end())
     return 0;
-  pending_ = Pending{++revision_, {"ui", "auto_confirm_instant_warp", saved_, std::move(mode)}};
+  pending_.insert_or_assign(identity, Pending{++revision_,
+                                              {std::move(section), std::move(key), saved->second, std::move(desired)},
+                                              std::chrono::steady_clock::now() + delay});
   has_work_.store(true);
   if (!worker_.joinable()) {
     try {
       worker_ = std::thread(&RuntimeConfigWriter::Run, this);
     } catch (...) {
-      pending_.reset();
+      pending_.clear();
       has_work_.store(false);
       completion_ = {revision_, Outcome::IoError};
       return 0;
@@ -53,9 +70,9 @@ void RuntimeConfigWriter::Stop(bool cancel_pending)
     RequestCancelPending();
   std::lock_guard lock(mutex_);
   stopping_ = true;
-  if (cancel_pending && pending_) {
-    completion_ = {pending_->revision, Outcome::Cancelled};
-    pending_.reset();
+  if (cancel_pending && !pending_.empty()) {
+    completion_ = {revision_, Outcome::Cancelled};
+    pending_.clear();
   }
   wake_.notify_one();
 }
@@ -78,17 +95,24 @@ void RuntimeConfigWriter::Run()
     Pending work;
     {
       std::unique_lock lock(mutex_);
-      wake_.wait(lock, [&] { return stopping_ || cancel_pending_.load() || pending_.has_value(); });
+      wake_.wait(lock, [&] { return stopping_ || cancel_pending_.load() || !pending_.empty(); });
       if (cancel_pending_.load()) {
         stopping_ = true;
-        if (pending_)
-          completion_ = {pending_->revision, Outcome::Cancelled};
-        pending_.reset();
+        if (!pending_.empty())
+          completion_ = {revision_, Outcome::Cancelled};
+        pending_.clear();
       }
-      if (!pending_)
+      if (pending_.empty())
         break;
-      work = std::move(*pending_);
-      pending_.reset();
+      auto next = std::min_element(pending_.begin(), pending_.end(),
+                                   [](const auto& a, const auto& b) { return a.second.ready < b.second.ready; });
+      if (!stopping_ && next->second.ready > std::chrono::steady_clock::now()) {
+        const auto deadline = next->second.ready;
+        wake_.wait_until(lock, deadline);
+        continue; // New submissions may move a deadline; orderly stop flushes it.
+      }
+      work = std::move(next->second);
+      pending_.erase(next);
     }
     Outcome outcome;
     try {
@@ -101,23 +125,25 @@ void RuntimeConfigWriter::Run()
       if (outcome == Outcome::Saved || outcome == Outcome::AlreadySaved) {
         // Rebase our queued intent over our own successful write, never over a
         // conflicting external edit. Failed saves leave the acknowledged value alone.
-        if (pending_ && pending_->edit.expected == saved_)
-          pending_->edit.expected = work.edit.desired;
-        saved_ = work.edit.desired;
+        const Key identity{work.edit.section, work.edit.key};
+        auto&     saved = saved_.at(identity);
+        if (auto pending = pending_.find(identity); pending != pending_.end() && pending->second.edit.expected == saved)
+          pending->second.edit.expected = work.edit.desired;
+        saved = work.edit.desired;
       }
       if (work.revision >= completion_.revision)
         completion_ = {work.revision, outcome};
     }
     if (report_ && outcome != Outcome::Saved && outcome != Outcome::AlreadySaved) {
       try {
-        report_(outcome);
+        report_(work.edit.section, work.edit.key, outcome);
       } catch (...) { /* Diagnostics cannot kill the worker. */
       }
     }
     {
       std::lock_guard lock(mutex_);
       // A diagnostic callback is still active worker work, even after disk I/O.
-      has_work_.store(pending_.has_value());
+      has_work_.store(!pending_.empty());
     }
   }
   has_work_.store(false);

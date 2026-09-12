@@ -1,6 +1,7 @@
 #include "toml_editor.h"
 #include "config_save.h"
 
+#include <cmath>
 #include <sstream>
 #include <stdexcept>
 
@@ -29,6 +30,10 @@ namespace
       return Value{node->as_boolean()->get()};
     if (node->is_string())
       return Value{node->as_string()->get()};
+    if (node->is_floating_point())
+      return Value{node->as_floating_point()->get()};
+    if (node->is_integer())
+      return Value{node->as_integer()->get()};
     throw std::invalid_argument("unsupported setting type");
   }
 
@@ -61,6 +66,8 @@ namespace
 Prepared TomlEditor::Prepare(const std::string& text, const Request& request)
 {
   try {
+    if (const auto* value = std::get_if<double>(&request.desired); value && !std::isfinite(*value))
+      return {Outcome::Unsupported, {}};
     if (!cached_table_ || cached_text_ != text) {
       auto parsed = toml::parse(text);
       cached_table_.reset(); // Never pair new bytes with stale regions if allocation fails.

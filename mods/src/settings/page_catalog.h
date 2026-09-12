@@ -2,6 +2,7 @@
 
 #include "boolean_settings.h"
 #include "choice_setting.h"
+#include "slider_setting.h"
 #include <algorithm>
 #include <string_view>
 #include <vector>
@@ -17,6 +18,7 @@ public:
     std::string                  id, label, parent;
     std::vector<BooleanSetting*> booleans;
     ChoiceSetting*               choice = nullptr;
+    std::vector<SliderSetting*>  sliders;
   };
 
   explicit PageCatalog(std::string root_id, std::string root_label)
@@ -80,6 +82,25 @@ public:
     return Registration::Added;
   }
 
+  Registration AddSlider(std::string_view page_id, SliderSetting& setting)
+  {
+    CheckThread();
+    if (frozen_)
+      return Registration::Frozen;
+    auto* page = FindPage(page_id);
+    if (!page)
+      return Registration::Invalid;
+    for (const auto& existing : pages_)
+      for (auto* item : existing.sliders)
+        if (item->state().id() == setting.state().id() && item != &setting)
+          return Registration::Invalid;
+    for (auto* item : page->sliders)
+      if (item == &setting)
+        return Registration::Duplicate;
+    page->sliders.push_back(&setting);
+    return Registration::Added;
+  }
+
   // A fresh plan for each settings context. Stable IDs and parent-first order
   // let the native adapter rebuild without caching addresses from a previous visit.
   // Empty branches disappear. This does not read settings or trigger any writes.
@@ -89,7 +110,7 @@ public:
     frozen_     = true;
     auto result = pages_;
     for (std::size_t i = result.size(); i-- > 0;) {
-      if (!result[i].booleans.empty() || result[i].choice)
+      if (!result[i].booleans.empty() || result[i].choice || !result[i].sliders.empty())
         continue;
       const bool has_child = std::any_of(result.begin() + i + 1, result.end(),
                                          [&](const Page& page) { return page.parent == result[i].id; });

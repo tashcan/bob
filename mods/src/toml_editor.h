@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <filesystem>
 #include <optional>
 #include <string>
@@ -8,7 +9,7 @@
 
 namespace config_edit
 {
-using Value = std::variant<bool, std::string>;
+using Value = std::variant<bool, std::string, double, std::int64_t>;
 struct Request {
   std::string          section, key;
   std::optional<Value> expected; // Missing is distinct from a configured default.

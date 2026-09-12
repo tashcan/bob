@@ -31,7 +31,7 @@ std::uint64_t                     vote       = 0;
 thread_local unsigned             quit_depth = 0;
 void (*request_quit)(int)                    = nullptr;
 
-void Report(config_edit::Outcome result)
+void Report(std::string_view section, std::string_view key, config_edit::Outcome result)
 {
   const char* reason = "write failed";
   switch (result) {
@@ -47,7 +47,7 @@ void Report(config_edit::Outcome result)
     default:
       break;
   }
-  spdlog::warn("Could not persist ui.auto_confirm_instant_warp: {}; active mode is unchanged", reason);
+  spdlog::warn("Could not persist {}.{}: {}; live setting is unchanged", section, key, reason);
 }
 
 bool WantsQuit(auto original)
@@ -147,6 +147,23 @@ void Configure(const toml::table& loaded)
     initial = *value;
   try {
     writer = new config_edit::RuntimeConfigWriter(File::MakePath(File::Config()), initial, Report);
+    for (const auto& [section, key] : {std::pair{"graphics", "zoom_label_player_detail"},
+                                       {"graphics", "zoom_label_non_player_detail"},
+                                       {"graphics", "zoom_label_player_threshold"},
+                                       {"graphics", "zoom_label_non_player_threshold"},
+                                       {"ui", "auto_confirm_ft_upgrade"}}) {
+      std::optional<config_edit::Value> value;
+      auto                              node = loaded[section][key];
+      if (node.is_boolean())
+        value = node.value<bool>().value();
+      else if (node.is_string())
+        value = node.value<std::string>().value();
+      else if (node.is_integer())
+        value = node.value<std::int64_t>().value();
+      else if (node.is_floating_point())
+        value = node.value<double>().value();
+      writer->Register(section, key, std::move(value));
+    }
   } catch (...) {
     spdlog::warn("Runtime config persistence unavailable");
   }
@@ -179,26 +196,30 @@ void Install()
 }
 #endif
 
-void SaveWarpMode(const char* mode) noexcept
+void SaveSetting(const char* section, const char* key, config_edit::Value value,
+                 std::chrono::milliseconds delay) noexcept
 {
   try {
 #if defined(_WIN32) && defined(_M_X64)
     if (available && !forcing && owner == GetCurrentThreadId() && !quit_depth) {
       std::lock_guard lock(lifecycle);
-      if (!draining && writer->Submit(mode))
+      if (!draining && writer->Submit(section, key, std::move(value), delay))
         return;
     }
 #else
-    (void)mode;
+    (void)value;
 #endif
     static bool reported = false;
     if (!reported) {
       reported = true;
-      spdlog::warn("ui.auto_confirm_instant_warp changed for this session; runtime persistence unavailable");
+      spdlog::warn("{}.{} changed for this session; runtime persistence unavailable", section, key);
     }
   } catch (...) { /* Persistence must not interrupt the shortcut's live effect. */
   }
 }
+
+void SaveWarpMode(const char* mode) noexcept
+{ SaveSetting("ui", "auto_confirm_instant_warp", std::string(mode), {}); }
 
 #if _WIN32
 void ForceClose() noexcept

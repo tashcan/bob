@@ -1,9 +1,12 @@
 #pragma once
 #include <Windows.h>
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <cstdio>
 #include <mutex>
+#include <string>
+#include <variant>
 
 namespace spdlog
 {
@@ -11,6 +14,7 @@ template <class... Args> void warn(const char*, Args&&...) {}
 } // namespace spdlog
 namespace config_edit
 {
+using Value = std::variant<bool, std::string, double, std::int64_t>;
 enum class Outcome { Conflict, InvalidDocument, Unsupported };
 // Controllable boundary; the fixture below includes the actual adapter bodies.
 struct RuntimeConfigWriter {
@@ -38,5 +42,7 @@ struct RuntimeConfigWriter {
   { return handle; }
   unsigned Submit(const char*)
   { return stopped ? 0 : ++submissions; }
+  unsigned Submit(const char*, const char*, Value, std::chrono::milliseconds)
+  { return Submit(""); }
 };
 } // namespace config_edit
