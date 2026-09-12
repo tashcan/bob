@@ -12,6 +12,7 @@
 #include <array>
 #include <cstdlib>
 #include <cstring>
+#include <deque>
 #include <il2cpp/il2cpp_helper.h>
 #include <spdlog/spdlog.h>
 #include <spud/detour.h>
@@ -21,11 +22,11 @@
 namespace
 {
 using namespace mod_settings;
-constexpr const char*          CategoryKey = "game_settings_category_7";
-constexpr std::size_t          ViewLimit   = 8;
-bool                           active      = false;
-bool                           installing  = false;
-bool                           warned      = false;
+constexpr const char* CategoryKey = "game_settings_category_7";
+
+bool                           active     = false;
+bool                           installing = false;
+bool                           warned     = false;
 std::thread::id                uiThread;
 NativeCallback<bool>           getter;
 NativeCallback<void, bool>     setter;
@@ -48,7 +49,7 @@ BooleanSetting*                SettingFor(Il2CppObject* context)
   if (HasLabel(context, ft.id().c_str()))
     return &ft;
   for (const auto& page : pages)
-    for (auto* setting : page.booleans)
+    for (auto* setting : page.Controls<BooleanSetting>())
       if (HasLabel(context, setting->id().c_str()))
         return setting;
   return nullptr;
@@ -201,25 +202,25 @@ Metadata& WidgetMeta(Il2CppObject* widget)
 std::pair<ChoiceSetting*, int> ChoiceFor(Il2CppObject* context)
 {
   for (const auto& page : pages)
-    if (page.choice)
-      for (int i = 0; i < static_cast<int>(page.choice->labels().size()); ++i)
-        if (HasLabel(context, page.choice->item_id(i).c_str()))
-          return {page.choice, i};
+    for (auto* choice : page.Controls<ChoiceSetting>())
+      for (int i = 0; i < static_cast<int>(choice->labels().size()); ++i)
+        if (HasLabel(context, choice->item_id(i).c_str()))
+          return {choice, i};
   return {nullptr, 0};
 }
 
 SliderSetting* SliderFor(Il2CppObject* context)
 {
   for (const auto& page : pages)
-    for (auto* setting : page.sliders)
+    for (auto* setting : page.Controls<SliderSetting>())
       if (HasLabel(context, setting->state().id().c_str()))
         return setting;
   return nullptr;
 }
 
-// Fixed weak records: no page, context, delegate, or account is retained by UI
-// bookkeeping. Records are released on native unbind and reclaimed on next bind
-// if Unity destroys a widget without sending that notification.
+// Stable weak records, sized once from registered controls before pages can bind: no page, context, delegate, or
+// account is retained by UI bookkeeping. Records are released on native unbind and reclaimed on next bind if Unity
+// destroys a widget without sending that notification.
 struct View {
   Il2CppGCHandle                 widget = nullptr, context = nullptr, label = nullptr;
   Il2CppGCHandle                 selectionControl = nullptr;
@@ -235,9 +236,9 @@ struct View {
   bool                           preserveNextRefresh = false;
   std::optional<NativeViewState> state;
 };
-std::array<View, ViewLimit>& Views()
+std::deque<View>& Views()
 {
-  static std::array<View, ViewLimit> views;
+  static std::deque<View> views(8);
   return views;
 }
 View*         renderingView = nullptr;
@@ -709,6 +710,83 @@ void PageDestroyedHook(auto original, Il2CppObject* controller)
   original(controller);
 }
 
+struct HeadingMetadata {
+  IL2CppClassHelper widget = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "TextOptionWidget");
+  IL2CppClassHelper row = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "TextOptionContext");
+  const MethodInfo* refresh    = widget.GetMethodInfo("SetWidgetData", 0);
+  const MethodInfo* clear      = widget.GetMethodInfo("ClearWidgetData", 0);
+  const MethodInfo* add        = Meta().context.GetMethodInfo("AddText", 4);
+  const MethodInfo* getContext = widget.GetMethodInfo("get_Context", 0);
+  FieldInfo*        label      = Field(widget.get_cls(), "_label");
+  FieldInfo*        queryField = Field(row.get_cls(), "<QueryOptionState>k__BackingField");
+};
+HeadingMetadata& HeadingMeta()
+{
+  static HeadingMetadata metadata;
+  return metadata;
+}
+NativeCallback<Il2CppString*> headingGetter;
+bool                          headingsActive = false;
+Il2CppString*                 EmptyHeadingValue(Il2CppObject*, const MethodInfo*)
+{ return il2cpp_string_new(""); }
+const PageCatalog::Heading* HeadingFor(Il2CppObject* context)
+{
+  if (!context || context->klass != HeadingMeta().row.get_cls())
+    return nullptr;
+  auto* callback = reinterpret_cast<Il2CppDelegate*>(ReadField(context, HeadingMeta().queryField));
+  if (!callback || callback->method != query.method() || callback->method_ptr != query.method()->methodPointer)
+    return nullptr;
+  for (const auto& page : pages)
+    for (const auto& item : page.items)
+      if (auto* heading = std::get_if<PageCatalog::Heading>(&item); heading && HasLabel(context, heading->id.c_str()))
+        return heading;
+  return nullptr;
+}
+void HeadingRefreshHook(auto original, Il2CppObject* widget)
+{
+  if (OnThread())
+    ClearPageText(widget);
+  original(widget);
+  if (!OnThread() || !headingsActive || !pagesActive)
+    return;
+  try {
+    Root context(Invoke(HeadingMeta().getContext, widget));
+    if (const auto* heading = HeadingFor(context.get())) {
+      Root label(ReadField(widget, HeadingMeta().label));
+      SetPageText(widget, label.get(), heading->label);
+    }
+  } catch (...) {
+    Warn("settings heading unavailable");
+  }
+}
+void HeadingClearHook(auto original, Il2CppObject* widget)
+{
+  if (OnThread())
+    ClearPageText(widget);
+  original(widget);
+}
+void AddHeadingRow(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent,
+                   const PageCatalog::Heading& heading)
+{
+  if (!headingsActive)
+    throw std::runtime_error("settings heading adapter missing");
+  const auto* add = HeadingMeta().add;
+  Root        children(Call(parent, "get_Children"));
+  const int   before = Count(children.get());
+  if (before == 128)
+    throw std::runtime_error("settings heading capacity");
+  Root  label(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(heading.id.c_str())));
+  Root  get(MakeDelegate(il2cpp_class_from_type(add->parameters[2]), director, headingGetter.method()));
+  Root  state(MakeDelegate(il2cpp_class_from_type(add->parameters[3]), director, query.method()));
+  void* args[] = {parent, label.get(), get.get(), state.get()};
+  Invoke(add, context, args);
+  if (Count(children.get()) != before + 1)
+    throw std::runtime_error("settings heading insertion");
+  Root row(Item(children.get(), before));
+  if (!HeadingFor(row.get()) || !HasLabel(row.get(), heading.id.c_str()))
+    throw std::runtime_error("settings heading identity");
+}
+
 void AddChoiceRows(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent, ChoiceSetting& setting)
 {
   if (!selectionActive)
@@ -809,12 +887,20 @@ void AddPages(Il2CppObject* director, Il2CppObject* context)
       if (!HasLabel(category.get(), page.id.c_str()))
         throw std::runtime_error("settings category identity");
       parents.emplace(page.id, category.get()); // Native root owns all added contexts.
-      for (auto* setting : page.booleans)
-        AddBooleanRow(director, context, category.get(), *setting);
-      if (page.choice)
-        AddChoiceRows(director, context, category.get(), *page.choice);
-      for (auto* setting : page.sliders)
-        AddSliderRow(director, context, category.get(), *setting);
+      for (const auto& item : page.items)
+        std::visit(
+            [&](const auto& value) {
+              using T = std::decay_t<decltype(value)>;
+              if constexpr (std::is_same_v<T, PageCatalog::Heading>)
+                AddHeadingRow(director, context, category.get(), value);
+              else if constexpr (std::is_same_v<T, BooleanSetting*>)
+                AddBooleanRow(director, context, category.get(), *value);
+              else if constexpr (std::is_same_v<T, ChoiceSetting*>)
+                AddChoiceRows(director, context, category.get(), *value);
+              else
+                AddSliderRow(director, context, category.get(), *value);
+            },
+            item);
     }
     // Unsupported leaf adapters can leave empty groups; remove them bottom-up.
     for (auto it = pages.rbegin(); it != pages.rend(); ++it) {
@@ -1000,13 +1086,13 @@ void Invalidate()
   InvalidateFleetCommanderConfirmationSession();
   ForbiddenTechConfirmationSetting().InvalidateSession();
   for (const auto& page : pages)
-    for (auto* setting : page.sliders)
+    for (auto* setting : page.Controls<SliderSetting>())
       setting->state().InvalidateSession();
   for (const auto& page : pages)
-    if (page.choice)
-      page.choice->state().InvalidateSession();
+    for (auto* choice : page.Controls<ChoiceSetting>())
+      choice->state().InvalidateSession();
   for (const auto& page : pages)
-    for (auto* setting : page.booleans)
+    for (auto* setting : page.Controls<BooleanSetting>())
       if (setting != &FleetCommanderConfirmationSetting())
         setting->InvalidateSession();
   for (auto& view : Views()) {
@@ -1158,7 +1244,11 @@ void InstallPages()
     }
   }
 #endif
-  pages = ModPages().Build();
+  pages                = ModPages().Build();
+  std::size_t rowCount = 2; // FC and FT live on the native confirmation page.
+  for (const auto& page : pages)
+    rowCount += page.ControlRows();
+  Views().resize(std::max(Views().size(), rowCount));
   if (pages.empty())
     return;
   auto&            m = PageMeta();
@@ -1179,7 +1269,8 @@ void InstallPages()
       || !Type(m.add->parameters[1], IL2CPP_TYPE_STRING) || !Type(m.add->parameters[2], IL2CPP_TYPE_STRING)
       || !Reference(m.add->parameters[3]) || !Reference(m.selected->parameters[0]))
     throw std::runtime_error("settings category signature");
-  if (std::any_of(pages.begin(), pages.end(), [](const auto& page) { return page.choice; })) {
+  if (std::any_of(pages.begin(), pages.end(),
+                  [](const auto& page) { return !page.template Controls<ChoiceSetting>().empty(); })) {
     auto&       selection = SelectionMeta();
     const auto* get       = selection.director.GetMethodInfo("GetQualityOptionSelectedIndex", 0);
     const auto* set       = selection.director.GetMethodInfo("OnQualityOptionSelected", 1);
@@ -1210,14 +1301,16 @@ void InstallPages()
           throw std::runtime_error("selection hook overlap");
     }
     for (const auto& page : pages)
-      if (page.choice && !page.choice->state().SetChangeObserver(RefreshViews))
-        throw std::runtime_error("selection observer ownership");
+      for (auto* choice : page.Controls<ChoiceSetting>())
+        if (!choice->state().SetChangeObserver(RefreshViews))
+          throw std::runtime_error("selection observer ownership");
     SPUD_STATIC_DETOUR(selection.refresh->methodPointer, RefreshHook);
     SPUD_STATIC_DETOUR(selection.changed->methodPointer, ChangedHook);
     SPUD_STATIC_DETOUR(selection.release->methodPointer, ReleaseHook);
     selectionActive = true;
   }
-  if (std::any_of(pages.begin(), pages.end(), [](const auto& page) { return !page.sliders.empty(); })) {
+  if (std::any_of(pages.begin(), pages.end(),
+                  [](const auto& page) { return !page.template Controls<SliderSetting>().empty(); })) {
     auto&       slider    = SliderMeta();
     const auto* get       = slider.director.GetMethodInfo("GetCurrentShadowsIndex", 0);
     const auto* set       = slider.director.GetMethodInfo("OnShadowsSettingChanged", 1);
@@ -1256,7 +1349,7 @@ void InstallPages()
             throw std::runtime_error("slider selection overlap");
     }
     for (const auto& page : pages)
-      for (auto* setting : page.sliders)
+      for (auto* setting : page.Controls<SliderSetting>())
         if (!setting->state().SetChangeObserver(RefreshViews))
           throw std::runtime_error("slider observer ownership");
     SPUD_STATIC_DETOUR(slider.refresh->methodPointer, RefreshHook);
@@ -1264,8 +1357,44 @@ void InstallPages()
     SPUD_STATIC_DETOUR(slider.release->methodPointer, ReleaseHook);
     sliderActive = true;
   }
+  if (std::any_of(pages.begin(), pages.end(), [](const auto& page) {
+        return std::any_of(page.items.begin(), page.items.end(),
+                           [](const auto& item) { return std::holds_alternative<PageCatalog::Heading>(item); });
+      })) {
+    auto&       heading = HeadingMeta();
+    const auto* get     = Meta().director.GetMethodInfo("GetClientVersion", 0);
+    if (!Instance(get, 0, IL2CPP_TYPE_STRING) || !Instance(heading.add, 4, IL2CPP_TYPE_VOID)
+        || !Reference(heading.add->parameters[0]) || !Type(heading.add->parameters[1], IL2CPP_TYPE_STRING)
+        || !Reference(heading.add->parameters[2]) || !Reference(heading.add->parameters[3]) || !heading.getContext
+        || !Reference(heading.getContext->return_type)
+        || !Instance(heading.getContext, 0, heading.getContext->return_type->type)
+        || !headingGetter.Initialize(get, EmptyHeadingValue))
+      throw std::runtime_error("heading callback schema");
+    const std::array targets{heading.refresh, heading.clear};
+    for (auto* target : targets) {
+      if (!Instance(target, 0, IL2CPP_TYPE_VOID) || !Extent(target)
+          || targets[0]->methodPointer == targets[1]->methodPointer)
+        throw std::runtime_error("heading hook metadata/extent");
+      const auto& core = Meta();
+      for (auto* existing : {core.refresh, core.changed, core.release, core.addGeneral, core.reload, core.session,
+                             core.load, m.bind, m.release, m.selected, m.destroyed})
+        if (target->methodPointer == existing->methodPointer)
+          throw std::runtime_error("heading hook overlap");
+      if (selectionActive)
+        for (auto* existing : {SelectionMeta().refresh, SelectionMeta().changed, SelectionMeta().release})
+          if (target->methodPointer == existing->methodPointer)
+            throw std::runtime_error("heading selection overlap");
+      if (sliderActive)
+        for (auto* existing : {SliderMeta().refresh, SliderMeta().changed, SliderMeta().release})
+          if (target->methodPointer == existing->methodPointer)
+            throw std::runtime_error("heading slider overlap");
+    }
+    SPUD_STATIC_DETOUR(heading.refresh->methodPointer, HeadingRefreshHook);
+    SPUD_STATIC_DETOUR(heading.clear->methodPointer, HeadingClearHook);
+    headingsActive = true;
+  }
   for (const auto& page : pages)
-    for (auto* setting : page.booleans) {
+    for (auto* setting : page.Controls<BooleanSetting>()) {
       if (setting->id() == FleetCommanderConfirmationSetting().id() && setting != &FleetCommanderConfirmationSetting())
         throw std::runtime_error("settings owner collision");
       if (!setting->SetChangeObserver(RefreshViews))

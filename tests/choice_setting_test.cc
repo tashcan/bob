@@ -26,7 +26,7 @@ int main()
   assert(catalog.AddChoice("navigation", setting) == Registration::Added);
   assert(catalog.AddChoice("navigation", setting) == Registration::Duplicate);
   const auto plan = catalog.Build();
-  assert(plan.size() == 2 && plan[1].choice == &setting);
+  assert(plan.size() == 2 && std::get<ChoiceSetting*>(plan[1].items[0]) == &setting);
   assert(catalog.AddChoice("navigation", setting) == Registration::Frozen);
   normal.Bind();
   jump.Bind();

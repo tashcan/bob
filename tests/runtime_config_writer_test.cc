@@ -8,14 +8,15 @@ using namespace config_edit;
 using namespace std::chrono_literals;
 namespace
 {
-std::mutex              gate;
-std::condition_variable changed;
-bool                    entered = false, released = false;
-Outcome                 first_result = Outcome::Saved;
-std::vector<Request>    requests;
-std::thread::id         save_thread;
-int                     reports      = 0;
-bool                    block_report = false, release_report = false;
+std::mutex                            gate;
+std::condition_variable               changed;
+bool                                  entered = false, released = false;
+Outcome                               first_result = Outcome::Saved;
+std::vector<Request>                  requests;
+std::thread::id                       save_thread;
+std::chrono::steady_clock::time_point save_entered_at;
+int                                   reports      = 0;
+bool                                  block_report = false, release_report = false;
 
 void Check(bool value)
 {
@@ -25,7 +26,8 @@ void Check(bool value)
 Outcome Save(TomlEditor&, const std::filesystem::path&, const Request& request)
 {
   std::unique_lock lock(gate);
-  save_thread = std::this_thread::get_id();
+  save_thread     = std::this_thread::get_id();
+  save_entered_at = std::chrono::steady_clock::now();
   requests.push_back(request);
   if (requests.size() == 1) {
     entered = true;
@@ -162,6 +164,41 @@ int main()
       Check(requests[1].expected == std::optional<Value>{std::string("warp")});
       Check(requests[2].key == "threshold" && requests[2].desired == Value{0.7});
       Check(requests[2].expected == std::optional<Value>{0.5});
+    }
+    Begin(Outcome::Saved);
+    {
+      RuntimeConfigWriter writer("unused", std::nullopt);
+      Check(writer.Register("graphics", "threshold", Value{0.5}));
+      writer.Submit("graphics", "threshold", 0.6, 300ms);
+      {
+        std::unique_lock lock(gate);
+        Check(!changed.wait_for(lock, 75ms, [] { return entered; }));
+      }
+      const auto submitted = std::chrono::steady_clock::now();
+      writer.Submit("graphics", "threshold", 0.7, 300ms);
+      {
+        std::unique_lock lock(gate);
+        // Wait past the old deadline but before the replacement's deadline.
+        Check(!changed.wait_until(lock, submitted + 250ms, [] { return entered; }));
+      }
+      AwaitSave(); // Ordinary expiration must start work without Stop/quit.
+      Check(save_entered_at >= submitted + 300ms);
+      writer.Stop(false);
+      Release();
+    }
+    Check(requests.size() == 1 && requests[0].desired == Value{0.7});
+    Begin(Outcome::Saved);
+    {
+      RuntimeConfigWriter writer("unused", std::nullopt);
+      Check(writer.Register("graphics", "threshold", Value{0.5}));
+      writer.Submit("graphics", "threshold", 0.9, 10s);
+      writer.Stop(true); // Cancellation must wake a delayed writer promptly.
+      const auto deadline = std::chrono::steady_clock::now() + 5s;
+      while (!writer.PollStopped()) {
+        Check(std::chrono::steady_clock::now() < deadline);
+        std::this_thread::yield();
+      }
+      Check(requests.empty());
     }
     RuntimeConfigWriter idle("unused", std::nullopt);
     idle.Stop(false);

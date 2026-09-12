@@ -36,6 +36,9 @@ public:
     } else if constexpr (std::is_same_v<Result, float>) {
       if (schema->return_type->type != IL2CPP_TYPE_R4)
         return false;
+    } else if constexpr (std::is_same_v<Result, Il2CppString*>) {
+      if (schema->return_type->type != IL2CPP_TYPE_STRING)
+        return false;
     } else {
       static_assert(std::is_same_v<Result, int>, "Only boolean, void, Single and Int32 callbacks are supported");
       // Enum users additionally validate the Int32 backing type in the adapter.

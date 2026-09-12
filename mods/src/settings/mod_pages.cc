@@ -17,10 +17,10 @@ void RegisterModPages()
   catalog.AddChoice("community_mod.navigation.warp", WarpModeSetting());
   catalog.AddPage("community_mod.labels", "Fleet Labels", "community_mod.settings");
   for (bool player : {true, false}) {
-    const char* id = player ? "community_mod.labels.player" : "community_mod.labels.other";
-    catalog.AddPage(id, player ? "Player fleets" : "Non-player fleets", "community_mod.labels");
-    catalog.AddChoice(id, FleetLabelDetailSetting(player));
-    catalog.AddSlider(id, FleetLabelThresholdSetting(player));
+    catalog.AddHeading("community_mod.labels", player ? "community_mod.labels.player" : "community_mod.labels.other",
+                       player ? "Player" : "Non-player");
+    catalog.AddChoice("community_mod.labels", FleetLabelDetailSetting(player));
+    catalog.AddSlider("community_mod.labels", FleetLabelThresholdSetting(player));
   }
 }
 } // namespace mod_settings

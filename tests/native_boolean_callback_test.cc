@@ -1,4 +1,5 @@
 #include "settings/native_boolean_callback.h"
+#include <il2cpp-object-internals.h>
 #include <cassert>
 #include <iostream>
 
@@ -17,6 +18,8 @@ bool Getter(Il2CppObject*, const MethodInfo*)
 }
 void Setter(Il2CppObject*, bool value, const MethodInfo*)
 { calls += value ? 10 : 20; }
+Il2CppString text{};
+Il2CppString* TextGetter(Il2CppObject*, const MethodInfo*) { return &text; }
 } // namespace
 int main()
 {
@@ -58,5 +61,19 @@ int main()
   schema.flags       = 0;
   schema.is_inflated = true;
   assert(!invalid.Initialize(&schema, Getter));
+  Il2CppType stringType{};
+  stringType.type = IL2CPP_TYPE_STRING;
+  MethodInfo stringSchema{};
+  stringSchema.return_type = &stringType;
+  mod_settings::NativeCallback<Il2CppString*> stringGet;
+  assert(stringGet.Initialize(&stringSchema, TextGetter));
+  auto* stringMethod = stringGet.method();
+  Il2CppString* result = nullptr;
+  stringMethod->invoker_method(nullptr, stringMethod, nullptr, nullptr, &result);
+  assert(result == &text);
+  assert(reinterpret_cast<decltype(&TextGetter)>(stringMethod->methodPointer)(nullptr, stringMethod) == &text);
+  assert(reinterpret_cast<decltype(&TextGetter)>(stringMethod->virtualMethodPointer)(nullptr, stringMethod) == &text);
+  mod_settings::NativeCallback<Il2CppString*> wrongString;
+  assert(!wrongString.Initialize(&schema, TextGetter));
   std::cout << "PASS owned callback: direct, virtual and runtime invoker paths; donor remains untouched\n";
 }

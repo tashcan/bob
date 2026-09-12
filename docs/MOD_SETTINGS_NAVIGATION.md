@@ -7,8 +7,9 @@ its stored setting or introduce another copy of its value. Confirmation controls
 continue to belong on the native confirmation page.
 
 `PageCatalog` holds stable page IDs, labels, parent IDs and references to existing
-`BooleanSetting` instances, a `ChoiceSetting` per selection page, and `SliderSetting`
-instances alongside those controls. Parents register first; invalid parents, duplicate
+`BooleanSetting`, `ChoiceSetting` and `SliderSetting` instances, plus static
+headings, in registration order. Multiple independent choices can share a page.
+Parents register first; invalid parents, duplicate
 pages and conflicting setting owners are rejected. The same setting can appear
 on different pages, with the same authoritative read/write adapter. Registration
 freezes at the first build. Definitions and setting owners outlive their views.
@@ -39,8 +40,10 @@ callback lifetime; repeated navigation/pooling remains a runtime gate.
 
 Register through `ModPages()` before settings installation. The first production
 group is Navigation > Instant warp mode, sharing Alt+I's owner and persistence.
-Fleet Labels adds player/non-player pages with detail choices and a percentage
-slider. Future grouping follows the section-based direction in
+Fleet Labels places player/non-player sections on one page, each with detail
+choices and a percentage slider. Headings use native text-only rows with scoped
+label overrides cleared on refresh/clear. Two text-widget hooks have Windows x64
+extents of 293 and 271 bytes. Future grouping follows the section-based direction in
 [MOD_SETTINGS_CONTROLS.md](MOD_SETTINGS_CONTROLS.md). Native confirmation placement remains unchanged.
 Selection controls share the typed setting/view guards with booleans and retain
 the whole integer value in each row snapshot. Three selection-widget hooks have
@@ -51,9 +54,12 @@ index and disables interaction instead of hiding its label's container.
 The current native bridge shares the `ModConfirmationSettings` patch installation
 and its debug installation switch. Disabling that patch disables both native UI
 surfaces. Settings retain their own identity and persistence independently of it.
-The shared native adapter currently supports eight simultaneously bound mod
-rows across pages (boolean, selection and slider). Plan populated groups within that existing limit;
-catalog registration does not itself guarantee native widget capacity.
+The shared native adapter sizes its stable weak-view storage once at installation
+from all registered control rows plus the two native confirmation rows, retaining
+the existing minimum of eight slots. Both fleet profiles need ten interactive
+rows on one page; headings use the existing scoped text records. There is no
+per-frame allocation or registry rescan to grow that storage. Heading-only pages
+are pruned as empty.
 
 For a temporary Windows debug navigation fixture, launch with
 `STFC_MOD_SETTINGS_NAV_TEST=1`. It builds Mod Settings > Infrastructure Test >

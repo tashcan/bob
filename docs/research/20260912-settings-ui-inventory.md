@@ -51,7 +51,7 @@ this is not an exhaustive proof that no other confirmation exists.
 
 | Area | Evidence | Next step |
 | --- | --- | --- |
-| Fleet label detail/threshold | Existing mod Config profiles and zoom adapter; now a concrete choice/slider consumer. | Validate player and non-player UI, actual label changes, independent saves and restart. |
+| Fleet label detail/threshold | Existing mod Config profiles and zoom adapter; now two sections on one choice/slider page. | Validate both profiles, actual label changes, independent saves and restart. |
 | Mod hotkeys | Existing parser, `MapKey` registrations; native `keybindings` is a separate owner. | Separate branch; keep mod capture/conflict rules distinct from game bindings. |
 | Ship textures in system view | `options/improve_system_view_ship_texture_setting` and GameSettingsManager property, plus SettingsSectionDirector reader and change handler. | Native UI integration already has an apparent path; check Graphics before assuming it is missing. |
 | Extended zoom, skip toasts, skip animations, mission dialogue on login | Existing manager flags and director reader/toggle pairs. | Inspect native General rows and applicability queries; do not duplicate blindly. |

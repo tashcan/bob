@@ -4,21 +4,44 @@
 #include "choice_setting.h"
 #include "slider_setting.h"
 #include <algorithm>
+#include <ranges>
 #include <string_view>
+#include <variant>
 #include <vector>
 
 namespace mod_settings
 {
-// Presentation only. Settings keep their own identity, state and persistence.
-// Own alongside the settings on the UI thread; never retain managed page objects.
+// Presentation only. Settings keep their identity, live state and persistence.
 class PageCatalog
 {
 public:
+  struct Heading {
+    std::string id, label;
+  };
+  using Item = std::variant<Heading, BooleanSetting*, ChoiceSetting*, SliderSetting*>;
   struct Page {
-    std::string                  id, label, parent;
-    std::vector<BooleanSetting*> booleans;
-    ChoiceSetting*               choice = nullptr;
-    std::vector<SliderSetting*>  sliders;
+    std::string                id, label, parent;
+    std::vector<Item>          items; // Registration order is visual order, including headings.
+    template <typename T> auto Controls() const
+    {
+      return items | std::views::filter([](const Item& item) { return std::holds_alternative<T*>(item); })
+             | std::views::transform([](const Item& item) { return std::get<T*>(item); });
+    }
+    std::size_t ControlRows() const
+    {
+      std::size_t count = 0;
+      for (const auto& item : items)
+        std::visit(
+            [&](const auto& value) {
+              using T = std::decay_t<decltype(value)>;
+              if constexpr (std::is_same_v<T, ChoiceSetting*>)
+                count += value->labels().size();
+              else if constexpr (!std::is_same_v<T, Heading>)
+                ++count;
+            },
+            item);
+      return count;
+    }
   };
 
   explicit PageCatalog(std::string root_id, std::string root_label)
@@ -39,78 +62,41 @@ public:
       return Registration::Invalid;
     if (FindPage(id))
       return Registration::Duplicate;
-    // Parents must already exist. Cycles and dangling parent IDs cannot be registered.
+    // Parents already exist: no orphan or cyclic registrations.
     pages_.push_back({std::move(id), std::move(label), std::string(parent), {}});
     return Registration::Added;
   }
-
-  Registration AddBoolean(std::string_view page_id, BooleanSetting& setting)
+  Registration AddBoolean(std::string_view page, BooleanSetting& setting)
+  { return AddControl(page, setting); }
+  Registration AddChoice(std::string_view page, ChoiceSetting& setting)
+  { return AddControl(page, setting); }
+  Registration AddSlider(std::string_view page, SliderSetting& setting)
+  { return AddControl(page, setting); }
+  Registration AddHeading(std::string_view page_id, std::string id, std::string label)
   {
     CheckThread();
     if (frozen_)
       return Registration::Frozen;
     auto* page = FindPage(page_id);
-    if (!page || page->choice || setting.id().empty() || setting.label().empty())
-      return Registration::Invalid;
-    // Multiple views of the same setting are allowed on different pages, but
-    // one ID cannot silently acquire a different state/persistence owner.
-    for (const auto& existing : pages_)
-      for (const auto* item : existing.booleans)
-        if (item->id() == setting.id() && item != &setting)
-          return Registration::Invalid;
-    for (const auto* item : page->booleans)
-      if (item->id() == setting.id())
-        return Registration::Duplicate;
-    page->booleans.push_back(&setting);
-    return Registration::Added;
-  }
-
-  Registration AddChoice(std::string_view page_id, ChoiceSetting& setting)
-  {
-    CheckThread();
-    if (frozen_)
-      return Registration::Frozen;
-    auto* page = FindPage(page_id);
-    if (!page || !page->booleans.empty())
-      return Registration::Invalid;
-    if (page->choice)
-      return Registration::Duplicate;
-    for (const auto& item : pages_)
-      if (item.choice && item.choice->state().id() == setting.state().id() && item.choice != &setting)
-        return Registration::Invalid;
-    page->choice = &setting;
-    return Registration::Added;
-  }
-
-  Registration AddSlider(std::string_view page_id, SliderSetting& setting)
-  {
-    CheckThread();
-    if (frozen_)
-      return Registration::Frozen;
-    auto* page = FindPage(page_id);
-    if (!page)
+    if (!page || id.empty() || label.empty())
       return Registration::Invalid;
     for (const auto& existing : pages_)
-      for (auto* item : existing.sliders)
-        if (item->state().id() == setting.state().id() && item != &setting)
-          return Registration::Invalid;
-    for (auto* item : page->sliders)
-      if (item == &setting)
-        return Registration::Duplicate;
-    page->sliders.push_back(&setting);
+      for (const auto& item : existing.items)
+        if (Id(item) == id)
+          return Registration::Duplicate;
+    page->items.emplace_back(Heading{std::move(id), std::move(label)});
     return Registration::Added;
   }
 
-  // A fresh plan for each settings context. Stable IDs and parent-first order
-  // let the native adapter rebuild without caching addresses from a previous visit.
-  // Empty branches disappear. This does not read settings or trigger any writes.
+  // Freeze one immutable plan. Each native settings context gets fresh objects.
+  // Heading-only pages are empty; building never reads or writes a setting.
   std::vector<Page> Build()
   {
     CheckThread();
     frozen_     = true;
     auto result = pages_;
     for (std::size_t i = result.size(); i-- > 0;) {
-      if (!result[i].booleans.empty() || result[i].choice || !result[i].sliders.empty())
+      if (result[i].ControlRows())
         continue;
       const bool has_child = std::any_of(result.begin() + i + 1, result.end(),
                                          [&](const Page& page) { return page.parent == result[i].id; });
@@ -121,6 +107,42 @@ public:
   }
 
 private:
+  static const std::string& Id(const Item& item)
+  {
+    return std::visit(
+        [](const auto& value) -> const std::string& {
+          using T = std::decay_t<decltype(value)>;
+          if constexpr (std::is_same_v<T, Heading>)
+            return value.id;
+          else if constexpr (std::is_same_v<T, BooleanSetting*>)
+            return value->id();
+          else
+            return value->state().id();
+        },
+        item);
+  }
+  template <typename T> Registration AddControl(std::string_view page_id, T& setting)
+  {
+    CheckThread();
+    if (frozen_)
+      return Registration::Frozen;
+    auto* page = FindPage(page_id);
+    if (!page)
+      return Registration::Invalid;
+    const Item candidate = &setting;
+    for (const auto& existing : pages_)
+      for (const auto& item : existing.items) {
+        if (Id(item) != Id(candidate))
+          continue;
+        auto* owner = std::get_if<T*>(&item);
+        if (!owner || *owner != &setting)
+          return Registration::Invalid;
+        if (existing.id == page_id)
+          return Registration::Duplicate;
+      }
+    page->items.push_back(candidate);
+    return Registration::Added;
+  }
   Page* FindPage(std::string_view id)
   {
     auto found = std::find_if(pages_.begin(), pages_.end(), [&](const Page& page) { return page.id == id; });

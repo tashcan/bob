@@ -35,8 +35,11 @@ protection already exercised for boolean controls.
 
 ## Fleet Labels and Forbidden Tech
 
-Player and non-player pages each expose Native / Expanded / Compact / Threshold
-and a native percentage slider. Threshold is stored in [0, 1], edited in 1% steps,
+One Fleet Labels page contains a non-clickable Player heading, its Native /
+Expanded / Compact / Threshold choices and percentage slider, followed by the
+same controls under a Non-player heading. Each profile has its own owner and
+selection; native text rows provide the headings without navigation or actions.
+Threshold is stored in [0, 1], edited in 1% steps,
 and enabled only in Threshold mode. At 0% labels stay compact; at 100% they stay
 expanded. Reading a player-authored fractional value does not round or save it.
 Each user edit updates the existing live profile and refreshes tracked labels.
@@ -74,6 +77,8 @@ Exact Windows build261 unwind extents, checked before expanding installation:
 | NavigationFleetWidget.OnDisable | F7DAF0 | 236 |
 | MessageBox.Show(context) | 70B5F0 | 81 |
 | MessageBox.Show(context, callback) | 70B650 | 257 |
+| TextOptionWidget.SetWidgetData | D0A470 | 293 |
+| TextOptionWidget.ClearWidgetData | D0A680 | 271 |
 
 These exceed the bundled x64 SPUD 24-byte overwrite. Runtime also rejects tiny
 or interior entries using unwind metadata. Client SHA256:
