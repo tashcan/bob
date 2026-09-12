@@ -11,6 +11,14 @@
 #include <Windows.h>
 #endif
 
+// Compile-time substitutions are used only by the isolated failure fixture.
+#ifndef CONFIG_SAVE_WRITE
+#define CONFIG_SAVE_WRITE std::fwrite
+#endif
+#ifndef CONFIG_SAVE_CLOSE
+#define CONFIG_SAVE_CLOSE std::fclose
+#endif
+
 void SaveConfigDocument(const toml::table& config, const std::filesystem::path& path, std::string_view header)
 {
   // Serialize and validate before opening any file. Values are encoded by toml++,
@@ -43,10 +51,10 @@ void SaveConfigDocument(const toml::table& config, const std::filesystem::path& 
 
   bool replacing = false;
   try {
-    if (std::fwrite(bytes.data(), 1, bytes.size(), file) != bytes.size()) {
+    if (CONFIG_SAVE_WRITE(bytes.data(), 1, bytes.size(), file) != bytes.size()) {
       throw std::system_error(errno, std::generic_category(), "could not write temporary config file");
     }
-    const auto closed = std::fclose(file); // Includes flushing; failure prevents replacement.
+    const auto closed = CONFIG_SAVE_CLOSE(file); // Includes flushing; failure prevents replacement.
     file              = nullptr;
     if (closed != 0) {
       throw std::system_error(errno, std::generic_category(), "could not close temporary config file");
@@ -59,7 +67,8 @@ void SaveConfigDocument(const toml::table& config, const std::filesystem::path& 
     if (!ReplaceFileW(destination.c_str(), temporary.c_str(), backup.c_str(), 0, nullptr, nullptr)) {
       auto error = GetLastError();
       if (error == ERROR_FILE_NOT_FOUND) {
-        // Initial creation must not replace a config created in the meantime.
+        // Missing-destination fallback: do not overwrite a file appearing before
+        // this move. The caller's earlier existence check is not a create-only transaction.
         error = MoveFileExW(temporary.c_str(), destination.c_str(), 0) ? ERROR_SUCCESS : GetLastError();
       }
       if (error != ERROR_SUCCESS) {
