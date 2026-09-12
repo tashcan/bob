@@ -1,6 +1,6 @@
 #include "settings/native_boolean_callback.h"
-#include <il2cpp-object-internals.h>
 #include <cassert>
+#include <il2cpp-object-internals.h>
 #include <iostream>
 
 namespace
@@ -18,8 +18,9 @@ bool Getter(Il2CppObject*, const MethodInfo*)
 }
 void Setter(Il2CppObject*, bool value, const MethodInfo*)
 { calls += value ? 10 : 20; }
-Il2CppString text{};
-Il2CppString* TextGetter(Il2CppObject*, const MethodInfo*) { return &text; }
+Il2CppString  text{};
+Il2CppString* TextGetter(Il2CppObject*, const MethodInfo*)
+{ return &text; }
 } // namespace
 int main()
 {
@@ -67,8 +68,8 @@ int main()
   stringSchema.return_type = &stringType;
   mod_settings::NativeCallback<Il2CppString*> stringGet;
   assert(stringGet.Initialize(&stringSchema, TextGetter));
-  auto* stringMethod = stringGet.method();
-  Il2CppString* result = nullptr;
+  auto*         stringMethod = stringGet.method();
+  Il2CppString* result       = nullptr;
   stringMethod->invoker_method(nullptr, stringMethod, nullptr, nullptr, &result);
   assert(result == &text);
   assert(reinterpret_cast<decltype(&TextGetter)>(stringMethod->methodPointer)(nullptr, stringMethod) == &text);

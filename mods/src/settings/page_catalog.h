@@ -129,6 +129,14 @@ private:
     auto* page = FindPage(page_id);
     if (!page)
       return Registration::Invalid;
+    const auto& state = [&]() -> const auto& {
+      if constexpr (std::is_same_v<T, BooleanSetting>)
+        return setting;
+      else
+        return setting.state();
+    }();
+    if (state.id().empty() || state.label().empty())
+      return Registration::Invalid;
     const Item candidate = &setting;
     for (const auto& existing : pages_)
       for (const auto& item : existing.items) {

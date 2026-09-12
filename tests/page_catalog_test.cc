@@ -56,6 +56,18 @@ int main()
   assert(empty.AddPage("unused", "Unused", "root") == Registration::Added);
   assert(empty.AddHeading("unused", "lonely", "Heading without controls") == Registration::Added);
   assert(empty.Build().empty());
+  PageCatalog    malformed("malformed", "Malformed controls");
+  BooleanSetting missingId({"", "Label", {}, {}}), missingLabel({"id", "", {}, {}});
+  assert(malformed.AddBoolean("malformed", missingId) == Registration::Invalid);
+  assert(malformed.AddBoolean("malformed", missingLabel) == Registration::Invalid);
+  for (bool emptyId : {true, false}) {
+    SliderSetting invalid({emptyId ? "" : "slider", emptyId ? "Label" : "",
+                           [] { return ValueReadResult<float>::Known(0.5f, 1); },
+                           [](float, std::uint64_t) { return ApplyResult::Applied; }},
+                          0, 1, 0.01f, [] { return true; });
+    assert(malformed.AddSlider("malformed", invalid) == Registration::Invalid);
+  }
+  assert(malformed.Build().empty());
   ChoiceSetting player({"player", "Player detail", [] { return ValueReadResult<int>::Known(0, 1); },
                         [](int, std::uint64_t) { return ApplyResult::Applied; }},
                        {"Native", "Expanded", "Compact", "Threshold"});
