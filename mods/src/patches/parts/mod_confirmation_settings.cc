@@ -7,6 +7,7 @@
 // Native extents are checked against Windows unwind records. Other platforms
 // omit the native UI until equivalent hook evidence is available.
 #if defined(_WIN32) && defined(_M_X64)
+#include "prime/Color.h"
 #include "settings/native_boolean_callback.h"
 #include <Windows.h>
 #include <array>
@@ -218,10 +219,73 @@ SliderSetting* SliderFor(Il2CppObject* context)
   return nullptr;
 }
 
+Il2CppObject* Target(Il2CppGCHandle handle)
+{ return handle ? il2cpp_gchandle_get_target(handle) : nullptr; }
+void Free(Il2CppGCHandle& handle)
+{
+  if (handle)
+    il2cpp_gchandle_free(handle);
+  handle = nullptr;
+}
+
+// Cosmetic changes belong to the bound row. Restore before native refresh or
+// pooling; never change a shared material or search child controls for an image.
+struct RowTint {
+  Il2CppGCHandle image = nullptr;
+  color          before{};
+};
+void RestoreTint(RowTint& tint)
+{
+  try {
+    if (auto* image = Target(tint.image)) {
+      void* args[] = {&tint.before};
+      Call(image, "set_color", 1, args);
+    }
+  } catch (...) {
+    Warn("settings row tint restoration unavailable");
+  }
+  Free(tint.image);
+}
+void TintRow(RowTint& tint, Il2CppObject* widget, color multiplier)
+{
+  RestoreTint(tint);
+  try {
+    static auto images  = il2cpp_get_class_helper("UnityEngine.UI", "UnityEngine.UI", "Image");
+    static auto colors  = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "Color");
+    static auto objects = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "GameObject");
+    static auto get     = objects.GetMethodInfoSpecial("GetComponent", [](auto count, auto params) {
+      return count == 1 && Type(params[0], IL2CPP_TYPE_CLASS)
+             && std::strcmp(il2cpp_class_get_name(il2cpp_class_from_type(params[0])), "Type") == 0;
+    });
+    Root        object(Call(widget, "get_gameObject"));
+    void*       args[] = {images.GetType()};
+    Root        image(Invoke(get, object.get(), args));
+    if (!image.get())
+      return; // Different prefab: text styling still works without a row tint.
+    Root        boxed(Call(image.get(), "get_color"));
+    const auto* set = il2cpp_class_get_method_from_name(image.get()->klass, "set_color", 1);
+    if (!boxed.get() || boxed.get()->klass != colors.get_cls() || !Instance(set, 1, IL2CPP_TYPE_VOID)
+        || set->parameters[0]->byref || il2cpp_class_from_type(set->parameters[0]) != colors.get_cls())
+      return;
+    tint.before = *static_cast<color*>(il2cpp_object_unbox(boxed.get()));
+    tint.image  = il2cpp_gchandle_new_weakref(image.get(), false);
+    if (!tint.image)
+      return;
+    color value{tint.before.r * multiplier.r, tint.before.g * multiplier.g, tint.before.b * multiplier.b,
+                tint.before.a};
+    void* colorArgs[] = {&value};
+    Invoke(set, image.get(), colorArgs);
+  } catch (...) {
+    RestoreTint(tint);
+    Warn("settings row tint unavailable");
+  }
+}
+
 // Stable weak records, sized once from registered controls before pages can bind: no page, context, delegate, or
 // account is retained by UI bookkeeping. Records are released on native unbind and reclaimed on next bind if Unity
 // destroys a widget without sending that notification.
 struct View {
+  RowTint                        tint;
   Il2CppGCHandle                 widget = nullptr, context = nullptr, label = nullptr;
   Il2CppGCHandle                 selectionControl = nullptr;
   std::array<Il2CppGCHandle, 2>  indicators{};
@@ -241,23 +305,16 @@ std::deque<View>& Views()
   static std::deque<View> views(8);
   return views;
 }
-View*         renderingView = nullptr;
-View*         bindingView   = nullptr;
-Il2CppObject* Target(Il2CppGCHandle handle)
-{ return handle ? il2cpp_gchandle_get_target(handle) : nullptr; }
-void Free(Il2CppGCHandle& handle)
-{
-  if (handle)
-    il2cpp_gchandle_free(handle);
-  handle = nullptr;
-}
-void SetActive(Il2CppObject* object, bool value)
+View* renderingView = nullptr;
+View* bindingView   = nullptr;
+void  SetActive(Il2CppObject* object, bool value)
 {
   void* args[] = {&value};
   Call(object, "SetActive", 1, args);
 }
 void Restore(View& view)
 {
+  RestoreTint(view.tint);
   if (view.disabled) {
     if (auto* control = Target(view.selectionControl)) {
       void* args[] = {&view.interactableBefore};
@@ -559,6 +616,12 @@ void Render(View& view, auto original, Il2CppObject* widget)
     text += " — Retry";
   else if (!view.state->enabled())
     text += " — Select Threshold";
+  // An enabled slider belongs to the selected mode above it. Use a quiet cyan
+  // accent, not the native white selection fill (the slider is not a choice).
+  if (WidgetMeta(widget).slider && view.state->enabled()) {
+    text = "<color=#A8E5EE>" + text + "</color>";
+    TintRow(view.tint, widget, {0.70f, 1.0f, 1.0f, 1.0f});
+  }
   Root  message(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(text.c_str())));
   void* args[] = {message.get()};
   Call(label.get(), "OverrideLocalizedText", 1, args);
@@ -623,6 +686,7 @@ const PageCatalog::Page* PageFor(Il2CppObject* context)
 
 struct PageText {
   Il2CppGCHandle owner = nullptr, label = nullptr;
+  RowTint        tint;
 };
 std::vector<PageText> pageText;
 void                  ClearPageText(Il2CppObject* owner)
@@ -633,6 +697,7 @@ void                  ClearPageText(Il2CppObject* owner)
       ++it;
       continue;
     }
+    RestoreTint(it->tint);
     try {
       if (auto* label = Target(it->label))
         Call(label, "ClearTextOverride");
@@ -644,7 +709,7 @@ void                  ClearPageText(Il2CppObject* owner)
     it = pageText.erase(it);
   }
 }
-void SetPageText(Il2CppObject* owner, Il2CppObject* label, const std::string& text)
+void SetPageText(Il2CppObject* owner, Il2CppObject* label, const std::string& text, bool heading = false)
 {
   if (!owner || !label)
     throw std::runtime_error("settings text missing");
@@ -653,8 +718,11 @@ void SetPageText(Il2CppObject* owner, Il2CppObject* label, const std::string& te
   try {
     if (!record.owner || !record.label)
       throw std::runtime_error("settings text weak root");
+    if (heading)
+      TintRow(record.tint, owner, {0.35f, 0.50f, 0.56f, 1.0f});
     pageText.push_back(record);
   } catch (...) {
+    RestoreTint(record.tint);
     Free(record.owner);
     Free(record.label);
     throw;
@@ -753,7 +821,9 @@ void HeadingRefreshHook(auto original, Il2CppObject* widget)
     Root context(Invoke(HeadingMeta().getContext, widget));
     if (const auto* heading = HeadingFor(context.get())) {
       Root label(ReadField(widget, HeadingMeta().label));
-      SetPageText(widget, label.get(), heading->label);
+      // Rich text stays inside the existing local override and is cleared with
+      // it. A darker bar and larger, bold label distinguish a heading from input.
+      SetPageText(widget, label.get(), "<b><size=115%><color=#9ADBE7>" + heading->label + "</color></size></b>", true);
     }
   } catch (...) {
     Warn("settings heading unavailable");

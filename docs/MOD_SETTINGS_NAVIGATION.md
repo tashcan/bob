@@ -39,10 +39,11 @@ their own hook evidence. Metadata/builds alone do not validate presentation or
 callback lifetime; repeated navigation/pooling remains a runtime gate.
 
 Register through `ModPages()` before settings installation. The first production
-group is Navigation > Instant warp mode, sharing Alt+I's owner and persistence.
-Fleet Labels places player/non-player sections on one page, each with detail
+groups follow populated TOML sections: User Interface > Instant warp mode shares
+Alt+I's owner and persistence; Graphics > Fleet Labels places player/non-player
+sections on one page, each with detail
 choices and a percentage slider. Headings use native text-only rows with scoped
-label overrides cleared on refresh/clear. Two text-widget hooks have Windows x64
+label overrides and optional row tints cleared on refresh/clear. Two text-widget hooks have Windows x64
 extents of 293 and 271 bytes. Future grouping follows the section-based direction in
 [MOD_SETTINGS_CONTROLS.md](MOD_SETTINGS_CONTROLS.md). Native confirmation placement remains unchanged.
 Selection controls share the typed setting/view guards with booleans and retain

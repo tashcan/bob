@@ -8,9 +8,9 @@ independent of labels and placement.
 
 | Location | Control | Existing owner |
 | --- | --- | --- |
-| Mod Settings > Navigation | Instant warp mode: Normal (ask), Warp, Jump | `ui.auto_confirm_instant_warp` and the Alt+I action |
-| Mod Settings > Fleet Labels | Player label detail and zoom threshold | `graphics.zoom_label_player_detail`, `graphics.zoom_label_player_threshold` |
-| Mod Settings > Fleet Labels | Non-player label detail and zoom threshold | `graphics.zoom_label_non_player_detail`, `graphics.zoom_label_non_player_threshold` |
+| Mod Settings > User Interface | Instant warp mode: Normal (ask), Warp, Jump | `ui.auto_confirm_instant_warp` and the Alt+I action |
+| Mod Settings > Graphics > Fleet Labels | Player label detail and zoom threshold | `graphics.zoom_label_player_detail`, `graphics.zoom_label_player_threshold` |
+| Mod Settings > Graphics > Fleet Labels | Non-player label detail and zoom threshold | `graphics.zoom_label_non_player_detail`, `graphics.zoom_label_non_player_threshold` |
 | Future separate branch: Hotkeys | Rebind existing actions | Existing shortcut parser and `MapKey` registrations |
 | General > confirmation page | Confirm Forbidden Tech upgrades | Inverse of `ui.auto_confirm_ft_upgrade` |
 
@@ -39,6 +39,12 @@ One Fleet Labels page contains a non-clickable Player heading, its Native /
 Expanded / Compact / Threshold choices and percentage slider, followed by the
 same controls under a Non-player heading. Each profile has its own owner and
 selection; native text rows provide the headings without navigation or actions.
+Headings use larger bold cyan text and a darkened row background. An enabled
+threshold slider uses a subtle cyan accent to connect it to the selected mode,
+without a white selection fill. Tints affect only the row's own Image component,
+when present; other prefab layouts retain the text styling. Native colors and
+text are restored before refresh and pooling. Styling uses the existing bind,
+refresh and release hooks, with no frame polling or shared-material changes.
 Threshold is stored in [0, 1], edited in 1% steps,
 and enabled only in Threshold mode. At 0% labels stay compact; at 100% they stay
 expanded. Reading a player-authored fractional value does not round or save it.
@@ -92,8 +98,11 @@ Buffs (`[buffs]`), Config (`[config]`), Control (`[control]`), Graphics, and so 
 Introduce a group when it gains a working control and an explicit apply path.
 Do not populate empty groups or build a generic editor for every config key.
 Human labels and nested pages can be clearer than raw keys; changing placement
-must not change storage identity. The current Navigation and Fleet Labels layout
-remains the test layout while membership is settled.
+must not change storage identity. The current populated groups are Graphics
+(`[graphics]`, Fleet Labels) and User Interface (`[ui]`, Instant warp mode).
+Control (`[control]`) can be introduced with its own working controls, such as
+hotkeys; instant warp is not moved into that TOML section. Confirmations continue
+to use the native confirmation page.
 
 A future **Restart client** command could support controls that explicitly need
 restart. It would perform an ordinary client restart, settle pending saves using
