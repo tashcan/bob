@@ -25,8 +25,9 @@ namespace
 #endif
 } // namespace
 
-SnapshotSaveQueue::SnapshotSaveQueue(const std::filesystem::path& trustedDestination)
-    : destination_(Resolve(trustedDestination))
+SnapshotSaveQueue::SnapshotSaveQueue(const std::filesystem::path& trustedDestination,
+                                   const std::atomic_bool* hostCancellation)
+    : destination_(Resolve(trustedDestination)), hostCancellation_(hostCancellation)
 {
 }
 
@@ -112,7 +113,7 @@ bool SnapshotSaveQueue::RunOne()
       return false;
     // Once selected, this request is in-flight; a later stop cannot claim to
     // cancel an OS operation that may already have committed.
-    cancelled       = cancelQueued_.load();
+    cancelled       = cancelQueued_.load() || (hostCancellation_ && hostCancellation_->load());
     selected->phase = Phase::Running;
     bytes.swap(selected->bytes);
   }

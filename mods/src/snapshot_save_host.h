@@ -40,6 +40,9 @@ public:
   [[nodiscard]] bool PollStopped() noexcept;
 
 private:
+#if defined(MOD_SNAPSHOT_HOST_TESTING)
+  friend struct SnapshotHostTestAccess;
+#endif
   void Run() noexcept;
 #if defined(_WIN32)
   static unsigned __stdcall Entry(void* context);
@@ -49,7 +52,6 @@ private:
   std::atomic_bool cancelQueued_{false};
   std::mutex access_;
   SnapshotSaveService* service_ = nullptr; // borrowed only while access_ is held
-  SnapshotSaveService* draining_ = nullptr; // cancellation only, same lock/lifetime
   std::vector<std::filesystem::path> paths_;
   std::size_t count_ = 0;
   std::array<std::array<std::optional<SnapshotSaveQueue::Completion>, SnapshotSaveQueue::MaxOutstanding>,

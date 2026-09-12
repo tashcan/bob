@@ -1,4 +1,5 @@
 #define MOD_SNAPSHOT_QUEUE_TESTING
+#define MOD_SNAPSHOT_HOST_TESTING
 #include "snapshot_save_queue.cc"
 #include "snapshot_save_worker.cc"
 #include "snapshot_save_service.cc"
@@ -11,14 +12,20 @@
 struct Capture { volatile LONG calls; ULONGLONG began; };
 Capture* capture;
 int mode;
+std::atomic_bool releaseActive{false}, accessHeld{false};
 namespace persistence
 {
+struct SnapshotHostTestAccess {
+  static std::mutex& Access(SnapshotSaveHost& host) { return host.access_; }
+};
 namespace
 {
+void BeforeHostThreadReturn() {}
 file_transaction::Result Execute(const std::filesystem::path&, std::string_view)
 {
   InterlockedIncrement(&capture->calls);
   if (mode == 1) Sleep(INFINITE); // Storage never returns; deadline must still win.
+  if (mode == 4) while (!releaseActive.load()) Sleep(1);
   Sleep(80);
   file_transaction::Result result;
   result.state = file_transaction::State::Committed;
@@ -51,16 +58,29 @@ int wmain(int argc, wchar_t** argv)
       while (host->TrySubmit(*destination, 1, "first").state != Admission::Accepted) Sleep(1);
       while (!InterlockedCompareExchange(&capture->calls, 0, 0)) Sleep(1);
       while (host->TrySubmit(*destination, 2, "queued").state != Admission::Accepted) Sleep(1);
-      if (mode == 3) host->RequestStop(); // Escalate an already requested normal drain.
+      if (mode == 3 || mode == 4) host->RequestStop();
+      if (mode == 4) {
+        while (host->Status() != persistence::SnapshotSaveHost::State::Stopping) Sleep(1);
+        // Hold producer access across cancellation and active-write completion.
+        // Neither the deadline nor queued cancellation may depend on this lock.
+        new std::thread([host] {
+          std::lock_guard lock(persistence::SnapshotHostTestAccess::Access(*host));
+          accessHeld.store(true);
+          while (!releaseActive.load()) Sleep(1);
+          Sleep(200);
+        });
+        while (!accessHeld.load()) Sleep(1);
+      }
     }
     capture->began = GetTickCount64();
     persistence::ForceClose(host);
+    releaseActive.store(true);
     Sleep(INFINITE); // Simulate no further Unity/owner updates.
     return 99;
   }
   wchar_t executable[32768]{};
   assert(GetModuleFileNameW(nullptr, executable, 32768));
-  for (int scenario = 0; scenario != 4; ++scenario) {
+  for (int scenario = 0; scenario != 5; ++scenario) {
     capture->calls = 0;
     capture->began = 0;
     auto command = L"\"" + std::wstring(executable) + L"\" --child " + std::to_wstring(scenario) +

@@ -78,7 +78,8 @@ SnapshotSaveService::Lease::Lease()
 }
 SnapshotSaveService::Lease::~Lease() { serviceOwned.clear(); }
 
-SnapshotSaveService::SnapshotSaveService(std::span<const std::filesystem::path> paths)
+SnapshotSaveService::SnapshotSaveService(std::span<const std::filesystem::path> paths,
+                                       const std::atomic_bool* hostCancellation)
     : session_(NewSession()), count_(paths.size())
 {
   if (count_ == 0 || count_ > MaxDestinations)
@@ -121,7 +122,7 @@ SnapshotSaveService::SnapshotSaveService(std::span<const std::filesystem::path> 
 #if defined(MOD_SNAPSHOT_SERVICE_TESTING)
       BeforeServiceWorkerStart(i);
 #endif
-      workers_[i] = std::make_unique<SnapshotSaveWorker>(resolved[i]);
+      workers_[i] = std::make_unique<SnapshotSaveWorker>(resolved[i], hostCancellation);
     }
   } catch (...) {
     // Construction is supervisor/startup-only. Partial thread creation must not

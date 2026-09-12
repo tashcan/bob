@@ -35,7 +35,9 @@ public:
     file_transaction::Result result;
   };
 
-  explicit SnapshotSaveQueue(const std::filesystem::path& trustedDestination);
+  // Optional host cancellation must outlive this queue and only transition to true.
+  explicit SnapshotSaveQueue(const std::filesystem::path& trustedDestination,
+                             const std::atomic_bool* hostCancellation = nullptr);
   SnapshotSaveQueue(const SnapshotSaveQueue&)            = delete;
   SnapshotSaveQueue& operator=(const SnapshotSaveQueue&) = delete;
 
@@ -64,6 +66,7 @@ private:
     Completion  completion;
   };
   const std::filesystem::path      destination_;
+  const std::atomic_bool* const hostCancellation_;
   std::array<Slot, MaxOutstanding> slots_;
   std::mutex                       mutex_;
   std::atomic_bool                 stopping_{false};

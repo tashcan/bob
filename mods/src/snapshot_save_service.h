@@ -21,7 +21,9 @@ public:
     std::uint64_t session_ = 0;
     std::size_t index_ = 0;
   };
-  explicit SnapshotSaveService(std::span<const std::filesystem::path> trustedPaths);
+  // Borrowed cancellation flag must outlive the service and all joined workers.
+  explicit SnapshotSaveService(std::span<const std::filesystem::path> trustedPaths,
+                               const std::atomic_bool* hostCancellation = nullptr);
   ~SnapshotSaveService() = default;
   SnapshotSaveService(const SnapshotSaveService&) = delete;
   SnapshotSaveService& operator=(const SnapshotSaveService&) = delete;

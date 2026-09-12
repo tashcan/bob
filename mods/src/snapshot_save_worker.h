@@ -14,7 +14,9 @@ namespace persistence
 class SnapshotSaveWorker final
 {
 public:
-  explicit SnapshotSaveWorker(const std::filesystem::path& trustedDestination);
+  // hostCancellation, when supplied, must outlive the worker and its joined thread.
+  explicit SnapshotSaveWorker(const std::filesystem::path& trustedDestination,
+                              const std::atomic_bool* hostCancellation = nullptr);
   ~SnapshotSaveWorker()                                    = default;
   SnapshotSaveWorker(const SnapshotSaveWorker&)            = delete;
   SnapshotSaveWorker& operator=(const SnapshotSaveWorker&) = delete;

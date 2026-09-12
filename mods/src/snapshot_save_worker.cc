@@ -4,8 +4,9 @@
 
 namespace persistence
 {
-SnapshotSaveWorker::SnapshotSaveWorker(const std::filesystem::path& trustedDestination)
-    : queue_(trustedDestination)
+SnapshotSaveWorker::SnapshotSaveWorker(const std::filesystem::path& trustedDestination,
+                                     const std::atomic_bool* hostCancellation)
+    : queue_(trustedDestination, hostCancellation)
     , worker_([this] { Run(); })
 {
 }
