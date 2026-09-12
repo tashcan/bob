@@ -45,6 +45,23 @@ int main(int argc, char** argv)
   assert(editor.Prepare("[ui]\nauto_confirm_instant_warp='warp'", request).outcome == Outcome::AlreadySaved);
   assert(editor.Prepare("ui = [", request).outcome == Outcome::InvalidDocument);
   assert(editor.Prepare("ui = 3", request).outcome == Outcome::Unsupported);
+  assert(editor.Prepare("[ui]\nother=true", request).outcome == Outcome::Conflict);
+  // Decoded key identities may contain dots, Unicode and combining codepoints.
+  // Columns are parser coordinates, not UTF-8 byte counts or display widths.
+  const std::string unicode_section = "ui.\xc3\xa9";
+  const std::string unicode_key     = "e\xcc\x81.mode";
+  const std::string unicode_document =
+      "[\"" + unicode_section + "\"]\r\n\"" + unicode_key + "\" = 'none' # untouched\r\n";
+  const auto unicode_edit =
+      editor.Prepare(unicode_document, {unicode_section, unicode_key, Value{std::string("none")}, std::string("jump")});
+  assert(unicode_edit.outcome == Outcome::Prepared);
+  auto unicode_expected = unicode_document;
+  unicode_expected.replace(unicode_expected.find("'none'"), 6, "\"jump\"");
+  assert(unicode_edit.text == unicode_expected);
+  const std::string combining          = "ui = { other = 'e\xcc\x81', auto_confirm_instant_warp = 'none' }\n";
+  auto              combining_expected = combining;
+  combining_expected.replace(combining_expected.find("'none'"), 6, "\"warp\"");
+  assert(editor.Prepare(combining, request).text == combining_expected);
 
   const std::filesystem::path root(argv[1]);
   std::filesystem::create_directories(root);
@@ -59,5 +76,9 @@ int main(int argc, char** argv)
   assert(editor.Save(path, request) == Outcome::Conflict);
   assert(!ReplaceConfigText(path, initial, external));
   assert(toml::parse(ReadConfigText(path))["ui"]["auto_confirm_instant_warp"].value<std::string>() == "jump");
+  const auto absent = root / "absent.toml";
+  assert(!std::filesystem::exists(absent));
+  assert(editor.Save(absent, request) == Outcome::IoError);
+  assert(!std::filesystem::exists(absent));
   std::cout << "TOML editor preservation/conflict fixtures passed\n";
 }
