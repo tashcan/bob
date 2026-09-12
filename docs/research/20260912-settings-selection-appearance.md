@@ -29,6 +29,14 @@ event supplies it. No bundles are loaded, cloned, modified, or retained by this
 adapter. Rich text keeps labels light at rest, dark while pressed, and bold for
 the selected value. The checkmark tint follows that contrast treatment.
 
+Cleanup is guarded against synchronous reentry. Re-enabling a disabled Toggle
+calls `Selectable.OnSetProperty` and then `DoStateTransition` immediately; the
+transition must not reapply appearance while the row is being detached. All
+overrides are restored before releasing widget references. An isolated fixture
+compiling the actual `Clear` body reproduced this callback ordering defect before
+the guard and passed afterward, including recursive clear. Its native callback
+was simulated; pooled-widget behavior still needs the in-game check.
+
 Pointer feedback uses the existing native input-state transition event. The new
 Windows x64 `Selectable.DoStateTransition` hook has an 805-byte PE unwind extent
 at RVA `0x47A9650`, exceeding SPUD's 24-byte overwrite. No other mod hook owns

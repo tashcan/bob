@@ -336,6 +336,7 @@ struct View {
   bool                           rendering           = false;
   bool                           binding             = false;
   bool                           requesting          = false;
+  bool                           clearing            = false;
   bool                           preserveNextRefresh = false;
   std::optional<NativeViewState> state;
 };
@@ -394,12 +395,24 @@ void ClearChoiceStyle(View& view)
 }
 void Clear(View& view)
 {
-  ClearChoiceStyle(view);
+  if (view.clearing)
+    return;
+  struct Scope {
+    View& view;
+    explicit Scope(View& view)
+        : view(view)
+    { view.clearing = true; }
+    ~Scope()
+    { view.clearing = false; }
+  } scope(view);
   try {
     Restore(view);
   } catch (...) {
     Warn();
   }
+  // Restoring interactability synchronously calls DoStateTransition. Suppress
+  // presentation reentry until every override is restored and the slot detached.
+  ClearChoiceStyle(view);
   Free(view.widget);
   Free(view.context);
   Free(view.label);
@@ -442,7 +455,7 @@ bool ChildOf(Il2CppObject* transform, Il2CppObject* parent)
 View& Track(Il2CppObject* widget, Il2CppObject* context)
 {
   for (auto& view : Views()) {
-    if (Target(view.widget) || view.rendering || view.binding || view.requesting)
+    if (Target(view.widget) || view.rendering || view.binding || view.requesting || view.clearing)
       continue;
     Clear(view);
     auto&                        metadata = WidgetMeta(widget);
@@ -1143,7 +1156,7 @@ void RefreshHook(auto original, Il2CppObject* widget)
     Root context(Invoke(WidgetMeta(widget).getContext, widget));
     owned      = Owned(context.get());
     auto* view = Find(widget);
-    if (view && (view->rendering || view->binding))
+    if (view && (view->rendering || view->binding || view->clearing))
       return;
     if (view && Target(view->context) != context.get()) {
       Clear(*view);
@@ -1210,7 +1223,7 @@ void SelectionTransitionHook(auto original, Il2CppObject* control, int state, bo
     if (Target(view.selectionControl) != control || !view.state)
       continue;
     view.pressed = state == 2; // Selectable.SelectionState.Pressed, not Selected/focus.
-    if (view.rendering || view.binding || view.requesting)
+    if (view.rendering || view.binding || view.requesting || view.clearing)
       return;
     try {
       Root widget(Target(view.widget));
@@ -1245,7 +1258,7 @@ void RefreshViews()
   if (!OnThread())
     return;
   for (auto& view : Views()) {
-    if (view.requesting || view.rendering || view.binding)
+    if (view.requesting || view.rendering || view.binding || view.clearing)
       continue;
     Root widget(Target(view.widget));
     if (!widget.get())
@@ -1272,7 +1285,8 @@ void ChangeValue(auto original, Il2CppObject* widget, auto desired)
     owned = Owned(context.get());
     if (owned) {
       auto* view = Find(widget);
-      if (!view || view->rendering || view->binding || view->requesting || Target(view->context) != context.get())
+      if (!view || view->rendering || view->binding || view->requesting || view->clearing
+          || Target(view->context) != context.get())
         return;
       struct RequestScope {
         View& view;
