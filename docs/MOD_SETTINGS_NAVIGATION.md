@@ -7,7 +7,7 @@ its stored setting or introduce another copy of its value. Confirmation controls
 continue to belong on the native confirmation page.
 
 `PageCatalog` holds stable page IDs, labels, parent IDs and references to existing
-`BooleanSetting` instances. Parents register first; invalid parents, duplicate
+`BooleanSetting` instances or a `ChoiceSetting` per selection page. Parents register first; invalid parents, duplicate
 pages and conflicting setting owners are rejected. The same setting can appear
 on different pages, with the same authoritative read/write adapter. Registration
 freezes at the first build. Definitions and setting owners outlive their views.
@@ -36,16 +36,20 @@ larger than SPUD's 24-byte overwrite. Other platforms omit the native UI pending
 their own hook evidence. Metadata/builds alone do not validate presentation or
 callback lifetime; repeated navigation/pooling remains a runtime gate.
 
-Register through `ModPages()` before settings installation. The production catalog
-is empty: no final group layout, settings placement or new preference is shipped
-by this infrastructure slice. This supersedes the earlier General > Community Mod
-placement proposal; native confirmation placement remains unchanged.
+Register through `ModPages()` before settings installation. The first production
+group is Navigation > Instant warp mode, sharing Alt+I's owner and persistence.
+Other groups remain undecided. Native confirmation placement remains unchanged.
+Selection controls share the typed setting/view guards with booleans and retain
+the whole integer value in each row snapshot. Three selection-widget hooks have
+verified Windows x64 extents of 146, 355 and 281 bytes. Selection prefabs may put
+their toggle on the row itself: an unavailable selection clears its selected
+index and disables interaction instead of hiding its label's container.
 
 The current native bridge shares the `ModConfirmationSettings` patch installation
 and its debug installation switch. Disabling that patch disables both native UI
 surfaces. Settings retain their own identity and persistence independently of it.
 The shared native adapter currently supports eight simultaneously bound mod
-boolean rows across pages. Plan populated groups within that existing limit;
+rows across pages (boolean and selection). Plan populated groups within that existing limit;
 catalog registration does not itself guarantee native widget capacity.
 
 For a temporary Windows debug navigation fixture, launch with
@@ -56,7 +60,7 @@ fixture value, proving that multiple rows use different owners. Leave the FC
 switch alone when checking labels, nesting and Back; it writes the real FC
 preference if intentionally clicked. The synthetic toggle writes no file. The
 environment option is absent from release builds and defaults off. Remove it and
-restart to return to the empty production catalog. No data is cleared.
+restart to return to the production groups. No data is cleared.
 For the read-callback lifecycle check, additionally set
 `STFC_MOD_SETTINGS_NAV_REENTRY_TEST=1`. The synthetic reader once releases its
 own bookkeeping and rebinds the same native widget. A bounded PASS/FAIL log checks

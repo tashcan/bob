@@ -1,6 +1,7 @@
 #pragma once
 
 #include "boolean_settings.h"
+#include "choice_setting.h"
 #include <algorithm>
 #include <string_view>
 #include <vector>
@@ -15,6 +16,7 @@ public:
   struct Page {
     std::string                  id, label, parent;
     std::vector<BooleanSetting*> booleans;
+    ChoiceSetting*               choice = nullptr;
   };
 
   explicit PageCatalog(std::string root_id, std::string root_label)
@@ -46,7 +48,7 @@ public:
     if (frozen_)
       return Registration::Frozen;
     auto* page = FindPage(page_id);
-    if (!page || setting.id().empty() || setting.label().empty())
+    if (!page || page->choice || setting.id().empty() || setting.label().empty())
       return Registration::Invalid;
     // Multiple views of the same setting are allowed on different pages, but
     // one ID cannot silently acquire a different state/persistence owner.
@@ -61,6 +63,23 @@ public:
     return Registration::Added;
   }
 
+  Registration AddChoice(std::string_view page_id, ChoiceSetting& setting)
+  {
+    CheckThread();
+    if (frozen_)
+      return Registration::Frozen;
+    auto* page = FindPage(page_id);
+    if (!page || !page->booleans.empty())
+      return Registration::Invalid;
+    if (page->choice)
+      return Registration::Duplicate;
+    for (const auto& item : pages_)
+      if (item.choice && item.choice->state().id() == setting.state().id() && item.choice != &setting)
+        return Registration::Invalid;
+    page->choice = &setting;
+    return Registration::Added;
+  }
+
   // A fresh plan for each settings context. Stable IDs and parent-first order
   // let the native adapter rebuild without caching addresses from a previous visit.
   // Empty branches disappear. This does not read settings or trigger any writes.
@@ -70,7 +89,7 @@ public:
     frozen_     = true;
     auto result = pages_;
     for (std::size_t i = result.size(); i-- > 0;) {
-      if (!result[i].booleans.empty())
+      if (!result[i].booleans.empty() || result[i].choice)
         continue;
       const bool has_child = std::any_of(result.begin() + i + 1, result.end(),
                                          [&](const Page& page) { return page.parent == result[i].id; });

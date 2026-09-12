@@ -1,5 +1,6 @@
 #pragma once
 
+#include <array>
 #include <cstddef>
 #include <il2cpp-class-internals.h>
 #include <il2cpp-tabledefs.h>
@@ -33,15 +34,18 @@ public:
       if (schema->return_type->type != IL2CPP_TYPE_BOOLEAN)
         return false;
     } else {
-      static_assert(std::is_same_v<Result, int>, "Only boolean, void and OptionState callbacks are supported");
-      // The native adapter additionally validates this as an Int32-backed enum.
-      if (schema->return_type->type != IL2CPP_TYPE_VALUETYPE)
+      static_assert(std::is_same_v<Result, int>, "Only boolean, void and Int32 callbacks are supported");
+      // Enum users additionally validate the Int32 backing type in the adapter.
+      if (schema->return_type->type != IL2CPP_TYPE_VALUETYPE && schema->return_type->type != IL2CPP_TYPE_I4)
         return false;
     }
-    static_assert((std::is_same_v<Args, bool> && ...), "Only boolean callback arguments are supported");
+    static_assert(((std::is_same_v<Args, bool> || std::is_same_v<Args, int>) && ...),
+                  "Only boolean and Int32 callback arguments are supported");
+    constexpr std::array<int, sizeof...(Args)> types{
+        (std::is_same_v<Args, bool> ? IL2CPP_TYPE_BOOLEAN : IL2CPP_TYPE_I4)...};
     for (std::size_t i = 0; i < sizeof...(Args); ++i)
       if (!schema->parameters || !schema->parameters[i] || schema->parameters[i]->byref
-          || schema->parameters[i]->type != IL2CPP_TYPE_BOOLEAN)
+          || schema->parameters[i]->type != types[i])
         return false;
     method_                      = *schema;
     method_.methodPointer        = reinterpret_cast<Il2CppMethodPointer>(callback);

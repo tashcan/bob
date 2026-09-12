@@ -1,6 +1,7 @@
 #include "fc_confirmation_reset.h"
 #include "settings/boolean_view.h"
 #include "settings/mod_pages.h"
+#include "settings/native_view_state.h"
 
 // Native extents are checked against Windows unwind records. Other platforms
 // omit the native UI until equivalent hook evidence is available.
@@ -28,6 +29,9 @@ std::thread::id                uiThread;
 NativeCallback<bool>           getter;
 NativeCallback<void, bool>     setter;
 NativeCallback<int>            query;
+NativeCallback<int>            selectionGetter;
+NativeCallback<void, int>      selectionSetter;
+bool                           selectionActive = false;
 std::vector<PageCatalog::Page> pages;
 bool                           pagesActive = false;
 bool                           HasLabel(Il2CppObject* row, const char* id);
@@ -43,11 +47,11 @@ BooleanSetting*                SettingFor(Il2CppObject* context)
   return nullptr;
 }
 
-void Warn()
+void Warn(const char* reason = "native control unavailable")
 {
   if (!warned) {
     warned = true;
-    spdlog::warn("[ModSettings] Native confirmation UI unavailable; no mod control added");
+    spdlog::warn("[ModSettings] {}", reason);
   }
 }
 
@@ -132,12 +136,14 @@ bool Equals(Il2CppObject* value, const char* ascii)
 }
 
 struct Metadata {
+  bool selection;
+  explicit Metadata(bool selection = false) : selection(selection) {}
   IL2CppClassHelper director =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "SettingsSectionDirector");
   IL2CppClassHelper widget =
-      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "ToggleOptionWidget");
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", selection ? "SelectionItemOptionWidget" : "ToggleOptionWidget");
   IL2CppClassHelper context = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "SettingsContext");
-  IL2CppClassHelper row = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "ToggleOptionContext");
+  IL2CppClassHelper row = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", selection ? "SelectionItemOptionContext" : "ToggleOptionContext");
   IL2CppClassHelper prefs =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.PersistentPrefs", "PersistentPrefsManager");
   const MethodInfo* addGeneral  = director.GetMethodInfo("AddGeneralSettings", 1);
@@ -160,21 +166,41 @@ Metadata& Meta()
   static Metadata metadata;
   return metadata;
 }
+Metadata& SelectionMeta()
+{
+  static Metadata metadata(true);
+  return metadata;
+}
+Metadata& WidgetMeta(Il2CppObject* widget)
+{
+  return selectionActive && widget && widget->klass == SelectionMeta().widget.get_cls() ? SelectionMeta() : Meta();
+}
+std::pair<ChoiceSetting*, int> ChoiceFor(Il2CppObject* context)
+{
+  for (const auto& page : pages)
+    if (page.choice)
+      for (int i = 0; i < static_cast<int>(page.choice->labels().size()); ++i)
+        if (HasLabel(context, page.choice->item_id(i).c_str())) return {page.choice, i};
+  return {nullptr, 0};
+}
 
 // Fixed weak records: no page, context, delegate, or account is retained by UI
 // bookkeeping. Records are released on native unbind and reclaimed on next bind
 // if Unity destroys a widget without sending that notification.
 struct View {
   Il2CppGCHandle                widget = nullptr, context = nullptr, label = nullptr;
+  Il2CppGCHandle                selectionControl = nullptr;
   std::array<Il2CppGCHandle, 2> indicators{};
   std::array<bool, 2>           activeBefore{};
   bool                          overridden          = false;
   bool                          hidden              = false;
+  bool                          disabled            = false;
+  bool                          interactableBefore  = false;
   bool                          rendering           = false;
   bool                          binding             = false;
   bool                          requesting          = false;
   bool                          preserveNextRefresh = false;
-  std::optional<BooleanView>    state;
+  std::optional<NativeViewState> state;
 };
 std::array<View, ViewLimit>& Views()
 {
@@ -198,6 +224,13 @@ void SetActive(Il2CppObject* object, bool value)
 }
 void Restore(View& view)
 {
+  if (view.disabled) {
+    if (auto* control = Target(view.selectionControl)) {
+      void* args[] = {&view.interactableBefore};
+      Call(control, "set_interactable", 1, args);
+    }
+    view.disabled = false;
+  }
   if (view.overridden) {
     if (auto* label = Target(view.label))
       Call(label, "ClearTextOverride");
@@ -220,13 +253,14 @@ void Clear(View& view)
   Free(view.widget);
   Free(view.context);
   Free(view.label);
+  Free(view.selectionControl);
   for (auto& handle : view.indicators)
     Free(handle);
   if (view.state)
     view.state->Unbind();
   // Keep this object alive through reentrant release during read/write.
   // Track replaces it only after its rendering/request scope has returned.
-  view.overridden = view.hidden = view.preserveNextRefresh = false;
+  view.overridden = view.hidden = view.disabled = view.preserveNextRefresh = false;
 }
 View* Find(Il2CppObject* widget)
 {
@@ -237,11 +271,14 @@ View* Find(Il2CppObject* widget)
 }
 bool Owned(Il2CppObject* context)
 {
-  if (!context || context->klass != Meta().row.get_cls())
+  if (!context)
     return false;
-  auto* callback = reinterpret_cast<Il2CppDelegate*>(ReadField(context, Meta().queryField));
+  const bool selection = selectionActive && context->klass == SelectionMeta().row.get_cls();
+  if (!selection && context->klass != Meta().row.get_cls()) return false;
+  auto& meta = selection ? SelectionMeta() : Meta();
+  auto* callback = reinterpret_cast<Il2CppDelegate*>(ReadField(context, meta.queryField));
   return callback && callback->method == query.method() && callback->method_ptr == query.method()->methodPointer
-         && SettingFor(context);
+         && (selection ? ChoiceFor(context).first != nullptr : SettingFor(context) != nullptr);
 }
 bool ChildOf(Il2CppObject* transform, Il2CppObject* parent)
 {
@@ -254,21 +291,32 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
     if (Target(view.widget) || view.rendering || view.binding || view.requesting)
       continue;
     Clear(view);
-    Root                         label(ReadField(widget, Meta().labelField));
+    auto& metadata = WidgetMeta(widget);
+    Root                         label(ReadField(widget, metadata.labelField));
     Root                         widgetTransform(Call(widget, "get_transform"));
     Root                         labelTransform(Call(label.get(), "get_transform"));
-    std::array<Il2CppObject*, 2> indicators{ReadField(widget, Meta().toggleField),
-                                            ReadField(widget, Meta().stateField)};
+    std::array<Il2CppObject*, 2> indicators{ReadField(widget, metadata.toggleField),
+                                            ReadField(widget, metadata.stateField)};
     Root                         first(Call(indicators[0], "get_gameObject"));
     Root                         second(Call(indicators[1], "get_gameObject"));
     indicators = {first.get(), second.get()};
-    // Never hide the row or an ancestor of its label to suppress unknown ON/OFF.
-    // An unsupported prefab is rejected before any override is applied.
-    for (auto* indicator : indicators) {
-      Root transform(Call(indicator, "get_transform"));
-      if (transform.get() == widgetTransform.get() || !ChildOf(transform.get(), widgetTransform.get())
-          || ChildOf(labelTransform.get(), transform.get()))
-        throw std::runtime_error("settings indicator hierarchy");
+    Root selectionControl(metadata.selection ? ReadField(widget, metadata.toggleField) : nullptr);
+    if (metadata.selection) {
+      // Selection prefabs can put the toggle/animator on the entire row. Never
+      // hide those containers: unknown selection renders -1 and disables input.
+      Root transform(Call(selectionControl.get(), "get_transform"));
+      if (!ChildOf(transform.get(), widgetTransform.get())
+          || !ChildOf(labelTransform.get(), widgetTransform.get()))
+        throw std::runtime_error("selection control hierarchy");
+      (void)Boolean(Call(selectionControl.get(), "get_interactable"));
+    } else {
+      // Boolean rows suppress unknown ON/OFF by hiding only detached indicators.
+      for (auto* indicator : indicators) {
+        Root transform(Call(indicator, "get_transform"));
+        if (transform.get() == widgetTransform.get() || !ChildOf(transform.get(), widgetTransform.get())
+            || ChildOf(labelTransform.get(), transform.get()))
+          throw std::runtime_error("settings indicator hierarchy");
+      }
     }
     try {
       auto weak = [](Il2CppObject* object) {
@@ -279,13 +327,21 @@ View& Track(Il2CppObject* widget, Il2CppObject* context)
       };
       view.widget   = weak(widget);
       view.context  = weak(context);
-      auto* setting = SettingFor(context);
-      if (!setting)
-        throw std::runtime_error("settings owner missing");
-      view.state.emplace(*setting);
+      if (metadata.selection) {
+        auto [setting, index] = ChoiceFor(context);
+        if (!setting) throw std::runtime_error("selection owner missing");
+        view.state.emplace(*setting, index);
+      } else {
+        auto* setting = SettingFor(context);
+        if (!setting) throw std::runtime_error("settings owner missing");
+        view.state.emplace(*setting);
+      }
       view.label = weak(label.get());
-      for (std::size_t i = 0; i < indicators.size(); ++i)
-        view.indicators[i] = weak(indicators[i]);
+      if (metadata.selection)
+        view.selectionControl = weak(selectionControl.get());
+      else
+        for (std::size_t i = 0; i < indicators.size(); ++i)
+          view.indicators[i] = weak(indicators[i]);
     } catch (...) {
       Clear(view);
       throw;
@@ -301,6 +357,9 @@ bool GetEnabled(Il2CppObject*, const MethodInfo*)
   // consumes this placeholder; its indicators are suppressed when value is empty.
   return renderingView && renderingView->state ? renderingView->state->value().value_or(false) : false;
 }
+int GetSelected(Il2CppObject*, const MethodInfo*)
+{ return renderingView && renderingView->state ? renderingView->state->selected() : -1; }
+void SetSelected(Il2CppObject*, int, const MethodInfo*) {}
 void SetEnabled(Il2CppObject*, bool, const MethodInfo*)
 {
   // Deliberately inert. Only OnToggleValueChanged with a live view snapshot can
@@ -422,11 +481,11 @@ void Render(View& view, auto original, Il2CppObject* widget)
   struct Scope {
     View&                       view;
     View*                       previous;
-    BooleanSetting::RenderScope suppress;
+    NativeViewState::RenderScope suppress;
     Scope(View& view)
         : view(view)
         , previous(renderingView)
-        , suppress(view.state->setting())
+        , suppress(*view.state)
     {
       view.rendering = true;
       renderingView  = &view;
@@ -442,7 +501,7 @@ void Render(View& view, auto original, Il2CppObject* widget)
   if (Target(view.widget) != widget || Target(view.context) != boundContext.get())
     return;
   Root        label(Target(view.label));
-  std::string text = view.state->setting().label();
+  std::string text = view.state->label();
   // The native row has limited label width: "Change not applied; try again" was
   // visibly truncated after "; tr" alongside the FC label. Keep these suffixes
   // short; recheck the full label at supported UI scales when changing wording.
@@ -455,6 +514,14 @@ void Render(View& view, auto original, Il2CppObject* widget)
   Call(label.get(), "OverrideLocalizedText", 1, args);
   view.overridden = true;
   if (!view.state->value()) {
+    if (auto* control = Target(view.selectionControl)) {
+      view.interactableBefore = Boolean(Call(control, "get_interactable"));
+      view.disabled = true;
+      bool interactable = false;
+      void* controlArgs[] = {&interactable};
+      Call(control, "set_interactable", 1, controlArgs);
+      return;
+    }
     // Capture all native values first (the two components may share a node).
     for (std::size_t i = 0; i < view.indicators.size(); ++i)
       view.activeBefore[i] = Boolean(Call(Target(view.indicators[i]), "get_activeSelf"));
@@ -592,6 +659,47 @@ void PageDestroyedHook(auto original, Il2CppObject* controller)
   original(controller);
 }
 
+void AddChoiceRows(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent, ChoiceSetting& setting)
+{
+  if (!selectionActive) return;
+  auto& m = SelectionMeta();
+  const auto* add = m.context.GetMethodInfo("AddSelection", 6);
+  Root children(Call(parent, "get_Children"));
+  const int before = Count(children.get());
+  const auto count = setting.labels().size();
+  if (before + count > 128) throw std::runtime_error("selection category capacity");
+  Root values(reinterpret_cast<Il2CppObject*>(il2cpp_array_new(
+      il2cpp_class_from_name(il2cpp_get_corlib(), "System", "String"), count)));
+  for (std::size_t i = 0; i < count; ++i) {
+    Root value(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.item_id(static_cast<int>(i)).c_str())));
+    auto* array = reinterpret_cast<Il2CppArraySize*>(values.get());
+    il2cpp_gc_wbarrier_set_field(values.get(), reinterpret_cast<void**>(&array->vector[i]), value.get());
+  }
+  Root label(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.state().id().c_str())));
+  Root category(reinterpret_cast<Il2CppObject*>(il2cpp_string_new("")));
+  Root get(MakeDelegate(il2cpp_class_from_type(add->parameters[3]), director, selectionGetter.method()));
+  Root set(MakeDelegate(il2cpp_class_from_type(add->parameters[4]), director, selectionSetter.method()));
+  void* args[] = {parent, label.get(), values.get(), get.get(), set.get(), category.get()};
+  Invoke(add, context, args);
+  if (Count(children.get()) != before + static_cast<int>(count))
+    throw std::runtime_error("selection row insertion");
+  for (int i = 0; i < static_cast<int>(count); ++i) {
+    Root row(Item(children.get(), before + i));
+    if (row.get()->klass != m.row.get_cls()) throw std::runtime_error("selection row class");
+    Root index(Call(row.get(), "get_Index"));
+    if (!index.get() || !Type(il2cpp_class_get_type(index.get()->klass), IL2CPP_TYPE_I4)
+        || *static_cast<int*>(il2cpp_object_unbox(index.get())) != i)
+      throw std::runtime_error("selection row index");
+    Root text(Call(row.get(), "get_LabelContext"));
+    Root id(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(setting.item_id(i).c_str())));
+    void* labelArgs[] = {id.get()};
+    Call(text.get(), "set_Identifier", 1, labelArgs);
+    Root state(MakeDelegate(il2cpp_class_from_type(m.querySetter->parameters[0]), director, query.method()));
+    void* stateArgs[] = {state.get()};
+    Invoke(m.querySetter, row.get(), stateArgs);
+  }
+}
+
 void AddPages(Il2CppObject* director, Il2CppObject* context)
 {
   if (!pagesActive || pages.empty())
@@ -622,6 +730,8 @@ void AddPages(Il2CppObject* director, Il2CppObject* context)
       parents.emplace(page.id, category.get()); // Native root owns all added contexts.
       for (auto* setting : page.booleans)
         AddBooleanRow(director, context, category.get(), *setting);
+      if (page.choice)
+        AddChoiceRows(director, context, category.get(), *page.choice);
     }
     // Unsupported leaf adapters can leave empty groups; remove them bottom-up.
     for (auto it = pages.rbegin(); it != pages.rend(); ++it) {
@@ -666,7 +776,7 @@ void RefreshHook(auto original, Il2CppObject* widget)
   }
   bool owned = false;
   try {
-    Root context(Invoke(Meta().getContext, widget));
+    Root context(Invoke(WidgetMeta(widget).getContext, widget));
     owned      = Owned(context.get());
     auto* view = Find(widget);
     if (view && (view->rendering || view->binding))
@@ -700,6 +810,12 @@ void RefreshHook(auto original, Il2CppObject* widget)
       Render(*view, original, widget);
       return;
     }
+  } catch (const std::exception& error) {
+    Warn(error.what());
+    if (owned) {
+      HideUnsupported(widget);
+      return;
+    }
   } catch (...) {
     if (owned) {
       HideUnsupported(widget);
@@ -720,10 +836,10 @@ void RefreshViews()
     if (!widget.get())
       continue;
     try {
-      Root context(Invoke(Meta().getContext, widget.get()));
+      Root context(Invoke(WidgetMeta(widget.get()).getContext, widget.get()));
       if (Target(view.context) != context.get() || !Owned(context.get()))
         continue;
-      Invoke(Meta().refresh, widget.get());
+      Invoke(WidgetMeta(widget.get()).refresh, widget.get());
     } catch (...) {
       HideUnsupported(widget.get());
     }
@@ -737,7 +853,7 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
   }
   bool owned = false;
   try {
-    Root context(Invoke(Meta().getContext, widget));
+    Root context(Invoke(WidgetMeta(widget).getContext, widget));
     owned = Owned(context.get());
     if (owned) {
       auto* view = Find(widget);
@@ -754,12 +870,12 @@ void ChangedHook(auto original, Il2CppObject* widget, bool desired)
       auto result = view->state->Request(desired);
       if (Target(view->widget) != widget || Target(view->context) != context.get())
         return;
-      if (result.outcome == Outcome::Suppressed || result.outcome == Outcome::Busy)
+      if (result == Outcome::Suppressed || result == Outcome::Busy)
         return;
       // Refresh through the hook once, preserving the write result. A fresh Bind
       // here would erase an unverified outcome merely because a later read works.
       view->preserveNextRefresh = true;
-      Invoke(Meta().refresh, widget);
+      Invoke(WidgetMeta(widget).refresh, widget);
       return;
     }
   } catch (...) {
@@ -786,6 +902,8 @@ void ReleaseHook(auto original, Il2CppObject* widget)
 void Invalidate()
 {
   InvalidateFleetCommanderConfirmationSession();
+  for (const auto& page : pages)
+    if (page.choice) page.choice->state().InvalidateSession();
   for (const auto& page : pages)
     for (auto* setting : page.booleans)
       if (setting != &FleetCommanderConfirmationSetting())
@@ -852,7 +970,7 @@ void ExerciseReadReentry()
   // Exercise the actual release bookkeeping and refresh path inside a reader.
   // Keep the native context bound so this is independent of game navigation.
   Clear(*previous);
-  Invoke(Meta().refresh, widget.get());
+  Invoke(WidgetMeta(widget.get()).refresh, widget.get());
   auto* rebound = Find(widget.get());
   spdlog::info("[ModSettings] Read reentry fixture: {}",
                rebound && rebound != previous && previous->binding ? "PASS" : "FAIL");
@@ -867,9 +985,9 @@ void ExerciseNestedWrite()
   for (auto& view : Views()) {
     if (!Target(view.widget) || !view.state)
       continue;
-    if (view.requesting && view.state->setting().id() == "community_mod.test.enabled")
+    if (view.requesting && view.state->id() == "community_mod.test.enabled")
       outer = &view;
-    if (view.state->setting().id() == "community_mod.test.nested_write")
+    if (view.state->id() == "community_mod.test.nested_write")
       nested = &view;
   }
   if (!outer || !nested)
@@ -890,7 +1008,7 @@ void RebindOuterWrite()
     return;
   Root widget(Target(writeProbeOuter->widget));
   Clear(*writeProbeOuter);
-  Invoke(Meta().refresh, widget.get());
+  Invoke(WidgetMeta(widget.get()).refresh, widget.get());
   auto* rebound = Find(widget.get());
   spdlog::info("[ModSettings] Nested write reentry fixture: {}",
                rebound && rebound != writeProbeOuter && writeProbeOuter->requesting ? "PASS" : "FAIL");
@@ -899,6 +1017,7 @@ void RebindOuterWrite()
 
 void InstallPages()
 {
+  RegisterModPages();
 #ifdef _MODDBG
   // Temporary opt-in navigation fixture; no real mod feature placement is chosen.
   // It mirrors the existing FC owner so rebuilds never introduce a second value.
@@ -952,6 +1071,42 @@ void InstallPages()
       || !Type(m.add->parameters[1], IL2CPP_TYPE_STRING) || !Type(m.add->parameters[2], IL2CPP_TYPE_STRING)
       || !Reference(m.add->parameters[3]) || !Reference(m.selected->parameters[0]))
     throw std::runtime_error("settings category signature");
+  if (std::any_of(pages.begin(), pages.end(), [](const auto& page) { return page.choice; })) {
+    auto& selection = SelectionMeta();
+    const auto* get = selection.director.GetMethodInfo("GetQualityOptionSelectedIndex", 0);
+    const auto* set = selection.director.GetMethodInfo("OnQualityOptionSelected", 1);
+    const auto* add = selection.context.GetMethodInfo("AddSelection", 6);
+    if (!Instance(get, 0, IL2CPP_TYPE_I4) || !Instance(set, 1, IL2CPP_TYPE_VOID)
+        || !Type(set->parameters[0], IL2CPP_TYPE_I4) || !Instance(add, 6, IL2CPP_TYPE_VOID)
+        || !Reference(add->parameters[0]) || !Type(add->parameters[1], IL2CPP_TYPE_STRING)
+        || !Type(add->parameters[2], IL2CPP_TYPE_SZARRAY) || !Reference(add->parameters[3])
+        || !Reference(add->parameters[4]) || !Type(add->parameters[5], IL2CPP_TYPE_STRING)
+        || !Instance(selection.querySetter, 1, IL2CPP_TYPE_VOID) || !Reference(selection.querySetter->parameters[0])
+        || !selection.getContext || !Reference(selection.getContext->return_type)
+        || !Instance(selection.getContext, 0, selection.getContext->return_type->type)
+        || !selectionGetter.Initialize(get, GetSelected) || !selectionSetter.Initialize(set, SetSelected))
+      throw std::runtime_error("selection callback schema");
+    const std::array targets{selection.refresh, selection.changed, selection.release};
+    for (std::size_t i = 0; i < targets.size(); ++i) {
+      if (!Instance(targets[i], i == 1 ? 1 : 0, IL2CPP_TYPE_VOID) || !Extent(targets[i]))
+        throw std::runtime_error("selection hook metadata/extent");
+      if (i == 1 && !Type(targets[i]->parameters[0], IL2CPP_TYPE_BOOLEAN))
+        throw std::runtime_error("selection changed signature");
+      for (std::size_t j = 0; j < i; ++j)
+        if (targets[i]->methodPointer == targets[j]->methodPointer) throw std::runtime_error("selection shared hook");
+      const auto& core = Meta();
+      for (auto* existing : {core.refresh, core.changed, core.release, core.addGeneral, core.reload, core.session,
+                            core.load, m.bind, m.release, m.selected, m.destroyed})
+        if (targets[i]->methodPointer == existing->methodPointer) throw std::runtime_error("selection hook overlap");
+    }
+    for (const auto& page : pages)
+      if (page.choice && !page.choice->state().SetChangeObserver(RefreshViews))
+        throw std::runtime_error("selection observer ownership");
+    SPUD_STATIC_DETOUR(selection.refresh->methodPointer, RefreshHook);
+    SPUD_STATIC_DETOUR(selection.changed->methodPointer, ChangedHook);
+    SPUD_STATIC_DETOUR(selection.release->methodPointer, ReleaseHook);
+    selectionActive = true;
+  }
   for (const auto& page : pages)
     for (auto* setting : page.booleans) {
       if (setting->id() == FleetCommanderConfirmationSetting().id() && setting != &FleetCommanderConfirmationSetting())
