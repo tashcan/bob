@@ -44,13 +44,17 @@ polling, animation replacement, asset loading or setting write in this hook.
 
 ## Fleet Labels and Forbidden Tech
 
-One Fleet Labels page contains a non-clickable Player heading, its Native /
+One Fleet Labels page contains a collapsible Player heading, its Native /
 Expanded / Compact / Threshold choices and percentage slider, followed by the
 same controls under a Non-player heading. Each profile has its own owner and
-selection; native text rows provide the headings without navigation or actions.
+selection. Click either heading to hide/show its controls independently, without
+navigating away. Both sections start expanded on each page visit; expansion is
+temporary presentation state and never writes TOML or changes a setting value.
+The native category arrow points down when expanded and right when collapsed.
 Headings use larger bold cyan text and a darkened row background. An enabled
 threshold slider uses a subtle cyan accent to connect it to the selected mode,
-without a white selection fill. Tints affect the row's direct `BG` Image child,
+without a white selection fill. Tints affect the row's direct `BG` Image child
+(`Background` for category headings),
 when present; other prefab layouts retain the text styling. Native colors and
 text are restored before refresh and pooling. Styling uses the existing bind,
 refresh and release hooks, with no frame polling or shared-material changes.
@@ -76,7 +80,15 @@ pending value without waiting out that delay. F10 retains its existing force-clo
 cancellation and 500 ms best effort bound. Save failures/conflicts log the affected
 section and key and leave the live setting in place. Numeric edits use the TOML
 serializer and the same source-preserving edit/reparse/external-edit checks.
-Page opens and native rendering never enqueue saves.
+Page opens, section folding and native rendering never enqueue saves.
+
+Collapsible headings reuse the existing category bind/release and page-selection
+hooks. A heading click gives the native option panel a filtered `OptionContext[]`
+through its existing `SetContext(provider, IList)` method. The original page's
+children and navigation parent stay intact, including controls omitted from the
+visible list. Native rebinding releases hidden widgets and refreshes expanded
+ones through the same guarded readers as a normal page visit. Plain headings
+remain non-interactive. No new detour, frame polling or persistence owner is added.
 
 Exact Windows build261 unwind extents, checked before expanding installation:
 

@@ -17,11 +17,25 @@ class PageCatalog
 public:
   struct Heading {
     std::string id, label;
+    bool        collapsible = false;
   };
   using Item = std::variant<Heading, BooleanSetting*, ChoiceSetting*, SliderSetting*>;
   struct Page {
-    std::string                id, label, parent;
-    std::vector<Item>          items; // Registration order is visual order, including headings.
+    std::string       id, label, parent;
+    std::vector<Item> items; // Registration order is visual order, including headings.
+    // A heading owns following controls up to the next heading. Collapse is
+    // presentation state only; this lookup never reads or writes a setting.
+    const Heading* SectionFor(std::string_view setting_id) const
+    {
+      const Heading* section = nullptr;
+      for (const auto& item : items) {
+        if (const auto* heading = std::get_if<Heading>(&item))
+          section = heading->collapsible ? heading : nullptr;
+        else if (Id(item) == setting_id)
+          return section;
+      }
+      return nullptr;
+    }
     template <typename T> auto Controls() const
     {
       return items | std::views::filter([](const Item& item) { return std::holds_alternative<T*>(item); })
@@ -62,6 +76,10 @@ public:
       return Registration::Invalid;
     if (FindPage(id))
       return Registration::Duplicate;
+    for (const auto& page : pages_)
+      for (const auto& item : page.items)
+        if (const auto* heading = std::get_if<Heading>(&item); heading && heading->collapsible && heading->id == id)
+          return Registration::Invalid;
     // Parents already exist: no orphan or cyclic registrations.
     pages_.push_back({std::move(id), std::move(label), std::string(parent), {}});
     return Registration::Added;
@@ -72,7 +90,7 @@ public:
   { return AddControl(page, setting); }
   Registration AddSlider(std::string_view page, SliderSetting& setting)
   { return AddControl(page, setting); }
-  Registration AddHeading(std::string_view page_id, std::string id, std::string label)
+  Registration AddHeading(std::string_view page_id, std::string id, std::string label, bool collapsible = false)
   {
     CheckThread();
     if (frozen_)
@@ -80,11 +98,13 @@ public:
     auto* page = FindPage(page_id);
     if (!page || id.empty() || label.empty())
       return Registration::Invalid;
+    if (collapsible && FindPage(id))
+      return Registration::Invalid; // Both use native category contexts; identities must be distinct.
     for (const auto& existing : pages_)
       for (const auto& item : existing.items)
         if (Id(item) == id)
           return Registration::Duplicate;
-    page->items.emplace_back(Heading{std::move(id), std::move(label)});
+    page->items.emplace_back(Heading{std::move(id), std::move(label), collapsible});
     return Registration::Added;
   }
 

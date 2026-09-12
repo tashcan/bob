@@ -21,7 +21,7 @@ void RegisterModPages()
   catalog.AddPage("community_mod.labels", "Fleet Labels", "community_mod.graphics");
   for (bool player : {true, false}) {
     catalog.AddHeading("community_mod.labels", player ? "community_mod.labels.player" : "community_mod.labels.other",
-                       player ? "Player" : "Non-player");
+                       player ? "Player" : "Non-player", true);
     catalog.AddChoice("community_mod.labels", FleetLabelDetailSetting(player));
     catalog.AddSlider("community_mod.labels", FleetLabelThresholdSetting(player));
   }

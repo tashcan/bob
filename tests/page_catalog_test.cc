@@ -81,10 +81,10 @@ int main()
                              [](float, std::uint64_t) { return ApplyResult::Applied; }},
                             0, 1, 0.01f, [] { return true; });
   PageCatalog   combined("labels", "Fleet Labels");
-  assert(combined.AddHeading("labels", "player.heading", "Player") == Registration::Added);
+  assert(combined.AddHeading("labels", "player.heading", "Player", true) == Registration::Added);
   assert(combined.AddChoice("labels", player) == Registration::Added);
   assert(combined.AddSlider("labels", playerSlider) == Registration::Added);
-  assert(combined.AddHeading("labels", "other.heading", "Non-player") == Registration::Added);
+  assert(combined.AddHeading("labels", "other.heading", "Non-player", true) == Registration::Added);
   assert(combined.AddChoice("labels", other) == Registration::Added);
   assert(combined.AddSlider("labels", otherSlider) == Registration::Added);
   const auto ordered = combined.Build();
@@ -95,6 +95,24 @@ int main()
   assert(std::get<PageCatalog::Heading>(ordered[0].items[3]).label == "Non-player");
   assert(std::get<ChoiceSetting*>(ordered[0].items[4]) == &other);
   assert(std::get<SliderSetting*>(ordered[0].items[5]) == &otherSlider);
+  assert(ordered[0].SectionFor("player")->id == "player.heading");
+  assert(ordered[0].SectionFor("player.zoom")->id == "player.heading");
+  assert(ordered[0].SectionFor("other")->id == "other.heading");
+  assert(ordered[0].SectionFor("other.zoom")->id == "other.heading");
+  assert(!ordered[0].SectionFor("player.heading")); // Headers always remain visible.
+  assert(!ordered[0].SectionFor("unknown"));
+  PageCatalog boundaries("boundaries", "Section boundaries");
+  assert(boundaries.AddHeading("boundaries", "boundaries", "Collision", true) == Registration::Invalid);
+  assert(boundaries.AddChoice("boundaries", player) == Registration::Added);
+  assert(boundaries.AddHeading("boundaries", "collapsible", "Collapsible", true) == Registration::Added);
+  assert(boundaries.AddPage("collapsible", "Collision", "boundaries") == Registration::Invalid);
+  assert(boundaries.AddSlider("boundaries", playerSlider) == Registration::Added);
+  assert(boundaries.AddHeading("boundaries", "plain", "Plain") == Registration::Added);
+  assert(boundaries.AddSlider("boundaries", otherSlider) == Registration::Added);
+  const auto bounded = boundaries.Build();
+  assert(!bounded[0].SectionFor("player")); // Controls before a heading are unaffected.
+  assert(bounded[0].SectionFor("player.zoom")->id == "collapsible");
+  assert(!bounded[0].SectionFor("other.zoom")); // A plain heading ends a collapsible section.
   bool        rejected = false;
   std::thread wrong_thread([&] {
     try {

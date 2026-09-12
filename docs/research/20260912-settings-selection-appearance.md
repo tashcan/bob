@@ -48,3 +48,23 @@ Client SHA256:
 The native UI remains omitted on other platforms; Windows hook evidence is not
 proof of macOS hook fit. Runtime checks must verify release/drag-out behavior,
 shortcut readback, selected checkmarks, and restoration of pooled native widgets.
+
+## Collapsible section follow-up
+
+The user accepted the appearance candidate `ac006f5f`; its cleanup correction is
+preserved in `65dede72`. Collapsing sections is a separate follow-up to that baseline.
+
+Read-only build261 disassembly of `GameSettingsViewController.OnCategorySelected`
+(`0xD067E0`) shows it sets `SettingsContext.SelectedOption`, retrieves the selected
+container's `Children`, and binds the option panel with a null provider and that
+IList. `OptionTabPanelWidget.OnDidBindContext` (`0xD08630`) clears/rebuilds its native
+list and wires category callbacks. Section clicks reuse this panel bind with a
+filtered array, keeping SelectedOption and the original children intact. The
+existing page-selection detour handles only registered section categories on the
+current page. This adds no new detour target.
+
+The category prefab has direct `Background` and `Arrow` children. Its Arrow starts
+with identity local rotation. Expanded headings rotate that arrow down; release
+restores its native rotation and background color before pooling. Runtime evidence
+must still verify independent folding, both sections closed, Back/reopen, arrow
+orientation, and restoration of ordinary category rows.

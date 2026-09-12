@@ -8,6 +8,7 @@
 // omit the native UI until equivalent hook evidence is available.
 #if defined(_WIN32) && defined(_M_X64)
 #include "prime/Color.h"
+#include "prime/Vector3.h"
 #include "settings/native_boolean_callback.h"
 #include <Windows.h>
 #include <array>
@@ -789,6 +790,8 @@ bool OnThread()
 { return active && std::this_thread::get_id() == uiThread; }
 
 struct PageMetadata {
+  IL2CppClassHelper category =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "CategoryOptionContext");
   IL2CppClassHelper categoryWidget =
       il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "CategoryOptionWidget");
   IL2CppClassHelper controller =
@@ -800,6 +803,7 @@ struct PageMetadata {
   const MethodInfo* destroyed = controller.GetMethodInfo("OnDestroy", 0);
   FieldInfo*        label     = Field(categoryWidget.get_cls(), "_label");
   FieldInfo*        title     = Field(controller.get_cls(), "_title");
+  FieldInfo*        panel     = Field(controller.get_cls(), "_optionTabPanel");
 };
 PageMetadata& PageMeta()
 {
@@ -816,9 +820,82 @@ const PageCatalog::Page* PageFor(Il2CppObject* context)
   return nullptr;
 }
 
+// One open page, with visit-local expansion state. The native context retains
+// every child; only the list's presentation is filtered. Back and save ownership
+// remain native, and a fresh page visit starts expanded.
+struct SectionPage {
+  Il2CppGCHandle           controller = nullptr, context = nullptr;
+  std::vector<std::string> collapsed;
+  bool                     refreshing = false;
+} sectionPage;
+void ClearSectionPage()
+{
+  Free(sectionPage.controller);
+  Free(sectionPage.context);
+  sectionPage.collapsed.clear();
+}
+const PageCatalog::Heading* CollapsibleHeadingFor(Il2CppObject* context)
+{
+  if (!context || context->klass != PageMeta().category.get_cls())
+    return nullptr;
+  auto* callback = reinterpret_cast<Il2CppDelegate*>(ReadField(context, Meta().queryField));
+  if (!callback || callback->method != query.method() || callback->method_ptr != query.method()->methodPointer)
+    return nullptr;
+  Root parent(Call(context, "get_Parent"));
+  if (const auto* page = PageFor(parent.get()))
+    for (const auto& item : page->items)
+      if (const auto* heading = std::get_if<PageCatalog::Heading>(&item);
+          heading && heading->collapsible && HasLabel(context, heading->id.c_str()))
+        return heading;
+  return nullptr;
+}
+bool Collapsed(const PageCatalog::Heading& heading)
+{
+  return std::find(sectionPage.collapsed.begin(), sectionPage.collapsed.end(), heading.id)
+         != sectionPage.collapsed.end();
+}
+void ShowSections(Il2CppObject* controller, Il2CppObject* context, const PageCatalog::Page& page)
+{
+  Root                       children(Call(context, "get_Children"));
+  std::vector<Il2CppObject*> visible;
+  for (int i = 0, count = Count(children.get()); i < count; ++i) {
+    auto*                       row     = Item(children.get(), i); // Rooted by the unchanged native children.
+    const PageCatalog::Heading* section = nullptr;
+    if (Owned(row)) {
+      if (const auto choice = ChoiceFor(row); choice.first)
+        section = page.SectionFor(choice.first->state().id());
+      else if (auto* slider = SliderFor(row))
+        section = page.SectionFor(slider->state().id());
+      else if (auto* setting = SettingFor(row))
+        section = page.SectionFor(setting->id());
+    }
+    if (!section || !Collapsed(*section))
+      visible.push_back(row);
+  }
+  auto options = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "OptionContext");
+  Root list(reinterpret_cast<Il2CppObject*>(il2cpp_array_new(options.get_cls(), visible.size())));
+  if (!list.get())
+    throw std::runtime_error("settings section list allocation");
+  for (std::size_t i = 0; i < visible.size(); ++i) {
+    auto* array = reinterpret_cast<Il2CppArraySize*>(list.get());
+    il2cpp_gc_wbarrier_set_field(list.get(), reinterpret_cast<void**>(&array->vector[i]), visible[i]);
+  }
+  Root        panel(ReadField(controller, PageMeta().panel));
+  const auto* bind = panel.get() ? il2cpp_class_get_method_from_name(panel.get()->klass, "SetContext", 2) : nullptr;
+  if (!Instance(bind, 2, IL2CPP_TYPE_VOID) || !Reference(bind->parameters[0]) || !Reference(bind->parameters[1])
+      || !il2cpp_class_is_assignable_from(il2cpp_class_from_type(bind->parameters[1]), list.get()->klass))
+    throw std::runtime_error("settings section list schema");
+  // The same provider/null + IList bind used by native OnCategorySelected.
+  // Native release/bind owns pooled widgets and their event subscriptions.
+  void* args[] = {nullptr, list.get()};
+  Invoke(bind, panel.get(), args);
+}
+
 struct PageText {
   Il2CppGCHandle owner = nullptr, label = nullptr;
   RowTint        tint;
+  Il2CppGCHandle arrow = nullptr;
+  Vector3        arrowBefore{};
 };
 std::vector<PageText> pageText;
 void                  ClearPageText(Il2CppObject* owner)
@@ -831,6 +908,14 @@ void                  ClearPageText(Il2CppObject* owner)
     }
     RestoreTint(it->tint);
     try {
+      if (auto* arrow = Target(it->arrow)) {
+        void* args[] = {&it->arrowBefore};
+        Call(arrow, "set_localEulerAngles", 1, args);
+      }
+    } catch (...) {
+      Warn();
+    }
+    try {
       if (auto* label = Target(it->label))
         Call(label, "ClearTextOverride");
     } catch (...) {
@@ -838,10 +923,12 @@ void                  ClearPageText(Il2CppObject* owner)
     }
     Free(it->owner);
     Free(it->label);
+    Free(it->arrow);
     it = pageText.erase(it);
   }
 }
-void SetPageText(Il2CppObject* owner, Il2CppObject* label, const std::string& text, bool heading = false)
+void SetPageText(Il2CppObject* owner, Il2CppObject* label, const std::string& text, bool heading = false,
+                 std::optional<bool> expanded = {})
 {
   if (!owner || !label)
     throw std::runtime_error("settings text missing");
@@ -850,11 +937,43 @@ void SetPageText(Il2CppObject* owner, Il2CppObject* label, const std::string& te
   try {
     if (!record.owner || !record.label)
       throw std::runtime_error("settings text weak root");
-    if (heading)
-      TintRow(record.tint, owner, {0.35f, 0.50f, 0.56f, 1.0f});
+    if (heading) {
+      Root background(RowImage(owner, expanded ? "Background" : "BG"));
+      TintImage(record.tint, background.get(), {0.35f, 0.50f, 0.56f, 1.0f});
+    }
+    if (expanded) {
+      Root image(RowImage(owner, "Arrow"));
+      if (image.get()) {
+        Root        arrow(Call(image.get(), "get_transform"));
+        Root        rotation(Call(arrow.get(), "get_localEulerAngles"));
+        auto        vectors = il2cpp_get_class_helper("UnityEngine.CoreModule", "UnityEngine", "Vector3");
+        const auto* set     = il2cpp_class_get_method_from_name(arrow.get()->klass, "set_localEulerAngles", 1);
+        if (rotation.get() && rotation.get()->klass == vectors.get_cls() && Instance(set, 1, IL2CPP_TYPE_VOID)
+            && !set->parameters[0]->byref && il2cpp_class_from_type(set->parameters[0]) == vectors.get_cls()) {
+          record.arrowBefore = *static_cast<Vector3*>(il2cpp_object_unbox(rotation.get()));
+          record.arrow       = il2cpp_gchandle_new_weakref(arrow.get(), false);
+          if (record.arrow) {
+            auto value = record.arrowBefore;
+            if (*expanded)
+              value.z -= 90.0f;
+            void* args[] = {&value};
+            Invoke(set, arrow.get(), args);
+          }
+        }
+      }
+    }
     pageText.push_back(record);
   } catch (...) {
     RestoreTint(record.tint);
+    if (auto* arrow = Target(record.arrow)) {
+      try {
+        void* args[] = {&record.arrowBefore};
+        Call(arrow, "set_localEulerAngles", 1, args);
+      } catch (...) {
+        Warn();
+      }
+    }
+    Free(record.arrow);
     Free(record.owner);
     Free(record.label);
     throw;
@@ -882,6 +1001,10 @@ void CategoryBindHook(auto original, Il2CppObject* widget)
       }
       Root label(ReadField(widget, PageMeta().label));
       SetPageText(widget, label.get(), page->label);
+    } else if (const auto* heading = CollapsibleHeadingFor(context.get())) {
+      Root label(ReadField(widget, PageMeta().label));
+      SetPageText(widget, label.get(), "<b><size=115%><color=#9ADBE7>" + heading->label + "</color></size></b>", true,
+                  !Collapsed(*heading));
     }
   } catch (...) {
     Warn();
@@ -895,6 +1018,59 @@ void CategoryReleaseHook(auto original, Il2CppObject* widget)
 }
 void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* context)
 {
+  if (OnThread() && pagesActive) {
+    bool sectionClick = false;
+    try {
+      if (const auto* heading = CollapsibleHeadingFor(context)) {
+        sectionClick = true;
+        if (sectionPage.refreshing || Target(sectionPage.controller) != controller)
+          return;
+        Root parent(Call(context, "get_Parent"));
+        Root canvas(Call(controller, "get_CanvasContext"));
+        Root selected(Call(canvas.get(), "get_SelectedOption"));
+        if (!parent.get() || parent.get() != Target(sectionPage.context) || selected.get() != parent.get())
+          return; // An old pooled heading cannot navigate or change this page.
+        struct Scope {
+          Scope()
+          { sectionPage.refreshing = true; }
+          ~Scope()
+          { sectionPage.refreshing = false; }
+        } scope;
+        const auto before = sectionPage.collapsed;
+        if (Collapsed(*heading))
+          std::erase(sectionPage.collapsed, heading->id);
+        else
+          sectionPage.collapsed.push_back(heading->id);
+        try {
+          ShowSections(controller, parent.get(), *PageFor(parent.get()));
+        } catch (...) {
+          sectionPage.collapsed = before;
+          try {
+            ShowSections(controller, parent.get(), *PageFor(parent.get()));
+          } catch (...) {
+          }
+          throw;
+        }
+        return; // A section click refreshes this page; it is not navigation.
+      }
+    } catch (...) {
+      Warn("settings section unavailable");
+      if (sectionClick)
+        return;
+    }
+    ClearSectionPage();
+    try {
+      if (PageFor(context)) {
+        sectionPage.controller = il2cpp_gchandle_new_weakref(controller, false);
+        sectionPage.context    = il2cpp_gchandle_new_weakref(context, false);
+        if (!sectionPage.controller || !sectionPage.context)
+          ClearSectionPage();
+      }
+    } catch (...) {
+      ClearSectionPage();
+      Warn("settings section owner unavailable");
+    }
+  }
   if (OnThread())
     ClearPageText(controller);
   original(controller, context);
@@ -911,8 +1087,11 @@ void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* con
 }
 void PageDestroyedHook(auto original, Il2CppObject* controller)
 {
-  if (OnThread())
+  if (OnThread()) {
     ClearPageText(controller);
+    if (Target(sectionPage.controller) == controller)
+      ClearSectionPage();
+  }
   original(controller);
 }
 
@@ -976,6 +1155,15 @@ void HeadingClearHook(auto original, Il2CppObject* widget)
 void AddHeadingRow(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent,
                    const PageCatalog::Heading& heading)
 {
+  if (heading.collapsible) {
+    Root  id(reinterpret_cast<Il2CppObject*>(il2cpp_string_new(heading.id.c_str())));
+    Root  state(MakeDelegate(il2cpp_class_from_type(PageMeta().add->parameters[3]), director, query.method()));
+    void* args[] = {parent, id.get(), id.get(), state.get()};
+    Root  row(Invoke(PageMeta().add, context, args));
+    if (!CollapsibleHeadingFor(row.get()))
+      throw std::runtime_error("settings section identity");
+    return;
+  }
   if (!headingsActive)
     throw std::runtime_error("settings heading adapter missing");
   const auto* add = HeadingMeta().add;
@@ -1334,6 +1522,7 @@ void ReleaseHook(auto original, Il2CppObject* widget)
 }
 void Invalidate()
 {
+  ClearSectionPage();
   InvalidateFleetCommanderConfirmationSession();
   ForbiddenTechConfirmationSetting().InvalidateSession();
   for (const auto& page : pages)
@@ -1617,8 +1806,10 @@ void InstallPages()
     sliderActive = true;
   }
   if (std::any_of(pages.begin(), pages.end(), [](const auto& page) {
-        return std::any_of(page.items.begin(), page.items.end(),
-                           [](const auto& item) { return std::holds_alternative<PageCatalog::Heading>(item); });
+        return std::any_of(page.items.begin(), page.items.end(), [](const auto& item) {
+          const auto* heading = std::get_if<PageCatalog::Heading>(&item);
+          return heading && !heading->collapsible;
+        });
       })) {
     auto&       heading = HeadingMeta();
     const auto* get     = Meta().director.GetMethodInfo("GetClientVersion", 0);
