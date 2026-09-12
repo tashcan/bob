@@ -7,8 +7,7 @@ the caller; startup continues with the in-memory configuration.
 
 `SaveConfigDocument` serializes with toml++, parses the output before touching
 disk, exclusively creates a sibling temporary file, checks writing and closing,
-and replaces the destination. No threads, frame callbacks, runtime controls or
-shutdown interception are installed. This is not the preserving TOML editor:
+and replaces the destination. Startup callers remain synchronous. These
 whole-document saves do not merge concurrent setting changes or preserve comments.
 
 Windows uses `ReplaceFileW` to preserve existing permissions and streams, with a
@@ -37,3 +36,55 @@ compile time; it does not install test controls in the mod.
 Native behavior references:
 - [Windows ReplaceFileW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew)
 - [POSIX rename](https://pubs.opengroup.org/onlinepubs/9799919799/functions/rename.html)
+
+## Runtime edits
+
+The instant-warp mode shortcut changes the active mode immediately, then asks one
+worker to persist `ui.auto_confirm_instant_warp`. It retains one pending value;
+new presses replace that pending value while an active save finishes. The worker
+starts only on the first request. It does not read game objects or call Unity.
+
+The worker reads the current file for each attempt. `TomlEditor` caches a parsed
+document only while its source bytes match. It uses toml++ source regions to
+replace the selected value, preserving unrelated bytes, comments and line endings.
+Missing settings are inserted only when reparsing proves the candidate means
+exactly the intended document. Values are typed booleans or strings and encoded
+by toml++; quotes, backslashes and newlines cannot become new TOML instructions.
+
+Each request compares the selected value against the last acknowledged disk value,
+including its original spelling and whether it was absent. Unrelated external
+changes survive. A value already equal to the requested value succeeds without a
+write; a different external value reports a conflict. Invalid TOML, unsupported
+value types and I/O errors leave the live mode alone and log one message per failed
+attempt, without file contents or values. No automatic retry loop is installed.
+The acknowledged value advances only after success. To reconcile a conflict,
+restore the original disk value, select the externally saved mode, or restart to
+load the file. Runtime edits do not rewrite the startup-only generated snapshot.
+
+The checked replacement re-reads the source after staging and rejects changed
+bytes before commit. This is best-effort conflict detection, not an atomic
+compare-and-swap with arbitrary external editors: an external write can still
+race the final native replacement. File deletion is an I/O error, not permission
+to recreate the user's file from cached content.
+
+Runtime persistence currently requires the verified build261 Windows x64 quit
+method (RVA `0x43548c0`, native extent 411 bytes, 24-byte SPUD overwrite, complete
+initial instruction fingerprint checked at installation). macOS and unmatched
+clients keep the shortcut's existing session-only behavior and log that persistence
+is unavailable. The editor/storage fixtures run on all supported build platforms;
+they do not establish native game-hook compatibility.
+
+Normal quit stops admission, drains accepted work, then resumes the game's quit
+request after observing native worker termination. Save failures do not prevent
+exit. A genuine game veto is respected and is not retried automatically. A stalled
+OS write can delay normal quit; F10 remains the escape path. With pending work,
+F10 cancels queued requests and allows the active write up to 500 ms on an
+independent native thread before terminating. With no pending/active write it
+terminates immediately. No disk operation or wait runs in the key handler.
+The existing ScreenManager.Update dispatcher supplies one idle callback; there
+is no extra frame detour or per-frame logging. Hook controls have process lifetime;
+hot unloading the mod is unsupported.
+
+The fixture runners also cover preserving edits, escaped values, conflicts,
+coalescing, failed-save baselines, draining and cancellation. They use isolated
+files and compile-time seams; no test switches or artificial delays ship in the mod.

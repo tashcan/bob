@@ -4,6 +4,7 @@
 #include <cerrno>
 #include <chrono>
 #include <cstdio>
+#include <fstream>
 #include <sstream>
 #include <stdexcept>
 
@@ -27,6 +28,29 @@ void SaveConfigDocument(const toml::table& config, const std::filesystem::path& 
   output.exceptions(std::ios::badbit | std::ios::failbit);
   output << header << config;
   const auto bytes = output.str();
+  ReplaceConfigText(path, bytes);
+}
+
+std::string ReadConfigText(const std::filesystem::path& path)
+{
+  std::ifstream input(path, std::ios::binary);
+  if (!input.is_open()) {
+    throw std::runtime_error("could not open config file");
+  }
+  std::string text;
+  char buffer[8192];
+  while (input.read(buffer, sizeof(buffer)) || input.gcount()) {
+    text.append(buffer, static_cast<std::size_t>(input.gcount()));
+  }
+  if (!input.eof() || input.bad()) {
+    throw std::runtime_error("could not read config file");
+  }
+  return text;
+}
+
+bool ReplaceConfigText(const std::filesystem::path& path, std::string_view bytes,
+                       std::optional<std::string_view> expected)
+{
   (void)toml::parse(bytes);
 
   // Follow existing symlinks as the former ofstream save did. A sibling stays on
@@ -58,6 +82,13 @@ void SaveConfigDocument(const toml::table& config, const std::filesystem::path& 
     file              = nullptr;
     if (closed != 0) {
       throw std::system_error(errno, std::generic_category(), "could not close temporary config file");
+    }
+    // Recheck after staging, immediately before commit. Another editor can still
+    // race the native replacement; arbitrary external editors do not share our lock.
+    if (expected && ReadConfigText(path) != *expected) {
+      std::error_code ignored;
+      std::filesystem::remove(temporary, ignored);
+      return false;
     }
 #if _WIN32
     // Let Windows retain the existing file's permissions and streams. A backup
@@ -97,4 +128,5 @@ void SaveConfigDocument(const toml::table& config, const std::filesystem::path& 
     }
     throw;
   }
+  return true;
 }

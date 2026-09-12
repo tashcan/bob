@@ -13,3 +13,9 @@ clang++ -std=c++23 -I mods/src -I "$toml_include" \
 clang++ -std=c++23 -I mods/src -I "$toml_include" \
   tests/config_save_failure_test.cc -o "$test_root/failure-test"
 "$test_root/failure-test" "$test_root/failures"
+clang++ -std=c++23 -I mods/src -I "$toml_include" \
+  tests/toml_editor_test.cc mods/src/toml_editor.cc mods/src/config_save.cc -o "$test_root/editor-test"
+"$test_root/editor-test" "$test_root/editor"
+clang++ -std=c++23 -pthread -I mods/src -I "$toml_include" \
+  tests/runtime_config_writer_test.cc -o "$test_root/worker-test"
+"$test_root/worker-test"

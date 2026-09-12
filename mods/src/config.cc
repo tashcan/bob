@@ -1,5 +1,6 @@
 #include "config.h"
 #include "config_save.h"
+#include "patches/runtime_config.h"
 #include "file.h"
 #include "patches/mapkey.h"
 #include "prime/KeyCode.h"
@@ -1421,10 +1422,13 @@ void Config::Load()
 
     try {
       Config::Save(parsed, File::Config(), false);
+      config = parsed; // First runtime comparison must match the file just created.
     } catch (const std::exception& error) {
       spdlog::error("Could not save default config: {}", error.what());
     }
   }
+
+  runtime_config::Configure(config);
 
   message.str("");
   message << "Creating " << File::Vars() << " (final config file)";
