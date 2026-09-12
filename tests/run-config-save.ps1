@@ -30,6 +30,9 @@ try {
         /Fobuild/config-save-test/ -Wno-deprecated-literal-operator
     if ($LASTEXITCODE -ne 0) { throw 'Config save test compilation failed.' }
     $fixtureRoot = Join-Path $repoRoot ('build/config-save-test/' + [guid]::NewGuid())
+    & ./build/config-save-test/test.exe (Join-Path $fixtureRoot 'created')
+    if ($LASTEXITCODE -ne 0) { throw 'Initial config creation regression failed.' }
+    $fixtureRoot = Join-Path $fixtureRoot 'permissions'
     # Establish the baseline independently, before the first production save.
     New-Item -ItemType Directory -Path $fixtureRoot | Out-Null
     $testFile = Join-Path $fixtureRoot 'settings.toml'
