@@ -68,3 +68,12 @@ with identity local rotation. Expanded headings rotate that arrow down; release
 restores its native rotation and background color before pooling. Runtime evidence
 must still verify independent folding, both sections closed, Back/reopen, arrow
 orientation, and restoration of ordinary category rows.
+
+The first section candidate (`464362a0`) rendered correctly but did not fold:
+the adapter incorrectly looked up `SetContext`, which this widget does not have.
+Builds and catalog tests did not exercise native method resolution. The current
+dump identifies the call as `Widget.BindDataContext(IDataContextProvider, object)`,
+virtual slot 35. The native caller's vtable offset `0x368` matches slot 35 for
+this client. Resolve that slot from the non-generic Widget schema through
+`il2cpp_object_get_virtual_method`; a name/count-only lookup would be ambiguous
+with the typed `Widget<IList>.BindDataContext` overload (slot 39).

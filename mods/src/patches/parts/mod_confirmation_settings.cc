@@ -881,10 +881,22 @@ void ShowSections(Il2CppObject* controller, Il2CppObject* context, const PageCat
     il2cpp_gc_wbarrier_set_field(list.get(), reinterpret_cast<void**>(&array->vector[i]), visible[i]);
   }
   Root        panel(ReadField(controller, PageMeta().panel));
-  const auto* bind = panel.get() ? il2cpp_class_get_method_from_name(panel.get()->klass, "SetContext", 2) : nullptr;
-  if (!Instance(bind, 2, IL2CPP_TYPE_VOID) || !Reference(bind->parameters[0]) || !Reference(bind->parameters[1])
-      || !il2cpp_class_is_assignable_from(il2cpp_class_from_type(bind->parameters[1]), list.get()->klass))
+  static auto widgets = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Client.UI", "Widget");
+  static auto panels  = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.GameSettings", "OptionTabPanelWidget");
+  static const auto* schema = widgets.GetMethodInfo("BindDataContext", 2);
+  auto*              lists  = il2cpp_class_from_name(il2cpp_get_corlib(), "System.Collections", "IList");
+  if (!panel.get() || panel.get()->klass != panels.get_cls() || !Instance(schema, 2, IL2CPP_TYPE_VOID)
+      || !(schema->flags & METHOD_ATTRIBUTE_VIRTUAL) || !Reference(schema->parameters[0])
+      || !Type(schema->parameters[1], IL2CPP_TYPE_OBJECT) || !lists
+      || !il2cpp_class_is_assignable_from(lists, list.get()->klass))
     throw std::runtime_error("settings section list schema");
+  // Resolve the non-generic Widget virtual slot, not the same-arity typed
+  // Widget<IList> overload. This is the object overload used by the game itself.
+  const auto* bind = il2cpp_object_get_virtual_method(panel.get(), schema);
+  if (!Instance(bind, 2, IL2CPP_TYPE_VOID) || bind->slot != schema->slot
+      || !Type(bind->parameters[1], IL2CPP_TYPE_OBJECT)
+      || il2cpp_class_from_type(bind->parameters[0]) != il2cpp_class_from_type(schema->parameters[0]))
+    throw std::runtime_error("settings section virtual binding");
   // The same provider/null + IList bind used by native OnCategorySelected.
   // Native release/bind owns pooled widgets and their event subscriptions.
   void* args[] = {nullptr, list.get()};
@@ -1053,6 +1065,13 @@ void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* con
         }
         return; // A section click refreshes this page; it is not navigation.
       }
+    } catch (const std::exception& error) {
+      // Invoke converts managed failures to fixed messages, without game data.
+      // Keep the concrete lookup/binding reason; a generic warning hid the
+      // incorrect SetContext lookup that prevented sections from folding.
+      Warn(error.what());
+      if (sectionClick)
+        return;
     } catch (...) {
       Warn("settings section unavailable");
       if (sectionClick)

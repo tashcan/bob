@@ -84,7 +84,7 @@ Page opens, section folding and native rendering never enqueue saves.
 
 Collapsible headings reuse the existing category bind/release and page-selection
 hooks. A heading click gives the native option panel a filtered `OptionContext[]`
-through its existing `SetContext(provider, IList)` method. The original page's
+through the existing `BindDataContext(provider, object)` virtual slot. The original page's
 children and navigation parent stay intact, including controls omitted from the
 visible list. Native rebinding releases hidden widgets and refreshes expanded
 ones through the same guarded readers as a normal page visit. Plain headings
