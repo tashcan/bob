@@ -3,6 +3,18 @@ param([string]$TomlInclude)
 
 $ErrorActionPreference = 'Stop'
 $repoRoot = Split-Path -Parent $PSScriptRoot
+function Get-PermissionState([string]$Path) {
+    $acl = Get-Acl -LiteralPath $Path
+    # Windows can normalize descriptor control bits; compare actual rules,
+    # ownership and inheritance protection rather than serialized SDDL spelling.
+    [ordered]@{
+        Owner = $acl.Owner
+        Group = $acl.Group
+        Protected = $acl.AreAccessRulesProtected
+        Rules = @($acl.Access | Select-Object IdentityReference, FileSystemRights,
+            AccessControlType, IsInherited, InheritanceFlags, PropagationFlags)
+    } | ConvertTo-Json -Depth 5 -Compress
+}
 Push-Location $repoRoot
 try {
     if (-not $TomlInclude) {
@@ -18,20 +30,24 @@ try {
         /Fobuild/config-save-test/ -Wno-deprecated-literal-operator
     if ($LASTEXITCODE -ne 0) { throw 'Config save test compilation failed.' }
     $fixtureRoot = Join-Path $repoRoot ('build/config-save-test/' + [guid]::NewGuid())
-    & ./build/config-save-test/test.exe $fixtureRoot
-    if ($LASTEXITCODE -ne 0) { throw 'Config save regression failed.' }
+    # Establish the baseline independently, before the first production save.
+    New-Item -ItemType Directory -Path $fixtureRoot | Out-Null
     $testFile = Join-Path $fixtureRoot 'settings.toml'
-    $inherited = (Get-Acl -LiteralPath $testFile).Sddl
+    Set-Content -LiteralPath $testFile -Value 'enabled = false'
+    if (-not ((Get-Acl -LiteralPath $testFile).Access | Where-Object IsInherited)) {
+        throw 'Fixture must have inherited permission entries.'
+    }
+    $inherited = Get-PermissionState $testFile
     & ./build/config-save-test/test.exe $fixtureRoot
-    if ($LASTEXITCODE -ne 0 -or (Get-Acl -LiteralPath $testFile).Sddl -ne $inherited) {
+    if ($LASTEXITCODE -ne 0 -or (Get-PermissionState $testFile) -ne $inherited) {
         throw 'Inherited ACL regression failed.'
     }
     $acl = Get-Acl -LiteralPath $testFile
     $acl.SetAccessRuleProtection($true, $true)
     Set-Acl -LiteralPath $testFile -AclObject $acl
-    $explicit = (Get-Acl -LiteralPath $testFile).Sddl
+    $explicit = Get-PermissionState $testFile
     & ./build/config-save-test/test.exe $fixtureRoot
-    if ($LASTEXITCODE -ne 0 -or (Get-Acl -LiteralPath $testFile).Sddl -ne $explicit) {
+    if ($LASTEXITCODE -ne 0 -or (Get-PermissionState $testFile) -ne $explicit) {
         throw 'Explicit ACL regression failed.'
     }
     & clang++ --driver-mode=cl /std:c++latest /EHsc /MT /Imods/src "/I$TomlInclude" `
