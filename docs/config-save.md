@@ -29,6 +29,11 @@ Run the isolated Windows fixtures with `tests/run-config-save.ps1` after the
 normal AX build has installed toml++; `-TomlInclude` can select another include
 directory. Fixtures never access the installed game's files.
 
+On macOS, run `bash tests/run-config-save.sh TOML_INCLUDE_DIR`. Both native macOS
+CI jobs run these fixtures after the normal build, including permission-bit and
+symlink checks. The failure fixture injects short writes and failed closes at
+compile time; it does not install test controls in the mod.
+
 Native behavior references:
 - [Windows ReplaceFileW](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-replacefilew)
 - [POSIX rename](https://pubs.opengroup.org/onlinepubs/9799919799/functions/rename.html)

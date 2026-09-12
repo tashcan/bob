@@ -56,6 +56,16 @@ int main(int argc, char** argv)
   CloseHandle(handle);
   assert(failed);
   assert(toml::parse_file(path.string())["enabled"].value<bool>() == true);
+#else
+  const auto mode = std::filesystem::perms::owner_read | std::filesystem::perms::owner_write;
+  std::filesystem::permissions(path, mode);
+  const auto link = root / "linked.toml";
+  std::filesystem::create_symlink(path, link);
+  config.insert_or_assign("enabled", false);
+  SaveConfigDocument(config, link);
+  assert(std::filesystem::is_symlink(link));
+  assert(toml::parse_file(path.string())["enabled"].value<bool>() == false);
+  assert(std::filesystem::status(path).permissions() == mode);
 #endif
   for (const auto& entry : std::filesystem::directory_iterator(root)) {
     assert(entry.path().filename().string().find(".tmp-") == std::string::npos);
