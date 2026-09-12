@@ -494,11 +494,14 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
     return;
   }
 
-#if defined(_WIN32) || defined(__APPLE__)
+#if defined(_WIN32)
   if (MapKey::IsDown(GameFunction::Quit)) {
-    // Use the normal game lifecycle on both platforms. Forced termination
-    // bypasses quit subscribers and any pending-save shutdown coordination.
-    // If the app/method is unavailable, do not fall back to killing the process.
+    // Keep the existing emergency force-close shortcut independent of Unity quit.
+    TerminateProcess(GetCurrentProcess(), 1);
+    return;
+  }
+#elif defined(__APPLE__)
+  if (MapKey::IsDown(GameFunction::Quit)) {
     if (auto* app = Hub::get_App()) {
       app->Quit();
     }

@@ -206,11 +206,9 @@ Shutdown policy: distinguish the attempt's result from whether worker shutdown
 finished. A failed save remains failed; once workers terminate, save failure alone
 must not veto process exit. In-flight OS I/O cannot safely be cancelled by a queue
 flag. Preserve transaction-owned recovery artifacts when an outcome is uncertain.
-The mod Quit shortcut now calls `PrimeApp::Quit` on Windows as it already did on
-macOS. Windows no longer uses `TerminateProcess`, which bypassed Unity quit
-subscribers. An unavailable app or method does not trigger a force-kill fallback.
-This routing change alone does not drain saves. The lazy host described below
-supplies shutdown coordination when a runtime consumer starts it. Result presentation
+The Windows mod Quit shortcut (F10 by default) retains its existing immediate
+`TerminateProcess` behavior. It bypasses the normal quit/drain lifecycle described
+below. The macOS shortcut continues to call `PrimeApp::Quit`. Result presentation
 and targeted user-TOML editing remain separate integration work; no current feature
 registers a runtime destination or submits runtime saves.
 
