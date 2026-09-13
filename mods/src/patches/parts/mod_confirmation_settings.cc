@@ -822,12 +822,18 @@ const PageCatalog::Page* PageFor(Il2CppObject* context)
 
 // One open page, with visit-local expansion state. The native context retains
 // every child; only the list's presentation is filtered. Back and save ownership
-// remain native, and a fresh page visit starts expanded.
+// remain native, and a fresh page visit starts collapsed.
 struct SectionPage {
   Il2CppGCHandle           controller = nullptr, context = nullptr;
   std::vector<std::string> collapsed;
   bool                     refreshing = false;
 } sectionPage;
+struct SectionRefreshScope {
+  SectionRefreshScope()
+  { sectionPage.refreshing = true; }
+  ~SectionRefreshScope()
+  { sectionPage.refreshing = false; }
+};
 void ClearSectionPage()
 {
   Free(sectionPage.controller);
@@ -1042,13 +1048,8 @@ void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* con
         Root selected(Call(canvas.get(), "get_SelectedOption"));
         if (!parent.get() || parent.get() != Target(sectionPage.context) || selected.get() != parent.get())
           return; // An old pooled heading cannot navigate or change this page.
-        struct Scope {
-          Scope()
-          { sectionPage.refreshing = true; }
-          ~Scope()
-          { sectionPage.refreshing = false; }
-        } scope;
-        const auto before = sectionPage.collapsed;
+        SectionRefreshScope scope;
+        const auto          before = sectionPage.collapsed;
         if (Collapsed(*heading))
           std::erase(sectionPage.collapsed, heading->id);
         else
@@ -1079,11 +1080,15 @@ void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* con
     }
     ClearSectionPage();
     try {
-      if (PageFor(context)) {
+      if (const auto* page = PageFor(context)) {
         sectionPage.controller = il2cpp_gchandle_new_weakref(controller, false);
         sectionPage.context    = il2cpp_gchandle_new_weakref(context, false);
         if (!sectionPage.controller || !sectionPage.context)
           ClearSectionPage();
+        else
+          for (const auto& item : page->items)
+            if (const auto* heading = std::get_if<PageCatalog::Heading>(&item); heading && heading->collapsible)
+              sectionPage.collapsed.push_back(heading->id);
       }
     } catch (...) {
       ClearSectionPage();
@@ -1099,6 +1104,24 @@ void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* con
     if (auto* page = PageFor(context)) {
       Root label(ReadField(controller, PageMeta().title));
       SetPageText(controller, label.get(), page->label);
+      if (Target(sectionPage.controller) == controller && Target(sectionPage.context) == context
+          && !sectionPage.refreshing && !sectionPage.collapsed.empty()) {
+        // Let native navigation establish the page and Back target, then apply
+        // the initial folded presentation in the same call, before a frame draws.
+        SectionRefreshScope scope;
+        try {
+          ShowSections(controller, context, *page);
+        } catch (...) {
+          // If folding is unavailable, keep the controls accessible and the
+          // heading arrows consistent with the expanded fallback.
+          sectionPage.collapsed.clear();
+          try {
+            ShowSections(controller, context, *page);
+          } catch (...) {
+          }
+          throw;
+        }
+      }
     }
   } catch (...) {
     Warn();

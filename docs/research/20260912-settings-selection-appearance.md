@@ -77,3 +77,9 @@ virtual slot 35. The native caller's vtable offset `0x368` matches slot 35 for
 this client. Resolve that slot from the non-generic Widget schema through
 `il2cpp_object_get_virtual_method`; a name/count-only lookup would be ambiguous
 with the typed `Widget<IList>.BindDataContext` overload (slot 39).
+
+The user confirmed expand/collapse works on `8e3a166b` and requested both sections
+start collapsed. The next revision initializes visit-local collapsed headings and
+applies the same filtered bind after native page selection. Initial folding and
+Back/reopen defaults require their own runtime check; the previous result proves
+the click path, not the new entry behavior.

@@ -48,7 +48,7 @@ One Fleet Labels page contains a collapsible Player heading, its Native /
 Expanded / Compact / Threshold choices and percentage slider, followed by the
 same controls under a Non-player heading. Each profile has its own owner and
 selection. Click either heading to hide/show its controls independently, without
-navigating away. Both sections start expanded on each page visit; expansion is
+navigating away. Both sections start collapsed on each page visit; expansion is
 temporary presentation state and never writes TOML or changes a setting value.
 The native category arrow points down when expanded and right when collapsed.
 Headings use larger bold cyan text and a darkened row background. An enabled
@@ -89,6 +89,11 @@ children and navigation parent stay intact, including controls omitted from the
 visible list. Native rebinding releases hidden widgets and refreshes expanded
 ones through the same guarded readers as a normal page visit. Plain headings
 remain non-interactive. No new detour, frame polling or persistence owner is added.
+
+On entry, native navigation establishes the selected page and Back target first;
+the same callback then applies the initial collapsed list before returning. If
+that presentation bind fails, the adapter attempts to restore the expanded list
+so controls remain accessible. Expanding either section reads its current values.
 
 Exact Windows build261 unwind extents, checked before expanding installation:
 
