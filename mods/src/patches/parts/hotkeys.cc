@@ -1,4 +1,6 @@
 #include "config.h"
+#include "patches/runtime_config.h"
+#include "settings/warp_mode.h"
 
 #include <spud/detour.h>
 
@@ -319,27 +321,6 @@ void     GotoSection(SectionID sectionID, void* screen_data = nullptr);
 bool     CanHideViewers();
 bool     DidHideViewers();
 
-void CycleAutoConfirmInstantWarp(Config& config)
-{
-  const char* state = nullptr;
-  switch (config.auto_confirm_instant_warp) {
-    case InstantWarpConfirmation::None:
-      config.auto_confirm_instant_warp = InstantWarpConfirmation::Warp;
-      state                            = "warp";
-      break;
-    case InstantWarpConfirmation::Warp:
-      config.auto_confirm_instant_warp = InstantWarpConfirmation::Jump;
-      state                            = "jump";
-      break;
-    case InstantWarpConfirmation::Jump:
-      config.auto_confirm_instant_warp = InstantWarpConfirmation::None;
-      state                            = "none";
-      break;
-  }
-
-  spdlog::info("Auto-confirm instant warp set to {}", state);
-}
-
 bool MoveOfficerCanvas(bool goLeft)
 {
   auto selectors = ObjectFinder<ElementSelectorViewController>::GetAll();
@@ -496,7 +477,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
 #ifdef _WIN32
   if (MapKey::IsDown(GameFunction::Quit)) {
-    TerminateProcess(GetCurrentProcess(), 1);
+    runtime_config::ForceClose();
+    return;
   }
 #elif defined(__APPLE__)
   if (MapKey::IsDown(GameFunction::Quit)) {
@@ -586,6 +568,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
   if (!is_in_chat) {
     if (!Key::IsInputFocused()) {
+
       if (MapKey::IsDown(GameFunction::SelectCurrent)) {
         auto fleet_bar = ObjectFinder<FleetBarViewController>::Get();
         if (fleet_bar) {
@@ -736,7 +719,7 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
       } else if (MapKey::IsPressed(GameFunction::UiViewerScaleDown)) {
         config->AdjustUiViewerScale(false);
       } else if (MapKey::IsDown(GameFunction::ToggleAutoConfirmInstantWarp)) {
-        CycleAutoConfirmInstantWarp(*config);
+        mod_settings::CycleWarpMode();
       } else if (MapKey::IsDown(GameFunction::TogglePreviewLocate)) {
         config->disable_preview_locate = !config->disable_preview_locate;
       } else if (MapKey::IsDown(GameFunction::TogglePreviewRecall)) {
@@ -1494,6 +1477,7 @@ void InstallHotkeyHooks()
   InstallShortcutHintHooks();
 
   install_screen_manager_update_hook();
+  runtime_config::Install();
 #ifdef _MODDBG
   fleet_watch::InstallRuntimeProbe();
 #endif
