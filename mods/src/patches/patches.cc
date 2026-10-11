@@ -1,5 +1,6 @@
 #include "patches.h"
 #include "file.h"
+#include "log_history.h"
 #include "version.h"
 
 #include <il2cpp/il2cpp-functions.h>
@@ -70,7 +71,15 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
 
   File::Init();
 
-  auto file_logger = spdlog::basic_logger_mt("default", File::Log(), true);
+  std::string rotation_error;
+  try {
+    RotateLogHistory(File::Log());
+  } catch (const std::filesystem::filesystem_error& error) {
+    rotation_error = error.what();
+  }
+
+  // Append if rotation failed so an existing log is never truncated.
+  auto file_logger = spdlog::basic_logger_mt("default", File::Log(), false);
   auto sink        = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
   file_logger->sinks().push_back(sink);
   spdlog::set_default_logger(file_logger);
@@ -80,6 +89,9 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::set_level(log_level);
   spdlog::flush_on(log_level);
+  if (!rotation_error.empty()) {
+    spdlog::warn("Failed to rotate log history; preserving existing log: {}", rotation_error);
+  }
 
 #if VERSION_PATCH
   if constexpr (sizeof(VERSION_COMMIT_HASH) > 1) {
