@@ -2955,7 +2955,9 @@ static int64_t unix_seconds()
 static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state, FleetState previous)
 {
   auto*         hull    = fleet->Hull;
-  const int64_t hull_id = hull ? static_cast<int64_t>(hull->Id) : 0;
+  // HullSpec::Id is read as a 32-bit long; hull ids run past 2^31 (e.g. Kumari 3005922948), so take
+  // the value as unsigned before widening or those come out negative in the record.
+  const int64_t hull_id = hull ? static_cast<int64_t>(static_cast<uint32_t>(hull->Id)) : 0;
 
   return {{"type", SyncConfig::Type::Fleets},
           {"fid", fleet->Id},
