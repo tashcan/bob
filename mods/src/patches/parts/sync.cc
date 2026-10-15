@@ -1652,9 +1652,10 @@ static void player_inventories(std::unique_ptr<std::string>&& bytes)
 static void jobs(std::unique_ptr<std::string>&& bytes)
 {
   using json = nlohmann::json;
-  static std::unordered_set<std::string> jobs_active;
-  static std::mutex                      jobs_active_mtx;
-  static std::atomic_bool                is_first_sync{true};
+  using job_state = std::tuple<int64_t, int64_t, int64_t>;
+  static std::unordered_map<std::string, job_state> jobs_active;
+  static std::mutex                                 jobs_active_mtx;
+  static std::atomic_bool                           is_first_sync{true};
 
   if (auto response = Digit::PrimeServer::Models::JobResponse(); response.ParseFromString(*bytes)) {
 
@@ -1668,10 +1669,14 @@ static void jobs(std::unique_ptr<std::string>&& bytes)
       const std::string& uuid = job.uuid();
       uuids_in_response.insert(uuid);
 
+      const job_state state{job.starttime().seconds(), job.duration(), job.reductioninseconds()};
+
       bool emit = false;
       {
         std::scoped_lock lk(jobs_active_mtx);
-        emit = jobs_active.insert(uuid).second;
+        const auto [it, inserted] = jobs_active.try_emplace(uuid, state);
+        emit                      = inserted || it->second != state;
+        it->second                = state;
       }
 
       if (!emit) {
@@ -1720,8 +1725,8 @@ static void jobs(std::unique_ptr<std::string>&& bytes)
     {
       std::scoped_lock lk(jobs_active_mtx);
       for (auto it = jobs_active.begin(); it != jobs_active.end();) {
-        if (!uuids_in_response.contains(*it)) {
-          job_array.push_back({{"type", "completed_" + SyncConfig::Type::Jobs}, {"uuid", *it}});
+        if (!uuids_in_response.contains(it->first)) {
+          job_array.push_back({{"type", "completed_" + SyncConfig::Type::Jobs}, {"uuid", it->first}});
           it = jobs_active.erase(it);
         } else {
           ++it;
