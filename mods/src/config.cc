@@ -997,6 +997,8 @@ void Config::Load()
       get_config_or_default(config, parsed, "patches", "doubleclickassignshiphooks", DCP::doubleclickassignshiphooks, write_config);
   this->installForbiddenTechConfirmationHooks =
       get_config_or_default(config, parsed, "patches", "forbiddentechconfirmhooks", DCP::forbiddentechconfirmhooks, write_config);
+  this->installRevealConfirmationHooks =
+      get_config_or_default(config, parsed, "patches", "revealconfirmhooks", DCP::revealconfirmhooks, write_config);
   this->installQueueAddressGuardHooks = get_config_or_default(
       config, parsed, "patches", "queueaddressguardhooks", DCP::queueaddressguardhooks, write_config);
   this->installActionQueueRecoveryHooks =
@@ -1186,6 +1188,9 @@ void Config::Load()
   this->auto_confirm_ft_upgrade =
       get_config_or_default(config, parsed, "ui", "auto_confirm_ft_upgrade",
                                                         DCU::auto_confirm_ft_upgrade, write_config);
+  this->auto_confirm_reveal_ability =
+      get_config_or_default(config, parsed, "ui", "auto_confirm_reveal_ability",
+                                                        DCU::auto_confirm_reveal_ability, write_config);
 
   this->extend_chest_purchase_max = get_config_or_default(config, parsed, "ui", "extend_chest_purchase_max",
                                                           DCU::extend_chest_purchase_max, write_config);

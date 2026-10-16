@@ -112,6 +112,7 @@ namespace Patches
   constexpr bool officersorthooks           = true; // restore Below Deck Ability sort option
   constexpr bool pinnedshiphooks            = true; // pin configured ships to front of fleet dock sort
   constexpr bool havenhistoryhooks          = true; // reverse Haven help history into newest-first order
+  constexpr bool revealconfirmhooks         = true; // auto-confirm the Excelsior Decloaking Deflector popup when enabled in [ui]
 } // namespace Patches
 
 namespace Shortcuts
@@ -262,6 +263,7 @@ namespace UI
   constexpr bool        dock_syncmanagement                = true;
   constexpr bool        auto_confirm_discovery             = true;
   constexpr bool        auto_confirm_ft_upgrade            = false;
+  constexpr bool        auto_confirm_reveal_ability        = false;
   constexpr bool        auto_open_bulk_claim_flyout        = false;
   constexpr const char* daily_bulk_claim_factions          = "";
   constexpr bool        daily_bulk_claim_toggle_default_on = false;

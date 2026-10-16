@@ -310,6 +310,7 @@ panhooks = true
 
 # Pin configured ships to the front of the fleet management dock
 pinnedshiphooks = true
+revealconfirmhooks = true
 syncpatches = true
 tempcrashfixes = true
 testpatches = true
@@ -719,6 +720,9 @@ disable_toast_banners = false
 
 # Confirm Forbidden Tech level and tier upgrades automatically
 auto_confirm_ft_upgrade = false
+
+# Auto-confirm the U.S.S. Excelsior's Decloaking Deflector instead of showing its confirmation popup
+auto_confirm_reveal_ability = false
 
 # Instant-warp action to confirm automatically: none, warp, or jump
 #   "none" - Do not choose an action automatically; show the confirmation dialog
