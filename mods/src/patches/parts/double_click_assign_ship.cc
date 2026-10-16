@@ -1,18 +1,15 @@
 #include "config.h"
-#include "errormsg.h"
 #include "patches/key.h"
 
+#include "double_click_assign_ship.h"
 #include "prime/AssignShipsWidget.h"
 #include "prime/CanvasController.h"
 #include "prime/KeyCode.h"
-#include "prime/ShipTileWidget.h"
+#include "ship_tile_click.h"
 
 #include <il2cpp/il2cpp_helper.h>
-#include <spud/detour.h>
 
 #include <chrono>
-
-#include "double_click_assign_ship.h"
 
 namespace {
 
@@ -40,13 +37,11 @@ void PressAssignButton()
   }
 }
 
-void ShipTileWidget_HandleOnClick_Hook(auto original, ShipTileWidget* _this)
+} // namespace
+
+void DoubleClickOnShipTileClicked(FleetPlayerData* ship)
 {
-  original(_this);
-
   if (!Config::Get().double_click_to_assign_ship) return;
-
-  auto* ship = _this ? _this->Context : nullptr;
   if (!ship) return;
 
   const auto now             = std::chrono::steady_clock::now();
@@ -61,8 +56,6 @@ void ShipTileWidget_HandleOnClick_Hook(auto original, ShipTileWidget* _this)
   PressAssignButton();
 }
 
-} // namespace
-
 void AssignShipEnterKeyUpdate()
 {
   if (!Config::Get().double_click_to_assign_ship) return;
@@ -74,17 +67,7 @@ void AssignShipEnterKeyUpdate()
 
 void InstallDoubleClickAssignShipHooks()
 {
-  auto helper = ShipTileWidget::get_class_helper();
-  if (!helper.isValidHelper()) {
-    ErrorMsg::MissingHelper("Digit.Prime.Ships", "ShipTileWidget");
-    return;
-  }
-
-  auto method = helper.GetMethod("HandleOnClick", 0);
-  if (!method) {
-    ErrorMsg::MissingMethod("ShipTileWidget", "HandleOnClick");
-    return;
-  }
-
-  SPUD_STATIC_DETOUR(method, ShipTileWidget_HandleOnClick_Hook);
+  // The HandleOnClick detour is owned by the shared ship-tile click dispatcher
+  // (macOS only permits one hook per function).
+  ship_tile_click::TryInstallHook();
 }

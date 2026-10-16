@@ -73,6 +73,19 @@ public:
     return -1;
   }
 
+  void Sort()
+  {
+    static auto SortWarn   = true;
+    static auto SortMethod = get_class_helper().GetMethod<void(ShipManagementViewContext*)>("Sort");
+
+    if (SortMethod) {
+      SortMethod(this);
+    } else if (SortWarn) {
+      SortWarn = false;
+      ErrorMsg::MissingMethod("ShipManagementViewContext", "Sort");
+    }
+  }
+
 private:
   static IL2CppClassHelper& get_class_helper()
   {

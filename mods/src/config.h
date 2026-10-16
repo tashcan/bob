@@ -335,6 +335,9 @@ public:
   // Fleet management dock ship sort: pin configured ships to the front
   bool installPinnedShipSortHooks;
 
+  // Fleet management dock: SHIFT+click a ship tile to pin/unpin it
+  bool installPinnedShipClickToggle;
+
   // Haven help-history list ordering
   bool installHavenHistoryHooks;
 };

@@ -126,8 +126,6 @@ void ReorderPinnedShips(void* list)
     ships.push_back(std::move(entry));
   }
 
-  // Pinned ships get rank 0, everyone else rank 1; the stable_sort below then
-  // preserves each group's existing (actively-sorted) relative order.
   constexpr int    kPinnedRank   = 0;
   constexpr int    kUnpinnedRank = 1;
   std::vector<int> ranks(count, kUnpinnedRank);
