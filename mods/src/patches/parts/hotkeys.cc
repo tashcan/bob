@@ -41,6 +41,7 @@
 #include "prime/ShipManagementScreenStateViewController.h"
 #include "prime/ShortcutsManager.h"
 
+#include "patches/parts/action_queue.h"
 #include "patches/key.h"
 #include "patches/mapkey.h"
 #include "patches/parts/daily_faction_bulk_claim.h"
@@ -900,6 +901,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
       if ((MapKey::IsDown(GameFunction::ToggleQueue))) {
         config->queue_enabled = !config->queue_enabled;
+        // Forget stale recovery authorizations; existing native target queues keep processing.
+        ResetQueueRecoveryTracking();
         return;
       }
 

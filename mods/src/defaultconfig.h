@@ -31,6 +31,7 @@ namespace Control
   constexpr bool hotkeys_extended    = true;
   constexpr bool use_scopely_hotkeys = false;
   constexpr bool queue_enabled       = true;
+  constexpr bool kirshara_fixes       = true;
   constexpr auto select_timer        = 500;
 } // namespace Control
 
@@ -101,6 +102,9 @@ namespace Patches
   constexpr bool doubleclickassignshiphooks = true;
   constexpr bool forbiddentechconfirmhooks  = true;
   constexpr bool audioeventhooks            = true;
+  constexpr bool actionqueuerecoveryhooks   = true;
+  constexpr bool queueaddressguardhooks     = true;
+  constexpr bool thinqueueprotectionhooks   = true;
   constexpr bool artifactexchangehooks      = true;
   constexpr bool instantcargocounterhooks   = true;
   constexpr bool cargoformathooks           = true; // on by default: cargo number precision override

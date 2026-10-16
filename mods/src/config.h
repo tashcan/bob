@@ -189,6 +189,7 @@ public:
   int   select_timer;
 
   bool  queue_enabled;
+  bool  kirshara_fixes;
   bool  hotkeys_enabled;
   bool  hotkeys_extended;
   bool  use_scopely_hotkeys;
@@ -298,6 +299,9 @@ public:
   bool installForbiddenTechConfirmationHooks;
   bool installInstantWarpConfirmationHooks;
   bool installAudioEventHooks;
+  bool installActionQueueRecoveryHooks;
+  bool installQueueAddressGuardHooks;
+  bool installThinQueueProtectionHooks;
   bool installArtifactExchangeHooks;
 
   std::string config_settings_url;

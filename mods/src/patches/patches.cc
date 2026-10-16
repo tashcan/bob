@@ -52,6 +52,9 @@ void InstallDoubleClickAssignShipHooks();
 void InstallInstantWarpConfirmationHooks();
 void InstallForbiddenTechConfirmationHooks();
 void InstallAudioEventHooks();
+void InstallActionQueueRecovery();
+void InstallThinQueueProtection();
+void InstallQueueAddressGuard();
 void InstallHavenHistoryHooks();
 
 __int64 il2cpp_init_hook(auto original, const char* domain_name)
@@ -169,6 +172,9 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       {"InstantWarpConfirm", {InstallInstantWarpConfirmationHooks, &cfg.installInstantWarpConfirmationHooks}},
       {"ForbiddenTechConfirm", {InstallForbiddenTechConfirmationHooks, &cfg.installForbiddenTechConfirmationHooks}},
       {"AudioEvents", {InstallAudioEventHooks, &cfg.installAudioEventHooks}},
+      {"ActionQueueRecovery", {InstallActionQueueRecovery, &cfg.installActionQueueRecoveryHooks}},
+      {"QueueAddressGuard", {InstallQueueAddressGuard, &cfg.installQueueAddressGuardHooks}},
+      {"ThinQueueProtection", {InstallThinQueueProtection, &cfg.installThinQueueProtectionHooks}},
       {"HavenHistory", {InstallHavenHistoryHooks, &cfg.installHavenHistoryHooks}},
   };
   printf("il2cpp_init_hook(%s)\n", domain_name);
