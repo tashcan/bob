@@ -118,11 +118,13 @@ void* ValidateDetourTarget(void* entry, const char* name)
   if (native_hooks::MacHookFits(entry, 16)) {
     return entry;
   }
+#if defined(__aarch64__)
   if (const auto* downstream = native_hooks::MacFollowDirectBranch(entry)) {
     if (native_hooks::MacHookFits(downstream, 16)) {
       return const_cast<void*>(downstream);
     }
   }
+#endif
   spdlog::warn("[ChatTitleDisplay] {} does not fit the macOS hook window; target skipped", name);
   return nullptr;
 }
