@@ -1162,8 +1162,13 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
   if (!Key::IsInputFocused()) {
     // Lets try to remove the pre-scan because we hit escape and it's visible
-    if (Key::Pressed(KeyCode::Escape) && DidHideViewers()) {
-      return;
+    if (Key::Pressed(KeyCode::Escape)) {
+      if (config->primary_requires_visible_target) {
+        force_space_action_next_frame = false;
+      }
+      if (DidHideViewers()) {
+        return;
+      }
     }
 
     // Dismiss the golden rewards screen when escape or space is pressed.
@@ -1264,14 +1269,23 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   return original(_this);
 }
 
-// NOTE: If you change this loop functionality, also change DoHideViewersOfType template
+template <typename T> inline bool CanHideViewer(T* widget, bool require_parent = false)
+{
+  auto* visibility = widget ? widget->_visibilityController : nullptr;
+  if (!visibility || (visibility->_state != VisibilityState::Visible && visibility->_state != VisibilityState::Show)) {
+    return false;
+  }
+  if (!require_parent) {
+    return true;
+  }
+  auto* parent = widget->Parent;
+  return parent && parent->IsShowing;
+}
+
 template <typename T> inline bool CanHideViewersOfType()
 {
   for (auto widget : ObjectFinder<T>::GetAll()) {
-    const auto visible = widget && widget->_visibilityController != NULL
-                         && (widget->_visibilityController->_state == VisibilityState::Visible
-                             || widget->_visibilityController->_state == VisibilityState::Show);
-    if (visible) {
+    if (CanHideViewer(widget)) {
       return true;
     }
   }
@@ -1288,22 +1302,12 @@ bool CanHideViewers()
           || CanHideViewersOfType<HousingObjectViewerWidget>());
 }
 
-// NOTE: If you change this loop functionality, also change CanideViewersOfType template
 template <typename T> inline bool DidHideViewersOfType()
 {
   const auto objects = ObjectFinder<T>::GetAll();
   auto       didHide = false;
   for (auto widget : objects) {
-    if (!widget) {
-      continue;
-    }
-    auto visbility_controller = widget->_visibilityController;
-    if (!visbility_controller) {
-      continue;
-    }
-    const auto visible = (visbility_controller->_state == VisibilityState::Visible
-                          || visbility_controller->_state == VisibilityState::Show);
-    if (visible) {
+    if (CanHideViewer(widget)) {
       widget->HideAllViewers();
       didHide = true;
     }
@@ -1429,6 +1433,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
   auto has_queue_clear   = MapKey::IsDown(GameFunction::ActionQueueClear);
   auto has_recall =
       MapKey::IsDown(GameFunction::ActionRecall) && (!Config::Get().disable_preview_recall || !CanHideViewers());
+  const bool require_visible_target = has_primary && Config::Get().primary_requires_visible_target;
 
   if (has_queue_clear) {
     action_queue->ClearQueue(fleet);
@@ -1438,15 +1443,10 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
   } else {
     auto all_pre_scan_widgets = ObjectFinder<PreScanTargetWidget>::GetAll();
     for (auto pre_scan_widget : all_pre_scan_widgets) {
-      auto visibility_controller = pre_scan_widget ? pre_scan_widget->_visibilityController : nullptr;
-      if (visibility_controller
-          && (visibility_controller->_state == VisibilityState::Visible
-              || visibility_controller->_state == VisibilityState::Show)) {
+      if (CanHideViewer(pre_scan_widget, require_visible_target)) {
 
         if (auto mine_object_viewer_widget = ObjectFinder<MiningObjectViewerWidget>::Get();
-            mine_object_viewer_widget && mine_object_viewer_widget->_visibilityController
-            && (mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Visible
-                || mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Show)) {
+            CanHideViewer(mine_object_viewer_widget, require_visible_target)) {
           if (has_secondary && pre_scan_widget->_scanEngageButtonsWidget) {
             return pre_scan_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
           } else if (has_primary) {
@@ -1538,9 +1538,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
     }
 
     if (auto mine_object_viewer_widget = ObjectFinder<MiningObjectViewerWidget>::Get();
-        mine_object_viewer_widget && mine_object_viewer_widget->_visibilityController
-        && (mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Visible
-            || mine_object_viewer_widget->_visibilityController->_state == VisibilityState::Show)) {
+        CanHideViewer(mine_object_viewer_widget, require_visible_target)) {
       if (has_secondary && mine_object_viewer_widget->_scanEngageButtonsWidget) {
         if (mine_object_viewer_widget->_scanEngageButtonsWidget->Context) {
           return mine_object_viewer_widget->_scanEngageButtonsWidget->OnScanButtonClicked();
@@ -1549,7 +1547,8 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
         return mine_object_viewer_widget->MineClicked();
       }
     } else if (auto star_node_object_viewer_widget = ObjectFinder<StarNodeObjectViewerWidget>::Get();
-               star_node_object_viewer_widget && star_node_object_viewer_widget->Context) {
+               star_node_object_viewer_widget && star_node_object_viewer_widget->Context
+               && (!require_visible_target || CanHideViewer(star_node_object_viewer_widget, true))) {
       if (has_secondary) {
         star_node_object_viewer_widget->OnViewButtonActivation();
         return;
@@ -1579,7 +1578,10 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
           return;
         }
       } else {
-        navigation_ui_controller->OnSetCourseButtonClick();
+        // Dismissal keeps the native context's last position/path. Preserve that legacy shortcut unless opted out.
+        if (!require_visible_target || navigation_ui_controller->IsSetCourseVisible()) {
+          navigation_ui_controller->OnSetCourseButtonClick();
+        }
         return;
       }
     }
