@@ -1451,9 +1451,7 @@ void ExecuteSpaceAction(FleetBarViewController* fleet_bar)
       }
 
       spdlog::info("have armada? {}, State {}", (armada_widget ? "Yes" : "No"), (int)armada_state);
-      if (require_visible_target
-              ? CanHideViewer(armada_widget, true)
-              : armada_widget && (armada_state == VisibilityState::Visible || armada_state == VisibilityState::Show)) {
+      if (armada_widget && (armada_state == VisibilityState::Visible || armada_state == VisibilityState::Show)) {
         auto button = armada_widget->__get__joinContext();
         if (button && button->Interactable) {
           armada_widget->ValidateThenJoinArmada();
