@@ -1,4 +1,5 @@
 #include <il2cpp/il2cpp_helper.h>
+#include <il2cpp/method_contract.h>
 
 #include "prime/AllianceStarbaseObjectViewerWidget.h"
 #include "prime/AnimatedRewardsScreenViewController.h"
@@ -154,6 +155,26 @@ void track_free(auto original, void* _this)
 #undef GET_CLASS
 }
 
+void artifact_details_bind_hook(auto original, Il2CppObject* _this)
+{
+  original(_this);
+  if (!_this || !_this->klass)
+    return;
+
+  std::scoped_lock lk{tracked_objects_mutex};
+  remove_from_tracking_all(_this);
+  add_to_tracking_recursive(_this->klass, _this);
+}
+
+void artifact_details_release_hook(auto original, Il2CppObject* _this)
+{
+  if (_this) {
+    std::scoped_lock lk{tracked_objects_mutex};
+    remove_from_tracking_all(_this);
+  }
+  original(_this);
+}
+
 void calc_liveness_hook(auto original, void* state)
 {
   original(state);
@@ -200,6 +221,24 @@ template <typename T> void TrackObject()
   }
 }
 
+void TrackArtifactDetailsCanvas()
+{
+  auto* cls = ArtifactHallDetailsViewController::get_class_helper().get_cls();
+  const auto* bind = method_contract::Resolve(cls, "OnDidBindCanvasContext", false, "System.Void", {});
+  const auto* release = method_contract::Resolve(cls, "OnAboutToReleaseCanvasContext", false, "System.Void", {});
+  if (!bind || !release || bind->has_full_generic_sharing_signature || release->has_full_generic_sharing_signature) {
+    spdlog::warn("Object tracker: artifact details canvas lifecycle unavailable; artifact arrow navigation disabled");
+    return;
+  }
+
+  const bool bind_installed = SPUD_STATIC_DETOUR(bind->methodPointer, artifact_details_bind_hook);
+  const bool release_installed = SPUD_STATIC_DETOUR(release->methodPointer, artifact_details_release_hook);
+  if (bind_installed && release_installed)
+    spdlog::info("Object tracker: tracking artifact details through canvas lifecycle");
+  else
+    spdlog::warn("Object tracker: artifact details canvas hooks were not installed; artifact arrow navigation disabled");
+}
+
 void InstallObjectTrackers()
 {
   TrackObject<PreScanTargetWidget>();
@@ -208,7 +247,7 @@ void InstallObjectTrackers()
   TrackObject<AllianceStarbaseObjectViewerWidget>();
   TrackObject<AnimatedRewardsScreenViewController>();
   TrackObject<ArmadaObjectViewerWidget>();
-  TrackObject<ArtifactHallDetailsViewController>();
+  TrackArtifactDetailsCanvas();
   TrackObject<AssignShipsWidget>();
   TrackObject<CelestialObjectViewerWidget>();
   TrackObject<EmbassyObjectViewer>();
