@@ -1,5 +1,6 @@
 #include "patches.h"
 #include "file.h"
+#include "log_history.h"
 #include "version.h"
 
 #include <il2cpp/il2cpp-functions.h>
@@ -20,6 +21,7 @@
 
 void InstallUiScaleHooks();
 void InstallZoomHooks();
+void InstallHavenZoomHooks();
 void InstallBuffFixHooks();
 #if _WIN32
 void InstallFreeResizeHooks();
@@ -33,6 +35,7 @@ void InstallDailyFactionBulkClaimHooks();
 void InstallTestPatches();
 void InstallMiscPatches();
 void InstallMissionHudTweaksHooks();
+void InstallArtifactExchangeHooks();
 void InstallChatPatches();
 void InstallTempCrashFixes();
 void InstallSyncPatches();
@@ -49,6 +52,7 @@ void InstallDoubleClickAssignShipHooks();
 void InstallInstantWarpConfirmationHooks();
 void InstallForbiddenTechConfirmationHooks();
 void InstallAudioEventHooks();
+void InstallHavenHistoryHooks();
 
 __int64 il2cpp_init_hook(auto original, const char* domain_name)
 {
@@ -67,7 +71,15 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
 
   File::Init();
 
-  auto file_logger = spdlog::basic_logger_mt("default", File::Log(), true);
+  std::string rotation_error;
+  try {
+    RotateLogHistory(File::Log());
+  } catch (const std::filesystem::filesystem_error& error) {
+    rotation_error = error.what();
+  }
+
+  // Append if rotation failed so an existing log is never truncated.
+  auto file_logger = spdlog::basic_logger_mt("default", File::Log(), false);
   auto sink        = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
   file_logger->sinks().push_back(sink);
   spdlog::set_default_logger(file_logger);
@@ -77,6 +89,9 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::set_level(log_level);
   spdlog::flush_on(log_level);
+  if (!rotation_error.empty()) {
+    spdlog::warn("Failed to rotate log history; preserving existing log: {}", rotation_error);
+  }
 
 #if VERSION_PATCH
   if constexpr (sizeof(VERSION_COMMIT_HASH) > 1) {
@@ -124,6 +139,7 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
   const PatchEntry patches[] = {
       {"UiScaleHooks", {InstallUiScaleHooks, &cfg.installUiScaleHooks}},
       {"ZoomHooks", {InstallZoomHooks, &cfg.installZoomHooks}},
+      {"HavenZoomHooks", {InstallHavenZoomHooks, &cfg.installHavenZoomHooks}},
       {"BuffFixHooks", {InstallBuffFixHooks, &cfg.installBuffFixHooks}},
       {"ToastBannerHooks", {InstallToastBannerHooks, &cfg.installToastBannerHooks}},
       {"PanHooks", {InstallPanHooks, &cfg.installPanHooks}},
@@ -137,6 +153,7 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       {"TestPatches", {InstallTestPatches, &cfg.installTestPatches}},
       {"MiscPatches", {InstallMiscPatches, &cfg.installMiscPatches}},
       {"MissionHudTweaksHooks", {InstallMissionHudTweaksHooks, &cfg.installMissionHudTweaksHooks}},
+      {"ArtifactExchangeHooks", {InstallArtifactExchangeHooks, &cfg.installArtifactExchangeHooks}},
       {"ChatPatches", {InstallChatPatches, &cfg.installChatPatches}},
       {"SyncPatches", {InstallSyncPatches, &cfg.installSyncPatches}},
       {"ObjectTracker", {InstallObjectTrackers, &cfg.installObjectTracker}},
@@ -152,6 +169,7 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       {"InstantWarpConfirm", {InstallInstantWarpConfirmationHooks, &cfg.installInstantWarpConfirmationHooks}},
       {"ForbiddenTechConfirm", {InstallForbiddenTechConfirmationHooks, &cfg.installForbiddenTechConfirmationHooks}},
       {"AudioEvents", {InstallAudioEventHooks, &cfg.installAudioEventHooks}},
+      {"HavenHistory", {InstallHavenHistoryHooks, &cfg.installHavenHistoryHooks}},
   };
   printf("il2cpp_init_hook(%s)\n", domain_name);
 
