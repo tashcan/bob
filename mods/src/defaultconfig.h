@@ -106,6 +106,7 @@ namespace Patches
   constexpr bool cargoformathooks           = true; // on by default: cargo number precision override
   constexpr bool officersorthooks           = true; // restore Below Deck Ability sort option
   constexpr bool pinnedshiphooks            = true; // pin configured ships to front of fleet dock sort
+  constexpr bool pinnedshipclicktoggle      = true; // SHIFT+click a fleet dock ship tile to pin/unpin it
   constexpr bool havenhistoryhooks          = true; // reverse Haven help history into newest-first order
 } // namespace Patches
 

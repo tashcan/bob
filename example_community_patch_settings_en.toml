@@ -296,6 +296,8 @@ panhooks = true
 
 # Pin configured ships to the front of the fleet management dock
 pinnedshiphooks = true
+# SHIFT+click a fleet dock ship tile to pin or unpin it (updates ui.pinned_ships)
+pinnedshipclicktoggle = true
 syncpatches = true
 tempcrashfixes = true
 testpatches = true

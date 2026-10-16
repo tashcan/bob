@@ -1007,6 +1007,8 @@ void Config::Load()
       get_config_or_default(config, parsed, "patches", "officersorthooks", DCP::officersorthooks, write_config);
   this->installPinnedShipSortHooks =
       get_config_or_default(config, parsed, "patches", "pinnedshiphooks", DCP::pinnedshiphooks, write_config);
+  this->installPinnedShipClickToggle = get_config_or_default(config, parsed, "patches", "pinnedshipclicktoggle",
+                                                             DCP::pinnedshipclicktoggle, write_config);
   this->installHavenHistoryHooks =
       get_config_or_default(config, parsed, "patches", "havenhistoryhooks", DCP::havenhistoryhooks, write_config);
   spdlog::debug("");

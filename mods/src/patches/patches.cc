@@ -48,6 +48,7 @@ void InstallCargoFormatHooks();
 void InstallInstantCargoCounterHooks();
 void InstallOfficerSortHooks();
 void InstallPinnedShipSortHooks();
+void InstallPinnedShipClickHooks();
 void InstallDoubleClickAssignShipHooks();
 void InstallInstantWarpConfirmationHooks();
 void InstallForbiddenTechConfirmationHooks();
@@ -165,6 +166,7 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       {"CargoFormat", {InstallCargoFormatHooks, &cfg.installCargoFormatHooks}},
       {"OfficerSortHooks", {InstallOfficerSortHooks, &cfg.installOfficerSortHooks}},
       {"PinnedShipSort", {InstallPinnedShipSortHooks, &cfg.installPinnedShipSortHooks}},
+      {"PinnedShipClick", {InstallPinnedShipClickHooks, &cfg.installPinnedShipClickToggle}},
       {"DoubleClickAssignShip", {InstallDoubleClickAssignShipHooks, &cfg.installDoubleClickAssignShipHooks}},
       {"InstantWarpConfirm", {InstallInstantWarpConfirmationHooks, &cfg.installInstantWarpConfirmationHooks}},
       {"ForbiddenTechConfirm", {InstallForbiddenTechConfirmationHooks, &cfg.installForbiddenTechConfirmationHooks}},
