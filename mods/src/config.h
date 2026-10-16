@@ -217,6 +217,7 @@ public:
   int                      disable_escape_exit_timer;
   bool                     disable_galaxy_chat;
   bool                     disable_veil_chat;
+  bool                     show_player_title;
   bool                     disable_first_popup;
   bool                     disable_toast_banners;
   bool                     trace_audio_events;
@@ -286,6 +287,7 @@ public:
   bool installMissionHudTweaksHooks;
   bool disable_exchange_all;
   bool installChatPatches;
+  bool installPlayerTitleDisplayHooks;
   bool installSyncPatches;
   bool installGameVersionHook;
   bool installObjectTracker;
