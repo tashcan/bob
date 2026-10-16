@@ -281,6 +281,7 @@ audioeventhooks = true
 bufffixhooks = true
 cargoformathooks = true
 chatpatches = true
+chattitledisplayhooks = true
 
 # Enable per-faction bulk claiming for Daily Goals
 dailyfactionbulkclaimhooks = true
@@ -751,6 +752,9 @@ disable_galaxy_chat = false
 
 # Change to true to remove Veil Chat from the game
 disable_veil_chat = false
+
+# Change to false to hide the player title row in chat messages
+show_player_title = true
 
 # Subgroup: Chest Purchases
 # -------------------------

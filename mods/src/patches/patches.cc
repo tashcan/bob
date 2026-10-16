@@ -37,6 +37,7 @@ void InstallMiscPatches();
 void InstallMissionHudTweaksHooks();
 void InstallArtifactExchangeHooks();
 void InstallChatPatches();
+void InstallChatTitleDisplayHooks();
 void InstallTempCrashFixes();
 void InstallSyncPatches();
 void InstallObjectTrackers();
@@ -158,6 +159,7 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       {"MissionHudTweaksHooks", {InstallMissionHudTweaksHooks, &cfg.installMissionHudTweaksHooks}},
       {"ArtifactExchangeHooks", {InstallArtifactExchangeHooks, &cfg.installArtifactExchangeHooks}},
       {"ChatPatches", {InstallChatPatches, &cfg.installChatPatches}},
+      {"ChatTitleDisplay", {InstallChatTitleDisplayHooks, &cfg.installPlayerTitleDisplayHooks}},
       {"SyncPatches", {InstallSyncPatches, &cfg.installSyncPatches}},
       {"ObjectTracker", {InstallObjectTrackers, &cfg.installObjectTracker}},
       {"LoadingScreen", {InstallLoadingScreenHooks, &cfg.installLoadingScreenHooks}},
