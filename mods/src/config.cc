@@ -1016,13 +1016,13 @@ void Config::Load()
   this->installHavenHistoryHooks =
       get_config_or_default(config, parsed, "patches", "havenhistoryhooks", DCP::havenhistoryhooks, write_config);
   spdlog::debug("");
-  this->faster_queue_recovery = get_config_or_default(config, parsed, "control", "faster_queue_recovery",
-                                                     DCC::faster_queue_recovery, write_config);
-  this->queue_address_guard = get_config_or_default(
-      config, parsed, "control", "queue_address_guard", DCC::queue_address_guard, write_config);
-  // Preserve an explicit 2.1.0 setting; the current control key takes precedence.
-  this->thin_queue_protection = get_config_or_default(config, parsed, "control", "thin_queue_protection",
-      config["advanced"]["queue"]["thin_queue_protection"].value_or(DCC::thin_queue_protection), write_config);
+  this->kirshara_fixes = get_config_or_default(config, parsed, "control", "kirshara_fixes",
+                                             DCC::kirshara_fixes, write_config);
+  if (!config["control"]["kirshara_fixes"]
+      && (config["control"]["faster_queue_recovery"] || config["control"]["thin_queue_protection"]
+          || config["control"]["queue_address_guard"] || config["advanced"]["queue"]["thin_queue_protection"]))
+    spdlog::warn("The separate queue feature settings have been replaced by [control] kirshara_fixes (default=true). "
+                 "Set kirshara_fixes=false to disable the combined fixes; old feature settings are ignored.");
   this->queue_enabled =
       get_config_or_default(config, parsed, "control", "queue_enabled", DCC::queue_enabled, write_config);
   this->hotkeys_enabled =

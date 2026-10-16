@@ -34,7 +34,7 @@ std::atomic_bool                   ready{false};
 Il2CppClass *                      queueClass{}, *actionClass{}, *int64Class{};
 
 bool Enabled()
-{ return ready.load() && Config::Get().faster_queue_recovery && Config::Get().queue_enabled; }
+{ return ready.load() && Config::Get().kirshara_fixes && Config::Get().queue_enabled; }
 void ClearRequests()
 {
   std::lock_guard lock(requestsMutex);
@@ -234,7 +234,7 @@ bool Field(Il2CppClass* cls, const char* name, std::ptrdiff_t offset, Il2CppType
 }
 } // namespace
 
-void ClearActionQueueRecoveryRequests()
+void ResetQueueRecoveryTracking()
 { ClearRequests(); }
 
 void InstallActionQueueRecovery()
@@ -328,5 +328,5 @@ void InstallActionQueueRecovery()
 }
 #else
 void InstallActionQueueRecovery() {}
-void ClearActionQueueRecoveryRequests() {}
+void ResetQueueRecoveryTracking() {}
 #endif

@@ -32,7 +32,7 @@ int (*tryEngage)(Object*, Object*, Object*);
 void (*processTarget)(Object*, Id, bool);
 
 bool Enabled()
-{ return ready.load() && Config::Get().thin_queue_protection && Config::Get().queue_enabled; }
+{ return ready.load() && Config::Get().kirshara_fixes && Config::Get().queue_enabled; }
 
 bool Is(Object* object, Il2CppClass* cls)
 { return object && il2cpp_object_get_class(object) == cls; }

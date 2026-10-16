@@ -5,12 +5,13 @@ This is separate from the retired Kir'shara combat-completion repair.
 
 ```toml
 [control]
-thin_queue_protection = true
+kirshara_fixes = true
 ```
 
-Enabled by default on Windows x64. Also respects `control.queue_enabled`. The old
-`advanced.queue.thin_queue_protection` value is used when the new control key is
-absent, preserving an explicit opt-out. Default-enabled `[patches].thinqueueprotectionhooks`
+Enabled by default on Windows x64 as part of `control.kirshara_fixes`. Also respects
+`control.queue_enabled`. The old separate feature settings, including
+`advanced.queue.thin_queue_protection`, are retired; use `kirshara_fixes = false`
+to disable the combined fixes. Default-enabled `[patches].thinqueueprotectionhooks`
 controls installation independently. Installed callbacks check the current feature and queue
 preferences. Changing the installation switch requires restart; TOML changes require
 reload/restart.

@@ -17,9 +17,10 @@ The native comparison still checks every target. A missing target, a genuinely
 foreign address, or unknown metadata retains native behavior. The guard writes no
 fleet fields or queue contents and retains no address between events. Explicit
 clearing, recalling the queued ship itself, and genuine system changes remain
-native. This is independent of Faster Queue Recovery and Thin Queue Protection.
+native. This is enabled together with Faster Queue Recovery and Thin Queue Protection
+through `control.kirshara_fixes`.
 
-`[control] queue_address_guard = false` disables correction. The separate
+`[control] kirshara_fixes = false` disables the combined fixes, including address correction. The separate
 default-on `[patches] queueaddressguardhooks` switch controls hook installation;
 changing it requires a restart. Disabling the queue also disables correction.
 

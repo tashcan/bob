@@ -784,7 +784,8 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
 
       if ((MapKey::IsDown(GameFunction::ToggleQueue))) {
         config->queue_enabled = !config->queue_enabled;
-        ClearActionQueueRecoveryRequests();
+        // Forget stale recovery authorizations; existing native target queues keep processing.
+        ResetQueueRecoveryTracking();
         return;
       }
 

@@ -26,7 +26,7 @@ struct AddressContext {
 thread_local AddressContext* context{};
 
 bool Enabled()
-{ return ready.load() && Config::Get().queue_address_guard && Config::Get().queue_enabled; }
+{ return ready.load() && Config::Get().kirshara_fixes && Config::Get().queue_enabled; }
 
 bool Is(Object* object, Il2CppClass* cls)
 { return object && il2cpp_object_get_class(object) == cls; }

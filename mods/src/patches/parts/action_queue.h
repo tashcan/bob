@@ -4,8 +4,9 @@
 #include <chrono>
 #include <cstdint>
 
-// Invalidate pending recovery authorization at both queue toggle transitions.
-void ClearActionQueueRecoveryRequests();
+// Forget the mod's pending response correlations at both queue toggle transitions.
+// Releases weak tracking handles; never clears or modifies native target queues.
+void ResetQueueRecoveryTracking();
 
 namespace action_queue
 {

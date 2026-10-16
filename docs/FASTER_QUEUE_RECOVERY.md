@@ -2,16 +2,26 @@
 
 When a queued target disappears while a course request is outstanding, the game can remove that target before its failed response arrives. Native failure handling then attempts the removal again. Since it did not remove the front entry this time, it can leave the next target waiting for the watchdog.
 
-Enable the opt-in recovery preference:
+Recovery is enabled by default as part of the combined Kir'Shara fixes:
 
 ```toml
 [control]
-faster_queue_recovery = true
+kirshara_fixes = true
 ```
 
-Following #313, default-enabled `[patches].actionqueuerecoveryhooks` independently controls installation. Changing that installation switch requires a restart. Installed callbacks check the current `control.faster_queue_recovery` and `control.queue_enabled` preferences; changing TOML still requires reload/restart.
+Following #313, default-enabled `[patches].actionqueuerecoveryhooks` independently controls installation. Changing that installation switch requires a restart. Installed callbacks check the current `control.kirshara_fixes` and `control.queue_enabled` preferences; changing TOML still requires reload/restart.
 
 The feature also respects `control.queue_enabled`. Hooks are supported on Windows x64 when the required method signatures and queue layout are compatible. Other platforms do not install these hooks; incompatible Windows layouts log an unavailable message and retain native behavior.
+
+The previous `faster_queue_recovery`, `thin_queue_protection`, `queue_address_guard`
+and `advanced.queue.thin_queue_protection` settings no longer control these features.
+Use the single `kirshara_fixes` switch; its default is true. A legacy-only configuration
+logs this replacement at startup. No existing config file is rewritten automatically.
+
+Toggling queue entry off invalidates only the mod's pending recovery tracking. It
+does not clear native target queues or stop their native processing. Forgetting the
+tracking prevents an old course response from authorizing a later recovery after
+the queue is toggled back on.
 
 ## Behavior
 
