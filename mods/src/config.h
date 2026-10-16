@@ -229,6 +229,7 @@ public:
   NotificationSound alert_armada_battle_lost = NotificationSound::None;
   bool                     auto_open_bulk_claim_flyout;
   bool                     auto_confirm_ft_upgrade;
+  bool                     auto_confirm_reveal_ability;
 
   std::vector<std::string> daily_bulk_claim_factions;
 
@@ -295,6 +296,7 @@ public:
   bool installLoadingTipHooks;
   bool installDoubleClickAssignShipHooks;
   bool installForbiddenTechConfirmationHooks;
+  bool installRevealConfirmationHooks;
   bool installInstantWarpConfirmationHooks;
   bool installAudioEventHooks;
   bool installArtifactExchangeHooks;
