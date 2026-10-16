@@ -189,6 +189,7 @@ public:
   int   select_timer;
 
   bool  queue_enabled;
+  bool  kirshara_fixes;
   bool  hotkeys_enabled;
   bool  hotkeys_extended;
   bool  primary_requires_visible_target;
@@ -218,6 +219,7 @@ public:
   int                      disable_escape_exit_timer;
   bool                     disable_galaxy_chat;
   bool                     disable_veil_chat;
+  bool                     show_player_title;
   bool                     disable_first_popup;
   bool                     disable_toast_banners;
   bool                     trace_audio_events;
@@ -230,6 +232,7 @@ public:
   NotificationSound alert_armada_battle_lost = NotificationSound::None;
   bool                     auto_open_bulk_claim_flyout;
   bool                     auto_confirm_ft_upgrade;
+  bool                     auto_confirm_reveal_ability;
 
   std::vector<std::string> daily_bulk_claim_factions;
 
@@ -253,6 +256,7 @@ public:
   bool officer_sort;
   bool reverse_haven_history;
   bool arrow_keys_to_select_ship;
+  bool dock_syncmanagement;
 
   bool only_show_first_popup;
 
@@ -287,6 +291,7 @@ public:
   bool installMissionHudTweaksHooks;
   bool disable_exchange_all;
   bool installChatPatches;
+  bool installPlayerTitleDisplayHooks;
   bool installSyncPatches;
   bool installGameVersionHook;
   bool installObjectTracker;
@@ -296,8 +301,12 @@ public:
   bool installLoadingTipHooks;
   bool installDoubleClickAssignShipHooks;
   bool installForbiddenTechConfirmationHooks;
+  bool installRevealConfirmationHooks;
   bool installInstantWarpConfirmationHooks;
   bool installAudioEventHooks;
+  bool installActionQueueRecoveryHooks;
+  bool installQueueAddressGuardHooks;
+  bool installThinQueueProtectionHooks;
   bool installArtifactExchangeHooks;
 
   std::string config_settings_url;

@@ -3,9 +3,16 @@
 #include <il2cpp/il2cpp_helper.h>
 
 #include "errormsg.h"
+#include "FleetPlayerData.h"
 
 struct ShipManagementViewContext {
 public:
+  FleetPlayerData* CurrentFleet()
+  {
+    static auto method = get_class_helper().GetMethod<FleetPlayerData*(ShipManagementViewContext*)>("get_CurrentFleet");
+    return method ? method(this) : nullptr;
+  }
+
   int32_t CurrentIndex()
   {
     static auto CurrentIndexWarn = true;

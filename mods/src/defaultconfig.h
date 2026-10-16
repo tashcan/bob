@@ -32,6 +32,7 @@ namespace Control
   constexpr bool primary_requires_visible_target = false;
   constexpr bool use_scopely_hotkeys             = false;
   constexpr bool queue_enabled                   = true;
+  constexpr bool kirshara_fixes                  = true;
   constexpr auto select_timer                    = 500;
 } // namespace Control
 
@@ -79,6 +80,7 @@ namespace Patches
 {
   constexpr bool bufffixhooks               = true;
   constexpr bool chatpatches                = true;
+  constexpr bool chattitledisplayhooks      = true;
   constexpr bool freeresizehooks            = true;
   constexpr bool game_version               = true;
   constexpr bool hotkeyhooks                = true;
@@ -102,12 +104,16 @@ namespace Patches
   constexpr bool doubleclickassignshiphooks = true;
   constexpr bool forbiddentechconfirmhooks  = true;
   constexpr bool audioeventhooks            = true;
+  constexpr bool actionqueuerecoveryhooks   = true;
+  constexpr bool queueaddressguardhooks     = true;
+  constexpr bool thinqueueprotectionhooks   = true;
   constexpr bool artifactexchangehooks      = true;
   constexpr bool instantcargocounterhooks   = true;
   constexpr bool cargoformathooks           = true; // on by default: cargo number precision override
   constexpr bool officersorthooks           = true; // restore Below Deck Ability sort option
   constexpr bool pinnedshiphooks            = true; // pin configured ships to front of fleet dock sort
   constexpr bool havenhistoryhooks          = true; // reverse Haven help history into newest-first order
+  constexpr bool revealconfirmhooks         = true; // auto-confirm the Excelsior Decloaking Deflector popup when enabled in [ui]
 } // namespace Patches
 
 namespace Shortcuts
@@ -255,8 +261,10 @@ namespace UI
 {
   constexpr bool        always_skip_reveal_sequence        = true;
   constexpr bool        arrow_keys_to_select_ship          = true;
+  constexpr bool        dock_syncmanagement                = true;
   constexpr bool        auto_confirm_discovery             = true;
   constexpr bool        auto_confirm_ft_upgrade            = false;
+  constexpr bool        auto_confirm_reveal_ability        = false;
   constexpr bool        auto_open_bulk_claim_flyout        = false;
   constexpr const char* daily_bulk_claim_factions          = "";
   constexpr bool        daily_bulk_claim_toggle_default_on = false;
@@ -272,6 +280,7 @@ namespace UI
   constexpr bool        disable_preview_recall      = false;
   constexpr bool        disable_toast_banners       = false;
   constexpr bool        disable_veil_chat           = false;
+  constexpr bool        show_player_title           = true;
   constexpr bool        disable_exchange_all        = false;
   constexpr bool        double_click_to_assign_ship = false;
   constexpr bool        focus_search                = true;

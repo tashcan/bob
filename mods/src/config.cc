@@ -43,7 +43,7 @@ constexpr bool is_all_audio_wildcard(std::string_view value)
 static_assert(is_all_audio_wildcard("aLl"));
 static_assert(!is_all_audio_wildcard(std::string_view{"All\0suffix", 10}));
 static_assert(!is_all_audio_wildcard(std::string_view{"\xffll", 3}));
-  
+
 struct ToastAudioAlertConfig {
   int                       toast_state;
   std::string_view          config_name;
@@ -973,6 +973,8 @@ void Config::Load()
       get_config_or_default(config, parsed, "patches", "missionhudtweakshooks", DCP::missionhudtweakshooks, write_config);
   this->installChatPatches =
       get_config_or_default(config, parsed, "patches", "chatpatches", DCP::chatpatches, write_config);
+  this->installPlayerTitleDisplayHooks = get_config_or_default(config, parsed, "patches", "chattitledisplayhooks",
+                                                               DCP::chattitledisplayhooks, write_config);
   this->installSyncPatches =
       get_config_or_default(config, parsed, "patches", "syncpatches", DCP::syncpatches, write_config);
   this->installGameVersionHook =
@@ -995,6 +997,14 @@ void Config::Load()
       get_config_or_default(config, parsed, "patches", "doubleclickassignshiphooks", DCP::doubleclickassignshiphooks, write_config);
   this->installForbiddenTechConfirmationHooks =
       get_config_or_default(config, parsed, "patches", "forbiddentechconfirmhooks", DCP::forbiddentechconfirmhooks, write_config);
+  this->installRevealConfirmationHooks =
+      get_config_or_default(config, parsed, "patches", "revealconfirmhooks", DCP::revealconfirmhooks, write_config);
+  this->installQueueAddressGuardHooks = get_config_or_default(
+      config, parsed, "patches", "queueaddressguardhooks", DCP::queueaddressguardhooks, write_config);
+  this->installActionQueueRecoveryHooks =
+      get_config_or_default(config, parsed, "patches", "actionqueuerecoveryhooks", DCP::actionqueuerecoveryhooks, write_config);
+  this->installThinQueueProtectionHooks =
+      get_config_or_default(config, parsed, "patches", "thinqueueprotectionhooks", DCP::thinqueueprotectionhooks, write_config);
   this->installArtifactExchangeHooks =
       get_config_or_default(config, parsed, "patches", "artifactexchangehooks", DCP::artifactexchangehooks, write_config);
   this->installAudioEventHooks =
@@ -1010,6 +1020,13 @@ void Config::Load()
   this->installHavenHistoryHooks =
       get_config_or_default(config, parsed, "patches", "havenhistoryhooks", DCP::havenhistoryhooks, write_config);
   spdlog::debug("");
+  this->kirshara_fixes = get_config_or_default(config, parsed, "control", "kirshara_fixes",
+                                             DCC::kirshara_fixes, write_config);
+  if (!config["control"]["kirshara_fixes"]
+      && (config["control"]["faster_queue_recovery"] || config["control"]["thin_queue_protection"]
+          || config["control"]["queue_address_guard"] || config["advanced"]["queue"]["thin_queue_protection"]))
+    spdlog::warn("The separate queue feature settings have been replaced by [control] kirshara_fixes (default=true). "
+                 "Set kirshara_fixes=false to disable the combined fixes; old feature settings are ignored.");
   this->queue_enabled =
       get_config_or_default(config, parsed, "control", "queue_enabled", DCC::queue_enabled, write_config);
   this->hotkeys_enabled =
@@ -1164,12 +1181,18 @@ void Config::Load()
   this->reverse_haven_history = get_config_or_default(config, parsed, "ui", "reverse_haven_history",
                                                        DCU::reverse_haven_history, write_config);
 
+  this->dock_syncmanagement =
+      get_config_or_default(config, parsed, "ui", "dock_syncmanagement",
+                            DCU::dock_syncmanagement, write_config);
   this->arrow_keys_to_select_ship = get_config_or_default(config, parsed, "ui", "arrow_keys_to_select_ship",
                                                           DCU::arrow_keys_to_select_ship, write_config);
 
   this->auto_confirm_ft_upgrade =
       get_config_or_default(config, parsed, "ui", "auto_confirm_ft_upgrade",
                                                         DCU::auto_confirm_ft_upgrade, write_config);
+  this->auto_confirm_reveal_ability =
+      get_config_or_default(config, parsed, "ui", "auto_confirm_reveal_ability",
+                                                        DCU::auto_confirm_reveal_ability, write_config);
 
   this->extend_chest_purchase_max = get_config_or_default(config, parsed, "ui", "extend_chest_purchase_max",
                                                           DCU::extend_chest_purchase_max, write_config);
@@ -1182,6 +1205,8 @@ void Config::Load()
       get_config_or_default(config, parsed, "ui", "disable_galaxy_chat", DCU::disable_galaxy_chat, write_config);
   this->disable_veil_chat =
       get_config_or_default(config, parsed, "ui", "disable_veil_chat", DCU::disable_veil_chat, write_config);
+  this->show_player_title =
+      get_config_or_default(config, parsed, "ui", "show_player_title", DCU::show_player_title, write_config);
   this->show_cargo_default =
       get_config_or_default(config, parsed, "ui", "show_cargo_default", DCU::show_cargo_default, write_config);
   this->show_player_cargo =
