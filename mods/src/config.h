@@ -191,6 +191,7 @@ public:
   bool  queue_enabled;
   bool  hotkeys_enabled;
   bool  hotkeys_extended;
+  bool  primary_requires_visible_target;
   bool  use_scopely_hotkeys;
   bool  use_presets_as_default;
   bool  enable_experimental;

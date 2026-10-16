@@ -1016,6 +1016,8 @@ void Config::Load()
       get_config_or_default(config, parsed, "control", "hotkeys_enabled", DCC::hotkeys_enabled, write_config);
   this->hotkeys_extended =
       get_config_or_default(config, parsed, "control", "hotkeys_extended", DCC::hotkeys_extended, write_config);
+  this->primary_requires_visible_target = get_config_or_default(
+      config, parsed, "control", "primary_requires_visible_target", DCC::primary_requires_visible_target, write_config);
   this->use_scopely_hotkeys =
       get_config_or_default(config, parsed, "control", "use_scopely_hotkeys", DCC::use_scopely_hotkeys, write_config);
   this->select_timer =
