@@ -252,6 +252,7 @@ public:
   bool officer_sort;
   bool reverse_haven_history;
   bool arrow_keys_to_select_ship;
+  bool dock_syncmanagement;
 
   bool only_show_first_popup;
 

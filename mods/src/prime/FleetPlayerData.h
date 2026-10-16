@@ -43,6 +43,7 @@ public:
   __declspec(property(get = __get_CurrentState)) FleetState CurrentState;
   __declspec(property(get = __get_PreviousState)) FleetState PreviousState;
   __declspec(property(get = __get_Id)) uint64_t Id;
+  __declspec(property(get = __get_Index)) int Index;
   __declspec(property(get = __get_Hull)) HullSpec* Hull;
   __declspec(property(get = __get_Address)) void* Address;
   __declspec(property(get = __get_Level)) int64_t Level;
@@ -57,6 +58,13 @@ private:
   }
 
 public:
+  int __get_Index()
+  {
+    static auto property = get_class_helper().GetProperty("Index");
+    auto* value = property.Get<int>(this);
+    return value ? *value : -1;
+  }
+
   HullSpec* __get_Hull()
   {
     static auto field = get_class_helper().GetProperty("Hull");

@@ -43,7 +43,7 @@ constexpr bool is_all_audio_wildcard(std::string_view value)
 static_assert(is_all_audio_wildcard("aLl"));
 static_assert(!is_all_audio_wildcard(std::string_view{"All\0suffix", 10}));
 static_assert(!is_all_audio_wildcard(std::string_view{"\xffll", 3}));
-  
+
 struct ToastAudioAlertConfig {
   int                       toast_state;
   std::string_view          config_name;
@@ -1162,6 +1162,9 @@ void Config::Load()
   this->reverse_haven_history = get_config_or_default(config, parsed, "ui", "reverse_haven_history",
                                                        DCU::reverse_haven_history, write_config);
 
+  this->dock_syncmanagement =
+      get_config_or_default(config, parsed, "ui", "dock_syncmanagement",
+                            DCU::dock_syncmanagement, write_config);
   this->arrow_keys_to_select_ship = get_config_or_default(config, parsed, "ui", "arrow_keys_to_select_ship",
                                                           DCU::arrow_keys_to_select_ship, write_config);
 

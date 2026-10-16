@@ -254,6 +254,7 @@ namespace UI
 {
   constexpr bool        always_skip_reveal_sequence        = true;
   constexpr bool        arrow_keys_to_select_ship          = true;
+  constexpr bool        dock_syncmanagement                = true;
   constexpr bool        auto_confirm_discovery             = true;
   constexpr bool        auto_confirm_ft_upgrade            = false;
   constexpr bool        auto_open_bulk_claim_flyout        = false;

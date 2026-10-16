@@ -1,6 +1,7 @@
 #include "config.h"
 
 #include <spud/detour.h>
+#include <il2cpp/method_contract.h>
 
 // Object Viewers
 #include "prime/AllianceStarbaseObjectViewerWidget.h"
@@ -451,6 +452,119 @@ bool MoveShipSelectionInDock(bool goLeft)
   return acted;
 }
 
+void UpdateManageShipDockSelection()
+{
+  static uint64_t last_fleet_id = 0;
+  static auto next_update = std::chrono::steady_clock::time_point{};
+  const auto now = std::chrono::steady_clock::now();
+  if (now < next_update)
+    return;
+  next_update = now + std::chrono::milliseconds(100);
+  auto* sections = Hub::get_SectionManager();
+  if (!Config::Get().dock_syncmanagement || !sections
+      || sections->CurrentSection != SectionID::ShipManagement_Details) {
+    last_fleet_id = 0;
+    return;
+  }
+  for (auto* controller : ObjectFinder<ShipManagementViewController>::GetAll()) {
+    if (!controller || !controller->isActiveAndEnabled)
+      continue;
+    auto* canvas = GetCanvasControllerFromComponent(controller);
+    if (!canvas || !canvas->Visible())
+      continue;
+    auto* context = controller->Context();
+    auto* fleet = context ? context->CurrentFleet() : nullptr;
+    auto* manager = FleetsManager::Instance();
+    if (!fleet || !fleet->HasShip || !manager || !manager->HasFleetService())
+      continue;
+    const auto index = fleet->Index;
+    if (index < 0)
+      continue;
+    // Exclude unassigned and synthetic fleets; management list order is not dock order.
+    auto* dock_fleet = manager->GetFleetPlayerData(index);
+    if (!dock_fleet || dock_fleet->Id != fleet->Id)
+      continue;
+    if (last_fleet_id == fleet->Id)
+      return;
+    auto* bar = ObjectFinder<FleetBarViewController>::Get();
+    if (!bar)
+      return;
+    if (!bar->IsIndexSelected(index)) {
+      // Use the bar's selection flow to update both the highlight and fleet panel.
+      bar->RequestSelect(index);
+      if (!bar->IsIndexSelected(index))
+        return; // Retry next update if native selection was blocked.
+      spdlog::debug("[ManageShips] selected dock {} for fleet {}", index + 1, fleet->Id);
+    }
+    last_fleet_id = fleet->Id;
+    return;
+  }
+  last_fleet_id = 0;
+}
+
+void UpdateExpiredAbilityButtons()
+{
+  static auto next_update = std::chrono::steady_clock::time_point{};
+  const auto now = std::chrono::steady_clock::now();
+  if (now < next_update)
+    return;
+  next_update = now + std::chrono::milliseconds(250);
+  auto* bar = ObjectFinder<FleetBarViewController>::Get();
+  auto* controller = bar ? bar->_fleetPanelController : nullptr;
+  auto* fleet = controller ? controller->fleet : nullptr;
+  if (!fleet || (static_cast<int>(fleet->CurrentState) & static_cast<int>(FleetState::CanActivateAbility)) == 0)
+    return;
+  static auto fleet_class = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Ships", "FleetLocalViewController");
+  static auto panel_field = fleet_class.GetField("_shipActionPanelLocalViewController");
+  static auto panel_class =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.Ships", "ShipActionPanelLocalViewController");
+  static auto ids_field = panel_class.GetField("_abilityIDs");
+  static auto buttons_field = panel_class.GetField("_buttons");
+  static auto cooldown = panel_class.GetMethodInfo("GetRemainingCooldown", 1);
+  static auto has_effect = panel_class.GetMethod<bool(void*)>("HasShipAnActiveAbilityWithActiveEffect", 0);
+  static auto timer_class =
+      il2cpp_get_class_helper("Digit.Client.PrimeLib.Runtime", "Digit.PrimeServer.Models", "TimerDataContext");
+  static auto remaining_time = timer_class.GetMethodInfo("get_RemainingTime", 0);
+  static auto ability_class =
+      il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.ActivatedAbilities", "ActivatedAbilityManager");
+  static auto instance = ability_class.GetParent("MonoSingleton`1").GetProperty("Instance");
+  static auto can_use = method_contract::Resolve(ability_class.get_cls(), "CanUseAbility", false, "System.Boolean",
+                                                {"Digit.PrimeServer.Models.FleetPlayerData", "System.Int64"});
+  if (!panel_field.get_info() || !ids_field.get_info() || !buttons_field.get_info() || !cooldown
+      || !remaining_time || !has_effect || !can_use)
+    return;
+  auto* manager = instance.GetRaw<Il2CppObject>(nullptr);
+  if (!manager)
+    return;
+  auto* panel = *reinterpret_cast<void**>(reinterpret_cast<char*>(controller) + panel_field.offset());
+  auto* canvas = panel ? GetCanvasControllerFromComponent(panel) : nullptr;
+  if (!canvas || !canvas->Visible() || has_effect(panel))
+    return;
+  auto* ids = *reinterpret_cast<Il2CppArraySize**>(reinterpret_cast<char*>(panel) + ids_field.offset());
+  auto* buttons = *reinterpret_cast<Il2CppArraySize**>(reinterpret_cast<char*>(panel) + buttons_field.offset());
+  if (!ids || !buttons)
+    return;
+  for (uintptr_t index = 0; index < ids->max_length && index < buttons->max_length; ++index) {
+    auto* button = reinterpret_cast<GenericButtonWidget**>(buttons->vector)[index];
+    if (!button || !button->isActiveAndEnabled || !button->Context || button->Context->Interactable)
+      continue;
+    auto ability_id = reinterpret_cast<int64_t*>(ids->vector)[index];
+    void* args[] = {&ability_id};
+    Il2CppException* exception = nullptr;
+    auto* timer = il2cpp_runtime_invoke(cooldown, panel, args, &exception);
+    if (exception || !timer)
+      continue;
+    auto* remaining = il2cpp_runtime_invoke(remaining_time, timer, nullptr, &exception);
+    // TimeSpan is boxed Int64 in 100 ns ticks. Repair at -1 second or below.
+    if (exception || !remaining || *static_cast<int64_t*>(il2cpp_object_unbox(remaining)) > -10000000)
+      continue;
+    void* ready_args[] = {fleet, &ability_id};
+    auto* ready = il2cpp_runtime_invoke(can_use, manager, ready_args, &exception);
+    if (!exception && ready && *static_cast<bool*>(il2cpp_object_unbox(ready)))
+      button->Context->Interactable = true;
+  }
+}
+
 bool MoveDockInManagementView(bool goLeft)
 {
   if (!Config::Get().arrow_keys_to_select_ship) {
@@ -584,6 +698,9 @@ void ScreenManager_Update_Hook(auto original, ScreenManager* _this)
   if (!Config::Get().installHotkeyHooks) {
     return original(_this);
   }
+
+  UpdateManageShipDockSelection();
+  UpdateExpiredAbilityButtons();
 
   // This function is called every frame to update the screen manager.
   // Create a global clock to detect time elapsed
