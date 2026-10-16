@@ -53,8 +53,7 @@ std::string JoinNames(const std::vector<std::string>& names)
 }
 
 // Update ui.pinned_ships in the user's config file so pins survive a restart.
-// The personal fork persists this through its runtime config writer; that
-// subsystem does not exist here, so rewrite the setting in place instead.
+// If/when we merge the runtime config writer we can route this through that instead of writing the file directly.
 void PersistPinnedShips(const std::vector<std::string>& names)
 {
   const auto joined = JoinNames(names);
