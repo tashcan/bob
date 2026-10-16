@@ -180,6 +180,22 @@ void InstallChatTitleDisplayHooks()
     return;
   }
 
+  // The PlayerTitleWidget callbacks can resolve through thunks to one shared
+  // native implementation. A second detour on the same address would rebuild
+  // the first detour's jump into a broken trampoline, so keep one hook per
+  // target; the shared body funnels both method entries into the same hook.
+  if (set_widget_data && set_widget_data == update_player_title) {
+    spdlog::info("[ChatTitleDisplay] SetWidgetData shares its native implementation with UpdatePlayerTitle; "
+                 "keeping one detour");
+    set_widget_data = nullptr;
+  }
+  if (on_did_bind_context
+      && (on_did_bind_context == update_player_title || on_did_bind_context == set_widget_data)) {
+    spdlog::info("[ChatTitleDisplay] OnDidBindContext shares its native implementation with another target; "
+                 "keeping one detour");
+    on_did_bind_context = nullptr;
+  }
+
   if (update_player_title) {
     SPUD_STATIC_DETOUR(update_player_title, UserProfileWidget_UpdatePlayerTitle_Hook);
   }
