@@ -1,5 +1,5 @@
 // Compile the actual catalog and shared warp/FT models. Only process/config,
-// path, text-modal, logging, parser, and save boundaries are controlled here.
+// path, text-modal, logging, and save boundaries are controlled here.
 #include "config.h"
 #include "defaultconfig.h"
 #include "file.h"
@@ -8,6 +8,7 @@
 #include "settings/settings_search.h"
 #include "settings/text_entry.h"
 #include "settings/upstream_settings.h"
+#include "str_utils.h"
 
 #include <algorithm>
 #include <cctype>
@@ -36,7 +37,7 @@ std::vector<Write>                            writes;
 std::set<std::string>                         registered;
 std::optional<mod_settings::TextEntryRequest> modal;
 bool                                          labelsAvailable = true;
-int                                           labelRefreshes = 0, hudRefreshes = 0, shipRefreshes = 0, parseCalls = 0;
+int                                           labelRefreshes = 0, hudRefreshes = 0, shipRefreshes = 0;
 int                                           queueTrackingResets = 0;
 float                                         previousShipScale = 0, nextShipScale = 0;
 
@@ -105,7 +106,9 @@ std::map<std::string, std::function<Value()>> NativeReads()
       {"control.queue_enabled", [&cfg] { return V(cfg.queue_enabled); }},
       {"control.select_timer", [&cfg] { return V(cfg.select_timer); }},
       {"control.use_scopely_hotkeys", [&cfg] { return V(cfg.use_scopely_hotkeys); }},
+#if _WIN32
       {"graphics.allow_cursor", [&cfg] { return V(cfg.allow_cursor); }},
+#endif
 #if _WIN32
       {"graphics.borderless_fullscreen", [&cfg] { return V(cfg.borderless_fullscreen); }},
 #endif
@@ -129,7 +132,6 @@ std::map<std::string, std::function<Value()>> NativeReads()
       {"graphics.system_zoom_preset_3", [&cfg] { return V(cfg.system_zoom_preset_3); }},
       {"graphics.system_zoom_preset_4", [&cfg] { return V(cfg.system_zoom_preset_4); }},
       {"graphics.system_zoom_preset_5", [&cfg] { return V(cfg.system_zoom_preset_5); }},
-      {"graphics.transition_time", [&cfg] { return V(cfg.transition_time); }},
       {"graphics.ui_scale", [&cfg] { return V(cfg.ui_scale); }},
       {"graphics.ui_scale_ship", [&cfg] { return V(cfg.ui_scale_ship); }},
       {"graphics.ui_scale_step", [&cfg] { return V(cfg.ui_scale_step); }},
@@ -167,7 +169,6 @@ std::map<std::string, std::function<Value()>> NativeReads()
       {"ui.disable_move_keys", [&cfg] { return V(cfg.disable_move_keys); }},
       {"ui.disable_preview_locate", [&cfg] { return V(cfg.disable_preview_locate); }},
       {"ui.disable_preview_recall", [&cfg] { return V(cfg.disable_preview_recall); }},
-      {"ui.disable_toast_banners", [&cfg] { return V(cfg.disable_toast_banners); }},
       {"ui.disable_veil_chat", [&cfg] { return V(cfg.disable_veil_chat); }},
       {"ui.disabled_banner_types", [&cfg] { return V(FormatBannerFilter(cfg.disabled_banner_types)); }},
       {"ui.dock_syncmanagement", [&cfg] { return V(cfg.dock_syncmanagement); }},
@@ -197,14 +198,18 @@ std::map<std::string, std::function<Value()>> NativeReads()
          return V(std::string(
              std::array{"auto", "always", "never"}.at(static_cast<int>(cfg.MissionHudButtonVisibility("q_trials")))));
        }},
+#if defined(_WIN32) && defined(_M_X64)
       {"ui.instant_cargo_counter", [&cfg] { return V(cfg.instant_cargo_counter); }},
+#endif
       {"ui.instant_warp_always_ask",
        [&cfg] { return V(cfg.instant_warp_always_ask_all ? std::string("*") : Join(cfg.instant_warp_always_ask)); }},
       {"ui.instant_warp_auto_jump",
        [&cfg] { return V(cfg.instant_warp_auto_jump_all ? std::string("*") : Join(cfg.instant_warp_auto_jump)); }},
       {"ui.instant_warp_auto_warp",
        [&cfg] { return V(cfg.instant_warp_auto_warp_all ? std::string("*") : Join(cfg.instant_warp_auto_warp)); }},
+#if _WIN32
       {"ui.notify_banner_types", [&cfg] { return V(FormatBannerFilter(cfg.notify_banner_types)); }},
+#endif
       {"ui.officer_sort", [&cfg] { return V(cfg.officer_sort); }},
       {"ui.only_show_first_popup", [&cfg] { return V(cfg.only_show_first_popup); }},
       {"ui.pinned_ships", [&cfg] { return V(Join(cfg.pinned_ships)); }},
@@ -496,8 +501,15 @@ bool RegisterSetting(const char* section, const char* key) noexcept
 void SaveSetting(const char* section, const char* key, config_edit::Value value,
                  std::chrono::milliseconds delay) noexcept
 { fixture::writes.push_back({std::string(section) + "." + key, std::move(value), delay}); }
-mod_settings::SaveStatus GetSaveStatus(const char*, const char*) noexcept
-{ return {mod_settings::SaveState::Saved, fixture::writes.size()}; }
+mod_settings::SaveStatus GetSaveStatus(const char* section, const char* key, const config_edit::Value& current) noexcept
+{
+  const auto name = std::string(section) + "." + key;
+  for (auto it = fixture::writes.rbegin(); it != fixture::writes.rend(); ++it)
+    if (it->key == name)
+      return {it->value == current ? mod_settings::SaveState::Saved : mod_settings::SaveState::SessionOnly,
+              fixture::writes.size()};
+  return {};
+}
 } // namespace runtime_config
 namespace mod_settings
 {
@@ -555,63 +567,6 @@ std::optional<NotificationSound> notification_sound_from_name(std::string_view n
 }
 void notification_audio_play(NotificationSound) {}
 
-// Controlled parser boundaries prove the catalog delegates validation and uses
-// normalized readback. Startup parser correctness is a separate responsibility.
-bool ParseShipFilter(std::string_view input, std::vector<std::string>& names, bool& all)
-{
-  ++fixture::parseCalls;
-  names.clear();
-  all             = false;
-  const auto text = fixture::Trim(input);
-  if (text == "*") {
-    all = true;
-    return true;
-  }
-  if (text.find('*') != text.npos)
-    return false;
-  std::istringstream stream(text);
-  std::string        name;
-  while (std::getline(stream, name, ',')) {
-    name = fixture::Trim(name);
-    if (name.empty())
-      continue;
-    for (auto& c : name)
-      c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
-    names.push_back(name);
-  }
-  return true;
-}
-bool ParseFactionFilter(std::string_view input, std::vector<std::string>& names)
-{
-  ++fixture::parseCalls;
-  names.clear();
-  std::istringstream stream{std::string(input)};
-  std::string        name;
-  while (std::getline(stream, name, ',')) {
-    name = fixture::Lower(fixture::Trim(name));
-    if (name.empty())
-      continue;
-    if (name != "federation" && name != "klingon" && name != "romulan")
-      return false;
-    names.push_back(name);
-  }
-  return true;
-}
-bool ParseBannerFilter(std::string_view input, std::vector<int>& values)
-{
-  ++fixture::parseCalls;
-  values.clear();
-  const auto name = fixture::Lower(fixture::Trim(input));
-  if (name.empty())
-    return true;
-  if (name != "victory")
-    return false;
-  values.push_back(1);
-  return true;
-}
-std::string FormatBannerFilter(const std::vector<int>& values)
-{ return values.empty() ? "" : "Victory"; }
-
 int main(int argc, char** argv)
 {
   using namespace fixture;
@@ -632,9 +587,9 @@ int main(int argc, char** argv)
       Require(expected.emplace(row.at("key").get<std::string>(), row).second, "duplicate inventory key");
     }
 #if _WIN32
-    Require(expected.size() == 89, "Windows catalog count changed without a coverage decision");
+    Require(expected.size() == 87, "Windows catalog count changed without a coverage decision");
 #else
-    Require(expected.size() == 87, "macOS catalog count changed without a coverage decision");
+    Require(expected.size() == 82, "macOS catalog count changed without a coverage decision");
 #endif
     const auto reads = NativeReads();
     Require(reads.size() == expected.size(), "native field map missing an inventory key");
@@ -716,7 +671,104 @@ int main(int argc, char** argv)
     models.at("control.queue_enabled").reset();
     models.at("control.kirshara_fixes").reset();
     Require(queueTrackingResets == 4, "unchanged queue defaults unnecessarily invalidated recovery tracking");
-    Require(labelRefreshes > 0 && hudRefreshes > 0 && parseCalls > 0, "native refresh/parser boundaries were bypassed");
+    Require(labelRefreshes > 0 && hudRefreshes > 0, "native refresh/parser boundaries were bypassed");
+
+    // Exercise actual dependency combinations rather than assuming a catalog
+    // control's owner from its name or its Config field.
+    auto withFlags = [&](std::initializer_list<std::pair<bool Config::*, bool>> flags, auto check) {
+      std::vector<std::pair<bool Config::*, bool>> originals;
+      for (const auto& [member, value] : flags) {
+        originals.emplace_back(member, Config::Get().*member);
+        Config::Get().*member = value;
+      }
+      check();
+      for (const auto& [member, value] : originals)
+        Config::Get().*member = value;
+    };
+    withFlags({{&Config::installMiscPatches, false}, {&Config::installTempCrashFixes, true}}, [&] {
+      Require(models.at("ui.only_show_first_popup").available()
+                  && models.at("ui.always_skip_reveal_sequence").available(),
+              "temporary hooks wrongly depend on Misc");
+    });
+    withFlags({{&Config::installMiscPatches, true}, {&Config::installTempCrashFixes, false}}, [&] {
+      Require(!models.at("ui.only_show_first_popup").available()
+                  && !models.at("ui.always_skip_reveal_sequence").available(),
+              "disabled temporary hooks advertised");
+    });
+    withFlags({{&Config::installPinnedShipSortHooks, false}}, [&] {
+      Require(!models.at("ui.pinned_ships").available(), "disabled sort editor advertised");
+      writes.clear();
+      Require(PersistCurrentSetting("ui", "pinned_ships") && writes.size() == 1
+                  && writes.back().key == "ui.pinned_ships",
+              "native pin save incorrectly depends on sort/UI");
+    });
+    withFlags(
+        {{&Config::installHotkeyHooks, false}, {&Config::installZoomHooks, true}, {&Config::installPanHooks, true}},
+        [&] {
+          Require(models.at("control.hotkeys_enabled").available() && models.at("control.hotkeys_extended").available()
+                      && models.at("control.use_scopely_hotkeys").available()
+                      && models.at("ui.disable_move_keys").available(),
+                  "independent camera owners ignored");
+        });
+    withFlags({{&Config::installPanHooks, false}},
+              [&] { Require(!models.at("ui.disable_move_keys").available(), "disabled pan owner advertised"); });
+    withFlags({{&Config::installLoadingScreenHooks, false}, {&Config::installTransitionScreenHooks, true}}, [&] {
+      Require(models.at("graphics.loader_image").available() && models.at("graphics.loader_logo_scale").available(),
+              "shared transition assets incorrectly depend on loading hooks");
+    });
+    withFlags({{&Config::installHotkeyHooks, false},
+               {&Config::installQueueAddressGuardHooks, false},
+               {&Config::installActionQueueRecoveryHooks, false},
+               {&Config::installThinQueueProtectionHooks, false},
+               {&Config::installTestPatches, true}},
+              [&] {
+                Require(models.at("control.queue_enabled").available()
+                            && !models.at("control.kirshara_fixes").available(),
+                        "queue/protection owners conflated");
+              });
+
+    // The same production parsers serve startup and the exact editor.
+    const std::string bounded = "AbC suffix";
+    Require(AsciiStrToUpper(std::string_view(bounded).substr(0, 3)) == "ABC"
+                && AsciiStrToLower(std::string_view(bounded).substr(0, 3)) == "abc",
+            "case helpers ignored view bounds");
+    auto edit = [&](const std::string& key, const std::string& text) {
+      models.at(key).exact->invoke(0);
+      Require(modal && modal->validate(text).empty() && modal->commit(text), "production parser rejected " + text);
+      modal.reset();
+    };
+    edit("ui.daily_bulk_claim_factions", " federation ,klingon ,romulan ");
+    Require(Config::Get().daily_bulk_claim_factions == std::vector<std::string>({"federation", "klingon", "romulan"}),
+            "faction whitespace normalization failed");
+    models.at("ui.daily_bulk_claim_factions").reset();
+    edit("ui.disabled_banner_types", "VICTORY ,DEFEAT ");
+    Require(FormatBannerFilter(Config::Get().disabled_banner_types) == "Victory, Defeat", "banner parsing failed");
+    models.at("ui.disabled_banner_types").reset();
+    edit("ui.instant_warp_auto_jump", " * ");
+    Require(Config::Get().instant_warp_auto_jump_all, "trimmed wildcard was not recognized");
+    models.at("ui.instant_warp_auto_jump").reset();
+    edit("ui.extend_chest_purchase_max", "0");
+    Require(Config::Get().extend_chest_purchase_max == DefaultConfig::UI::extend_chest_purchase_max,
+            "restart chest setting changed active hook behavior");
+    Require(std::get<std::int64_t>(writes.back().value) == 0, "documented disabled value was not saved");
+    models.at("ui.extend_chest_purchase_max").reset();
+    edit("graphics.system_zoom_preset_1", "1000");
+    Require(models.at("graphics.system_zoom_preset_1").exact->status() == "Applied and saved", "preset save missing");
+    Config::Get().system_zoom_preset_1 = 2000; // Same mutation made by the explicit StoreZoom shortcut.
+    Require(models.at("graphics.system_zoom_preset_1").exact->status() == "Applied for this session; not saved",
+            "old saved badge described a different preset");
+    Require(PersistCurrentSetting("graphics", "system_zoom_preset_1") && std::get<double>(writes.back().value) == 2000,
+            "explicit preset save bypassed its canonical serializer");
+    Require(models.at("graphics.system_zoom_preset_1").exact->status() == "Applied and saved", "preset status stale");
+    models.at("graphics.system_zoom_preset_1").reset();
+    edit("graphics.default_system_zoom", "1000");
+    const auto beforeAutomatic        = writes.size();
+    Config::Get().default_system_zoom = 2000; // Automatic use-presets-as-default remains session-only.
+    Require(models.at("graphics.default_system_zoom").exact->status() == "Applied for this session; not saved"
+                && writes.size() == beforeAutomatic,
+            "automatic session default was saved or mislabeled");
+    models.at("graphics.default_system_zoom").reset();
+    Require(ReadAll(reads) == defaults, "parser/restart regression did not restore baseline");
 
     auto invalid = [&](const std::string& key, const std::string& text) {
       auto* action = models.at(key).exact;

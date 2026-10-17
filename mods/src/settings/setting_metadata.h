@@ -7,7 +7,7 @@
 namespace mod_settings
 {
 enum class ApplyTiming { Live, ReopenView, Restart };
-enum class SaveState { None, Pending, Saved, Conflict, Failed, Unavailable };
+enum class SaveState { None, Pending, Saved, Conflict, Failed, Unavailable, SessionOnly };
 struct SaveStatus {
   SaveState     state                               = SaveState::None;
   std::uint64_t revision                            = 0;
@@ -30,6 +30,8 @@ struct PreparedSettingAction {
 inline const char* SaveStatusText(SaveStatus status)
 {
   switch (status.state) {
+    case SaveState::SessionOnly:
+      return "Applied for this session; not saved";
     case SaveState::Pending:
       return "Saving...";
     case SaveState::Saved:

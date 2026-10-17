@@ -127,8 +127,10 @@ namespace
     auto result = PersistedDefinition(
         std::move(definition), {section, key, help, unit, timing}, std::move(defaultValue), std::move(serializer),
         std::is_floating_point_v<T> ? std::chrono::milliseconds(250) : std::chrono::milliseconds{});
-    currentSavers.insert_or_assign(result.metadata.TomlKey(), [read, available, persist = result.persist] {
-      if (!available() || !persist)
+    // A native action already admitted the mutation. Its save does not depend
+    // on whether the corresponding editor/sorting feature is available.
+    currentSavers.insert_or_assign(result.metadata.TomlKey(), [read, persist = result.persist] {
+      if (!persist)
         return false;
       persist(read());
       return true;
@@ -389,6 +391,10 @@ namespace
       return ParseFactionFilter(text, values) ? std::optional{Join(values)} : std::nullopt;
     });
     for (const bool notify : {false, true}) {
+#if !_WIN32
+      if (notify)
+        continue; // Native notification filtering consumes this list only on Windows.
+#endif
       auto setting = Keep<ValueSetting<std::string>>(MakeDefinition<std::string>(
           "ui", notify ? "notify_banner_types" : "disabled_banner_types",
           notify ? "Banners allowed to notify" : "Hidden banner types",
@@ -435,13 +441,26 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   constexpr float positive    = std::numeric_limits<float>::min();
   constexpr float largest     = std::numeric_limits<float>::max();
   constexpr int   integer     = std::numeric_limits<int>::max();
-  const Available always      = [] { return true; };
   namespace C                 = DefaultConfig::Control;
   namespace G                 = DefaultConfig::Graphics;
   namespace U                 = DefaultConfig::UI;
   namespace B                 = DefaultConfig::Buffs;
   const auto      hotkeys     = Hook(&Config::installHotkeyHooks);
   const auto      zoom        = Hook(&Config::installZoomHooks);
+  const auto      pan         = Hook(&Config::installPanHooks);
+  const Available controls    = [hotkeys, zoom, pan] { return hotkeys() || zoom() || pan(); };
+  const Available extended    = [hotkeys, zoom] { return hotkeys() || zoom(); };
+  const Available protections = [] {
+    const auto& config  = Config::Get();
+    bool        enabled = config.installQueueAddressGuardHooks;
+#if defined(_WIN32) && defined(_M_X64)
+    enabled = enabled || config.installActionQueueRecoveryHooks || config.installThinQueueProtectionHooks;
+#endif
+    return enabled;
+  };
+  const Available queue = [hotkeys, protections] {
+    return hotkeys() || protections() || Config::Get().installTestPatches;
+  };
   const Available fleetLabels = [zoom] { return zoom() && FleetLabelControlsAvailable(); };
   const auto      scale       = Hook(&Config::installUiScaleHooks);
   const auto      misc        = Hook(&Config::installMiscPatches);
@@ -469,19 +488,19 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   Number(catalog, "community_mod." page, section, key, label, &Config::member, decltype(Config::member)(def), hook,    \
          Timing::timing, help, unit, decltype(Config::member)(low), decltype(Config::member)(high), slider, step)
 
-  BOOL("controls", "control", "hotkeys_enabled", "Enable mod shortcuts", hotkeys_enabled, C::hotkeys_enabled, hotkeys,
+  BOOL("controls", "control", "hotkeys_enabled", "Enable mod shortcuts", hotkeys_enabled, C::hotkeys_enabled, controls,
        Live, "Use the mod's configured keyboard and mouse shortcuts.");
   BOOL("controls", "control", "hotkeys_extended", "Extended shortcut actions", hotkeys_extended, C::hotkeys_extended,
-       hotkeys, Restart,
+       extended, Restart,
        "Enable the extended set of mod shortcut actions. Restart to change their startup availability.");
   BOOL("controls", "control", "use_scopely_hotkeys", "Use native game shortcuts", use_scopely_hotkeys,
-       C::use_scopely_hotkeys, hotkeys, Restart,
+       C::use_scopely_hotkeys, controls, Restart,
        "The game uses its own shortcuts instead of the mod's shortcut bindings.");
   Boolean(catalog, "community_mod.controls", "control", "queue_enabled", "Enable action queue", &Config::queue_enabled,
-          C::queue_enabled, hotkeys, Timing::Live, "Allow queued actions from the mod's queue shortcut.",
+          C::queue_enabled, queue, Timing::Live, "Allow queued actions from the mod's queue shortcut.",
           ResetQueueRecoveryTracking);
   Boolean(catalog, "community_mod.controls", "control", "kirshara_fixes", "Kirshara queue protections",
-          &Config::kirshara_fixes, C::kirshara_fixes, always, Timing::Live,
+          &Config::kirshara_fixes, C::kirshara_fixes, protections, Timing::Live,
           "Protect and recover queued actions when targets or addresses change.", ResetQueueRecoveryTracking);
   BOOL("controls", "control", "primary_requires_visible_target", "Require visible primary target",
        primary_requires_visible_target, C::primary_requires_visible_target, hotkeys, Live,
@@ -499,8 +518,6 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
       "distance", 0, largest, 6000, 250);
   NUM("camera", "graphics", "default_system_zoom", "Default system zoom", default_system_zoom, G::default_system_zoom,
       zoom, Live, "Camera distance used by reset/default zoom.", "distance", 0, largest, 6000, 50);
-  NUM("camera", "graphics", "transition_time", "Camera transition time", transition_time, G::transition_time, zoom,
-      Live, "Duration of camera zoom transitions.", "s", 0, largest, 2, .01f);
   NUM("camera", "graphics", "system_pan_momentum_falloff", "Pan glide", system_pan_momentum_falloff,
       G::system_pan_momentum_falloff, Hook(&Config::installPanHooks), Live,
       "Retained motion per pan update. Higher values glide longer; values below 1 eventually stop.", "ratio", 0,
@@ -531,9 +548,10 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   NUM("interface", "graphics", "fr_scale", "Planet backdrop scale", fr_scale, G::fr_scale, zoom, Restart,
       "Multiplier for the system planet backdrop. Restart avoids rescaling an already modified transform.",
       "multiplier", positive, largest, 4, .1f);
-  BOOL("interface", "graphics", "allow_cursor", "Allow cursor changes", allow_cursor, G::allow_cursor, scale, Live,
-       "Allow the game to update the mouse cursor.");
 #if _WIN32
+  BOOL("interface", "graphics", "allow_cursor", "Allow cursor changes", allow_cursor, G::allow_cursor,
+       ([] { return Config::Get().installUiScaleHooks || Config::Get().installTestPatches; }), Live,
+       "Allow the game to update the mouse cursor.");
   BOOL("interface", "graphics", "free_resize", "Free window resizing", free_resize, G::free_resize,
        Hook(&Config::installFreeResizeHooks), Restart, "Allow arbitrary window sizes on Windows.");
   BOOL("interface", "graphics", "borderless_fullscreen", "Borderless fullscreen", borderless_fullscreen,
@@ -548,9 +566,10 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
       "Zero disables double-tap. Otherwise two Escape presses within this interval may open the exit prompt.", "ms", 0,
       integer, 0, 1);
   BOOL("interface", "ui", "disable_move_keys", "Disable keyboard movement", disable_move_keys, U::disable_move_keys,
-       hotkeys, Live, "Disable map movement using configured movement shortcuts.");
+       Hook(&Config::installPanHooks), Live, "Disable map movement using configured movement shortcuts.");
   BOOL("interface", "ui", "only_show_first_popup", "Show only the first startup popup", only_show_first_popup,
-       U::only_show_first_popup, misc, Live, "Suppress additional startup interstitial popups in this session.");
+       U::only_show_first_popup, Hook(&Config::installTempCrashFixes), Live,
+       "Suppress additional startup interstitial popups in this session.");
 
   BOOL("travel", "graphics", "galactic_anomaly_timer", "Galactic Anomaly timer", galactic_anomaly_timer,
        G::galactic_anomaly_timer, Hook(&Config::installGalacticAnomalyTimerHooks), Live,
@@ -571,9 +590,11 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
        Live, "Automatically show cargo for hostiles.");
   BOOL("previews", "ui", "show_armada_cargo", "Armada cargo", show_armada_cargo, U::show_armada_cargo, hotkeys, Live,
        "Automatically show cargo for Armada targets.");
+#if defined(_WIN32) && defined(_M_X64)
   BOOL("previews", "ui", "instant_cargo_counter", "Instant ship cargo counter", instant_cargo_counter,
        U::instant_cargo_counter, Hook(&Config::installInstantCargoCounterHooks), Live,
        "Remove the animation delay from supported ship cargo counters.");
+#endif
   BOOL("previews", "ui", "format_cargo_values", "Format cargo values", format_cargo_values, U::format_cargo_values,
        Hook(&Config::installCargoFormatHooks), Restart,
        "Use the configured decimal precision for abbreviated cargo numbers.");
@@ -589,7 +610,8 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
        Hook(&Config::installDailyFactionBulkClaimHooks), Restart,
        "Enable the daily faction Claim All toggle when first initialized in a session.");
   BOOL("claims", "ui", "always_skip_reveal_sequence", "Skip reward reveal sequences", always_skip_reveal_sequence,
-       U::always_skip_reveal_sequence, misc, Live, "Skip the animated reward reveal and show the summary directly.");
+       U::always_skip_reveal_sequence, Hook(&Config::installTempCrashFixes), Live,
+       "Skip the animated reward reveal and show the summary directly.");
   catalog.AddBoolean("community_mod.claims", ForbiddenTechConfirmationSetting());
   BOOL("claims", "ui", "auto_confirm_reveal_ability", "Automatically confirm Excelsior reveal",
        auto_confirm_reveal_ability, U::auto_confirm_reveal_ability, Hook(&Config::installRevealConfirmationHooks), Live,
@@ -598,8 +620,10 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
        U::disable_exchange_all, Hook(&Config::installArtifactExchangeHooks), ReopenView,
        "Hide Exchange All in the artifact popup. Reopen the popup after changing this.");
   NUM("claims", "ui", "extend_chest_purchase_max", "Maximum chest quantity", extend_chest_purchase_max,
-      U::extend_chest_purchase_max, misc, ReopenView,
-      "Extended purchase/claim quantity limit in supported chest dialogs.", "chests", 1, integer, 0, 1);
+      U::extend_chest_purchase_max, misc, Restart,
+      "Zero disables the extension. The effective extension is capped at 160; higher native limits are preserved. "
+      "Restart after changing this value.",
+      "chests", 0, integer, 0, 1);
   BOOL("claims", "ui", "extend_donation_slider", "Extend donation slider", extend_donation_slider,
        U::extend_donation_slider, misc, ReopenView,
        "Use the extended donation quantity limit in supported donation dialogs.");
@@ -619,8 +643,8 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   BOOL("officers", "ui", "dock_syncmanagement", "Keep dock selection in sync", dock_syncmanagement,
        U::dock_syncmanagement, hotkeys, Live, "Keep dock and Manage Ships selections aligned.");
   BOOL("officers", "buffs", "use_out_of_dock_power", "Use out-of-dock power", use_out_of_dock_power,
-       B::use_out_of_dock_power, Hook(&Config::installBuffFixHooks), Live,
-       "Use deployed-ship power calculations for supported power displays.");
+       B::use_out_of_dock_power, Hook(&Config::installBuffFixHooks), Restart,
+       "Use deployed-ship power calculations for supported power displays. Restart after changing this value.");
   BOOL("officers", "ui", "reverse_haven_history", "Newest Haven help first", reverse_haven_history,
        U::reverse_haven_history, Hook(&Config::installHavenHistoryHooks), ReopenView,
        "Reverse Haven help history into newest-first order when the list refreshes.");
@@ -634,9 +658,6 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
        Hook(&Config::installChatPatches), Restart, "Disable galaxy chat tabs and preview messages.");
   BOOL("chat", "ui", "disable_veil_chat", "Disable Veil chat", disable_veil_chat, U::disable_veil_chat,
        Hook(&Config::installChatPatches), Restart, "Disable Veil chat tabs and preview messages where available.");
-  BOOL("notifications", "ui", "disable_toast_banners", "Hide toast banners", disable_toast_banners,
-       U::disable_toast_banners, toast, Live,
-       "Hide supported game toast banners; per-type exceptions can be configured below.");
 #undef BOOL
 #undef NUM
 
@@ -760,16 +781,18 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   Boolean(catalog, "community_mod.loading", "graphics", "loader_tip_enabled", "Loading tips",
           &Config::loader_tip_enabled, G::loader_tip_enabled, Hook(&Config::installLoadingTipHooks), Timing::Restart,
           "Show custom tips on supported loading screens.");
-  Number(catalog, "community_mod.loading", "graphics", "loader_logo_scale", "Loading logo scale",
-         &Config::loader_logo_scale, static_cast<float>(G::loader_logo_scale), loading, Timing::Restart,
-         "Multiplier for the loading-screen logo.", "multiplier", positive, largest, 3, .1f);
+  Number(
+      catalog, "community_mod.loading", "graphics", "loader_logo_scale", "Loading logo scale",
+      &Config::loader_logo_scale, static_cast<float>(G::loader_logo_scale),
+      [loading, transition] { return loading() || transition(); }, Timing::Restart,
+      "Multiplier for the loading-screen logo.", "multiplier", positive, largest, 3, .1f);
   auto image = Keep<ValueSetting<std::string>>(MakeDefinition<std::string>(
       "graphics", "loader_image", "Loading image path", G::loader_image, [] { return Config::Get().loader_image; },
       [](const std::string& value) {
         Config::Get().loader_image = value;
         return true;
       },
-      loading, Timing::Restart,
+      [loading, transition] { return loading() || transition(); }, Timing::Restart,
       "Path to an image readable by the game. Empty uses the embedded fallback. This does not move or copy the "
       "image."));
   ExactEntry(catalog, "community_mod.loading", image, [](std::string_view value) -> std::optional<std::string> {
@@ -809,12 +832,14 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   Information(catalog, "community_mod.advanced", "community_mod.configuration.experimental",
               "Experimental shortcut options", [] {
                 return "control.enable_experimental controls startup availability of experimental shortcuts. "
-                       "Enable it in TOML and restart. graphics.system_pan_momentum is a legacy input with no "
-                       "current gameplay consumer; pan glide uses system_pan_momentum_falloff.";
+                       "Enable it in TOML and restart. graphics.system_pan_momentum, graphics.transition_time and "
+                       "ui.disable_toast_banners are legacy inputs with no current gameplay consumer. "
+                       "Pan glide uses system_pan_momentum_falloff; banner suppression uses disabled_banner_types.";
               });
 #if !defined(_WIN32)
   Information(catalog, "community_mod.advanced", "community_mod.configuration.windows", "Windows window options", [] {
-    return "graphics.free_resize and graphics.borderless_fullscreen apply only to the Windows client.";
+    return "graphics.free_resize, graphics.borderless_fullscreen, graphics.allow_cursor, ui.instant_cargo_counter "
+           "and ui.notify_banner_types have Windows-only consumers and are not offered on this client.";
   });
 #endif
 }

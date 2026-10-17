@@ -22,10 +22,12 @@ ValueDefinition<T> PersistedDefinition(ValueDefinition<T> definition, SettingMet
   definition.default_value = std::move(default_value);
   const auto section       = definition.metadata.section;
   const auto key           = definition.metadata.key;
-  definition.persist       = [section, key, serialize = std::move(serialize), delay](const T& value) {
+  definition.persist       = [section, key, serialize, delay](const T& value) {
     runtime_config::SaveSetting(section.c_str(), key.c_str(), serialize(value), delay);
   };
-  definition.save_status = [section, key] { return runtime_config::GetSaveStatus(section.c_str(), key.c_str()); };
+  definition.save_status = [section, key, serialize = std::move(serialize)](const T& value) {
+    return runtime_config::GetSaveStatus(section.c_str(), key.c_str(), serialize(value));
+  };
   return definition;
 }
 

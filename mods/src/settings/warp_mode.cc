@@ -46,12 +46,6 @@ ChoiceSetting& WarpModeSetting()
   return setting;
 }
 
-bool SetWarpMode(InstantWarpConfirmation desired)
-{
-  auto&      setting = WarpModeSetting().state();
-  const auto result  = setting.SetFromUser(static_cast<int>(desired), setting.Observe());
-  return result.outcome == Outcome::AppliedVerified || result.outcome == Outcome::Unchanged;
-}
 void CycleWarpMode()
 {
   auto&      setting  = WarpModeSetting().state();

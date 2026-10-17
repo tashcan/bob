@@ -22,10 +22,14 @@ void SaveSetting(const char* section, const char* key, config_edit::Value value,
   values.insert_or_assign(Key{section, key}, std::move(value));
   ++saves;
 }
-mod_settings::SaveStatus GetSaveStatus(const char* section, const char* key) noexcept
+mod_settings::SaveStatus GetSaveStatus(const char* section, const char* key, const config_edit::Value& current) noexcept
 {
-  return values.contains(Key{section, key}) ? mod_settings::SaveStatus{mod_settings::SaveState::Saved, saves}
-                                            : mod_settings::SaveStatus{};
+  const auto found = values.find(Key{section, key});
+  return found != values.end()
+             ? mod_settings::SaveStatus{found->second == current ? mod_settings::SaveState::Saved
+                                                                 : mod_settings::SaveState::SessionOnly,
+                                        saves}
+             : mod_settings::SaveStatus{};
 }
 } // namespace runtime_config
 
@@ -48,6 +52,9 @@ int main()
   assert(std::get<bool>(values.at(Key("ui", "disable_feature"))));
   assert(setting.metadata().TomlKey() == "ui.disable_feature");
   assert(setting.save_status().state == SaveState::Saved);
+  current = true; // A native mutation before this controller observes is not the acknowledged value.
+  assert(setting.save_status().state == SaveState::SessionOnly);
+  current = false;
   assert(setting.Reset(setting.Observe()).outcome == Outcome::AppliedVerified);
   assert(!std::get<bool>(values.at(Key("ui", "disable_feature"))));
 
@@ -60,6 +67,18 @@ int main()
                                 }},
                                {"control", "number"}, 2, std::chrono::milliseconds(150)));
   assert(numeric.SetFromUser(3, numeric.Observe()).outcome == Outcome::AppliedVerified);
+  auto mirrorDefinition =
+      PersistedDefinition<int>({"mirror", "Number mirror", [&] { return ValueReadResult<int>::Known(number, 1); },
+                                [&](int value, std::uint64_t) {
+                                  number = value;
+                                  return ApplyResult::Applied;
+                                }},
+                               {"control", "number"}, 2);
+  ValueSetting<int> mirror(std::move(mirrorDefinition));
+  assert(mirror.save_status().state == SaveState::Saved);
+  number = 4;
+  assert(numeric.save_status().state == SaveState::SessionOnly && mirror.save_status().state == SaveState::SessionOnly);
+  assert(numeric.status_text() == "Applied for this session; not saved");
   assert(std::get<std::int64_t>(values.at(Key("control", "number"))) == 3);
   assert(registrations.size() == 2); // No independent permitted-key whitelist.
   bool invalid = false;

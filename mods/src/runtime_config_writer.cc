@@ -49,7 +49,7 @@ std::uint64_t RuntimeConfigWriter::Submit(std::string section, std::string key, 
                             Pending{++revision_,
                                     {std::move(section), std::move(key), saved->second.value, std::move(desired)},
                                     std::chrono::steady_clock::now() + delay});
-  saved->second.status = {revision_, saved->second.status.outcome, true, true};
+  saved->second.status = {revision_, saved->second.status.outcome, true, true, pending_.at(identity).edit.desired};
   ++status_sequence_;
   has_work_.store(true);
   if (!worker_.joinable()) {
@@ -60,7 +60,7 @@ std::uint64_t RuntimeConfigWriter::Submit(std::string section, std::string key, 
       has_work_.store(false);
       completion_          = {revision_, Outcome::IoError};
       saved->second.failed = true;
-      saved->second.status = {revision_, Outcome::IoError, false, true};
+      saved->second.status = {revision_, Outcome::IoError, false, true, saved->second.status.subject};
       ++status_sequence_;
       has_failures_.store(true);
       return 0;
@@ -81,7 +81,7 @@ void RuntimeConfigWriter::Stop(bool cancel_pending)
     for (const auto& [identity, pending] : pending_) {
       auto& saved = saved_.at(identity);
       if (saved.status.revision == pending.revision) {
-        saved.status = {pending.revision, Outcome::Cancelled, false, true};
+        saved.status = {pending.revision, Outcome::Cancelled, false, true, pending.edit.desired};
         saved.failed = true;
       }
     }
@@ -130,7 +130,7 @@ void RuntimeConfigWriter::Run()
           for (const auto& [identity, pending] : pending_) {
             auto& saved = saved_.at(identity);
             if (saved.status.revision == pending.revision) {
-              saved.status = {pending.revision, Outcome::Cancelled, false, true};
+              saved.status = {pending.revision, Outcome::Cancelled, false, true, pending.edit.desired};
               saved.failed = true;
             }
           }
@@ -176,7 +176,7 @@ void RuntimeConfigWriter::Run()
       if (status.revision == work.revision || status.pending)
         saved_state.failed = outcome != Outcome::Saved && outcome != Outcome::AlreadySaved;
       if (status.revision == work.revision)
-        status = {work.revision, outcome, false, true};
+        status = {work.revision, outcome, false, true, work.edit.desired};
       ++status_sequence_;
       has_failures_.store(
           std::any_of(saved_.begin(), saved_.end(), [](const auto& entry) { return entry.second.failed; }));

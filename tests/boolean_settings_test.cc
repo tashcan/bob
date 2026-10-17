@@ -46,15 +46,9 @@ int main()
 {
   {
     Fake            f;
-    BooleanRegistry registry;
-    CHECK(registry.Register(f.definition()) == Registration::Added);
-    CHECK(registry.Register(f.definition()) == Registration::Duplicate);
-    CHECK(registry.Register({}) == Registration::Invalid);
+    BooleanSetting  setting(f.definition());
     CHECK(f.reads == 0 && f.writes == 0); // Construction schedules no work.
-    auto* s = registry.Find("test.confirm");
-    CHECK(s);
-    CHECK(registry.Register(f.definition("late")) == Registration::Frozen);
-    CHECK(!registry.Find("missing"));
+    auto* s       = &setting;
     auto initial = s->Observe();
     CHECK(initial.state.known() && !*initial.state.value);
     CHECK(s->SetFromUser(false, initial).outcome == Outcome::Unchanged);
@@ -189,6 +183,5 @@ int main()
     other.join();
     CHECK(rejected && f.reads == 0);
   }
-  std::cout
-      << "PASS boolean settings: registration, readback, failure, refresh, reentry, generation and thread contracts\n";
+  std::cout << "PASS boolean settings: readback, failure, refresh, reentry, generation and thread contracts\n";
 }

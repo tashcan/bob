@@ -37,7 +37,7 @@ template <typename T> struct ValueDefinition {
   std::optional<T>                             default_value;
   // Called only for an explicit, verified user intent, never by Observe/render.
   std::function<void(const T&)> persist;
-  std::function<SaveStatus()>   save_status;
+  std::function<SaveStatus(const T&)> save_status;
   // Restart-only adapters expose their still-active value independently from
   // the requested value returned by read.
   std::function<std::optional<T>()> active_value;
@@ -76,13 +76,16 @@ public:
   { return definition_.metadata; }
   const std::optional<T>& default_value() const
   { return definition_.default_value; }
-  SaveStatus save_status() const
+  SaveStatus save_status()
   {
     CheckThread();
-    if (persistence_failed_)
-      return {SaveState::Unavailable};
     try {
-      return definition_.save_status ? definition_.save_status() : SaveStatus{};
+      const auto current = Observe();
+      if (!current.state.known())
+        return {};
+      if (persistence_failed_ && *persistence_failed_ == *current.state.value)
+        return {SaveState::Unavailable};
+      return definition_.save_status ? definition_.save_status(*current.state.value) : SaveStatus{};
     } catch (...) {
       return {SaveState::Unavailable};
     }
@@ -112,6 +115,9 @@ public:
     const bool  pending_restart = restart_pending();
     std::string text;
     switch (status.state) {
+      case SaveState::SessionOnly:
+        text = "Applied for this session; not saved";
+        break;
       case SaveState::Pending:
         text = restart ? "Saving..." : "Applied; saving...";
         break;
@@ -292,9 +298,9 @@ private:
     try {
       if (definition_.persist)
         definition_.persist(value);
-      persistence_failed_ = false;
+      persistence_failed_.reset();
     } catch (...) {
-      persistence_failed_ = true;
+      persistence_failed_ = value;
     }
   }
   void NotifyChanged()
@@ -320,7 +326,7 @@ private:
   unsigned                                 render_depth_       = 0;
   bool                                     applying_           = false;
   bool                                     observing_          = false;
-  bool                                     persistence_failed_ = false;
+  std::optional<T>                         persistence_failed_;
   void (*change_observer_)()                                   = nullptr;
 };
 

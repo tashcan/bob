@@ -102,11 +102,13 @@ int main()
       AwaitSave();
       Check(writer.HasWork());
       Check(writer.GetStatus("ui", "auto_confirm_instant_warp").pending);
+      Check(writer.GetStatus("ui", "auto_confirm_instant_warp").subject == Value{std::string("warp")});
       const auto status_sequence = writer.StatusSequence();
       // A duplicated definition never replaces the acknowledged comparison base.
       Check(writer.Register("ui", "auto_confirm_instant_warp", std::string("external")));
       Check(writer.Submit("ui", "auto_confirm_instant_warp", std::string("jump")) == 2);
       Check(writer.Submit("ui", "auto_confirm_instant_warp", std::string("none")) == 3);
+      Check(writer.GetStatus("ui", "auto_confirm_instant_warp").subject == Value{std::string("none")});
       writer.Stop(false);
       Check(!writer.PollStopped());
       Check(writer.Submit("ui", "auto_confirm_instant_warp", std::string("warp")) == 0);
@@ -127,6 +129,7 @@ int main()
       Check(writer.LastCompletion().outcome == Outcome::Saved);
       const auto status = writer.GetStatus("ui", "auto_confirm_instant_warp");
       Check(status.revision == 3 && !status.pending && status.outcome == Outcome::Saved);
+      Check(status.subject == Value{std::string("none")}); // Older in-flight warp cannot label the latest value.
       Check(writer.StatusSequence() > status_sequence);
     }
     Begin(Outcome::Saved);
@@ -150,6 +153,7 @@ int main()
       Check(requests.size() == 1);
       Check(writer.LastCompletion().revision == 2);
       Check(writer.LastCompletion().outcome == Outcome::Cancelled);
+      Check(writer.GetStatus("ui", "auto_confirm_instant_warp").subject == Value{std::string("jump")});
       writer.Stop(true);
     }
     Begin(Outcome::IoError);
@@ -178,6 +182,7 @@ int main()
       fail_thread_start = true;
       Check(!writer.Submit("ui", "auto_confirm_instant_warp", std::string("warp")));
       Check(writer.HasFailure("ui", "auto_confirm_instant_warp") && writer.HasFailures() && !writer.HasWork());
+      Check(writer.GetStatus("ui", "auto_confirm_instant_warp").subject == Value{std::string("warp")});
       Check(!writer.HasFailure("other", "unregistered"));
       const auto retry = writer.Submit("ui", "auto_confirm_instant_warp", std::string("jump"));
       AwaitSave();

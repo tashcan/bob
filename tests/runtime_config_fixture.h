@@ -27,13 +27,15 @@ struct RuntimeConfigWriter {
     std::uint64_t revision = 0;
     Outcome       outcome  = Outcome::AlreadySaved;
     bool          pending = false, registered = true;
+    std::optional<Value> subject;
   };
   std::uint64_t StatusSequence() const
   { return submissions; }
   bool Register(std::string, std::string, std::optional<Value>)
   { return !stopped; }
   Status GetStatus(std::string_view, std::string_view) const
-  { return {submissions, failures ? Outcome::IoError : Outcome::Saved, work, true}; }
+  { return {submissions, failures ? Outcome::IoError : Outcome::Saved, work, true, desired}; }
+  std::optional<Value> desired;
   bool failures = false;
   bool HasFailures() const
   { return failures; }
@@ -72,8 +74,11 @@ struct RuntimeConfigWriter {
   { return handle; }
   unsigned Submit(const char*)
   { return stopped || failures ? 0 : ++submissions; }
-  unsigned Submit(const char*, const char*, Value, std::chrono::milliseconds)
-  { return Submit(""); }
+  unsigned Submit(const char*, const char*, Value value, std::chrono::milliseconds)
+  {
+    desired = std::move(value);
+    return Submit("");
+  }
 };
 } // namespace config_edit
 

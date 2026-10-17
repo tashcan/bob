@@ -36,7 +36,7 @@ int main()
     ++saves;
     boolean_save.state = SaveState::Pending;
   };
-  boolean.save_status = [&] { return boolean_save; };
+  boolean.save_status = [&](bool) { return boolean_save; };
   BooleanSetting         toggle(std::move(boolean));
   ValueDefinition<float> numeric{
       "number", "Number",
@@ -52,7 +52,7 @@ int main()
     ++saves;
     numeric_save.state = SaveState::Pending;
   };
-  numeric.save_status = [&] { return numeric_save; };
+  numeric.save_status = [&](float) { return numeric_save; };
   ValueSetting<float> canonical(numeric);
   SliderSetting       slider(std::move(numeric), 0, 1, 0.01f, [] { return true; });
 
@@ -133,5 +133,9 @@ int main()
   auto* numeric_details = std::get<ActionSetting*>(page->items[3]);
   numeric_details->invoke(0);
   assert(editor->commit("") && number == 0.5f && writes == 3 && saves == 4);
+  boolean_save.state = SaveState::SessionOnly;
+  assert(boolean_retry->Read(0).visible && boolean_retry->Read(0).button == "Save current value");
+  boolean_retry->invoke(0);
+  assert(saves == 5 && writes == 3 && boolean_save.state == SaveState::Pending);
   std::cout << "Maintenance browse/dedup/reset/stale-session/per-key retry fixtures passed\n";
 }

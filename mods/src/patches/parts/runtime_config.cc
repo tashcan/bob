@@ -43,7 +43,7 @@ bool                       reported_save_failure    = false;
 std::uint64_t              reported_status_sequence = 0;
 std::atomic<std::uint64_t> adapter_status_sequence{0};
 using SettingKey = std::pair<std::string, std::string>;
-std::map<SettingKey, bool> unavailable_settings;
+std::map<SettingKey, config_edit::Value> unavailable_settings;
 #ifndef CONFIG_RUNTIME_TEST
 std::optional<toml::table> startup_values;
 #endif
@@ -240,7 +240,7 @@ bool RegisterSetting(const char* section, const char* key) noexcept
   }
   return false;
 }
-mod_settings::SaveStatus GetSaveStatus(const char* section, const char* key) noexcept
+mod_settings::SaveStatus GetSaveStatus(const char* section, const char* key, const config_edit::Value& current) noexcept
 {
   using namespace mod_settings;
   try {
@@ -248,13 +248,15 @@ mod_settings::SaveStatus GetSaveStatus(const char* section, const char* key) noe
     if (!section || !key)
       return {SaveState::Unavailable};
     std::lock_guard lock(lifecycle);
-    if (unavailable_settings.contains(SettingKey{section, key}))
-      return {SaveState::Unavailable};
+    if (const auto found = unavailable_settings.find(SettingKey{section, key}); found != unavailable_settings.end())
+      return {current != found->second ? SaveState::SessionOnly : SaveState::Unavailable};
     if (!writer)
       return {};
     const auto status = writer->GetStatus(section, key);
     if (!status.revision)
       return {};
+    if (status.subject != current)
+      return {SaveState::SessionOnly, status.revision};
     if (status.pending)
       return {SaveState::Pending, status.revision};
     if (status.outcome == config_edit::Outcome::Saved || status.outcome == config_edit::Outcome::AlreadySaved)
@@ -329,7 +331,7 @@ void SaveSetting(const char* section, const char* key, config_edit::Value value,
     if (section && key && available && !forcing && owner == CurrentThreadToken() && !quit_depth) {
       std::lock_guard lock(lifecycle);
       if (!draining) {
-        if (writer->Submit(section, key, std::move(value), delay)) {
+        if (writer->Submit(section, key, value, delay)) {
           if (unavailable_settings.erase(SettingKey{section, key})) {
             persistence_unavailable.store(!unavailable_settings.empty());
             ++adapter_status_sequence;
@@ -337,6 +339,10 @@ void SaveSetting(const char* section, const char* key, config_edit::Value value,
           return;
         }
         if (writer->HasFailure(section, key)) {
+          if (unavailable_settings.erase(SettingKey{section, key})) {
+            persistence_unavailable.store(!unavailable_settings.empty());
+            ++adapter_status_sequence;
+          }
           spdlog::warn("{}.{} changed for this session; runtime save submission failed", section, key);
           return; // The writer owns this failure and its eventual same-key recovery.
         }
@@ -344,7 +350,7 @@ void SaveSetting(const char* section, const char* key, config_edit::Value value,
     }
     {
       std::lock_guard lock(lifecycle);
-      unavailable_settings.insert_or_assign(SettingKey{section ? section : "", key ? key : ""}, true);
+      unavailable_settings.insert_or_assign(SettingKey{section ? section : "", key ? key : ""}, std::move(value));
       ++adapter_status_sequence;
     }
     persistence_unavailable.store(true);

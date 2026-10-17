@@ -1,6 +1,7 @@
 #include "config.h"
 #include "errormsg.h"
 #include "patches/native_hook_extent.h"
+#include "settings/upstream_settings.h"
 
 #include <patches/mapkey.h>
 
@@ -326,11 +327,13 @@ vec3 GetMouseWorldPos(void *cam, vec3 *pos)
 
 auto do_default_zoom = false;
 
-inline void StoreZoom(std::string label, float &zoom, NavigationZoom *_this)
+inline void StoreZoom(std::string label, float &zoom, NavigationZoom *_this, const char *key = nullptr)
 {
   auto old_zoom = zoom;
   zoom          = (_this->Distance - _this->_minimum) / (_this->_maximum - _this->_minimum) * Config::Get().zoom;
   spdlog::info("Changing {} from {} to {}", label, old_zoom, zoom);
+  if (key)
+    mod_settings::PersistCurrentSetting("graphics", key);
 }
 
 static float s_expectedScale = 0;
@@ -451,17 +454,17 @@ void NavigationZoom_Update_Hook(auto original, NavigationZoom *_this)
   if (!Key::IsInputFocused()) {
     if (camera_shortcuts_enabled) {
       if (MapKey::IsDown(GameFunction::SetZoomPreset1)) {
-        return StoreZoom("System Preset 1", config->system_zoom_preset_1, _this);
+        return StoreZoom("System Preset 1", config->system_zoom_preset_1, _this, "system_zoom_preset_1");
       } else if (MapKey::IsDown(GameFunction::SetZoomPreset2)) {
-        return StoreZoom("System Preset 2", config->system_zoom_preset_2, _this);
+        return StoreZoom("System Preset 2", config->system_zoom_preset_2, _this, "system_zoom_preset_2");
       } else if (MapKey::IsDown(GameFunction::SetZoomPreset3)) {
-        return StoreZoom("System Preset 3", config->system_zoom_preset_3, _this);
+        return StoreZoom("System Preset 3", config->system_zoom_preset_3, _this, "system_zoom_preset_3");
       } else if (MapKey::IsDown(GameFunction::SetZoomPreset4)) {
-        return StoreZoom("System Preset 4", config->system_zoom_preset_4, _this);
+        return StoreZoom("System Preset 4", config->system_zoom_preset_4, _this, "system_zoom_preset_4");
       } else if (MapKey::IsDown(GameFunction::SetZoomPreset5)) {
-        return StoreZoom("System Preset 5", config->system_zoom_preset_5, _this);
+        return StoreZoom("System Preset 5", config->system_zoom_preset_5, _this, "system_zoom_preset_5");
       } else if (MapKey::IsDown(GameFunction::SetZoomDefault)) {
-        return StoreZoom("System Default", config->default_system_zoom, _this);
+        return StoreZoom("System Default", config->default_system_zoom, _this, "default_system_zoom");
       }
 
       do_absolute_zoom = true;

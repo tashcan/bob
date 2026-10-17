@@ -27,6 +27,7 @@ public:
     Outcome       outcome    = Outcome::AlreadySaved;
     bool          pending    = false;
     bool          registered = false;
+    std::optional<Value> subject; // Value described by this revision, including pending/failed attempts.
   };
   explicit RuntimeConfigWriter(std::filesystem::path path, Reporter report = nullptr);
   ~RuntimeConfigWriter(); // Tests/explicit owners only; game adapter has process lifetime.

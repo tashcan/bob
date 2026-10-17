@@ -82,13 +82,28 @@ int main(int argc, char** argv)
   available = false;
   runtime_config::SaveSetting("ui", "first", true, {});
   runtime_config::SaveSetting("ui", "second", true, {});
-  assert(runtime_config::GetSaveStatus("ui", "first").state == mod_settings::SaveState::Unavailable);
+  assert(runtime_config::GetSaveStatus("ui", "first", true).state == mod_settings::SaveState::Unavailable);
+  assert(runtime_config::GetSaveStatus("ui", "first", false).state == mod_settings::SaveState::SessionOnly);
   available = true;
   runtime_config::SaveSetting("ui", "first", true, {});
   assert(runtime_config::HasSaveFailures()); // Retrying A cannot conceal unavailable B.
-  assert(runtime_config::GetSaveStatus("ui", "second").state == mod_settings::SaveState::Unavailable);
+  assert(runtime_config::GetSaveStatus("ui", "second", true).state == mod_settings::SaveState::Unavailable);
   runtime_config::SaveSetting("ui", "second", true, {});
   assert(!runtime_config::HasSaveFailures());
+  Reset();
+  runtime_config::SaveSetting("ui", "mode", std::string("warp"), {});
+  assert(runtime_config::GetSaveStatus("ui", "mode", std::string("warp")).state == mod_settings::SaveState::Saved);
+  assert(runtime_config::GetSaveStatus("ui", "mode", std::string("jump")).state
+         == mod_settings::SaveState::SessionOnly);
+  fixture.work = true;
+  assert(runtime_config::GetSaveStatus("ui", "mode", std::string("warp")).state == mod_settings::SaveState::Pending);
+  assert(runtime_config::GetSaveStatus("ui", "mode", std::string("jump")).state
+         == mod_settings::SaveState::SessionOnly);
+  fixture.work     = false;
+  fixture.failures = true;
+  assert(runtime_config::GetSaveStatus("ui", "mode", std::string("warp")).state == mod_settings::SaveState::Failed);
+  assert(runtime_config::GetSaveStatus("ui", "mode", std::string("jump")).state
+         == mod_settings::SaveState::SessionOnly);
   Reset();
   assert(runtime_config::RegisterSetting("ui", "auto_confirm_instant_warp"));
   assert(!runtime_config::RegisterSetting("", "invalid"));

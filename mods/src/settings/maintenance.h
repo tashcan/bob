@@ -160,9 +160,11 @@ inline void RegisterMaintenancePages(PageCatalog& catalog)
       retry->read     = [control](std::size_t) {
         const auto status = control.status ? control.status() : std::string{};
         const auto state  = control.save_status ? control.save_status().state : SaveState::None;
-        const bool failed =
-            state == SaveState::Conflict || state == SaveState::Failed || state == SaveState::Unavailable;
-        return ActionSetting::Presentation{control.label, "Retry save", status, !!control.retry, failed};
+        const bool failed = state == SaveState::Conflict || state == SaveState::Failed
+                            || state == SaveState::Unavailable || state == SaveState::SessionOnly;
+        return ActionSetting::Presentation{control.label,
+                                           state == SaveState::SessionOnly ? "Save current value" : "Retry save",
+                                           status, !!control.retry, failed};
       };
       retry->invoke = [control](std::size_t) {
         if (control.retry)

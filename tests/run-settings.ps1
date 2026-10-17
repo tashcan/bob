@@ -56,6 +56,11 @@ try {
         $JsonInclude = $header.Directory.Parent.FullName
     }
     New-Item -ItemType Directory -Force $fixtureRoot | Out-Null
+    $packageIncludes = @('s/simdutf', 'e/eastl') | ForEach-Object {
+        $package = Join-Path $env:LOCALAPPDATA ('.xmake/packages/' + $_)
+        Get-ChildItem -LiteralPath $package -Directory -Recurse |
+            Where-Object Name -eq 'include' | Select-Object -First 1 -ExpandProperty FullName
+    }
     foreach ($fixture in @('boolean_settings', 'boolean_view', 'native_boolean_callback', 'page_catalog',
         'page_sections', 'settings_search', 'choice_setting', 'slider_setting', 'shortcut_editor',
         'settings_metadata', 'persisted_setting', 'settings_maintenance', 'input_release')) {
@@ -63,15 +68,12 @@ try {
     }
     Invoke-SettingsFixture -Name 'upstream_settings' -Sources @('tests/upstream_settings_test.cc',
         'mods/src/settings/upstream_settings.cc', 'mods/src/settings/warp_mode.cc',
-        'mods/src/settings/forbidden_tech.cc') -IncludeDirectories @('tests/upstream_settings_fixture', $JsonInclude) `
+        'mods/src/settings/forbidden_tech.cc', 'mods/src/config_filters.cc') `
+        -IncludeDirectories (@('tests/upstream_settings_fixture', $JsonInclude) + $packageIncludes) `
+        -LinkArguments @('/link', '/NODEFAULTLIB:GameAssembly.lib') `
         -TestArguments @('docs/settings-coverage.json', (Join-Path $fixtureRoot 'catalog'))
     Invoke-SettingsFixture -Name 'runtime_config' -Sources @('tests/runtime_config_test.cc')
     Invoke-SettingsFixture -Name 'runtime_config_writer' -Sources @('tests/runtime_config_writer_test.cc')
-    $packageIncludes = @('s/simdutf', 'e/eastl') | ForEach-Object {
-        $package = Join-Path $env:LOCALAPPDATA ('.xmake/packages/' + $_)
-        Get-ChildItem -LiteralPath $package -Directory -Recurse |
-            Where-Object Name -eq 'include' | Select-Object -First 1 -ExpandProperty FullName
-    }
     Invoke-SettingsFixture -Name 'shortcut_options' -Sources @('tests/shortcut_hint_cache.cc',
         'mods/src/patches/mapkey.cc', 'mods/src/patches/modifierkey.cc') -IncludeDirectories $packageIncludes `
         -LinkArguments @('/link', '/NODEFAULTLIB:GameAssembly.lib')

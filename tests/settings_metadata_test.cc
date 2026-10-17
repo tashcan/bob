@@ -29,7 +29,7 @@ int main()
     assert(value == requested);
     disk = {SaveState::Pending, ++saves};
   };
-  definition.save_status  = [&] { return disk; };
+  definition.save_status  = [&](bool) { return disk; };
   definition.active_value = [&] { return std::optional<bool>(active); };
   ValueSetting<bool> setting(std::move(definition));
   assert(setting.metadata().TomlKey() == "ui.feature");
@@ -78,6 +78,8 @@ int main()
   ValueSetting<bool> second(std::move(throwing));
   assert(second.SetFromUser(true, second.Observe()).outcome == Outcome::AppliedVerified);
   assert(second.save_status().state == SaveState::Unavailable);
+  value = false; // A later native change is not the value whose serializer failed.
+  assert(second.save_status().state == SaveState::None);
   int                  selected = 0;
   SaveStatus           choiceDisk{SaveState::Pending, 1};
   ValueDefinition<int> choiceDefinition{"choice", "Mode", [&] { return ValueReadResult<int>::Known(selected, 1); },
@@ -85,12 +87,12 @@ int main()
                                           selected = desired;
                                           return ApplyResult::Applied;
                                         }};
-  choiceDefinition.save_status = [&] { return choiceDisk; };
+  choiceDefinition.save_status = [&](int) { return choiceDisk; };
   ChoiceSetting   choice(std::move(choiceDefinition), {"First", "Second"});
   NativeViewState styled(choice, 0);
   styled.Bind();
-  for (const auto status :
-       {SaveState::Pending, SaveState::Saved, SaveState::Conflict, SaveState::Failed, SaveState::Unavailable}) {
+  for (const auto status : {SaveState::Pending, SaveState::Saved, SaveState::Conflict, SaveState::Failed,
+                            SaveState::Unavailable, SaveState::SessionOnly}) {
     choiceDisk.state = status;
     const auto label = styled.presentation_label();
     assert(label.find(choice.state().status_text()) != std::string::npos);

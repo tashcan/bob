@@ -8,6 +8,8 @@ The editor uses the same configuration values and defaults as the mod's TOML con
 
 Ordinary controls apply to the current session and save automatically. Each control reports its own save state. A failed save or an external edit conflict remains visible; another successful save does not clear it. Resolve a conflicting external edit before retrying. Unrelated TOML values and comments are preserved.
 
+Save feedback describes the current value. A later session-only change cannot retain an older Saved badge. Explicit save-preset/default shortcuts persist their zoom values; automatically using the last preset as the session default remains session-only. Defaults & Help offers Save current value for an unsaved session change.
+
 Slider and scale-shortcut changes apply immediately and save after 250 ms without another change to that value. Orderly exit flushes pending changes. If the game vetoes a quit request, saving resumes for the continuing session. A failure to write the generated runtime-vars diagnostic does not prevent startup with a readable configuration.
 
 Some controls take effect when their screen is reopened. Restart controls retain the requested preference separately from the active value, so a saved restart change is not presented as already active. Examples include native-game shortcut mode, window setup, loading assets, cargo formatting, officer sort initialization, and chat channel suppression.
@@ -41,15 +43,15 @@ These categories are explained in the Advanced page rather than exposed as ordin
 | `audio.trace_events`, `audio.disabled_events` | Diagnostic event tracing and arbitrary internal event-name filters remain advanced configuration. |
 | `[config]` endpoint overrides | Configuration/distribution infrastructure is configured before the in-game editor starts. Restart after editing. |
 | `control.enable_experimental` | Enables experimental shortcuts at startup. Configure it in TOML and restart. Disabled actions remain visible with a reason. |
-| `graphics.system_pan_momentum` | Legacy parser input with no current gameplay consumer. The functional pan-glide option is `graphics.system_pan_momentum_falloff`. |
+| `graphics.system_pan_momentum`, `graphics.transition_time`, `ui.disable_toast_banners` | Legacy parser inputs with no current gameplay consumer. Pan glide uses `graphics.system_pan_momentum_falloff`; banner suppression uses `ui.disabled_banner_types`. |
 
-`graphics.free_resize` and `graphics.borderless_fullscreen` are Windows options. The macOS editor explains their platform scope instead of offering controls that cannot affect that client.
+`graphics.free_resize`, `graphics.borderless_fullscreen`, `graphics.allow_cursor`, `ui.instant_cargo_counter` and `ui.notify_banner_types` have Windows-only consumers. The macOS editor explains their platform scope instead of offering controls that cannot affect that client.
 
 See the English example configuration for accepted advanced values. Deprecated aliases remain startup compatibility inputs; the editor writes canonical keys. Old queue feature switches and constants that the parser no longer reads are not extra controls.
 
 ## Coverage and maintenance
 
-[settings-coverage.json](settings-coverage.json) inventories all 154 canonical configuration keys and 105 canonical shortcut actions. The feature includes 89 player-setting controls. The remaining 26 named non-hook options and 39 hook-install switches have explicit TOML-only treatment. Dynamic sync target fields follow the same sync policy. The emergency switches `patches.nativesettingshooks` and `patches.runtimeconfighooks` independently control native settings and the shared persistence runtime.
+[settings-coverage.json](settings-coverage.json) inventories all 154 canonical configuration keys and 105 canonical shortcut actions. The feature includes 87 player-setting controls on Windows and 82 on macOS. The remaining 28 named non-hook options and 39 hook-install switches have explicit TOML-only treatment. Dynamic sync target fields follow the same sync policy. The emergency switches `patches.nativesettingshooks` and `patches.runtimeconfighooks` independently control native settings and the shared persistence runtime.
 
 `settings/upstream_settings.cc` defines controls with their canonical key, default, help, unit, application timing, availability, validation, and persistence serializer together. Shared instant-warp and Forbidden Tech models retain their own definitions so native settings and the mod page use the same state. Live shortcut and pin actions reuse the same field serializer through `PersistCurrentSetting`; they do not maintain a second save whitelist. A new option should receive either an in-game definition or an explicit inventory exclusion. A new shortcut should appear through the registered action catalog.
 
