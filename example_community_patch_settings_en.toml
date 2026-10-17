@@ -274,6 +274,11 @@ haven_zoom = 4000.0
 #  <[=====================================================]>
 
 [patches]
+# Native Mod Settings pages and the checked background TOML saver. These are
+# emergency compatibility switches; changing either requires a client restart.
+# Normal feature preferences remain in their own sections and in Mod Settings.
+nativesettingshooks = true
+runtimeconfighooks = true
 
 # Subgroup: Leave Well Alone
 # --------------------------

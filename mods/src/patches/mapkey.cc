@@ -5,6 +5,7 @@
 #include "str_utils.h"
 #include <prime/KeyCode.h>
 
+#include <algorithm>
 #include <array>
 #include <iostream>
 #include <string>
@@ -61,6 +62,7 @@ constexpr auto kCompactShortcutTokenMappings = std::to_array<CompactShortcutToke
     {"DELETE", "DEL"},
     {"MINUS", "-"},
     {"EQUAL", "="},
+    {"PIPE", "|"},
     {"LEFT", "LT"},
     {"RIGHT", "RT"},
     {"UP", "UP"},
@@ -202,6 +204,28 @@ void MapKey::AddMappedKey(GameFunction gameFunction, MapKey mappedKey)
   MapKey::mappedKeys[gameFunction].emplace_back(std::move(mappedKey));
 }
 
+void MapKey::RegisterAction(GameFunction gameFunction, std::string_view key, std::string_view defaultBinding)
+{ definitions.at(static_cast<std::size_t>(gameFunction)) = {std::string(key), std::string(defaultBinding)}; }
+
+const MapKey::ActionDefinition& MapKey::Definition(GameFunction gameFunction)
+{ return definitions.at(static_cast<std::size_t>(gameFunction)); }
+
+const std::vector<MapKey>& MapKey::Bindings(GameFunction gameFunction)
+{ return mappedKeys.at(static_cast<std::size_t>(gameFunction)); }
+
+bool MapKey::ReplaceBindings(GameFunction gameFunction, std::vector<MapKey> bindings)
+{
+  if (gameFunction < 0 || gameFunction >= GameFunction::Max)
+    return false;
+  for (const auto& binding : bindings)
+    if (binding.Key == KeyCode::None)
+      return false;
+  if (!bindings.empty())
+    bindings.front().shortcutHint = CompactShortcutForHint(bindings.front().Shortcuts);
+  mappedKeys[gameFunction].swap(bindings);
+  return true;
+}
+
 // Movement reads the direction itself; claiming it would suppress its own pan
 // on the next frame. Other modified actions retain ownership until key release.
 static bool IsMovementAction(GameFunction action)
@@ -275,6 +299,26 @@ bool MapKey::HasCorrectModifiers(const MapKey& mapKey)
   return result;
 }
 
+bool MapKey::SameBinding(const MapKey& first, const MapKey& second)
+{
+  const auto containsAll = [](const auto& first, const auto& second) {
+    return std::all_of(first.begin(), first.end(), [&](const auto& modifier) {
+      return std::find(second.begin(), second.end(), modifier) != second.end();
+    });
+  };
+  return first.Key != KeyCode::None && first.Key == second.Key && containsAll(first.Modifiers, second.Modifiers)
+         && containsAll(second.Modifiers, first.Modifiers);
+}
+
+bool MapKey::MayOverlap(const MapKey& first, const MapKey& second)
+{
+  if (first.Key == KeyCode::None || first.Key != second.Key)
+    return false;
+  // Explicit modifiers are minimum requirements. Their union can satisfy both
+  // bindings, whereas an unmodified binding rejects every modifier.
+  return first.hasModifiers == second.hasModifiers;
+}
+
 std::string MapKey::GetParsedValues() const
 {
   std::string output = "";
@@ -289,3 +333,5 @@ std::string MapKey::GetParsedValues() const
 }
 
 std::array<std::vector<MapKey>, (int)GameFunction::Max> MapKey::mappedKeys = {};
+
+std::array<MapKey::ActionDefinition, (int)GameFunction::Max> MapKey::definitions = {};

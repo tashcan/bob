@@ -108,6 +108,28 @@ int main()
   MapKey::AddMappedKey(toggle, MapKey::Parse("CTRL-DOWN"));
   Check(MapKey::IsDown(toggle) && claimed == KeyCode::DownArrow, "Other chord lost directional ownership");
   held.fill(false);
+  // Editing metadata includes NONE actions; replacing bindings publishes one
+  // complete list and refreshes its first hint without changing dispatch rules.
+  MapKey::RegisterAction(galaxy, "show_galaxy", "F8");
+  MapKey::RegisterAction(GameFunction::ShowResearch, "show_research", "NONE");
+  Check(MapKey::Definition(galaxy).key == "show_galaxy"
+            && MapKey::Definition(GameFunction::ShowResearch).defaultBinding == "NONE",
+        "Editor registration lost a canonical key or unbound default");
+  Check(MapKey::ReplaceBindings(galaxy, {MapKey::Parse("F8"), MapKey::Parse("CTRL-G")})
+            && MapKey::Bindings(galaxy).size() == 2 && MapKey::GetShortcutHint(galaxy) == "F8",
+        "Replacing bindings did not atomically refresh the first hint");
+  Check(!MapKey::ReplaceBindings(galaxy, {MapKey::Parse("INVALID")}) && MapKey::GetShortcuts(galaxy) == "F8 | CTRL-G",
+        "Invalid replacement damaged existing bindings");
+  Check(MapKey::SameBinding(MapKey::Parse("CTRL-SHIFT-G"), MapKey::Parse("SHIFT-CTRL-G"))
+            && !MapKey::SameBinding(MapKey::Parse("CTRL-G"), MapKey::Parse("SHIFT-G")),
+        "Binding identity must ignore modifier order but retain modifier requirements");
+  Check(MapKey::MayOverlap(MapKey::Parse("CTRL-G"), MapKey::Parse("SHIFT-G"))
+            && MapKey::MayOverlap(MapKey::Parse("G"), MapKey::Parse("G"))
+            && !MapKey::MayOverlap(MapKey::Parse("G"), MapKey::Parse("SHIFT-G"))
+            && !MapKey::MayOverlap(MapKey::Parse("CTRL-F8"), MapKey::Parse("CTRL-G")),
+        "Overlap advice differs from the existing physical minimum-modifier matcher");
+  Check(MapKey::ReplaceBindings(galaxy, {}) && !MapKey::HasBinding(galaxy) && MapKey::GetShortcutHint(galaxy).empty(),
+        "Removing all alternatives did not unbind the action");
   std::cout << "Shortcut hint and movement binding tests passed\n";
 
 }

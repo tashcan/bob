@@ -1,7 +1,10 @@
 #include "config.h"
+#include "config_save.h"
 #include "file.h"
 #include "patches/mapkey.h"
+#include "patches/runtime_config.h"
 #include "prime/KeyCode.h"
+#include "settings/upstream_settings.h"
 #include "ship_name_match.h"
 #include "str_utils.h"
 #include "version.h"
@@ -18,6 +21,7 @@
 #include <initializer_list>
 #include <iostream>
 #include <ranges>
+#include <sstream>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -123,10 +127,8 @@ Config::Config()
 
 void Config::Save(const toml::table& config, const std::string_view filename, bool apply_warning)
 {
-  std::ofstream config_file;
-
   auto config_path = File::MakePath(filename, true);
-  config_file.open(config_path);
+  std::ostringstream config_file;
 
   if (apply_warning) {
     char defaultFile[255], configFile[255];
@@ -148,8 +150,7 @@ void Config::Save(const toml::table& config, const std::string_view filename, bo
     config_file << "#######################################################################\n\n";
   }
 
-  config_file << config;
-  config_file.close();
+  SaveConfigDocument(config, config_path, config_file.str());
 }
 
 Config& Config::Get()
@@ -259,6 +260,7 @@ void Config::AdjustUiScale(bool scaleUp)
     auto new_scale    = this->ui_scale + scale_factor;
     this->ui_scale    = std::clamp(new_scale, 0.1f, 2.0f);
 
+    mod_settings::PersistCurrentSetting("graphics", "ui_scale");
     auto dpi = Config::RefreshDPI();
     spdlog::info("UI has been scaled {}, was {}, now {} (unclamped {}) @ {} DPI Scaling", (scaleUp ? "UP" : "DOWN"),
                  old_scale, this->ui_scale, new_scale, dpi);
@@ -273,6 +275,7 @@ void Config::AdjustUiViewerScale(bool scaleUp)
     auto new_scale        = this->ui_scale_viewer + (scale_factor * 0.25f);
     this->ui_scale_viewer = std::clamp(new_scale, 0.1f, 2.0f);
 
+    mod_settings::PersistCurrentSetting("graphics", "ui_scale_viewer");
     spdlog::info("UI Viewer has been scaled {}, was {}, now {} (unclamped {})", (scaleUp ? "UP" : "DOWN"), old_scale,
                  this->ui_scale_viewer, new_scale);
   }
@@ -288,6 +291,7 @@ void Config::AdjustUiShipScale(bool scaleUp)
   spdlog::info("System ship models have been scaled {}, was {}, now {} (unclamped {})", (scaleUp ? "UP" : "DOWN"),
                old_scale, this->ui_scale_ship, new_scale);
   ApplyUiShipScaleToLoadedShips(old_scale, this->ui_scale_ship);
+  mod_settings::PersistCurrentSetting("graphics", "ui_scale_ship");
 }
 
 inline std::string mask_token(const std::string& token)
@@ -558,21 +562,25 @@ float get_fleet_label_zoom_threshold(toml::table& config, toml::table& new_confi
   return threshold;
 }
 
-void parse_ship_filter(std::string_view value, std::vector<std::string>& names, bool& match_all)
+bool ParseShipFilter(std::string_view value, std::vector<std::string>& names, bool& match_all)
 {
   names.clear();
   match_all = false;
   if (AsciiStrToUpper(StripAsciiWhitespace(value)) == "*") {
     match_all = true;
-    return;
+    return true;
   }
+  bool valid = true;
   for (const auto& token : StrSplit(std::string(value), ',')) {
     auto stripped = StripAsciiWhitespace(token);
     if (stripped.empty()) continue;
-    if (auto normalized = ShipNameMatch::NormalizeKey(stripped); !normalized.empty()) {
+    if (auto normalized = ShipNameMatch::NormalizeKey(stripped); !normalized.empty() && stripped != "*") {
       names.emplace_back(std::move(normalized));
+    } else {
+      valid = false;
     }
   }
+  return valid;
 }
 
 void read_instant_warp_filter(toml::table& config, toml::table& new_config, std::string_view key,
@@ -580,7 +588,7 @@ void read_instant_warp_filter(toml::table& config, toml::table& new_config, std:
                               std::string_view default_value, bool write_log)
 {
   const auto value = config["ui"][key].value<std::string>().value_or(std::string(default_value));
-  parse_ship_filter(value, names, match_all);
+  ParseShipFilter(value, names, match_all);
 
   new_config.emplace<toml::table>("ui", toml::table());
   new_config["ui"].as_table()->insert_or_assign(std::string(key), std::string(value));
@@ -590,11 +598,12 @@ void read_instant_warp_filter(toml::table& config, toml::table& new_config, std:
   }
 }
 
-void parse_faction_filter(std::string_view value, std::vector<std::string>& factions)
+bool ParseFactionFilter(std::string_view value, std::vector<std::string>& factions)
 {
   static constexpr std::array kKnownFactions{"federation", "klingon", "romulan"};
 
   factions.clear();
+  bool valid = true;
   for (const auto& token : StrSplit(std::string(value), ',')) {
     const auto stripped = StripAsciiWhitespace(token);
     if (stripped.empty()) continue;
@@ -602,9 +611,7 @@ void parse_faction_filter(std::string_view value, std::vector<std::string>& fact
     auto lowered = AsciiStrToLower(stripped);
 
     if (std::ranges::find(kKnownFactions, lowered) == kKnownFactions.end()) {
-      spdlog::warn("Unrecognised faction '{}' in daily_bulk_claim_factions; expected one of: federation, klingon, "
-                   "romulan. Ignoring.",
-                   stripped);
+      valid = false;
       continue;
     }
 
@@ -612,6 +619,40 @@ void parse_faction_filter(std::string_view value, std::vector<std::string>& fact
       factions.emplace_back(std::move(lowered));
     }
   }
+  return valid;
+}
+
+bool ParseBannerFilter(std::string_view value, std::vector<int>& types)
+{
+  types.clear();
+  bool valid = true;
+  for (const auto& token : StrSplit(std::string(value), ',')) {
+    const auto name = AsciiStrToUpper(StripAsciiWhitespace(token));
+    if (name.empty())
+      continue;
+    bool found = false;
+    for (const auto& [key, type] : bannerTypes) {
+      if (name == "ALL" || name == AsciiStrToUpper(key)) {
+        if (std::ranges::find(types, type) == types.end())
+          types.push_back(type);
+        found = true;
+      }
+    }
+    valid &= found;
+  }
+  return valid;
+}
+
+std::string FormatBannerFilter(const std::vector<int>& types)
+{
+  std::string result;
+  for (const auto& [key, type] : bannerTypes)
+    if (std::ranges::find(types, type) != types.end()) {
+      if (!result.empty())
+        result += ", ";
+      result += key;
+    }
+  return result;
 }
 
 void read_daily_bulk_claim_factions(toml::table& config, toml::table& new_config, std::vector<std::string>& factions,
@@ -619,7 +660,9 @@ void read_daily_bulk_claim_factions(toml::table& config, toml::table& new_config
 {
   const auto value =
       config["ui"]["daily_bulk_claim_factions"].value<std::string>().value_or(std::string(default_value));
-  parse_faction_filter(value, factions);
+  if (!ParseFactionFilter(value, factions))
+    spdlog::warn("Unrecognised faction in daily_bulk_claim_factions; expected federation, klingon or romulan. Ignoring "
+                 "unknown names.");
 
   new_config.emplace<toml::table>("ui", toml::table());
   new_config["ui"].as_table()->insert_or_assign("daily_bulk_claim_factions", std::string(value));
@@ -737,6 +780,7 @@ void set_shortcut_noop(toml::node_view<toml::node> sectionTable, toml::node_view
 void parse_config_shortcut_value(toml::table& new_config, std::string_view item, GameFunction gameFunction,
                                  std::string_view default_value, const ShortcutConfigValue& shortcut_value)
 {
+  MapKey::RegisterAction(gameFunction, item, default_value);
   auto section = "shortcuts";
   auto source  = "shortcuts_source";
 
@@ -961,6 +1005,10 @@ void Config::Load()
   this->installPanHooks = get_config_or_default(config, parsed, "patches", "panhooks", DCP::panhooks, write_config);
   this->installHotkeyHooks =
       get_config_or_default(config, parsed, "patches", "hotkeyhooks", DCP::hotkeyhooks, write_config);
+  this->installNativeSettings =
+      get_config_or_default(config, parsed, "patches", "nativesettingshooks", DCP::nativesettingshooks, write_config);
+  this->installRuntimeConfigHooks =
+      get_config_or_default(config, parsed, "patches", "runtimeconfighooks", DCP::runtimeconfighooks, write_config);
   this->installFreeResizeHooks =
       get_config_or_default(config, parsed, "patches", "freeresizehooks", DCP::freeresizehooks, write_config);
   this->installTempCrashFixes =
@@ -1321,66 +1369,17 @@ void Config::Load()
   this->loader_tip_enabled =
       get_config_or_default(config, parsed, "graphics", "loader_tip_enabled", DCG::loader_tip_enabled, write_log);
 
-  std::vector<std::string> types = StrSplit(disabled_banner_types_str, ',');
+  if (!ParseBannerFilter(disabled_banner_types_str, this->disabled_banner_types))
+    spdlog::warn("Unknown disabled_banner_types ignored");
+  parsed["ui"].as_table()->insert_or_assign("disabled_banner_types", FormatBannerFilter(this->disabled_banner_types));
 
-  spdlog::debug("");
+  const auto notify_banner_types_str = get_config_or_default<std::string>(config, parsed, "ui", "notify_banner_types",
+                                                                          DCU::notify_banner_types, write_log);
+  if (!ParseBannerFilter(notify_banner_types_str, this->notify_banner_types))
+    spdlog::warn("Unknown notify_banner_types ignored");
+  parsed["ui"].as_table()->insert_or_assign("notify_banner_types", FormatBannerFilter(this->notify_banner_types));
 
-  std::string       bannerString;
   std::stringstream message;
-  message << "Parsing banner strings";
-
-  spdlog::debug(message.str());
-
-  for (const auto& [key, value] : bannerTypes) {
-    auto upper_key = AsciiStrToUpper(key);
-
-    for (const std::string_view _type : types) {
-      auto stripped_type = StripLeadingAsciiWhitespace(_type);
-      auto upper_type    = AsciiStrToUpper(stripped_type);
-
-      if ("ALL" == upper_type || upper_key == upper_type) {
-        this->disabled_banner_types.emplace_back(value);
-        if (!bannerString.empty()) {
-          bannerString.append(", ");
-        }
-        bannerString.append(key);
-      }
-    }
-  }
-
-  message.str("");
-  message << "Final disabledbanner types: " << bannerString;
-  spdlog::debug(message.str());
-
-  parsed["ui"].as_table()->insert_or_assign("disabled_banner_types", bannerString);
-
-  // Parse notify_banner_types using the same bannerTypes lookup table
-  auto notify_banner_types_str = get_config_or_default<std::string>(config, parsed, "ui", "notify_banner_types",
-                                                                    DCU::notify_banner_types, write_log);
-
-  std::vector<std::string> notify_types = StrSplit(notify_banner_types_str, ',');
-  std::string              notifyString;
-
-  for (const auto& [key, value] : bannerTypes) {
-    auto upper_key = AsciiStrToUpper(key);
-    for (const std::string_view _type : notify_types) {
-      auto stripped_type = StripLeadingAsciiWhitespace(_type);
-      auto upper_type    = AsciiStrToUpper(stripped_type);
-      spdlog::warn("TEMP: Notify {} == {}", upper_type, upper_key);
-      if ("ALL" == upper_type || upper_key == upper_type) {
-        this->notify_banner_types.emplace_back(value);
-        if (!notifyString.empty())
-          notifyString.append(", ");
-        notifyString.append(key);
-      }
-    }
-  }
-
-  spdlog::debug("Final notify banner types: {}", notifyString);
-  parsed["ui"].as_table()->insert_or_assign("notify_banner_types", notifyString);
-
-  spdlog::debug("");
-
   parse_config_shortcut(config, parsed, "move_up", GameFunction::MoveUp, DCSH::move_up);
   parse_config_shortcut(config, parsed, "move_down", GameFunction::MoveDown, DCSH::move_down);
   parse_config_shortcut(config, parsed, "move_left", GameFunction::MoveLeft, DCSH::move_left);
@@ -1529,7 +1528,8 @@ void Config::Load()
 
   spdlog::debug("");
 
-  if (!std::filesystem::exists(File::MakePath(File::Config()))) {
+  const bool created_config = !std::filesystem::exists(File::MakePath(File::Config()));
+  if (created_config) {
     message.str("");
     message << "Creating " << File::Config() << " (default config file)";
     spdlog::warn(message.str());
@@ -1550,6 +1550,7 @@ void Config::Load()
   }
 
   Config::Save(parsed, File::Vars());
+  runtime_config::Configure(created_config ? parsed : config);
 
   std::cout << "\n\n-----------------------------\n\n"
             << parsed << "\n\n-----------------------------\nVersion "
