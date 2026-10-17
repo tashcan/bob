@@ -1,74 +1,80 @@
-#  +--------------------------------------------------------------+ 
-#  |                                                              | 
-#  |     #***  #****  #****   #***         #   *             #    | 
-#  |    #        #    #      #        #    #* **   #**       #    | 
-#  |     #**     #    #***   #             # * *  #   *   #***    | 
-#  |        #    #    #      #        #    #   *  #   *  #   *    | 
-#  |    #***     #    #       #***         #   *   #**    #***    | 
-#  |                                                              | 
-#  +--------------------------------------------------------------+ 
-#   Knocked up on 2026-10-04T20:00:48.873Z
-#   
+#  +--------------------------------------------------------------+
+#  |                                                              |
+#  |     #***  #****  #****   #***         #   *             #    |
+#  |    #        #    #      #        #    #* **   #**       #    |
+#  |     #**     #    #***   #             # * *  #   *   #***    |
+#  |        #    #    #      #        #    #   *  #   *  #   *    |
+#  |    #***     #    #       #***         #   *   #**    #***    |
+#  |                                                              |
+#  +--------------------------------------------------------------+
+#   Knocked up on 2026-10-17T14:08:05.835Z
+#
 #   This configuration file was knocked up by https://modconfig.pages.dev
 #   and comes as-is. If the STFC Community Mod gives you any aggro
 #   with the configuration or this website, give us a bell and report
 #   the whole box and dice to:
-#   
+#
 #       Discord : https://discord.gg/PrpHgs7Vjs
 #       GitHub  : https://github.com/netniV/stfc-mod
-#   
-#   Today's configuration comes courtesy of the letter N and the number 1
-#   
+#
+#   Today's configuration comes courtesy of the letter B and the number 7
+#
 
-#  <[=======================================]> 
-#                                              
-#         *               *    *               
-#        * *   *   *      *          ***       
-#       *****  *   *   ****    *    *   *      
-#       *   *  *  **  *   *    *    *   *      
-#       *   *   ****   ****    *     ***       
-#                                              
-#  <[=======================================]> 
+#  <[=======================================]>
+#
+#         *               *    *
+#        * *   *   *      *          ***
+#       *****  *   *   ****    *    *   *
+#       *   *  *  **  *   *    *    *   *
+#       *   *   ****   ****    *     ***
+#
+#  <[=======================================]>
 
 [audio]
-# Comma-separated audio event names to suppress; use "All" as a wildcard for named events handled by this filter
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_armada_battle_lost = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_armada_battle_won = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_armada_created = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_defeat = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_victory = "none"
+
+# Comma-separated audio event names to suppress; leave blank to allow all audio events
 disabled_events = ""
 
 # Write audio event names to the trace log for troubleshooting
 trace_events = false
 
-# Optional generated notification cues; "none" disables an alert.
-# Available sounds: default, info, success, warning, alarm, arrival, soft, ping, repair
-# Requires patches.toastbannerhooks = true.
-alert_victory = "none"
-alert_defeat = "none"
-alert_armada_created = "none"
-alert_armada_battle_won = "none"
-alert_armada_battle_lost = "none"
-
-#  <[=======================================]> 
-#                                              
-#       ****            **     **              
-#       *   *  *   *   *      *      ****      
-#       ****   *   *  ***    ***    **         
-#       *   *  *  **   *      *       **       
-#       ****    ****   *      *     ***        
-#                                              
-#  <[=======================================]> 
+#  <[=======================================]>
+#
+#       ****            **     **
+#       *   *  *   *   *      *      ****
+#       ****   *   *  ***    ***    **
+#       *   *  *  **   *      *       **
+#       ****    ****   *      *     ***
+#
+#  <[=======================================]>
 
 [buffs]
 # This is the option to always show out of dock power for ships when they are docked. Defaults to false
 use_out_of_dock_power = true
 
-#  <[======================================================================================================]> 
-#                                                                                                             
-#       *   *          *                                     *         ****            *     *                
-#       **  *  *   *  ***     ****          ***   ***        *         *   *   ***     *    ***     ****      
-#       * * *  *   *   *     **                *  *  *    ****         ****   *   *    *     *     **         
-#       *  **  *  **   *       **           ****  *  *   *   *         *   *  *   *    *     *       **       
-#       *   *   ****   **    ***            ****  *  *    ****         ****    ***     *     **    ***        
-#                                                                                                             
-#  <[======================================================================================================]> 
+#  <[======================================================================================================]>
+#
+#       *   *          *                                     *         ****            *     *
+#       **  *  *   *  ***     ****          ***   ***        *         *   *   ***     *    ***     ****
+#       * * *  *   *   *     **                *  *  *    ****         ****   *   *    *     *     **
+#       *  **  *  **   *       **           ****  *  *   *   *         *   *  *   *    *     *       **
+#       *   *   ****   **    ***            ****  *  *    ****         ****    ***     *     **    ***
+#
+#  <[======================================================================================================]>
 
 [config]
 # Ignore this section, developer stuff only
@@ -77,17 +83,23 @@ assets_url_override = ""
 # Ignore this section, developer stuff only
 settings_url = ""
 
-#  <[========================================================================================]> 
-#                                                                                               
-#       *****  *                     ****                 *                     *               
-#         *    *       ***          *       ***   ***    ***    ***     ***     *     ****      
-#         *    ****   * **          *      *   *  *  *    *     *   *  *   *    *    **         
-#         *    *   *  *             *      *   *  *  *    *     *      *   *    *      **       
-#         *    *   *   ****          ****   ***   *  *    **    *       ***     *    ***        
-#                                                                                               
-#  <[========================================================================================]> 
+#  <[========================================================================================]>
+#
+#       *****  *                     ****                 *                     *
+#         *    *       ***          *       ***   ***    ***    ***     ***     *     ****
+#         *    ****   * **          *      *   *  *  *    *     *   *  *   *    *    **
+#         *    *   *  *             *      *   *  *  *    *     *      *   *    *      **
+#         *    *   *   ****          ****   ***   *  *    **    *       ***     *    ***
+#
+#  <[========================================================================================]>
 
 [control]
+# Protect and recover Kir’Shara queues after target or address changes.
+kirshara_fixes = true
+
+# Only allow the primary action when the selected target is visible in the current view.
+primary_requires_visible_target = false
+
 # Double-tap window in ms for 1-8 ship select/locate. Lower = faster, higher = slower. Default 500
 select_timer = 500
 
@@ -103,13 +115,6 @@ hotkeys_extended = true
 # If you have the Kir'Shara artifact, should the queue be enabled by default?
 queue_enabled = true
 
-# Faster Queue Recovery: advance after an outstanding target disappears (Windows x64 only).
-faster_queue_recovery = false
-
-# Thin Queue Protection: resume after native pruning; clean up confirmed destroyed heads.
-# Windows x64 only. Enabled by default; independent of Faster Queue Recovery.
-thin_queue_protection = true
-
 # If you prefer to use Scopely's hotkeys set this to true
 use_scopely_hotkeys = false
 
@@ -119,15 +124,15 @@ use_scopely_hotkeys = false
 # Enable experimental features
 enable_experimental = false
 
-#  <[=============================================================================================================]> 
-#                                                                                                                    
-#       ****                  *      *                   ****     *            *                                     
-#       *   *  ***     ***   ***    ***    *   *         *   *          ***   ***    *   *  ***     ***    ****      
-#       ****   *   *  * **    *      *      ****         ****     *    *       *     *   *  *   *  * **   **         
-#       *      *      *       *      *         *         *        *    *       *     *  **  *      *        **       
-#       *      *       ****   **     **     ***          *        *     ***    **     ****  *       ****  ***        
-#                                                                                                                    
-#  <[=============================================================================================================]> 
+#  <[=============================================================================================================]>
+#
+#       ****                  *      *                   ****     *            *
+#       *   *  ***     ***   ***    ***    *   *         *   *          ***   ***    *   *  ***     ***    ****
+#       ****   *   *  * **    *      *      ****         ****     *    *       *     *   *  *   *  * **   **
+#       *      *      *       *      *         *         *        *    *       *     *  **  *      *        **
+#       *      *       ****   **     **     ***          *        *     ***    **     ****  *       ****  ***
+#
+#  <[=============================================================================================================]>
 
 [graphics]
 
@@ -232,6 +237,12 @@ use_presets_as_default = true
 # Set to 0.0 to disable custom zoom; enter system at specified zoom otherwise
 default_system_zoom = 1750.0
 
+# Maximum zoom-out distance in Haven; 0 preserves native behavior.
+haven_zoom = 4000.0
+
+# Station-interior zoom-out multiplier; 1 preserves native behavior. Default 2.
+interior_zoom_scale = 2.0
+
 # Zoom preset F1 for system view
 system_zoom_preset_1 = 50.0
 
@@ -247,24 +258,26 @@ system_zoom_preset_4 = 2750.0
 # Zoom preset F5 for system view
 system_zoom_preset_5 = 5000.0
 
-# This controls the maximum zoom distance in System View. Default is 2500. Higher values increase label distance
+# This controls the maximum zoom distance in System View. Default is 5000. Higher values increase label distance
 zoom = 5000.0
 
-#  <[===========================================================================================================================]> 
-#                                                                                                                                  
-#        ****   *       *           *        *                         ****     *                   *                              
-#       *      ***            ***   *  *          ***     ****         *   *    *     ***    ****  ***     ***   ***     ****      
-#        ***    *       *    *      ***      *    *  *   *   *         ****     *        *  **      *     * **   *   *  **         
-#           *   *       *    *      *  *     *    *  *    ****         *        *     ****    **    *     *      *        **       
-#       ****    **      *     ***   *   *    *    *  *    ***          *        *     ****  ***     **     ****  *      ***        
-#                                                                                                                                  
-#  <[===========================================================================================================================]> 
+#  <[===========================================================================================================================]>
+#
+#        ****   *       *           *        *                         ****     *                   *
+#       *      ***            ***   *  *          ***     ****         *   *    *     ***    ****  ***     ***   ***     ****
+#        ***    *       *    *      ***      *    *  *   *   *         ****     *        *  **      *     * **   *   *  **
+#           *   *       *    *      *  *     *    *  *    ****         *        *     ****    **    *     *      *        **
+#       ****    **      *     ***   *   *    *    *  *    ***          *        *     ****  ***     **     ****  *      ***
+#
+#  <[===========================================================================================================================]>
 
 [patches]
 
 # Subgroup: Leave Well Alone
 # --------------------------
 
+# Enable recovery of interrupted action queues.
+actionqueuerecoveryhooks = true
 artifactexchangehooks = true
 audioeventhooks = true
 
@@ -272,6 +285,9 @@ audioeventhooks = true
 bufffixhooks = true
 cargoformathooks = true
 chatpatches = true
+
+# Enable chat player-title visibility hooks.
+chattitledisplayhooks = true
 
 # Enable per-faction bulk claiming for Daily Goals
 dailyfactionbulkclaimhooks = true
@@ -281,10 +297,19 @@ freeresizehooks = true
 galacticanomalytimerhooks = true
 game_version = true
 giftsbulkclaimhooks = true
+
+# Enable Haven help-history ordering hooks.
+havenhistoryhooks = true
+
+# Enable Haven zoom hooks.
+havenzoomhooks = true
 hotkeyhooks = true
 
 # Show cargo totals immediately instead of counting up
 instantcargocounterhooks = true
+
+# Enable station-interior zoom hooks.
+interiorzoomhooks = true
 loadingscreenhooks = true
 loadingtiphooks = true
 miscpatches = true
@@ -293,25 +318,37 @@ objecttracker = true
 officersorthooks = true
 panhooks = true
 
+# SHIFT+click a fleet dock ship tile to pin or unpin it; updates pinned ships.
+pinnedshipclicktoggle = true
+
 # Pin configured ships to the front of the fleet management dock
 pinnedshiphooks = true
+
+# Enable queue protection after address changes.
+queueaddressguardhooks = true
+
+# Enable automatic confirmation of the Excelsior Decloaking Deflector when configured.
+revealconfirmhooks = true
 syncpatches = true
 tempcrashfixes = true
 testpatches = true
+
+# Enable protection for thin action queues.
+thinqueueprotectionhooks = true
 toastbannerhooks = true
 transitionscreenhooks = true
 uiscalehooks = true
 zoomhooks = true
 
-#  <[===========================================================================================================================]> 
-#                                                                                                                                  
-#        ***            *           *                                  *   *                       *        *    *                 
-#       *   *  *   *          ***   *  *           ***    ****          * *    ***   *   *         *             *  *    ***       
-#       *   *  *   *    *    *      ***               *  **              *    *   *  *   *         *        *    ***    * **       
-#       *  **  *  **    *    *      *  *           ****    **            *    *   *  *  **         *        *    *  *   *          
-#        ****   ****    *     ***   *   *          ****  ***             *     ***    ****         *****    *    *   *   ****      
-#                                                                                                                                  
-#  <[===========================================================================================================================]> 
+#  <[===========================================================================================================================]>
+#
+#        ***            *           *                                  *   *                       *        *    *
+#       *   *  *   *          ***   *  *           ***    ****          * *    ***   *   *         *             *  *    ***
+#       *   *  *   *    *    *      ***               *  **              *    *   *  *   *         *        *    ***    * **
+#       *  **  *  **    *    *      *  *           ****    **            *    *   *  *  **         *        *    *  *   *
+#        ****   ****    *     ***   *   *          ****  ***             *     ***    ****         *****    *    *   *   ****
+#
+#  <[===========================================================================================================================]>
 
 [shortcuts]
 
@@ -657,15 +694,15 @@ zoom_preset5 = "F5"
 # =
 zoom_reset = "="
 
-#  <[===================================================================]> 
-#                                                                          
-#       ****                  *            ****                            
-#       *   *   ***    ***   ***           *   *   ***    ***    ***       
-#       ****   *   *      *   *            ****       *  *      * **       
-#       *   *  *   *   ****   *            *  *    ****  *      *          
-#       ****    ***    ****   **           *   *   ****   ***    ****      
-#                                                                          
-#  <[===================================================================]> 
+#  <[===================================================================]>
+#
+#       ****                  *            ****
+#       *   *   ***    ***   ***           *   *   ***    ***    ***
+#       ****   *   *      *   *            ****       *  *      * **
+#       *   *  *   *   ****   *            *  *    ****  *      *
+#       ****    ***    ****   **           *   *   ****   ***    ****
+#
+#  <[===================================================================]>
 
 [ui]
 # Skip the reveal box animation, and just open the boxes
@@ -690,6 +727,12 @@ disable_move_keys = false
 # ⚠️ EXPERIMENTAL: Prevent the standard toast banners from working
 disable_toast_banners = false
 
+# Show only the first popup advert and suppress subsequent popup adverts.
+only_show_first_popup = false
+
+# Show the newest Haven help-history entries first.
+reverse_haven_history = true
+
 # Subgroup: Auto Confirm
 # ----------------------
 
@@ -701,6 +744,9 @@ auto_confirm_ft_upgrade = false
 #   "warp" - Automatically choose regular warp
 #   "jump" - Automatically choose instant jump
 auto_confirm_instant_warp = "none"
+
+# Skip the Excelsior Decloaking Deflector confirmation popup.
+auto_confirm_reveal_ability = false
 
 # Comma-separated ship hull names for which the instant-warp popup is always shown, overriding all automatic actions
 instant_warp_always_ask = ""
@@ -728,6 +774,9 @@ disable_galaxy_chat = false
 
 # Change to true to remove Veil Chat from the game
 disable_veil_chat = false
+
+# Show player title rows in chat messages.
+show_player_title = true
 
 # Subgroup: Chest Purchases
 # -------------------------
@@ -759,6 +808,9 @@ extend_donation_slider = true
 # Use the Left and Right arrow keys to select the previous or next ship in the fleet management dock
 arrow_keys_to_select_ship = true
 
+# Keep the dock selection in sync with Manage Ships.
+dock_syncmanagement = true
+
 # Double-click a ship in the fleet management dock to assign it instead of selecting it and then clicking Assign
 double_click_to_assign_ship = false
 
@@ -768,29 +820,34 @@ pinned_ships = ""
 # Subgroup: HUD
 # -------------
 
-
-# HUD visibility mode: auto, always, or never
+# HUD visibility mode: auto, show, or hide
 #   "auto" - Use the game's default visibility behaviour
-#   "always" - Always show this HUD item
-#   "never" - Always hide this HUD item
+#   "show" - Always show this HUD item
+#   "hide" - Always hide this HUD item
+hud_daily_goals = "auto"
+
+# HUD visibility mode: auto, show, or hide
+#   "auto" - Use the game's default visibility behaviour
+#   "show" - Always show this HUD item
+#   "hide" - Always hide this HUD item
 hud_field_training = "auto"
 
-# HUD visibility mode: auto, always, or never
+# HUD visibility mode: auto, show, or hide
 #   "auto" - Use the game's default visibility behaviour
-#   "always" - Always show this HUD item
-#   "never" - Always hide this HUD item
+#   "show" - Always show this HUD item
+#   "hide" - Always hide this HUD item
 hud_missions = "auto"
 
-# HUD visibility mode: auto, always, or never
+# HUD visibility mode: auto, show, or hide
 #   "auto" - Use the game's default visibility behaviour
-#   "always" - Always show this HUD item
-#   "never" - Always hide this HUD item
+#   "show" - Always show this HUD item
+#   "hide" - Always hide this HUD item
 hud_outposts = "auto"
 
-# HUD visibility mode: auto, always, or never
+# HUD visibility mode: auto, show, or hide
 #   "auto" - Use the game's default visibility behaviour
-#   "always" - Always show this HUD item
-#   "never" - Always hide this HUD item
+#   "show" - Always show this HUD item
+#   "hide" - Always hide this HUD item
 hud_q_trials = "auto"
 
 # Subgroup: Options
@@ -838,15 +895,15 @@ show_player_cargo = true
 # Set to true to always show the rewards for selected ships/stations
 show_station_cargo = true
 
-#  <[========================================================================================]> 
-#                                                                                               
-#       *   *                                *                   ****   *                       
-#       *  *    ***    ***   ****                 ***           *      ***     ***   ****       
-#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *      
-#       *  *   *      *      ****            *    *  *              *   *     *      ****       
-#       *   *   ****   ****  *               *    *  *          ****    **     ****  *          
-#                                                                                               
-#  <[========================================================================================]> 
+#  <[========================================================================================]>
+#
+#       *   *                                *                   ****   *
+#       *  *    ***    ***   ****                 ***           *      ***     ***   ****
+#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *
+#       *  *   *      *      ****            *    *  *              *   *     *      ****
+#       *   *   ****   ****  *               *    *  *          ****    **     ****  *
+#
+#  <[========================================================================================]>
 
 [sync]
 
@@ -857,13 +914,16 @@ show_station_cargo = true
 away_assignments = true
 
 # Do you want to sync battlelogs?
-battlelogs = true
+battlelogs = false
 
 # Do you want to sync buff data?
 buffs = true
 
 # Do you want to sync building data?
 buildings = true
+
+# Do you want to sync Haven data?
+haven = true
 
 # Do you want to sync inventory data?
 inventory = true
@@ -919,43 +979,43 @@ resolver_cache_ttl = 300
 # Should SSL Certificates be checked?
 verify_ssl = true
 
-#  <[========================================================================================]> 
-#                                                                                               
-#       *   *                                *                   ****   *                       
-#       *  *    ***    ***   ****                 ***           *      ***     ***   ****       
-#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *      
-#       *  *   *      *      ****            *    *  *              *   *     *      ****       
-#       *   *   ****   ****  *               *    *  *          ****    **     ****  *          
-#                                                                                               
-#  <[========================================================================================]> 
+#  <[========================================================================================]>
+#
+#       *   *                                *                   ****   *
+#       *  *    ***    ***   ****                 ***           *      ***     ***   ****
+#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *
+#       *  *   *      *      ****            *    *  *              *   *     *      ****
+#       *   *   ****   ****  *               *    *  *          ****    **     ****  *
+#
+#  <[========================================================================================]>
 
 [sync.targets.stfcdata]
 token = ""
 url = "https://sync.stfcdata.de"
 
-#  <[========================================================================================]> 
-#                                                                                               
-#       *   *                                *                   ****   *                       
-#       *  *    ***    ***   ****                 ***           *      ***     ***   ****       
-#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *      
-#       *  *   *      *      ****            *    *  *              *   *     *      ****       
-#       *   *   ****   ****  *               *    *  *          ****    **     ****  *          
-#                                                                                               
-#  <[========================================================================================]> 
+#  <[========================================================================================]>
+#
+#       *   *                                *                   ****   *
+#       *  *    ***    ***   ****                 ***           *      ***     ***   ****
+#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *
+#       *  *   *      *      ****            *    *  *              *   *     *      ****
+#       *   *   ****   ****  *               *    *  *          ****    **     ****  *
+#
+#  <[========================================================================================]>
 
 [sync.targets.nextspocksclub]
 token = ""
 url = "https://next.spocks.club/sync/ingress/"
 
-#  <[========================================================================================]> 
-#                                                                                               
-#       *   *                                *                   ****   *                       
-#       *  *    ***    ***   ****                 ***           *      ***     ***   ****       
-#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *      
-#       *  *   *      *      ****            *    *  *              *   *     *      ****       
-#       *   *   ****   ****  *               *    *  *          ****    **     ****  *          
-#                                                                                               
-#  <[========================================================================================]> 
+#  <[========================================================================================]>
+#
+#       *   *                                *                   ****   *
+#       *  *    ***    ***   ****                 ***           *      ***     ***   ****
+#       ***    * **   * **   *   *           *    *  *           ***    *     * **   *   *
+#       *  *   *      *      ****            *    *  *              *   *     *      ****
+#       *   *   ****   ****  *               *    *  *          ****    **     ****  *
+#
+#  <[========================================================================================]>
 
 [sync.targets.spocksclub]
 token = ""
