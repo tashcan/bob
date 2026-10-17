@@ -15,6 +15,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <locale>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <optional>
@@ -728,8 +729,9 @@ int main(int argc, char** argv)
       Require(writes.empty() && ReadAll(reads) == defaults, "invalid input mutated state");
       modal.reset();
     };
-    for (const auto* text : {"", "nan", "inf", "5garbage", "-1"})
+    for (const auto* text : {"", "nan", "inf", "5garbage", "-1", "+5", "0x1p2", "1e1000", "1e-1000", "4 75"})
       invalid("graphics.keyboard_zoom_speed", text);
+    invalid("graphics.system_pan_momentum_falloff", "1e-1000");
     invalid("control.select_timer", "1.5");
     invalid("control.select_timer", "2147483648");
     invalid("ui.cargo_significant_decimals", "7");
@@ -737,6 +739,24 @@ int main(int argc, char** argv)
     invalid("ui.daily_bulk_claim_factions", "not-a-faction");
     invalid("ui.disabled_banner_types", "not-a-banner");
     invalid("graphics.loader_image", (directory / "missing.png").string());
+
+    // Exact numeric entry keeps dot/scientific syntax even when the user's
+    // global C++ locale uses a comma decimal separator.
+    struct CommaDecimal : std::numpunct<char> {
+      char do_decimal_point() const override
+      { return ','; }
+    };
+    const auto previousLocale = std::locale::global(std::locale(std::locale::classic(), new CommaDecimal));
+    auto* numeric = models.at("graphics.keyboard_zoom_speed").exact;
+    numeric->invoke(0);
+    Require(modal && modal->validate(" 4.75e2 ").empty() && !modal->validate("4,75e2").empty(),
+            "float entry depends on the process locale");
+    Require(modal->commit(" 4.75e2 ") && Config::Get().keyboard_zoom_speed == 475,
+            "dot/scientific float did not reach the native value");
+    modal.reset();
+    models.at("graphics.keyboard_zoom_speed").reset();
+    std::locale::global(previousLocale);
+    Require(ReadAll(reads) == defaults, "numeric locale test did not restore the baseline");
 
     // A stale exact editor and a stale prepared reset cannot overwrite a later
     // native shortcut mutation. No worker/config-file behavior is simulated.

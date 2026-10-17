@@ -16,8 +16,10 @@
 #include <cmath>
 #include <filesystem>
 #include <limits>
+#include <locale>
 #include <memory>
 #include <optional>
+#include <sstream>
 #include <string_view>
 #include <type_traits>
 
@@ -72,13 +74,30 @@ namespace
     text = Trim(text);
     if (text.empty())
       return {};
-    T          value{};
-    const auto result = std::from_chars(text.data(), text.data() + text.size(), value);
-    if (result.ec != std::errc{} || result.ptr != text.data() + text.size() || value < minimum || value > maximum)
-      return {};
-    if constexpr (std::is_floating_point_v<T>)
+    T value{};
+    if constexpr (std::is_floating_point_v<T>) {
+      // Apple's floating from_chars requires macOS 26. Use the classic locale
+      // on every platform while retaining full-token and range validation.
+      if (text.front() == '+' || text.find_first_not_of("0123456789.eE+-") != text.npos)
+        return {};
+      std::istringstream input{std::string(text)};
+      input.imbue(std::locale::classic());
+      input >> std::noskipws >> value;
+      if (!input || input.peek() != std::char_traits<char>::eof())
+        return {};
       if (!std::isfinite(value))
         return {};
+      // Some stream libraries silently round underflow to zero. An explicit
+      // zero significand is valid; a nonzero value lost to underflow is not.
+      if (value == 0 && text.substr(0, text.find_first_of("eE")).find_first_not_of("-0.") != text.npos)
+        return {};
+    } else {
+      const auto result = std::from_chars(text.data(), text.data() + text.size(), value);
+      if (result.ec != std::errc{} || result.ptr != text.data() + text.size())
+        return {};
+    }
+    if (value < minimum || value > maximum)
+      return {};
     return value;
   }
 
