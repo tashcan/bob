@@ -8,7 +8,7 @@ The editor uses the same configuration values and defaults as the mod's TOML con
 
 Ordinary controls apply to the current session and save automatically. Each control reports its own save state. A failed save or an external edit conflict remains visible; another successful save does not clear it. Resolve a conflicting external edit before retrying. Unrelated TOML values and comments are preserved.
 
-Save feedback describes the current value. A later session-only change cannot retain an older Saved badge. Explicit save-preset/default shortcuts persist their zoom values; automatically using the last preset as the session default remains session-only. Defaults & Help offers Save current value for an unsaved session change.
+Save feedback describes the current value. A later session-only change cannot retain an older Saved badge. Explicit save-preset/default shortcuts persist their zoom values; automatically using the last preset as the session default remains session-only. After a save attempt in the current session, Defaults & Help offers Save current value for a later session-only change.
 
 Slider and scale-shortcut changes apply immediately and save after 250 ms without another change to that value. Orderly exit flushes pending changes. If the game vetoes a quit request, saving resumes for the continuing session. A failure to write the generated runtime-vars diagnostic does not prevent startup with a readable configuration.
 
