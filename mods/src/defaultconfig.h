@@ -63,6 +63,7 @@ namespace Graphics
   constexpr bool        use_presets_as_default          = true;
   constexpr auto        zoom                            = 5000;
   constexpr auto        haven_zoom                      = 4000.0;
+  constexpr auto        interior_zoom_scale             = 2.0; // station-interior zoom-out multiplier; 1.0 = native
   constexpr auto        fr_scale                        = 2.0;
   constexpr bool        loader_enabled                  = true; // replace LoginSequence background
   constexpr bool        loader_transition               = true; // replace TVC/SlideShow backgrounds
@@ -95,6 +96,7 @@ namespace Patches
   constexpr bool uiscalehooks               = true;
   constexpr bool zoomhooks                  = true;
   constexpr bool havenzoomhooks             = true;
+  constexpr bool interiorzoomhooks          = true;
   constexpr bool miscpatches                = true;
   constexpr bool giftsbulkclaimhooks        = true;
   constexpr bool dailyfactionbulkclaimhooks = true;
