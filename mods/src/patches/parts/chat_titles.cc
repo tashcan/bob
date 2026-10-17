@@ -47,15 +47,13 @@ bool IsChatRow(void* profile_widget)
   }
   return false;
 }
-void ClearTitleRow(void* widget)
+void HideTitleRow(void* title)
 {
-  auto* method =
-      il2cpp_class_get_method_from_name(il2cpp_object_get_class((Il2CppObject*)widget), "ClearPlayerTitleWidget", 0);
-  if (!method) {
+  auto* game_object = reinterpret_cast<GameObject*>(InvokeSelf(static_cast<Il2CppObject*>(title), "get_gameObject"));
+  if (!game_object) {
     return;
   }
-  Il2CppException* exception = nullptr;
-  il2cpp_runtime_invoke(method, widget, nullptr, &exception);
+  game_object->SetActive(false);
 }
 
 void ApplyTitleDisplay(void* profile_widget)
@@ -75,7 +73,7 @@ void ApplyTitleDisplay(void* profile_widget)
     return;
   }
 
-  ClearTitleRow(widget);
+  HideTitleRow(title);
 }
 } // namespace
 
@@ -162,6 +160,17 @@ void InstallChatTitleDisplayHooks()
       on_did_bind_context = nullptr;
     }
   }
+
+#if _WIN32
+  // These small IL2CPP bind wrappers crash independently on the Windows
+  // client when detoured. Keep the verified-safe UpdatePlayerTitle hook and
+  // preserve the native bind paths.
+  if (set_widget_data || on_did_bind_context) {
+    spdlog::warn("[ChatTitleDisplay] skipping unsafe PlayerTitleWidget bind wrappers on Windows");
+    set_widget_data     = nullptr;
+    on_did_bind_context = nullptr;
+  }
+#endif
 
   if (!update_player_title && !set_widget_data && !on_did_bind_context) {
     return;
