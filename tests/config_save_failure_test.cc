@@ -49,6 +49,9 @@ int main(int argc, char** argv)
       failed = true;
     }
     assert(failed);
+    std::string startupError;
+    assert(!SaveStartupConfigDocument(toml::table{{"enabled", true}}, path, {}, startupError));
+    assert(!startupError.empty()); // Startup continues with the loaded live value.
     std::ifstream     input(path, std::ios::binary);
     const std::string actual(std::istreambuf_iterator<char>{input}, {});
     assert(actual == original);

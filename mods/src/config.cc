@@ -2,6 +2,7 @@
 #include "config_save.h"
 #include "file.h"
 #include "patches/mapkey.h"
+#include "patches/optional_shortcuts.h"
 #include "patches/runtime_config.h"
 #include "prime/KeyCode.h"
 #include "settings/upstream_settings.h"
@@ -125,7 +126,7 @@ Config::Config()
   Load();
 }
 
-void Config::Save(const toml::table& config, const std::string_view filename, bool apply_warning)
+bool Config::Save(const toml::table& config, const std::string_view filename, bool apply_warning)
 {
   auto config_path = File::MakePath(filename, true);
   std::ostringstream config_file;
@@ -150,7 +151,12 @@ void Config::Save(const toml::table& config, const std::string_view filename, bo
     config_file << "#######################################################################\n\n";
   }
 
-  SaveConfigDocument(config, config_path, config_file.str());
+  std::string error;
+  const bool  saved = SaveStartupConfigDocument(config, config_path, config_file.str(), error);
+  if (!saved)
+    spdlog::warn("Could not write startup configuration output '{}': {}; loaded settings remain available", filename,
+                 error);
+  return saved;
 }
 
 Config& Config::Get()
@@ -1488,53 +1494,23 @@ void Config::Load()
   parse_config_shortcut(config, parsed, "toggle_instant_warp", GameFunction::ToggleAutoConfirmInstantWarp,
                         DCSH::toggle_instant_warp);
 
-  if (this->hotkeys_extended) {
-    parse_config_shortcut(config, parsed, "show_alliance", GameFunction::ShowAlliance, DCSH::show_alliance);
-
-    if (this->enable_experimental) {
-      parse_config_shortcut(config, parsed, "show_alliance_help", GameFunction::ShowAllianceHelp,
-                            DCSH::show_alliance_help);
-      parse_config_shortcut(config, parsed, "show_alliance_armada", GameFunction::ShowAllianceArmada,
-                            DCSH::show_alliance_armada);
-    }
-
-    parse_config_shortcut(config, parsed, "show_bookmarks", GameFunction::ShowBookmarks, DCSH::show_bookmarks);
-
-    if (this->enable_experimental) {
-      parse_config_shortcut(config, parsed, "show_lookup", GameFunction::ShowLookup, DCSH::show_lookup);
-    }
-
-    parse_config_shortcut(config, parsed, "set_zoom_preset1", GameFunction::SetZoomPreset1, DCSH::set_zoom_preset1);
-    parse_config_shortcut(config, parsed, "set_zoom_preset2", GameFunction::SetZoomPreset2, DCSH::set_zoom_preset2);
-    parse_config_shortcut(config, parsed, "set_zoom_preset3", GameFunction::SetZoomPreset3, DCSH::set_zoom_preset3);
-    parse_config_shortcut(config, parsed, "set_zoom_preset4", GameFunction::SetZoomPreset4, DCSH::set_zoom_preset4);
-    parse_config_shortcut(config, parsed, "set_zoom_preset5", GameFunction::SetZoomPreset5, DCSH::set_zoom_preset5);
-    parse_config_shortcut(config, parsed, "set_zoom_default", GameFunction::SetZoomDefault, DCSH::set_zoom_default);
-    parse_config_shortcut(config, parsed, "toggle_preview_locate", GameFunction::TogglePreviewLocate,
-                          DCSH::toggle_preview_locate);
-    parse_config_shortcut(config, parsed, "toggle_preview_recall", GameFunction::TogglePreviewRecall,
-                          DCSH::toggle_preview_recall);
-    parse_config_shortcut(config, parsed, "toggle_cargo_default", GameFunction::ToggleCargoDefault,
-                          DCSH::toggle_cargo_default);
-    parse_config_shortcut(config, parsed, "toggle_cargo_player", GameFunction::ToggleCargoPlayer,
-                          DCSH::toggle_cargo_player);
-    parse_config_shortcut(config, parsed, "toggle_cargo_station", GameFunction::ToggleCargoStation,
-                          DCSH::toggle_cargo_station);
-    parse_config_shortcut(config, parsed, "toggle_cargo_hostile", GameFunction::ToggleCargoHostile,
-                          DCSH::toggle_cargo_hostile);
-    parse_config_shortcut(config, parsed, "toggle_cargo_armada", GameFunction::ToggleCargoArmada,
-                          DCSH::toggle_cargo_armada);
-  }
+  shortcut_options::LoadAll(this->hotkeys_extended, this->enable_experimental,
+                            [&](const shortcut_options::Definition& definition, bool enabled) {
+                              parse_config_shortcut(config, parsed, definition.key, definition.action,
+                                                    definition.default_binding);
+                              MapKey::SetActionEnabled(definition.action, enabled);
+                            });
 
   spdlog::debug("");
 
   const bool created_config = !std::filesystem::exists(File::MakePath(File::Config()));
+  bool       created_config_saved = false;
   if (created_config) {
     message.str("");
     message << "Creating " << File::Config() << " (default config file)";
     spdlog::warn(message.str());
 
-    Config::Save(parsed, File::Config(), false);
+    created_config_saved = Config::Save(parsed, File::Config(), false);
   }
 
   message.str("");
@@ -1550,7 +1526,7 @@ void Config::Load()
   }
 
   Config::Save(parsed, File::Vars());
-  runtime_config::Configure(created_config ? parsed : config);
+  runtime_config::Configure(created_config_saved ? parsed : config);
 
   std::cout << "\n\n-----------------------------\n\n"
             << parsed << "\n\n-----------------------------\nVersion "

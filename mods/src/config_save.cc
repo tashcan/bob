@@ -31,6 +31,19 @@ void SaveConfigDocument(const toml::table& config, const std::filesystem::path& 
   ReplaceConfigText(path, bytes);
 }
 
+bool SaveStartupConfigDocument(const toml::table& config, const std::filesystem::path& path, std::string_view header,
+                               std::string& error)
+{
+  try {
+    SaveConfigDocument(config, path, header);
+    error.clear();
+    return true;
+  } catch (const std::exception& failure) {
+    error = failure.what();
+    return false;
+  }
+}
+
 std::string ReadConfigText(const std::filesystem::path& path)
 {
   std::ifstream input(path, std::ios::binary);

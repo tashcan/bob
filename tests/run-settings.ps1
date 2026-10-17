@@ -8,13 +8,13 @@ $fixtureRoot = Join-Path $testRoot ([guid]::NewGuid().ToString())
 
 function Invoke-SettingsFixture {
     param([string]$Name, [string[]]$Sources, [string[]]$TestArguments = @(),
-        [string[]]$IncludeDirectories = @())
+        [string[]]$IncludeDirectories = @(), [string[]]$LinkArguments = @())
     $executable = Join-Path $testRoot ($Name + '.exe')
     $compilerArguments = @('--driver-mode=cl', '/std:c++latest', '/EHsc', '/MT', '/DNOMINMAX')
     $compilerArguments += @($IncludeDirectories | ForEach-Object { "/I$_" })
     $compilerArguments += @('/Imods/src', '/Itests', '/Ithird_party/libil2cpp', "/I$TomlInclude",
         "/Fe$executable", "/Fo$testRoot/", '-Wno-deprecated-literal-operator')
-    & clang++ @compilerArguments @Sources
+    & clang++ @compilerArguments @Sources @LinkArguments
     if ($LASTEXITCODE -ne 0) { throw "Settings fixture compilation failed: $Name" }
     & $executable @TestArguments
     if ($LASTEXITCODE -ne 0) { throw "Settings fixture failed: $Name" }
@@ -58,7 +58,7 @@ try {
     New-Item -ItemType Directory -Force $fixtureRoot | Out-Null
     foreach ($fixture in @('boolean_settings', 'boolean_view', 'native_boolean_callback', 'page_catalog',
         'page_sections', 'settings_search', 'choice_setting', 'slider_setting', 'shortcut_editor',
-        'settings_metadata', 'persisted_setting', 'settings_maintenance')) {
+        'settings_metadata', 'persisted_setting', 'settings_maintenance', 'input_release')) {
         Invoke-SettingsFixture -Name $fixture -Sources @("tests/${fixture}_test.cc")
     }
     Invoke-SettingsFixture -Name 'upstream_settings' -Sources @('tests/upstream_settings_test.cc',
@@ -67,6 +67,14 @@ try {
         -TestArguments @('docs/settings-coverage.json', (Join-Path $fixtureRoot 'catalog'))
     Invoke-SettingsFixture -Name 'runtime_config' -Sources @('tests/runtime_config_test.cc')
     Invoke-SettingsFixture -Name 'runtime_config_writer' -Sources @('tests/runtime_config_writer_test.cc')
+    $packageIncludes = @('s/simdutf', 'e/eastl') | ForEach-Object {
+        $package = Join-Path $env:LOCALAPPDATA ('.xmake/packages/' + $_)
+        Get-ChildItem -LiteralPath $package -Directory -Recurse |
+            Where-Object Name -eq 'include' | Select-Object -First 1 -ExpandProperty FullName
+    }
+    Invoke-SettingsFixture -Name 'shortcut_options' -Sources @('tests/shortcut_hint_cache.cc',
+        'mods/src/patches/mapkey.cc', 'mods/src/patches/modifierkey.cc') -IncludeDirectories $packageIncludes `
+        -LinkArguments @('/link', '/NODEFAULTLIB:GameAssembly.lib')
     Invoke-SettingsFixture -Name 'config_save' -Sources @('tests/config_save_test.cc', 'mods/src/config_save.cc') `
         -TestArguments @(Join-Path $fixtureRoot 'created')
     Invoke-SettingsFixture -Name 'config_save_failure' -Sources @('tests/config_save_failure_test.cc') `

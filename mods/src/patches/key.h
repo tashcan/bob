@@ -30,6 +30,7 @@ public:
   static bool Down(KeyCode key);
   // Editors alone sample raw input; every ordinary consumer respects ownership.
   static bool        RawPressed(KeyCode key);
+  static bool        AnyRawPressed();
   static bool        RawDown(KeyCode key);
   static std::string Token(KeyCode key);
   inline static bool shortcutCaptureActive = false, shortcutPopupActive = false;

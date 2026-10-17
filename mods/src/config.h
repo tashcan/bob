@@ -159,7 +159,7 @@ public:
   [[nodiscard]] static HWND WindowHandle();
 #endif
 
-  static void Save(const toml::table& config, std::string_view filename, bool apply_warning = true);
+  static bool Save(const toml::table& config, std::string_view filename, bool apply_warning = true);
   void        Load();
   void        AdjustUiScale(bool scaleUp);
   void        AdjustUiShipScale(bool scaleUp);

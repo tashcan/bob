@@ -77,7 +77,7 @@ class SettingsCoverage(unittest.TestCase):
                 self.assertIn(row["key"].split(".", 1)[1], literals)
                 self.assertTrue(row["control"])
                 self.assertTrue(row["page"])
-        self.assertIn("PersistedDefinition(std::move(definition)", self.catalog)
+        self.assertRegex(self.catalog, r"PersistedDefinition\(\s*std::move\(definition\)")
         self.assertNotIn("runtime_config::SaveSetting", self.catalog,
                          "field callbacks must use their definition's serializer")
         self.assertRegex(self.catalog, r"action->metadata\s*=\s*&setting->metadata\(\)")
@@ -87,6 +87,7 @@ class SettingsCoverage(unittest.TestCase):
         keys = re.findall(
             r'parse_config_shortcut(?:_aliases)?\(config,\s*parsed,\s*"([^\"]+)"',
             source("mods/src/config.cc"))
+        keys += re.findall(r'GameFunction::\w+,\s*"([^\"]+)"', source("mods/src/patches/optional_shortcuts.h"))
         expected = {"shortcuts." + key for key in keys}
         self.assertEqual(len(keys), len(expected), "duplicate canonical shortcut registration")
         self.assertEqual(expected, set(self.inventory["shortcuts"]))
@@ -115,8 +116,8 @@ class SettingsCoverage(unittest.TestCase):
                           "keyboard_layout", "ship_shortcut_badges"):
             self.assertNotIn(f'#include "{forbidden}', self.catalog)
             self.assertNotIn(f'#include "patches/{forbidden}', self.catalog)
-        for key in ("control.enable_experimental", "graphics.system_pan_momentum"):
-            self.assertEqual(self.rows[key]["policy"], "legacy_experimental")
+        self.assertEqual(self.rows["control.enable_experimental"]["policy"], "experimental_shortcuts")
+        self.assertEqual(self.rows["graphics.system_pan_momentum"]["policy"], "legacy_experimental")
 
 
 if __name__ == "__main__":

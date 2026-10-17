@@ -1,3 +1,4 @@
+#include "settings/native_view_state.h"
 #include "settings/value_settings.h"
 #include <cassert>
 #include <iostream>
@@ -77,5 +78,23 @@ int main()
   ValueSetting<bool> second(std::move(throwing));
   assert(second.SetFromUser(true, second.Observe()).outcome == Outcome::AppliedVerified);
   assert(second.save_status().state == SaveState::Unavailable);
+  int                  selected = 0;
+  SaveStatus           choiceDisk{SaveState::Pending, 1};
+  ValueDefinition<int> choiceDefinition{"choice", "Mode", [&] { return ValueReadResult<int>::Known(selected, 1); },
+                                        [&](int desired, std::uint64_t) {
+                                          selected = desired;
+                                          return ApplyResult::Applied;
+                                        }};
+  choiceDefinition.save_status = [&] { return choiceDisk; };
+  ChoiceSetting   choice(std::move(choiceDefinition), {"First", "Second"});
+  NativeViewState styled(choice, 0);
+  styled.Bind();
+  for (const auto status :
+       {SaveState::Pending, SaveState::Saved, SaveState::Conflict, SaveState::Failed, SaveState::Unavailable}) {
+    choiceDisk.state = status;
+    const auto label = styled.presentation_label();
+    assert(label.find(choice.state().status_text()) != std::string::npos);
+    assert(label.starts_with("First\n<size=75%>")); // Styled and ordinary adapters use this same text.
+  }
   std::cout << "Setting metadata/reset/retry/persistence-readback fixtures passed\n";
 }

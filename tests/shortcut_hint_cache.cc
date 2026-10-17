@@ -1,7 +1,8 @@
 // Link against the built mods library. Only Unity-dependent Key operations are stubbed;
 // MapKey parsing, ModifierKey parsing, binding detection, and hint caching are production code.
-#include "patches/mapkey.h"
 #include "defaultconfig.h"
+#include "patches/mapkey.h"
+#include "patches/optional_shortcuts.h"
 #include <array>
 
 #include <cstdlib>
@@ -130,6 +131,31 @@ int main()
         "Overlap advice differs from the existing physical minimum-modifier matcher");
   Check(MapKey::ReplaceBindings(galaxy, {}) && !MapKey::HasBinding(galaxy) && MapKey::GetShortcutHint(galaxy).empty(),
         "Removing all alternatives did not unbind the action");
+  // Exercise the exact optional startup catalog in all flag combinations.
+  for (const bool extended : {false, true})
+    for (const bool experimental : {false, true}) {
+      held.fill(false);
+      held[static_cast<int>(KeyCode::F7)] = true;
+      unsigned count                      = 0;
+      shortcut_options::LoadAll(extended, experimental, [&](const auto& definition, bool enabled) {
+        ++count;
+        MapKey::RegisterAction(definition.action, definition.key, definition.default_binding);
+        Check(MapKey::ReplaceBindings(definition.action, {MapKey::Parse("F7")}), "startup binding load failed");
+        MapKey::SetActionEnabled(definition.action, enabled);
+        Check(MapKey::Definition(definition.action).key == definition.key
+                  && MapKey::Bindings(definition.action).size() == 1,
+              "inactive shortcut metadata/bindings disappeared");
+        Check(enabled == (extended && (!definition.experimental || experimental)),
+              "startup flags misclassified action");
+        Check(MapKey::IsDown(definition.action) == enabled && MapKey::IsPressed(definition.action) == enabled,
+              "disabled optional action reached dispatch");
+        if (!enabled) {
+          Check(!MapKey::ReplaceBindings(definition.action, {}), "inactive action admitted editor mutation");
+          Check(MapKey::GetShortcutHint(definition.action).empty(), "inactive action advertised a working hint");
+        }
+      });
+      Check(count == 18, "optional shortcut catalog coverage drift");
+    }
   std::cout << "Shortcut hint and movement binding tests passed\n";
 
 }

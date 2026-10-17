@@ -352,19 +352,7 @@ void Render(ValueWidget& view, auto original, Il2CppObject* widget)
   if (Target(view.widget) != widget || Target(view.context) != boundContext.get())
     return;
   Root        label(Target(view.label));
-  std::string text = view.state->label();
-  // The native row has limited label width: "Change not applied; try again" was
-  // visibly truncated after "; tr" alongside the FC label. Keep these suffixes
-  // short; recheck the full label at supported UI scales when changing wording.
-  if (!view.state->known())
-    text += " — " + std::string(view.state->unavailableReason());
-  else if (view.state->failed())
-    text += " — Retry";
-  else if (!view.state->enabled() && !view.state->disabledReason().empty())
-    text += " — " + std::string(view.state->disabledReason());
-  const auto status = view.state->status_text();
-  if (!status.empty())
-    text += "\n<size=75%>" + status + "</size>";
+  std::string text = view.state->presentation_label();
   // An enabled slider belongs to the selected mode above it. Use a quiet cyan
   // accent, not the native white selection fill (the slider is not a choice).
   if (WidgetMeta(widget).slider && view.state->enabled()) {

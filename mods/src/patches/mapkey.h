@@ -14,6 +14,7 @@ class MapKey
 public:
   struct ActionDefinition {
     std::string key, defaultBinding;
+    bool        enabled = true;
   };
   MapKey();
 
@@ -21,6 +22,7 @@ public:
   static void   AddMappedKey(GameFunction gameFunction, MapKey mappedKey);
   static void   RegisterAction(GameFunction action, std::string_view key, std::string_view defaultBinding);
   static const ActionDefinition&    Definition(GameFunction action);
+  static void                       SetActionEnabled(GameFunction action, bool enabled);
   static const std::vector<MapKey>& Bindings(GameFunction action);
   static bool                       ReplaceBindings(GameFunction action, std::vector<MapKey> bindings);
   static bool                       SameBinding(const MapKey& first, const MapKey& second);

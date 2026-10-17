@@ -4,6 +4,7 @@
 #include "page_navigation.h"
 #include "patches/key.h"
 #include "patches/screen_update_hook.h"
+#include "settings/input_release.h"
 #include "settings/settings_search.h"
 #include "str_utils.h"
 #include "ui_helpers.h"
@@ -29,7 +30,10 @@ namespace
   Il2CppGCHandle                          object{}, input{}, owner{}, panel{}, back{};
   Vec2                                    panelOffset{};
   bool                                    installed = false, movedPanel = false, backHeld = false, backEnabled = false;
-  int                                     releaseFrames = 0;
+  InputRelease                            release;
+  bool (*focused)()                  = nullptr;
+  Il2CppGCHandle drainingBack        = nullptr;
+  bool           drainingBackEnabled = false;
 
   template <class T> T ReadValue(Il2CppObject* component, const char* name, const char* type)
   {
@@ -43,8 +47,9 @@ namespace
     if (backHeld && Alive(Target(back)))
       Value(Target(back), "set_enabled", backEnabled);
     backHeld                  = false;
-    releaseFrames             = 0;
-    Key::settingsSearchActive = false;
+    if (Alive(Target(drainingBack)))
+      Value(Target(drainingBack), "set_enabled", drainingBackEnabled);
+    Free(drainingBack);
   }
   void SetQuery(std::string text)
   {
@@ -97,9 +102,20 @@ namespace
   }
   void Tick()
   {
-    if (!object && !backHeld)
+    if (!object && !release.active())
       return;
     try {
+      if (!object) {
+        if (release.Tick(focused && focused(), Key::AnyRawPressed())) {
+          ReleaseBack();
+          Key::settingsSearchActive = false;
+        }
+        return;
+      }
+      if (!focused || !focused()) {
+        CloseSettingsSearch();
+        return;
+      }
       if (!Alive(Target(object)) || !Alive(Target(owner))
           || !Boolean(UiCall(Target(object), "get_activeInHierarchy"))) {
         CloseSettingsSearch();
@@ -113,10 +129,10 @@ namespace
           Value(Target(back), "set_enabled", false);
         }
         Key::settingsSearchActive = true;
-        releaseFrames             = 2;
-      } else if (backHeld && !Key::RawPressed(KeyCode::Escape) && !Key::RawPressed(KeyCode::Return)) {
-        if (--releaseFrames <= 0)
-          ReleaseBack();
+        release.Hold();
+      } else if (release.Tick(true, Key::AnyRawPressed())) {
+        ReleaseBack();
+        Key::settingsSearchActive = false;
       }
       Root text(UiCall(Target(input), "get_text"));
       if (!text.get() || !Type(il2cpp_class_get_type(text.get()->klass), IL2CPP_TYPE_STRING))
@@ -174,11 +190,21 @@ void RegisterSettingsSearch(PageCatalog& catalog)
 }
 bool FilterSettingsSearch(const PageCatalog::Page& page, std::string_view id)
 { return page.id != rootId || query.empty() || id == resultsId || id == "community_mod.save_notice"; }
-void CloseSettingsSearch()
+void CloseSettingsSearch(bool transfer_navigation)
 {
   pending.reset();
   try {
-    ReleaseBack();
+    if (transfer_navigation || !release.active())
+      ReleaseBack();
+    else if (backHeld && Target(back)) {
+      Free(drainingBack);
+      drainingBack        = il2cpp_gchandle_new_weakref(Target(back), false);
+      drainingBackEnabled = backEnabled;
+      if (!drainingBack)
+        ReleaseBack();
+      else
+        backHeld = false;
+    }
     if (movedPanel && Alive(Target(panel)))
       Value(Target(panel), "set_offsetMax", panelOffset);
     if (Alive(Target(object))) {
@@ -191,7 +217,9 @@ void CloseSettingsSearch()
   }
   movedPanel                = false;
   backHeld                  = false;
-  Key::settingsSearchActive = false;
+  // Destruction/navigation only releases the UI. Input stays owned through
+  // focus recovery and release of every supported key/button.
+  Key::settingsSearchActive = release.active();
   for (auto* handle : {&object, &input, &owner, &panel, &back})
     Free(*handle);
 }
@@ -200,6 +228,7 @@ void OpenSettingsSearch(Il2CppObject* controller)
   if (!installed || !ActionsActive())
     return;
   try {
+    ReleaseBack();
     Retain(owner, controller);
     Retain(back, ReadField(controller, Field(controller->klass, "_backButtonViewController")));
     Root nativePanel(ReadField(controller, PageMeta().panel));
@@ -260,7 +289,8 @@ void OpenSettingsSearch(Il2CppObject* controller)
 void InstallSettingsSearch()
 {
   index.Build(Pages());
-  installed = register_screen_manager_update_callback(Tick);
+  focused   = il2cpp_resolve_icall_typed<bool()>("UnityEngine.Application::get_isFocused()");
+  installed = focused && register_screen_manager_update_callback(Tick);
 }
 } // namespace mod_settings::native
 #endif

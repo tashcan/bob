@@ -5,6 +5,7 @@
 #include "patches/screen_update_hook.h"
 #include "prime/Vector3.h"
 #include "row_style.h"
+#include "settings_search.h"
 #include "settings/native_boolean_callback.h"
 #include "settings/shortcut_popup_keys.h"
 #include "ui_helpers.h"
@@ -296,6 +297,7 @@ bool OpenShortcutPopup(ShortcutPopupCommands commands)
   if (!installed || !OnUIThread() || popup.commands.read || !InvokingActionWidget())
     return false;
   try {
+    CloseSettingsSearch(true);
     Root host(InvokingActionWidget());
     Root hostObject(UiCall(host.get(), "get_gameObject"));
     Root settings(WithType(hostObject.get(), "GetComponentInParent",

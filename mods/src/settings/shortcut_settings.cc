@@ -58,6 +58,10 @@ namespace
       return "Mod shortcut hooks are disabled in TOML.";
     if (Config::Get().use_scopely_hotkeys)
       return "Native shortcut mode is active. Disable it and restart to edit mod shortcuts.";
+    if (!MapKey::Definition(action).enabled)
+      return !Config::Get().hotkeys_extended
+                 ? "Extended shortcuts are disabled. Enable them and restart."
+                 : "Experimental shortcuts are disabled. Enable control.enable_experimental in TOML and restart.";
     if (!captureReady)
       return "Shortcut recording is unavailable for this client.";
     if (action == GameFunction::ToggleShortcutHints && !ShortcutHintControlAvailable())

@@ -343,6 +343,14 @@ std::string Key::Token(KeyCode key)
   return result;
 }
 
+bool Key::AnyRawPressed()
+{
+  for (const auto& [token, key] : mappedKeys)
+    if (key != KeyCode::None && RawPressed(key))
+      return true;
+  return false;
+}
+
 bool Key::IsInputFocused()
 {
   EnsureCurrentFrame();

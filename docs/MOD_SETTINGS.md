@@ -8,6 +8,8 @@ The editor uses the same configuration values and defaults as the mod's TOML con
 
 Ordinary controls apply to the current session and save automatically. Each control reports its own save state. A failed save or an external edit conflict remains visible; another successful save does not clear it. Resolve a conflicting external edit before retrying. Unrelated TOML values and comments are preserved.
 
+Slider and scale-shortcut changes apply immediately and save after 250 ms without another change to that value. Orderly exit flushes pending changes. If the game vetoes a quit request, saving resumes for the continuing session. A failure to write the generated runtime-vars diagnostic does not prevent startup with a readable configuration.
+
 Some controls take effect when their screen is reopened. Restart controls retain the requested preference separately from the active value, so a saved restart change is not presented as already active. Examples include native-game shortcut mode, window setup, loading assets, cargo formatting, officer sort initialization, and chat channel suppression.
 
 Open a page's **Defaults & Help** to read setting details, restore one default, retry a failed save, or review a page reset. Reset uses the default declared by the setting. A page reset applies each available setting once, including a number shown both as an exact entry and a convenience slider. The confirmation reports unavailable settings it will skip. If an included setting changes while confirmation is open, confirm again from a fresh dialog. Changes save individually; the page reset is not a transactional file batch. It leaves unrelated settings and other pages alone.
@@ -26,7 +28,7 @@ The shortcut editor covers the mod's registered actions, including actions curre
 
 Recording waits for keys to be released. Confirm the proposed binding to apply it, or cancel with Escape. Losing application focus cancels recording. Gameplay shortcuts remain suppressed while an editor owns keyboard input and until held keys have been released.
 
-Overlap warnings help identify shared keys. Some actions intentionally share bindings in different contexts, so warnings do not remove another binding automatically. Unsupported native adapters leave the relevant action unavailable for that session. Changing to or from the game's own shortcut mode requires restart.
+Overlap warnings help identify shared keys. Some actions intentionally share bindings in different contexts, so warnings do not remove another binding automatically. Unsupported native adapters leave the relevant action unavailable for that session. Changing extended shortcut availability or the game's own shortcut mode requires restart. Experimental actions remain visible when disabled and require their TOML option and restart.
 
 ## Advanced settings kept in TOML
 
@@ -38,7 +40,8 @@ These categories are explained in the Advanced page rather than exposed as ordin
 | `[sync]` and `[sync.targets.<name>]` | Dynamic service targets, credentials, connection options, and worker configuration require a separate secret-safe editor. Token values are never shown in the settings UI. Restart after editing. |
 | `audio.trace_events`, `audio.disabled_events` | Diagnostic event tracing and arbitrary internal event-name filters remain advanced configuration. |
 | `[config]` endpoint overrides | Configuration/distribution infrastructure is configured before the in-game editor starts. Restart after editing. |
-| `control.enable_experimental`, `graphics.system_pan_momentum` | Legacy parser inputs with no current gameplay consumer. The functional pan-glide option is `graphics.system_pan_momentum_falloff`. |
+| `control.enable_experimental` | Enables experimental shortcuts at startup. Configure it in TOML and restart. Disabled actions remain visible with a reason. |
+| `graphics.system_pan_momentum` | Legacy parser input with no current gameplay consumer. The functional pan-glide option is `graphics.system_pan_momentum_falloff`. |
 
 `graphics.free_resize` and `graphics.borderless_fullscreen` are Windows options. The macOS editor explains their platform scope instead of offering controls that cannot affect that client.
 

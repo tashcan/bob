@@ -89,8 +89,18 @@ bool WantsQuit(auto original)
   }
   const bool      allows = original();
   std::lock_guard lock(lifecycle);
-  if (stopped || !writer)
+  if (!writer)
     return allows;
+  if (stopped) {
+    if (!allows) {
+      // Unity may veto the resumed request. The surviving session must regain
+      // saving after the old worker has fully terminated.
+      stopped  = false;
+      draining = true;
+      resume   = false;
+    }
+    return allows;
+  }
   // A later/nested game veto must not be overwritten by an older returning vote.
   if (this_vote == vote)
     resume = allows;
@@ -132,9 +142,19 @@ void Update()
     std::lock_guard lock(lifecycle);
     if (!draining || stopped || !writer || !writer->PollStopped())
       return;
-    stopped = true;
     quit    = resume;
     resume  = false; // Consume before Unity callbacks; never retry a genuine veto.
+    if (!quit) {
+      draining = false;
+      stopped  = false;
+      if (!writer->Resume()) {
+        available = false;
+        persistence_unavailable.store(true);
+        ++adapter_status_sequence;
+      }
+      return;
+    }
+    stopped = true;
   }
   if (quit)
     request_quit(0);

@@ -269,6 +269,31 @@ int main()
       }
       Check(requests.empty());
     }
+    Begin(Outcome::Saved);
+    {
+      RuntimeConfigWriter writer("unused");
+      Check(writer.Register("ui", "mode", Value{std::string("none")}));
+      const auto first = writer.Submit("ui", "mode", std::string("warp"));
+      AwaitSave();
+      Release();
+      AwaitCompletion(writer, first);
+      writer.Stop(false);
+      const auto deadline = std::chrono::steady_clock::now() + 5s;
+      while (!writer.PollStopped()) {
+        Check(std::chrono::steady_clock::now() < deadline);
+        std::this_thread::yield();
+      }
+      Check(writer.Resume() && !writer.Resume());
+      const auto second = writer.Submit("ui", "mode", std::string("jump"));
+      AwaitCompletion(writer, second);
+      Check(second > first && writer.GetStatus("ui", "mode").outcome == Outcome::Saved);
+      Check(requests.size() == 2 && requests.back().expected == std::optional<Value>{std::string("warp")});
+      writer.Stop(false);
+      while (!writer.PollStopped()) {
+        Check(std::chrono::steady_clock::now() < deadline);
+        std::this_thread::yield();
+      }
+    }
     RuntimeConfigWriter idle("unused");
     idle.Stop(false);
     Check(idle.PollStopped());

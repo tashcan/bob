@@ -217,6 +217,16 @@ bool RuntimeConfigWriter::PollStopped()
   return true;
 }
 
+bool RuntimeConfigWriter::Resume()
+{
+  std::lock_guard lock(mutex_);
+  if (worker_.joinable() || !stopping_ || cancel_pending_.load() || !pending_.empty())
+    return false;
+  stopping_ = false;
+  finished_.store(false);
+  return true;
+}
+
 #if _WIN32
 void* RuntimeConfigWriter::NativeHandle()
 { return worker_.joinable() ? worker_.native_handle() : nullptr; }

@@ -53,9 +53,14 @@ int main(int argc, char** argv)
   } catch (const std::exception&) {
     failed = true;
   }
+  std::string startupError;
+  assert(!SaveStartupConfigDocument(config, path, {}, startupError));
+  assert(!startupError.empty());
   CloseHandle(handle);
   assert(failed);
   assert(toml::parse_file(path.string())["enabled"].value<bool>() == true);
+  assert(SaveStartupConfigDocument(config, path, {}, startupError) && startupError.empty());
+  assert(toml::parse_file(path.string())["enabled"].value<bool>() == false);
 #else
   const auto mode = std::filesystem::perms::owner_read | std::filesystem::perms::owner_write;
   std::filesystem::permissions(path, mode);

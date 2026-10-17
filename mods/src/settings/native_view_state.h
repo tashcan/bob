@@ -115,6 +115,20 @@ public:
            : choice_ ? choice_->setting().status_text()
                      : slider_->setting().status_text();
   }
+  std::string presentation_label() const
+  {
+    auto text = label();
+    if (!known())
+      text += " — " + std::string(unavailableReason());
+    else if (failed())
+      text += " — Retry";
+    else if (!enabled() && !disabledReason().empty())
+      text += " — " + std::string(disabledReason());
+    const auto status = status_text();
+    if (!status.empty())
+      text += "\n<size=75%>" + status + "</size>";
+    return text;
+  }
   class RenderScope
   {
   public:

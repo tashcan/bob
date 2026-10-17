@@ -29,6 +29,7 @@ using Value = config_edit::Value;
 struct Write {
   std::string key;
   Value       value;
+  std::chrono::milliseconds delay{};
 };
 std::vector<Write>                            writes;
 std::set<std::string>                         registered;
@@ -491,8 +492,9 @@ bool RegisterSetting(const char* section, const char* key) noexcept
   fixture::registered.insert(std::string(section) + "." + key);
   return true;
 }
-void SaveSetting(const char* section, const char* key, config_edit::Value value, std::chrono::milliseconds) noexcept
-{ fixture::writes.push_back({std::string(section) + "." + key, std::move(value)}); }
+void SaveSetting(const char* section, const char* key, config_edit::Value value,
+                 std::chrono::milliseconds delay) noexcept
+{ fixture::writes.push_back({std::string(section) + "." + key, std::move(value), delay}); }
 mod_settings::SaveStatus GetSaveStatus(const char*, const char*) noexcept
 { return {mod_settings::SaveState::Saved, fixture::writes.size()}; }
 } // namespace runtime_config
@@ -704,6 +706,8 @@ int main(int argc, char** argv)
       model.reset();
       Require(writes.size() == 2 && writes.back().key == key, "reset did not queue exactly its own field: " + key);
       Require(writes.back().value == defaults.at(key), "reset/default serialization mismatch: " + key);
+      if (key == "graphics.ui_scale" || key == "graphics.zoom_label_player_threshold")
+        Require(writes.back().delay == std::chrono::milliseconds(250), "float edits lost save debounce: " + key);
       Require(ReadAll(reads) == defaults, "reset did not restore native baseline: " + key);
     }
     Require(shipRefreshes == 2 && previousShipScale != nextShipScale, "ship scale did not refresh loaded ships");

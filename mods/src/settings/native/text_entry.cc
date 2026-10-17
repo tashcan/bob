@@ -64,20 +64,6 @@ namespace
     editor.releaseFrame  = false;
     Key::textEntryActive = false;
   }
-  bool AnyHeld()
-  {
-    static const auto supported = [] {
-      std::vector<KeyCode> keys;
-      for (int i = 1; i < static_cast<int>(KeyCode::Max); ++i)
-        if (!Key::Token(static_cast<KeyCode>(i)).empty())
-          keys.push_back(static_cast<KeyCode>(i));
-      return keys;
-    }();
-    for (const auto key : supported)
-      if (Key::RawPressed(key))
-        return true;
-    return false;
-  }
   void HoldInput(Il2CppObject* back)
   {
     auto* cls = Class("UnityEngine.UI", "UnityEngine.EventSystems", "EventSystem");
@@ -253,7 +239,7 @@ namespace
     try {
       if (!editor.request) {
         // Consume the dismissal frame and all held keys, including a mouse click.
-        if (!focused() || AnyHeld())
+        if (!focused() || Key::AnyRawPressed())
           editor.releaseFrame = false;
         else if (editor.releaseFrame)
           ReleaseInput();
@@ -268,7 +254,7 @@ namespace
       }
       // A key or pointer click that opened the editor cannot also apply/cancel it.
       if (editor.opening) {
-        if (AnyHeld())
+        if (Key::AnyRawPressed())
           return;
         editor.opening = false;
       }
@@ -320,7 +306,7 @@ bool OpenTextEntry(TextEntryRequest request)
       if (!installed)
         return false;
     }
-    CloseSettingsSearch();
+    CloseSettingsSearch(true);
     Root host(InvokingActionWidget());
     Root hostObject(UiCall(host.get(), "get_gameObject"));
     Root settings(WithType(hostObject.get(), "GetComponentInParent",

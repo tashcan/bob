@@ -105,8 +105,9 @@ namespace
                                   }};
     if (timing == Timing::Restart)
       definition.active_value = [read]() -> std::optional<T> { return read(); };
-    auto result = PersistedDefinition(std::move(definition), {section, key, help, unit, timing},
-                                      std::move(defaultValue), std::move(serializer));
+    auto result = PersistedDefinition(
+        std::move(definition), {section, key, help, unit, timing}, std::move(defaultValue), std::move(serializer),
+        std::is_floating_point_v<T> ? std::chrono::milliseconds(250) : std::chrono::milliseconds{});
     currentSavers.insert_or_assign(result.metadata.TomlKey(), [read, available, persist = result.persist] {
       if (!available() || !persist)
         return false;
@@ -452,7 +453,8 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   BOOL("controls", "control", "hotkeys_enabled", "Enable mod shortcuts", hotkeys_enabled, C::hotkeys_enabled, hotkeys,
        Live, "Use the mod's configured keyboard and mouse shortcuts.");
   BOOL("controls", "control", "hotkeys_extended", "Extended shortcut actions", hotkeys_extended, C::hotkeys_extended,
-       hotkeys, Live, "Enable the extended set of mod shortcut actions.");
+       hotkeys, Restart,
+       "Enable the extended set of mod shortcut actions. Restart to change their startup availability.");
   BOOL("controls", "control", "use_scopely_hotkeys", "Use native game shortcuts", use_scopely_hotkeys,
        C::use_scopely_hotkeys, hotkeys, Restart,
        "The game uses its own shortcuts instead of the mod's shortcut bindings.");
@@ -786,10 +788,10 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
            "them.";
   });
   Information(catalog, "community_mod.advanced", "community_mod.configuration.experimental",
-              "Legacy experimental options", [] {
-                return "control.enable_experimental and graphics.system_pan_momentum remain compatibility inputs in "
-                       "TOML. The current mod does not use them to change gameplay. Pan glide is controlled by "
-                       "system_pan_momentum_falloff.";
+              "Experimental shortcut options", [] {
+                return "control.enable_experimental controls startup availability of experimental shortcuts. "
+                       "Enable it in TOML and restart. graphics.system_pan_momentum is a legacy input with no "
+                       "current gameplay consumer; pan glide uses system_pan_momentum_falloff.";
               });
 #if !defined(_WIN32)
   Information(catalog, "community_mod.advanced", "community_mod.configuration.windows", "Windows window options", [] {

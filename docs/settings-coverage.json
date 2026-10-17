@@ -13,9 +13,9 @@
     {"key": "buffs.use_out_of_dock_power", "control": "boolean", "page": "officers", "application": "live", "treatment": "in_game"},
     {"key": "config.assets_url_override", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "config"},
     {"key": "config.settings_url", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "config"},
-    {"key": "control.enable_experimental", "treatment": "toml_only", "application": "restart", "page": "advanced", "policy": "legacy_experimental"},
+    {"key": "control.enable_experimental", "treatment": "toml_only", "application": "restart", "page": "advanced", "policy": "experimental_shortcuts"},
     {"key": "control.hotkeys_enabled", "control": "boolean", "page": "controls", "application": "live", "treatment": "in_game"},
-    {"key": "control.hotkeys_extended", "control": "boolean", "page": "controls", "application": "live", "treatment": "in_game"},
+    {"key": "control.hotkeys_extended", "control": "boolean", "page": "controls", "application": "restart", "treatment": "in_game"},
     {"key": "control.kirshara_fixes", "control": "boolean", "page": "controls", "application": "live", "treatment": "in_game"},
     {"key": "control.primary_requires_visible_target", "control": "boolean", "page": "controls", "application": "live", "treatment": "in_game"},
     {"key": "control.queue_enabled", "control": "boolean", "page": "controls", "application": "live", "treatment": "in_game"},
@@ -314,7 +314,8 @@
     "config": "Advanced configuration/distribution endpoint override; not an ordinary player preference.",
     "patches": "Emergency hook-install compatibility switch. Restart is required; not a live feature preference.",
     "sync": "Network target configuration and diagnostics remain with the secret-bearing sync configuration. Active workers may snapshot these values; no credentials are rendered.",
-    "legacy_experimental": "Retained startup compatibility inputs with no current gameplay consumer. Do not imply an in-game control changes behavior."
+    "legacy_experimental": "Legacy parser input without a current gameplay consumer.",
+    "experimental_shortcuts": "Controls startup availability of experimental shortcut actions. Edit control.enable_experimental in TOML and restart; disabled actions remain visible with a reason."
   },
   "shortcuts_policy": {
     "treatment": "in_game",

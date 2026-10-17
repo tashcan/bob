@@ -61,6 +61,13 @@ struct RuntimeConfigWriter {
   }
   bool PollStopped() const
   { return finished; }
+  bool Resume()
+  {
+    if (!stopped || !finished || cancelled)
+      return false;
+    stopped = finished = false;
+    return true;
+  }
   void* NativeHandle() const
   { return handle; }
   unsigned Submit(const char*)

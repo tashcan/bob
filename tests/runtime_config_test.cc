@@ -127,6 +127,9 @@ int main(int argc, char** argv)
   Update();
   Update();
   assert(resumes == 1);
+  runtime_config::SaveSetting("ui", "auto_confirm_instant_warp", std::string("warp"), {});
+  assert(fixture.submissions == 1 && !stopped && !draining && !fixture.stopped);
+  assert(WantsQuit([] { return true; })); // A later explicit quit still works.
 
   Reset();
   fixture.work = true;
@@ -137,6 +140,9 @@ int main(int argc, char** argv)
   fixture.finished = true;
   Update();
   assert(resumes == 0);
+
+  runtime_config::SaveSetting("ui", "auto_confirm_instant_warp", std::string("jump"), {});
+  assert(fixture.submissions == 1 && !draining && !fixture.stopped);
 
   Reset();
   assert(!WantsQuit([] { return false; }));

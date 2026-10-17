@@ -145,11 +145,7 @@ void StyleChoice(ValueWidget& view)
   Root check(Target(view.choiceCheck));
   TintImage(view.checkTint, check.get(), view.pressed ? color{0.22f, 0.22f, 0.22f, 1} : color{0.88f, 0.95f, 0.97f, 1},
             false);
-  std::string text = view.state->label();
-  if (!view.state->known())
-    text += " — " + std::string(view.state->unavailableReason());
-  else if (view.state->failed())
-    text += " — Retry";
+  std::string text = view.state->presentation_label();
   if (view.state->value().value_or(false))
     text = "<b>" + text + "</b>";
   text = std::string(view.pressed ? "<color=#383838>" : "<color=#E1F2F7>") + text + "</color>";
