@@ -63,7 +63,7 @@ For each candidate artifact, record its source commit, client build, platform an
 
 Use reversible preferences for these player checks; no claim or purchase is required:
 
-1. Open Mod Settings, visit each category, search a label and a TOML key, follow a result, and use Back. Close and reopen Settings; verify the game's own pages still work.
+1. Open Mod Settings, visit each category, search a label and a TOML key, follow a result, and use Back. Type a query, Alt-Tab away and back, then edit and clear the query on the same page. Close and reopen Settings; verify the game's own pages still work.
 2. Toggle a live option, reopen its page, then restart the client and check the saved value. Confirm native Fleet Commander preferences still use their existing game storage.
 3. Enter an exact number, an invalid number, and a valid value outside its convenience slider range. Cancel an edit and verify no change or save occurred. Check interface scale at the smallest supported window size.
 4. Change a restart preference and verify it shows pending restart while the active behavior stays unchanged. Restore it afterward.

@@ -154,7 +154,7 @@ int main()
           Check(MapKey::GetShortcutHint(definition.action).empty(), "inactive action advertised a working hint");
         }
       });
-      Check(count == 18, "optional shortcut catalog coverage drift");
+      Check(count == 21, "optional shortcut catalog coverage drift");
     }
   std::cout << "Shortcut hint and movement binding tests passed\n";
 

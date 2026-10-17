@@ -12,6 +12,9 @@ struct Definition {
   bool             experimental;
 };
 inline constexpr auto definitions = std::to_array<Definition>({
+    {GameFunction::ZoomMax, "zoom_max", DefaultConfig::Shortcuts::zoom_max, false},
+    {GameFunction::ZoomMin, "zoom_min", DefaultConfig::Shortcuts::zoom_min, false},
+    {GameFunction::ZoomReset, "zoom_reset", DefaultConfig::Shortcuts::zoom_reset, false},
     {GameFunction::ShowAlliance, "show_alliance", DefaultConfig::Shortcuts::show_alliance, false},
     {GameFunction::ShowAllianceHelp, "show_alliance_help", DefaultConfig::Shortcuts::show_alliance_help, true},
     {GameFunction::ShowAllianceArmada, "show_alliance_armada", DefaultConfig::Shortcuts::show_alliance_armada, true},
@@ -33,7 +36,8 @@ inline constexpr auto definitions = std::to_array<Definition>({
     {GameFunction::ToggleCargoHostile, "toggle_cargo_hostile", DefaultConfig::Shortcuts::toggle_cargo_hostile, false},
     {GameFunction::ToggleCargoArmada, "toggle_cargo_armada", DefaultConfig::Shortcuts::toggle_cargo_armada, false},
 });
-// Always load metadata and configured bindings; dispatch retains its startup
+// Includes both conditionally loaded actions and conditionally dispatched zoom
+// actions. Always load metadata and configured bindings; dispatch retains its startup
 // availability. Disabled actions remain discoverable with a reason in Settings.
 template <typename Load> void LoadAll(bool extended, bool experimental, Load load)
 {

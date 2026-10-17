@@ -112,13 +112,15 @@ namespace
         }
         return;
       }
-      if (!focused || !focused()) {
-        CloseSettingsSearch();
-        return;
-      }
       if (!Alive(Target(object)) || !Alive(Target(owner))
           || !Boolean(UiCall(Target(object), "get_activeInHierarchy"))) {
         CloseSettingsSearch();
+        return;
+      }
+      if (!focused || !focused()) {
+        // Alt-Tab suspends input ownership; it does not end the page visit.
+        // Retain the field/query so returning focus can edit or clear them.
+        release.Tick(false, false);
         return;
       }
       const bool editing = Boolean(UiCall(Target(input), "get_isFocused"));
