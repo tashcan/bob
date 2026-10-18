@@ -613,6 +613,17 @@ void Render(ValueWidget& view, auto original, Il2CppObject* widget)
     }
   } scope(view);
   Restore(view);
+  if (WidgetMeta(widget).selection) {
+    const auto [setting, index] = ChoiceFor(boundContext.get());
+    if (setting && setting->multiple()) {
+      // Native SetWidgetData updates only the animator, leaving Toggle.isOn
+      // stale. Synchronize it without callbacks so the first click toggles the
+      // displayed state rather than repeating it.
+      bool  checked = view.state->value().value_or(false);
+      void* args[]{&checked};
+      Call(Target(view.selectionControl), "SetIsOnWithoutNotify", 1, args);
+    }
+  }
   original(widget);
   if (Target(view.widget) != widget || Target(view.context) != boundContext.get())
     return;
