@@ -24,7 +24,7 @@ struct ValueWidget {
   std::array<bool, 2>            activeBefore{};
   Il2CppGCHandle                 editButton = nullptr, editObject = nullptr, editToken = nullptr;
   std::array<Il2CppGCHandle, 2>  editRects{};
-  std::array<vec2, 3>            editOffsets{};
+  std::array<vec2, 4>            editOffsets{};
   bool                           editInvoking        = false;
   bool                           overridden          = false;
   bool                           hidden              = false;

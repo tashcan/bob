@@ -111,11 +111,13 @@ void                        ClearInlineEditor(ValueWidget& view)
     }
     if (auto* object = Target(view.editObject); Alive(object))
       SetActive(object, false);
-    if (auto* slider = Target(view.editRects[0]); Alive(slider))
-      Value(slider, "set_offsetMax", view.editOffsets[0]);
+    if (auto* slider = Target(view.editRects[0]); Alive(slider)) {
+      Value(slider, "set_offsetMin", view.editOffsets[0]);
+      Value(slider, "set_offsetMax", view.editOffsets[1]);
+    }
     if (auto* label = Target(view.editRects[1]); Alive(label)) {
-      Value(label, "set_offsetMin", view.editOffsets[1]);
-      Value(label, "set_offsetMax", view.editOffsets[2]);
+      Value(label, "set_offsetMin", view.editOffsets[2]);
+      Value(label, "set_offsetMax", view.editOffsets[3]);
     }
   } catch (...) {
     Warn("inline editor restoration unavailable");
@@ -193,6 +195,7 @@ Il2CppObject* InlineChild(const char* name, Il2CppObject* parent)
 void BindInlineEditor(ValueWidget& view, SliderSetting& setting)
 {
   using namespace ui;
+  bool provisional = false;
   if (!setting.exact_editor)
     return;
   try {
@@ -202,26 +205,25 @@ void BindInlineEditor(ValueWidget& view, SliderSetting& setting)
       if (!inlineEditCallback.Initialize(schema, InlineEditClick))
         return;
     }
-    Root parent(Call(Target(view.widget), "get_transform"));
-    Root slider(Call(ReadField(Target(view.widget), SliderMeta().toggleField), "get_transform"));
-    Root valueLabel(Call(ReadField(Target(view.widget), SliderMeta().stateField), "get_transform"));
-    if (ChildOf(valueLabel.get(), slider.get()))
-      throw std::runtime_error("inline editor value label hierarchy");
-    Root bounds(Call(slider.get(), "get_rect"));
-    if (!bounds.get() || bounds.get()->klass != UnityClass("Rect")
-        || static_cast<float*>(il2cpp_object_unbox(bounds.get()))[2] < 230)
-      return; // Preserve the separate editor when the native layout is too narrow.
-    view.editOffsets  = {InlineOffset(slider.get(), "get_offsetMax"), InlineOffset(valueLabel.get(), "get_offsetMin"),
+    Root       parent(Call(Target(view.widget), "get_transform"));
+    Root       slider(Call(ReadField(Target(view.widget), SliderMeta().toggleField), "get_transform"));
+    Root       valueLabel(Call(ReadField(Target(view.widget), SliderMeta().stateField), "get_transform"));
+    const bool nestedValue = ChildOf(valueLabel.get(), slider.get());
+    // Move the existing control block intact; its value label may be nested.
+    view.editOffsets  = {InlineOffset(slider.get(), "get_offsetMin"), InlineOffset(slider.get(), "get_offsetMax"),
+                         InlineOffset(valueLabel.get(), "get_offsetMin"),
                          InlineOffset(valueLabel.get(), "get_offsetMax")};
     view.editRects[0] = il2cpp_gchandle_new_weakref(slider.get(), false);
-    view.editRects[1] = il2cpp_gchandle_new_weakref(valueLabel.get(), false);
-    if (!view.editRects[0] || !view.editRects[1])
+    if (!nestedValue)
+      view.editRects[1] = il2cpp_gchandle_new_weakref(valueLabel.get(), false);
+    if (!view.editRects[0] || (!nestedValue && !view.editRects[1]))
       throw std::runtime_error("inline editor layout roots");
     Root  name(reinterpret_cast<Il2CppObject*>(il2cpp_string_new("CommunityMod_InlineEdit")));
     void* find[]{name.get()};
     Root  existing(Call(parent.get(), "Find", 1, find));
     Root  object(existing.get() ? Call(existing.get(), "get_gameObject")
                                 : InlineChild("CommunityMod_InlineEdit", parent.get()));
+    provisional     = !existing.get();
     view.editObject = il2cpp_gchandle_new_weakref(object.get(), false);
     if (!view.editObject)
       throw std::runtime_error("inline editor object root");
@@ -243,9 +245,6 @@ void BindInlineEditor(ValueWidget& view, SliderSetting& setting)
     if (!view.editButton)
       throw std::runtime_error("inline editor button root");
     if (!existing.get()) {
-      const auto handle = il2cpp_gchandle_new_weakref(button.get(), false);
-      if (!handle) throw std::runtime_error("inline editor component root");
-      inlineButtons.push_back(handle);
       Root image(WithType(object.get(), "AddComponent", Class("UnityEngine.UI", "UnityEngine.UI", "Image")));
       Value(image.get(), "set_color", color{.18f, .34f, .43f, 1});
       Set(button.get(), "set_targetGraphic", image.get());
@@ -259,6 +258,8 @@ void BindInlineEditor(ValueWidget& view, SliderSetting& setting)
       Root labelObject(Call(Target(view.label), "get_gameObject"));
       Root source(WithType(labelObject.get(), "GetComponent", Class("Unity.TextMeshPro", "TMPro", "TMP_Text")));
       Root font(Call(source.get(), "get_font"));
+      if (!font.get())
+        throw std::runtime_error("inline editor font unavailable");
       Set(label.get(), "set_font", font.get());
       Value(label.get(), "set_fontSize", 22.f);
       Value(label.get(), "set_alignment", 0x202);
@@ -266,6 +267,11 @@ void BindInlineEditor(ValueWidget& view, SliderSetting& setting)
       Value(label.get(), "set_raycastTarget", false);
       Text(label.get(), "Edit");
       SetActive(caption.get(), true);
+      const auto handle = il2cpp_gchandle_new_weakref(button.get(), false);
+      if (!handle)
+        throw std::runtime_error("inline editor component root");
+      inlineButtons.push_back(handle);
+      provisional = false;
     }
     Root rect(Call(object.get(), "get_transform"));
     Value(rect.get(), "set_anchorMin", vec2{1, .5f});
@@ -284,21 +290,41 @@ void BindInlineEditor(ValueWidget& view, SliderSetting& setting)
     Root  callback(MakeDelegate(il2cpp_class_from_type(add->parameters[0]), token.get(), inlineEditCallback.method()));
     void* args[]{callback.get()};
     Invoke(add, event.get(), args);
-    auto sliderMax = view.editOffsets[0], valueMin = view.editOffsets[1], valueMax = view.editOffsets[2];
+    auto sliderMin = view.editOffsets[0], sliderMax = view.editOffsets[1];
+    sliderMin.x -= 124;
     sliderMax.x -= 124;
-    valueMin.x -= 124;
-    valueMax.x -= 124;
+    Value(slider.get(), "set_offsetMin", sliderMin);
     Value(slider.get(), "set_offsetMax", sliderMax);
-    Value(valueLabel.get(), "set_offsetMin", valueMin);
-    Value(valueLabel.get(), "set_offsetMax", valueMax);
+    if (!nestedValue) {
+      auto valueMin = view.editOffsets[2], valueMax = view.editOffsets[3];
+      valueMin.x -= 124;
+      valueMax.x -= 124;
+      Value(valueLabel.get(), "set_offsetMin", valueMin);
+      Value(valueLabel.get(), "set_offsetMax", valueMax);
+    }
     Value(button.get(), "set_enabled", true);
     SetActive(object.get(), true);
   } catch (...) {
+    // Publish only complete controls; a same-frame rebind must not find a partial child.
+    Root incomplete(provisional ? Target(view.editObject) : nullptr);
     ClearInlineEditor(view);
+    if (incomplete.get()) {
+      try {
+        Root  transform(Call(incomplete.get(), "get_transform"));
+        bool  world = false;
+        void* parentArgs[]{nullptr, &world};
+        Call(transform.get(), "SetParent", 2, parentArgs);
+        static const auto* destroy = IL2CppClassHelper(UnityClass("Object")).GetMethodInfo("Destroy", 1);
+        void*              args[]{incomplete.get()};
+        Static(destroy, args);
+      } catch (...) {
+        Warn("incomplete inline editor disposal unavailable");
+      }
+    }
     Warn("inline editor binding unavailable; using separate Edit row");
   }
 }
-void         Restore(ValueWidget& view)
+void Restore(ValueWidget& view)
 {
   RestoreTint(view.tint);
   if (view.disabled) {
