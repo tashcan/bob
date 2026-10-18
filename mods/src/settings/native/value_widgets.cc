@@ -937,6 +937,11 @@ void ChangeValue(auto original, Il2CppObject* widget, auto desired)
     Root context(Invoke(WidgetMeta(widget).getContext, widget));
     owned = OwnsValueContext(context.get());
     if (owned) {
+      if (PageRefreshInProgress() && WidgetMeta(widget).selection) {
+        const auto [setting, index] = ChoiceFor(context.get());
+        if (setting && setting->multiple())
+          return; // Native panel binding cannot authorize a checkbox edit.
+      }
       auto* view = FindValueWidget(widget);
       if (!view || view->rendering || view->binding || view->requesting || view->clearing
           || Target(view->context) != context.get())
