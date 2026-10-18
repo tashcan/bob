@@ -23,6 +23,7 @@
 void InstallUiScaleHooks();
 void InstallZoomHooks();
 void InstallHavenZoomHooks();
+void InstallInteriorZoomHooks();
 void InstallBuffFixHooks();
 #if _WIN32
 void InstallFreeResizeHooks();
@@ -149,6 +150,7 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       {"RuntimeConfig", {runtime_config::Install, &cfg.installRuntimeConfigHooks}},
       {"ZoomHooks", {InstallZoomHooks, &cfg.installZoomHooks}},
       {"HavenZoomHooks", {InstallHavenZoomHooks, &cfg.installHavenZoomHooks}},
+      {"InteriorZoomHooks", {InstallInteriorZoomHooks, &cfg.installInteriorZoomHooks}},
       {"BuffFixHooks", {InstallBuffFixHooks, &cfg.installBuffFixHooks}},
       {"ToastBannerHooks", {InstallToastBannerHooks, &cfg.installToastBannerHooks}},
       {"PanHooks", {InstallPanHooks, &cfg.installPanHooks}},

@@ -516,6 +516,10 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   NUM("camera", "graphics", "haven_zoom", "Haven zoom-out distance", haven_zoom, G::haven_zoom,
       Hook(&Config::installHavenZoomHooks), Live, "Maximum Haven camera distance. Zero uses the game's native limit.",
       "distance", 0, largest, 6000, 250);
+  NUM("camera", "graphics", "interior_zoom_scale", "Station interior zoom-out", interior_zoom_scale,
+      G::interior_zoom_scale, Hook(&Config::installInteriorZoomHooks), Live,
+      "Multiplier for the station interior's zoom-out limit. A value of 1 uses the native limit.", "multiplier",
+      1, largest, 4, .1f);
   NUM("camera", "graphics", "default_system_zoom", "Default system zoom", default_system_zoom, G::default_system_zoom,
       zoom, Live, "Camera distance used by reset/default zoom.", "distance", 0, largest, 6000, 50);
   NUM("camera", "graphics", "system_pan_momentum_falloff", "Pan glide", system_pan_momentum_falloff,

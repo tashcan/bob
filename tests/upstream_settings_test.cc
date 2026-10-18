@@ -119,6 +119,7 @@ std::map<std::string, std::function<Value()>> NativeReads()
 #endif
       {"graphics.galactic_anomaly_timer", [&cfg] { return V(cfg.galactic_anomaly_timer); }},
       {"graphics.haven_zoom", [&cfg] { return V(cfg.haven_zoom); }},
+      {"graphics.interior_zoom_scale", [&cfg] { return V(cfg.interior_zoom_scale); }},
       {"graphics.keyboard_zoom_speed", [&cfg] { return V(cfg.keyboard_zoom_speed); }},
       {"graphics.loader_enabled", [&cfg] { return V(cfg.loader_enabled); }},
       {"graphics.loader_image", [&cfg] { return V(cfg.loader_image); }},
@@ -302,6 +303,7 @@ Config::Config()
   installUiScaleHooks     = static_cast<decltype(installUiScaleHooks)>(DefaultConfig::Patches::uiscalehooks);
   installZoomHooks        = static_cast<decltype(installZoomHooks)>(DefaultConfig::Patches::zoomhooks);
   installHavenZoomHooks   = static_cast<decltype(installHavenZoomHooks)>(DefaultConfig::Patches::havenzoomhooks);
+  installInteriorZoomHooks = DefaultConfig::Patches::interiorzoomhooks;
   installBuffFixHooks     = static_cast<decltype(installBuffFixHooks)>(DefaultConfig::Patches::bufffixhooks);
   installToastBannerHooks = static_cast<decltype(installToastBannerHooks)>(DefaultConfig::Patches::toastbannerhooks);
   installPanHooks         = static_cast<decltype(installPanHooks)>(DefaultConfig::Patches::panhooks);
@@ -371,6 +373,7 @@ Config::Config()
   ui_scale_viewer     = static_cast<decltype(ui_scale_viewer)>(DefaultConfig::Graphics::ui_scale_viewer);
   zoom                = static_cast<decltype(zoom)>(DefaultConfig::Graphics::zoom);
   haven_zoom          = static_cast<decltype(haven_zoom)>(DefaultConfig::Graphics::haven_zoom);
+  interior_zoom_scale = static_cast<decltype(interior_zoom_scale)>(DefaultConfig::Graphics::interior_zoom_scale);
   fr_scale            = static_cast<decltype(fr_scale)>(DefaultConfig::Graphics::fr_scale);
   free_resize         = static_cast<decltype(free_resize)>(DefaultConfig::Graphics::free_resize);
   allow_cursor        = static_cast<decltype(allow_cursor)>(DefaultConfig::Graphics::allow_cursor);
@@ -587,9 +590,9 @@ int main(int argc, char** argv)
       Require(expected.emplace(row.at("key").get<std::string>(), row).second, "duplicate inventory key");
     }
 #if _WIN32
-    Require(expected.size() == 87, "Windows catalog count changed without a coverage decision");
+    Require(expected.size() == 88, "Windows catalog count changed without a coverage decision");
 #else
-    Require(expected.size() == 82, "macOS catalog count changed without a coverage decision");
+    Require(expected.size() == 83, "macOS catalog count changed without a coverage decision");
 #endif
     const auto reads = NativeReads();
     Require(reads.size() == expected.size(), "native field map missing an inventory key");
@@ -712,6 +715,9 @@ int main(int argc, char** argv)
         });
     withFlags({{&Config::installPanHooks, false}},
               [&] { Require(!models.at("ui.disable_move_keys").available(), "disabled pan owner advertised"); });
+    withFlags({{&Config::installInteriorZoomHooks, false}}, [&] {
+      Require(!models.at("graphics.interior_zoom_scale").available(), "disabled interior zoom owner advertised");
+    });
     withFlags({{&Config::installLoadingScreenHooks, false}, {&Config::installTransitionScreenHooks, true}}, [&] {
       Require(models.at("graphics.loader_image").available() && models.at("graphics.loader_logo_scale").available(),
               "shared transition assets incorrectly depend on loading hooks");

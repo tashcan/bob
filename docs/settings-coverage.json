@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "baseline": "f89bc47e",
+  "baseline": "5e726547",
   "scope": "Canonical settings read by Config::Load, including the settings feature itself; compatibility aliases and generated parsed diagnostics are not separate controls.",
   "settings": [
     {"key": "audio.alert_armada_battle_lost", "control": "choice", "page": "notifications", "application": "live", "treatment": "in_game"},
@@ -28,6 +28,7 @@
     {"key": "graphics.free_resize", "control": "boolean", "page": "interface", "application": "restart", "treatment": "in_game", "platforms": ["windows"], "other_platforms": "Explanatory advanced row; native Windows-only functionality is not offered on macOS."},
     {"key": "graphics.galactic_anomaly_timer", "control": "boolean", "page": "travel", "application": "live", "treatment": "in_game"},
     {"key": "graphics.haven_zoom", "control": "number", "page": "camera", "application": "live", "treatment": "in_game"},
+    {"key": "graphics.interior_zoom_scale", "control": "number", "page": "camera", "application": "live", "treatment": "in_game"},
     {"key": "graphics.keyboard_zoom_speed", "control": "number", "page": "camera", "application": "live", "treatment": "in_game"},
     {"key": "graphics.loader_enabled", "control": "boolean", "page": "loading", "application": "restart", "treatment": "in_game"},
     {"key": "graphics.loader_image", "control": "path", "page": "loading", "application": "restart", "treatment": "in_game"},
@@ -71,6 +72,7 @@
     {"key": "patches.havenzoomhooks", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "patches"},
     {"key": "patches.hotkeyhooks", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "patches"},
     {"key": "patches.instantcargocounterhooks", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "patches"},
+    {"key": "patches.interiorzoomhooks", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "patches"},
     {"key": "patches.loadingscreenhooks", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "patches"},
     {"key": "patches.loadingtiphooks", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "patches"},
     {"key": "patches.miscpatches", "treatment": "toml_only", "page": "advanced", "application": "restart", "policy": "patches"},
