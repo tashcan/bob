@@ -18,11 +18,11 @@ Open a page's **Defaults & Help** to read setting details, restore one default, 
 
 ## Numbers and lists
 
-Use **Edit** for an exact numeric value. Convenience sliders have useful ranges; an existing custom value outside that range remains visible in the exact editor and is preserved until explicitly changed. Numeric entries reject invalid syntax, non-finite numbers, and values outside a setting's valid domain. Integer controls require whole numbers. Units and setting-specific limits appear with the control.
+Single-choice checkbox groups show their setting title above the options. Use **Edit** to the right of a slider for an exact numeric value; numeric controls without a slider retain an Edit button. Convenience sliders have useful ranges; an existing custom value outside that range remains visible in the exact editor and is preserved until explicitly changed. Numeric entries reject invalid syntax, non-finite numbers, and values outside a setting's valid domain. Integer controls require whole numbers. Units and setting-specific limits appear with the control.
 
 Ship filter lists accept comma-separated names using the same matching rules as TOML. Instant warp filters accept `*`; pinned ships require names. Faction and banner lists validate names against the startup parser rather than silently discarding unknown entries. Clear a list explicitly to remove its entries.
 
-The loading image control accepts a local file path. Empty selects the embedded fallback. Selecting a path does not copy, move, or modify the image file, and the loading asset changes require restart.
+Use **Choose file** on the loading image control to select a PNG or JPEG. Cancel leaves the current path unchanged. Reset its default in **Defaults & Help** to use the embedded fallback. Selecting a path does not copy, move, or modify the image file, and the loading asset changes require restart.
 
 ## Shortcuts
 

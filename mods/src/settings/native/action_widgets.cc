@@ -158,6 +158,24 @@ void RenderAction(ActionView& view)
   void* args[]  = {&enabled};
   Call(Target(view.button), "OverrideInteractable", 1, args);
 }
+void InvokeSliderEditor(Il2CppObject* widget, Il2CppObject* context, SliderSetting& slider)
+{
+  if (!OnUIThread() || !PagesActive() || PageRefreshInProgress() || !slider.exact_editor || !OwnsValueContext(context)
+      || SliderFor(context) != &slider)
+    return;
+  Root owner(widget), bound(context);
+  if (!slider.exact_editor->Read(0).actionable() || Invoke(SliderMeta().getContext, owner.get()) != bound.get())
+    return;
+  struct Invocation {
+    Il2CppObject* previous;
+    explicit Invocation(Il2CppObject* widget)
+        : previous(invokingWidget)
+    { invokingWidget = widget; }
+    ~Invocation()
+    { invokingWidget = previous; }
+  } invocation(owner.get());
+  slider.exact_editor->invoke(0);
+}
 void RefreshActions()
 {
   if (!OnUIThread() || !actionsActive || !PagesActive() || PageRefreshInProgress())

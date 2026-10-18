@@ -10,6 +10,8 @@ using ActionRow = std::pair<ActionSetting*, std::size_t>;
 bool ActionsActive();
 // Valid only during a synchronous action invocation; never retain this pointer.
 Il2CppObject* InvokingActionWidget();
+// Reuses the normal editor owner scope after checking this slider still owns it.
+void          InvokeSliderEditor(Il2CppObject* widget, Il2CppObject* context, SliderSetting& slider);
 void          RefreshActions();
 void          RefreshActionPresentations();
 ActionRow     ActionFor(Il2CppObject* context);

@@ -3,6 +3,9 @@
 #include "config.h"
 #include "defaultconfig.h"
 #include "file.h"
+#include "image_file_setting.h"
+#include "patches/screen_update_hook.h"
+#include "native/action_widgets.h"
 #include "forbidden_tech.h"
 #include "mod_pages.h"
 #include "patches/mission_hud.h"
@@ -33,6 +36,15 @@ namespace
   constexpr auto root = "community_mod.settings";
   using Timing        = ApplyTiming;
   using Available     = std::function<bool()>;
+  std::shared_ptr<ImageFileSetting> loadingImagePicker;
+  void                              PollLoadingImagePicker()
+  {
+    if (loadingImagePicker && loadingImagePicker->Poll()) {
+#if (defined(_WIN32) && defined(_M_X64)) || defined(__APPLE__)
+      native::RefreshActions();
+#endif
+    }
+  }
   std::vector<std::shared_ptr<void>>                        adapters;
   std::map<std::string, std::function<bool()>, std::less<>> currentSavers;
 
@@ -175,7 +187,8 @@ namespace
   // slider's range-limited reader. Existing custom values remain readable and can
   // be edited without first moving a slider or normalizing the TOML file.
   template <typename T, typename Parse>
-  void ExactEntry(PageCatalog& catalog, const char* page, const std::shared_ptr<ValueSetting<T>>& setting, Parse parse)
+  std::shared_ptr<ActionSetting> ExactEntry(PageCatalog& catalog, const char* page,
+                                            const std::shared_ptr<ValueSetting<T>>& setting, Parse parse)
   {
     auto action           = Keep<ActionSetting>();
     action->identity      = setting->id() + ".exact";
@@ -228,6 +241,7 @@ namespace
                          }});
     };
     catalog.AddAction(page, *action);
+    return action;
   }
 
   template <typename T>
@@ -264,12 +278,14 @@ namespace
     if (sliderMaximum > static_cast<float>(minimum))
       definition.metadata.description += "\nThe slider is a convenience range; Edit also accepts valid custom values.";
     auto exact = Keep<ValueSetting<T>>(definition);
-    ExactEntry(catalog, page, exact,
-               [minimum, maximum](std::string_view text) { return ParseNumber<T>(text, minimum, maximum); });
+    auto editor = ExactEntry(catalog, page, exact, [minimum, maximum](std::string_view text) {
+      return ParseNumber<T>(text, minimum, maximum);
+    });
     if constexpr (std::is_same_v<T, float>) {
       if (sliderMaximum > static_cast<float>(minimum)) {
         auto slider = Keep<SliderSetting>(std::move(definition), static_cast<float>(minimum), sliderMaximum, step,
                                           std::move(available), SliderLabel::Value, 2);
+        slider->exact_editor = editor.get();
         catalog.AddSlider(page, *slider);
       }
     }
@@ -799,15 +815,18 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
       [loading, transition] { return loading() || transition(); }, Timing::Restart,
       "Path to an image readable by the game. Empty uses the embedded fallback. This does not move or copy the "
       "image."));
-  ExactEntry(catalog, "community_mod.loading", image, [](std::string_view value) -> std::optional<std::string> {
-    value = Trim(value);
-    if (value.empty())
-      return std::string{};
-    std::error_code error;
-    return std::filesystem::is_regular_file(std::filesystem::u8path(value), error) && !error
-               ? std::optional{std::string(value)}
-               : std::nullopt;
-  });
+  auto imageAction =
+      ExactEntry(catalog, "community_mod.loading", image, [](std::string_view value) -> std::optional<std::string> {
+        value = Trim(value);
+        if (value.empty())
+          return std::string{};
+        std::error_code error;
+        return std::filesystem::is_regular_file(std::filesystem::u8path(value), error) && !error
+                   ? std::optional{std::string(value)}
+                   : std::nullopt;
+      });
+  if (install_screen_manager_update_hook() && register_screen_manager_update_callback(PollLoadingImagePicker))
+    loadingImagePicker = Keep<ImageFileSetting>(image, *imageAction);
   Lists(catalog);
   Information(catalog, "community_mod.advanced", "community_mod.configuration.path", "Configuration file", [] {
     const auto path = File::MakePath(File::Config());

@@ -111,7 +111,7 @@ void ShowSections(Il2CppObject* controller, Il2CppObject* context, const PageCat
     if (OwnsValueContext(row)) {
       if (const auto choice = ChoiceFor(row); choice.first) {
         id    = choice.first->state().id();
-        index = choice.second;
+        index = choice.second + 1; // The group title precedes option zero.
       } else if (auto* slider = SliderFor(row)) {
         id = slider->state().id();
       } else if (auto* setting = SettingFor(row)) {
@@ -122,9 +122,25 @@ void ShowSections(Il2CppObject* controller, Il2CppObject* context, const PageCat
       if (auto action = ActionFor(row); action.first) {
         if (!action.first->Read(action.second).visible)
           continue;
+        bool inlineEditor = false;
+        for (auto* slider : page.Controls<SliderSetting>())
+          if (slider->exact_editor == action.first)
+            for (int j = 0, count = Count(children.get()); j < count; ++j) {
+              auto* candidate = Item(children.get(), j);
+              if (SliderFor(candidate) == slider && InlineSliderEditorActive(candidate))
+                inlineEditor = true;
+            }
+        if (inlineEditor)
+          continue;
         id    = action.first->id();
         index = action.second;
       }
+    if (id.empty() && row->klass == HeadingMeta().row.get_cls())
+      for (auto* choice : page.Controls<ChoiceSetting>())
+        if (HasLabel(row, choice->title_id().c_str())) {
+          id = choice->state().id();
+          break;
+        }
     if (id.empty())
       for (const auto& item : page.items)
         if (const auto* heading = std::get_if<PageCatalog::Heading>(&item);
@@ -395,17 +411,21 @@ NativeCallback<Il2CppString*> headingGetter;
 bool                          headingsActive = false;
 Il2CppString*                 EmptyHeadingValue(Il2CppObject*, const MethodInfo*)
 { return il2cpp_string_new(""); }
-const PageCatalog::Heading* HeadingFor(Il2CppObject* context)
+const std::string* HeadingLabelFor(Il2CppObject* context)
 {
   if (!context || context->klass != HeadingMeta().row.get_cls())
     return nullptr;
   auto* callback = reinterpret_cast<Il2CppDelegate*>(ReadField(context, HeadingMeta().queryField));
   if (!callback || callback->method != QueryMethod() || callback->method_ptr != QueryMethod()->methodPointer)
     return nullptr;
-  for (const auto& page : Pages())
+  for (const auto& page : Pages()) {
     for (const auto& item : page.items)
       if (auto* heading = std::get_if<PageCatalog::Heading>(&item); heading && HasLabel(context, heading->id.c_str()))
-        return heading;
+        return &heading->label;
+    for (auto* choice : page.Controls<ChoiceSetting>())
+      if (HasLabel(context, choice->title_id().c_str()))
+        return &choice->state().label();
+  }
   return nullptr;
 }
 void HeadingRefreshHook(auto original, Il2CppObject* widget)
@@ -417,11 +437,11 @@ void HeadingRefreshHook(auto original, Il2CppObject* widget)
     return;
   try {
     Root context(Invoke(HeadingMeta().getContext, widget));
-    if (const auto* heading = HeadingFor(context.get())) {
+    if (const auto* heading = HeadingLabelFor(context.get())) {
       Root label(ReadField(widget, HeadingMeta().label));
       // Rich text stays inside the existing local override and is cleared with
       // it. A darker bar and larger, bold label distinguish a heading from input.
-      SetRowText(widget, label.get(), "<b><size=115%><color=#9ADBE7>" + heading->label + "</color></size></b>", true);
+      SetRowText(widget, label.get(), "<b><size=115%><color=#9ADBE7>" + *heading + "</color></size></b>", true);
     }
   } catch (...) {
     Warn("settings heading unavailable");
@@ -535,7 +555,7 @@ void AddHeadingRow(Il2CppObject* director, Il2CppObject* context, Il2CppObject* 
   if (Count(children.get()) != before + 1)
     throw std::runtime_error("settings heading insertion");
   Root row(Item(children.get(), before));
-  if (!HeadingFor(row.get()) || !HasLabel(row.get(), heading.id.c_str()))
+  if (!HeadingLabelFor(row.get()) || !HasLabel(row.get(), heading.id.c_str()))
     throw std::runtime_error("settings heading identity");
 }
 
@@ -665,7 +685,7 @@ void InstallPages()
   if (std::any_of(Pages().begin(), Pages().end(), [](const auto& page) {
         return std::any_of(page.items.begin(), page.items.end(), [](const auto& item) {
           const auto* heading = std::get_if<PageCatalog::Heading>(&item);
-          return heading && !heading->collapsible;
+          return (heading && !heading->collapsible) || std::holds_alternative<ChoiceSetting*>(item);
         });
       })) {
     auto&       heading = HeadingMeta();

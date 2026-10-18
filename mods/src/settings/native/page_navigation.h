@@ -45,6 +45,8 @@ void                                  ClearSectionPage();
 void                                  RefreshPageRows();
 void                                  RefreshPageSummaries();
 void                                  RefreshConditionalSections();
+void                                  AddHeadingRow(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent,
+                                                    const PageCatalog::Heading& heading);
 void                                  AddPages(Il2CppObject* director, Il2CppObject* context);
 void                                  InstallPages();
 Il2CppString*                         EmptyHeadingValue(Il2CppObject*, const MethodInfo*);

@@ -15,6 +15,7 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <future>
 #include <iostream>
 #include <locale>
 #include <map>
@@ -493,6 +494,19 @@ std::string_view File::MakePath(std::string_view, bool, bool)
 std::u8string File::MakePath(std::string_view, bool, bool)
 { return u8"fixture://configuration/fixture-settings.toml"; }
 #endif
+
+// This catalog fixture deliberately exercises the manual-editor fallback.
+// Asynchronous image selection is covered by image_file_setting_test.cc.
+bool install_screen_manager_update_hook()
+{ return false; }
+bool register_screen_manager_update_callback(void (*)())
+{ return false; }
+std::future<std::string> OpenImageFilePicker()
+{ return {}; }
+namespace mod_settings::native
+{
+void RefreshActions() {}
+} // namespace mod_settings::native
 
 namespace runtime_config
 {

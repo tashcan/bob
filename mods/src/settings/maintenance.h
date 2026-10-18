@@ -88,10 +88,8 @@ inline void RegisterMaintenancePages(PageCatalog& catalog)
     };
     auto all      = std::make_shared<ActionSetting>();
     all->identity = id + ".reset";
-    all->label    = "Restore page defaults";
-    all->read     = [label = page.label](std::size_t) {
-      return ActionSetting::Presentation{"Restore page defaults", "Review", label};
-    };
+    all->label    = "Defaults";
+    all->read   = [label = page.label](std::size_t) { return ActionSetting::Presentation{"Defaults", "Reset", label}; };
     all->invoke = [controls, label = page.label](std::size_t) {
       std::vector<PreparedSettingAction> plans;
       std::size_t                        skipped = 0;
@@ -123,7 +121,7 @@ inline void RegisterMaintenancePages(PageCatalog& catalog)
                            return true;
                          },
                      .read_only   = true,
-                     .apply_label = "Reset page"});
+                     .apply_label = "Reset"});
     };
     add(std::move(all));
     for (const auto& control : *controls) {
@@ -151,7 +149,7 @@ inline void RegisterMaintenancePages(PageCatalog& catalog)
              .commit = [plan = std::move(plan)](
                            std::string_view) { return plan.current && plan.current() && plan.apply && plan.apply(); },
              .read_only   = true,
-             .apply_label = "Reset default"});
+             .apply_label = "Reset"});
       };
       add(std::move(details));
       auto retry      = std::make_shared<ActionSetting>();

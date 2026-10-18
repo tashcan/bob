@@ -19,6 +19,8 @@ public:
   { return state_; }
   const std::vector<std::string>& labels() const
   { return labels_; }
+  std::string title_id() const
+  { return state_.id() + ".title"; }
   std::string item_id(int index) const
   { return state_.id() + "." + std::to_string(index); }
 

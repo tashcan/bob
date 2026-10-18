@@ -60,6 +60,7 @@ void AddChoiceRows(Il2CppObject* director, Il2CppObject* context, Il2CppObject* 
 void AddSliderRow(Il2CppObject* director, Il2CppObject* context, Il2CppObject* parent, SliderSetting& setting);
 void PrepareValueViews(std::size_t count);
 bool ValueWidgetsBusy();
+bool InlineSliderEditorActive(Il2CppObject* context);
 void RefreshViews();
 void InstallChoiceAndSliderWidgets();
 bool InstallCoreValueWidgets(); // True only for this first successful installation.

@@ -5,6 +5,7 @@
 #include <cstdint>
 namespace mod_settings
 {
+struct ActionSetting;
 enum class SliderLabel { Value, Percentage };
 
 class SliderSetting
@@ -25,6 +26,7 @@ public:
     if (!std::isfinite(step) || step <= 0)
       throw std::invalid_argument("slider step");
   }
+  ActionSetting*       exact_editor = nullptr; // Canonical full-range editor, if one exists.
   ValueSetting<float>& state()
   { return state_; }
   float minimum() const
