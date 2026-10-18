@@ -94,9 +94,21 @@ const PageCatalog::Heading* CollapsibleHeadingFor(Il2CppObject* context)
 }
 bool Collapsed(const PageCatalog::Heading& heading)
 { return sectionPage.sections.Collapsed(heading); }
+// Native OnDidBindContext writes Toggle.isOn after its appearance refresh.
+// Reconcile after the complete panel bind, including partial-bind failures.
+struct MultiSelectBindScope {
+  ~MultiSelectBindScope()
+  {
+    try {
+      SynchronizeMultiSelectToggles();
+    } catch (...) {
+      Warn("multi-select post-bind reconciliation unavailable");
+    }
+  }
+};
 void ShowSections(Il2CppObject* controller, Il2CppObject* context, const PageCatalog::Page& page, bool force = false)
 {
-
+  MultiSelectBindScope reconcile;
   SyncActionRows(controller, context, page);
   Root children(Call(context, "get_Children"));
   struct OrderedRow {
@@ -275,6 +287,7 @@ void CategoryReleaseHook(auto original, Il2CppObject* widget)
 }
 void PageSelectedHook(auto original, Il2CppObject* controller, Il2CppObject* context)
 {
+  MultiSelectBindScope reconcile;
   // Keep a redirected context rooted through ClearSectionPage and native bind.
   Root searchReturn(OnUIThread() ? Target(sectionPage.searchReturn) : nullptr);
   if (OnUIThread() && pagesActive) {

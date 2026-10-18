@@ -62,6 +62,7 @@ void PrepareValueViews(std::size_t count);
 bool ValueWidgetsBusy();
 bool InlineSliderEditorActive(Il2CppObject* context);
 void RefreshViews();
+void SynchronizeMultiSelectToggles();
 void InstallChoiceAndSliderWidgets();
 bool InstallCoreValueWidgets(); // True only for this first successful installation.
 } // namespace mod_settings::native

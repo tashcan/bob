@@ -613,7 +613,7 @@ void Render(ValueWidget& view, auto original, Il2CppObject* widget)
     }
   } scope(view);
   Restore(view);
-  if (WidgetMeta(widget).selection) {
+  if (WidgetMeta(widget).selection && !PageRefreshInProgress()) {
     const auto [setting, index] = ChoiceFor(boundContext.get());
     if (setting && setting->multiple()) {
       // Native SetWidgetData updates only the animator, leaving Toggle.isOn
@@ -869,6 +869,39 @@ void SelectionTransitionHook(auto original, Il2CppObject* control, int state, bo
       Warn("settings selection presentation unavailable");
     }
     return;
+  }
+}
+void SynchronizeMultiSelectToggles()
+{
+  if (!OnUIThread() || !selectionActive)
+    return;
+  for (auto& view : ValueViews()) {
+    if (!view.state || !view.state->known() || view.rendering || view.binding || view.requesting || view.clearing)
+      continue;
+    try {
+      Root widget(Target(view.widget)), context(Target(view.context)), control(Target(view.selectionControl));
+      if (!widget.get() || !context.get() || !control.get() || widget.get()->klass != SelectionMeta().widget.get_cls()
+          || Invoke(SelectionMeta().getContext, widget.get()) != context.get() || !OwnsValueContext(context.get()))
+        continue;
+      const auto [setting, index] = ChoiceFor(context.get());
+      if (!setting || !setting->multiple())
+        continue;
+      struct Scope {
+        bool&                        rendering;
+        NativeViewState::RenderScope suppress;
+        explicit Scope(ValueWidget& view)
+            : rendering(view.rendering)
+            , suppress(*view.state)
+        { rendering = true; }
+        ~Scope()
+        { rendering = false; }
+      } scope(view);
+      bool  checked = view.state->value().value_or(false);
+      void* args[]{&checked};
+      Call(control.get(), "SetIsOnWithoutNotify", 1, args);
+    } catch (...) {
+      Warn("multi-select toggle reconciliation unavailable");
+    }
   }
 }
 void RefreshViews()
