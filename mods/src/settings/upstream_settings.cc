@@ -507,12 +507,7 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
   const Available controls    = [hotkeys, zoom, pan] { return hotkeys() || zoom() || pan(); };
   const Available extended    = [hotkeys, zoom] { return hotkeys() || zoom(); };
   const Available protections = [] {
-    const auto& config  = Config::Get();
-    bool        enabled = config.installQueueAddressGuardHooks;
-#if defined(_WIN32) && defined(_M_X64)
-    enabled = enabled || config.installActionQueueRecoveryHooks || config.installThinQueueProtectionHooks;
-#endif
-    return enabled;
+    return QueueRecoveryAvailable() || ThinQueueProtectionAvailable() || QueueAddressGuardAvailable();
   };
   const Available queue = [hotkeys, protections] {
     return hotkeys() || protections() || Config::Get().installTestPatches;

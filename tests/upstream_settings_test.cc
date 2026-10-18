@@ -41,6 +41,7 @@ std::optional<mod_settings::TextEntryRequest> modal;
 bool                                          labelsAvailable = true;
 int                                           labelRefreshes = 0, hudRefreshes = 0, shipRefreshes = 0;
 int                                           queueTrackingResets = 0;
+bool                                          queueRecoveryReady = true, thinQueueReady = true, queueAddressReady = true;
 float                                         previousShipScale = 0, nextShipScale = 0;
 
 void Require(bool condition, const std::string& message)
@@ -531,6 +532,13 @@ mod_settings::SaveStatus GetSaveStatus(const char* section, const char* key, con
 } // namespace runtime_config
 namespace mod_settings
 {
+bool QueueRecoveryAvailable()
+{ return fixture::queueRecoveryReady && Config::Get().installActionQueueRecoveryHooks; }
+bool ThinQueueProtectionAvailable()
+{ return fixture::thinQueueReady && Config::Get().installThinQueueProtectionHooks; }
+bool QueueAddressGuardAvailable()
+{ return fixture::queueAddressReady && Config::Get().installQueueAddressGuardHooks; }
+
 PageCatalog& ModPages()
 {
   static PageCatalog catalog("community_mod.settings", "Mod Settings");
@@ -747,6 +755,22 @@ int main(int argc, char** argv)
                             && !models.at("control.kirshara_fixes").available(),
                         "queue/protection owners conflated");
               });
+
+    // Configured hooks may reject metadata or fail installation: exercise the
+    // actual catalog through the production readiness aggregator.
+    queueRecoveryReady = thinQueueReady = queueAddressReady = false;
+    Require(!models.at("control.kirshara_fixes").available(), "unready protections advertised by catalog");
+    const auto beforeUnavailableReset = writes.size();
+    const auto beforeUnavailableValue = Config::Get().kirshara_fixes;
+    models.at("control.kirshara_fixes").reset();
+    Require(writes.size() == beforeUnavailableReset && Config::Get().kirshara_fixes == beforeUnavailableValue,
+            "unavailable protection reset saved or changed a value");
+    for (bool* ready : {&queueRecoveryReady, &thinQueueReady, &queueAddressReady}) {
+      *ready = true;
+      Require(models.at("control.kirshara_fixes").available(), "one installed protection did not enable catalog");
+      *ready = false;
+    }
+    queueRecoveryReady = thinQueueReady = queueAddressReady = true;
 
     // The same production parsers serve startup and the exact editor.
     const std::string bounded = "AbC suffix";
