@@ -787,8 +787,8 @@ extend_chest_purchase_max = 160
 # Subgroup: Daily Goals
 # ---------------------
 
-# Comma-separated factions (federation, klingon, romulan) for which the Daily Goals bulk-claim toggle applies; leave blank to preserve the game's default behaviour
-daily_bulk_claim_factions = ""
+# Comma-separated factions for Daily Goals bulk claim. Missing or blank uses the default below; "none" skips all three main-faction dailies. Other dailies remain eligible.
+daily_bulk_claim_factions = "federation,klingon,romulan"
 
 # Force the Daily Goals Claim All toggle back on the first time the screen is shown each session
 daily_bulk_claim_toggle_default_on = false
