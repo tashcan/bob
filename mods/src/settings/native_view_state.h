@@ -20,6 +20,8 @@ public:
       , group_(&setting)
       , index_(index)
   {
+    if (index < 0 || index >= static_cast<int>(setting.labels().size()))
+      throw std::invalid_argument("choice row index");
   }
   explicit NativeViewState(SliderSetting& setting)
       : slider_(std::in_place, setting.state())
@@ -86,15 +88,28 @@ public:
     if (!choice_)
       return std::nullopt;
     auto selected = choice_->value();
-    return selected ? std::optional<bool>(*selected == index_) : std::nullopt;
+    return selected ? std::optional<bool>(group_->Contains(*selected, index_)) : std::nullopt;
   }
   int selected() const
-  { return choice_ ? choice_->value().value_or(-1) : -1; }
+  {
+    // Native selection rows compare one index. For a multi-select, each row
+    // independently presents its own index when checked, or -1 when unchecked.
+    return choice_ ? (group_->multiple() ? (value().value_or(false) ? index_ : -1) : choice_->value().value_or(-1))
+                   : -1;
+  }
   Outcome Request(bool desired)
   {
     if (boolean_)
       return boolean_->Request(desired).outcome;
-    return choice_ ? (desired ? choice_->Request(index_).outcome : Outcome::Unchanged) : Outcome::Rejected;
+    if (!choice_)
+      return Outcome::Rejected;
+    if (!group_->multiple())
+      return desired ? choice_->Request(index_).outcome : Outcome::Unchanged;
+    const auto selected = choice_->value();
+    if (!selected)
+      return Outcome::Rejected;
+    const auto bit = 1 << index_;
+    return choice_->Request(desired ? *selected | bit : *selected & ~bit).outcome;
   }
   Outcome Request(float desired)
   {

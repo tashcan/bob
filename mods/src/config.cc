@@ -544,7 +544,8 @@ void read_daily_bulk_claim_factions(toml::table& config, toml::table& new_config
   const auto value =
       config["ui"]["daily_bulk_claim_factions"].value<std::string>().value_or(std::string(default_value));
   if (!ParseFactionFilter(value, factions))
-    spdlog::warn("Unrecognised faction in daily_bulk_claim_factions; expected federation, klingon or romulan. Ignoring "
+    spdlog::warn("Unrecognised faction in daily_bulk_claim_factions; expected federation, klingon, romulan, or none by "
+                 "itself. Ignoring "
                  "unknown names.");
 
   new_config.emplace<toml::table>("ui", toml::table());

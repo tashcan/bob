@@ -16,6 +16,7 @@
 #include "warp_mode.h"
 
 #include <algorithm>
+#include <array>
 #include <charconv>
 #include <cmath>
 #include <filesystem>
@@ -405,22 +406,46 @@ namespace
           "fleet management after changing them."));
       ExactEntry(catalog, page, setting, parse);
     }
-    auto factions = Keep<ValueSetting<std::string>>(MakeDefinition<std::string>(
-        "ui", "daily_bulk_claim_factions", "Daily bulk-claim factions", DefaultConfig::UI::daily_bulk_claim_factions,
-        [] { return Join(Config::Get().daily_bulk_claim_factions); },
-        [](const std::string& text) {
-          std::vector<std::string> values;
-          if (!ParseFactionFilter(text, values))
-            return false;
-          Config::Get().daily_bulk_claim_factions = std::move(values);
-          return true;
-        },
-        Hook(&Config::installDailyFactionBulkClaimHooks), Timing::ReopenView,
-        "Comma-separated faction names; reopen the daily faction claim screen after changing the list."));
-    ExactEntry(catalog, "community_mod.claims", factions, [](std::string_view text) -> std::optional<std::string> {
+    static constexpr std::array factionNames{"federation", "klingon", "romulan"};
+    const auto                  factionMask = [](const std::vector<std::string>& values) {
+      if (values.empty())
+        return 7; // Existing blank configs preserve all factions.
+      int mask = 0;
+      for (int i = 0; i < 3; ++i)
+        if (std::ranges::find(values, factionNames[i]) != values.end())
+          mask |= 1 << i;
+      return mask;
+    };
+    const auto factionText = [](int mask) {
+      if (mask == 0)
+        return std::string("none");
+      if (mask == 7)
+        return std::string{};
       std::vector<std::string> values;
-      return ParseFactionFilter(text, values) ? std::optional{Join(values)} : std::nullopt;
-    });
+      for (int i = 0; i < 3; ++i)
+        if (mask & (1 << i))
+          values.emplace_back(factionNames[i]);
+      return Join(values);
+    };
+    std::vector<std::string> defaultFactions;
+    ParseFactionFilter(DefaultConfig::UI::daily_bulk_claim_factions, defaultFactions);
+    auto factions = Keep<ChoiceSetting>(
+        MakeDefinition<int>(
+            "ui", "daily_bulk_claim_factions", "Daily bulk-claim factions", factionMask(defaultFactions),
+            [factionMask] { return factionMask(Config::Get().daily_bulk_claim_factions); },
+            [factionText](int mask) {
+              std::vector<std::string> values;
+              if (!ParseFactionFilter(factionText(mask), values))
+                return false;
+              Config::Get().daily_bulk_claim_factions = std::move(values);
+              return true;
+            },
+            Hook(&Config::installDailyFactionBulkClaimHooks), Timing::ReopenView,
+            "Select any combination of factions. Uncheck all to skip faction dailies; other dailies remain eligible. "
+            "Defaults select all factions. Reopen the daily claim screen after changing selections.",
+            "", [factionText](int mask) -> config_edit::Value { return factionText(mask); }),
+        std::vector<std::string>{"Federation", "Klingon", "Romulan"}, ChoiceMode::Multiple);
+    catalog.AddChoice("community_mod.claims", *factions);
     for (const bool notify : {false, true}) {
 #if !_WIN32
       if (notify)

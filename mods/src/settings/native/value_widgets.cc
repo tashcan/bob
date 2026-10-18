@@ -366,6 +366,18 @@ void Clear(ValueWidget& view)
   // Restoring interactability synchronously calls DoStateTransition. Suppress
   // presentation reentry until every override is restored and the slot detached.
   ClearChoiceStyle(view);
+  try {
+    if (view.selectionGroupDetached && view.state)
+      if (auto* control = Target(view.selectionControl)) {
+        NativeViewState::RenderScope suppress(*view.state);
+        void*                        args[]{Target(view.selectionGroup)};
+        Call(control, "set_group", 1, args);
+      }
+  } catch (...) {
+    Warn("settings selection group restoration unavailable");
+  }
+  Free(view.selectionGroup);
+  view.selectionGroupDetached = false;
   ClearInlineEditor(view);
   Free(view.widget);
   Free(view.context);
@@ -412,6 +424,14 @@ ValueWidget& Track(Il2CppObject* widget, Il2CppObject* context)
     if (Target(view.widget) || view.rendering || view.binding || view.requesting || view.clearing || view.editInvoking)
       continue;
     Clear(view);
+    struct BindingScope {
+      bool& binding;
+      explicit BindingScope(bool& flag)
+          : binding(flag)
+      { binding = true; }
+      ~BindingScope()
+      { binding = false; }
+    } binding(view.binding);
     auto&                        metadata = WidgetMeta(widget);
     Root                         label(ReadField(widget, metadata.labelField));
     Root                         widgetTransform(Call(widget, "get_transform"));
@@ -468,6 +488,18 @@ ValueWidget& Track(Il2CppObject* widget, Il2CppObject* context)
         BindInlineEditor(view, *SliderFor(context));
       if (metadata.selection || metadata.slider)
         view.selectionControl = weak(selectionControl.get());
+      if (metadata.selection && ChoiceFor(context).first->multiple()) {
+        // A pooled native prefab may belong to an exclusive ToggleGroup.
+        // Detach only our multi-select and restore its group when released.
+        Root group(Call(selectionControl.get(), "get_group"));
+        if (group.get()) {
+          view.selectionGroup         = weak(group.get());
+          view.selectionGroupDetached = true;
+          NativeViewState::RenderScope suppress(*view.state);
+          void*                        args[]{nullptr};
+          Call(selectionControl.get(), "set_group", 1, args);
+        }
+      }
       if (!metadata.selection)
         for (std::size_t i = 0; i < indicators.size(); ++i)
           view.indicators[i] = weak(indicators[i]);

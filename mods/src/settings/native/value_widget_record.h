@@ -19,7 +19,9 @@ struct ValueWidget {
   Il2CppGCHandle                 choiceBackground = nullptr, choiceOverrideBefore = nullptr, choiceCheck = nullptr;
   bool                           choiceStyled = false, pressed = false;
   Il2CppGCHandle                 widget = nullptr, context = nullptr, label = nullptr;
-  Il2CppGCHandle                 selectionControl = nullptr;
+  Il2CppGCHandle                 selectionControl       = nullptr;
+  Il2CppGCHandle                 selectionGroup         = nullptr;
+  bool                           selectionGroupDetached = false;
   std::array<Il2CppGCHandle, 2>  indicators{};
   std::array<bool, 2>            activeBefore{};
   Il2CppGCHandle                 editButton = nullptr, editObject = nullptr, editToken = nullptr;

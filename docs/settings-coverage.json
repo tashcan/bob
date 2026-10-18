@@ -121,7 +121,7 @@
     {"key": "ui.auto_confirm_reveal_ability", "control": "boolean", "page": "claims", "application": "live", "treatment": "in_game"},
     {"key": "ui.auto_open_bulk_claim_flyout", "control": "boolean", "page": "claims", "application": "live", "treatment": "in_game"},
     {"key": "ui.cargo_significant_decimals", "control": "number", "page": "previews", "application": "reopen_view", "treatment": "in_game"},
-    {"key": "ui.daily_bulk_claim_factions", "control": "list", "page": "claims", "application": "reopen_view", "treatment": "in_game"},
+    {"key": "ui.daily_bulk_claim_factions", "control": "multi_select", "page": "claims", "application": "reopen_view", "treatment": "in_game"},
     {"key": "ui.daily_bulk_claim_toggle_default_on", "control": "boolean", "page": "claims", "application": "restart", "treatment": "in_game"},
     {"key": "ui.disable_escape_exit", "control": "boolean", "page": "interface", "application": "live", "treatment": "in_game"},
     {"key": "ui.disable_escape_exit_timer", "control": "number", "page": "interface", "application": "live", "treatment": "in_game"},

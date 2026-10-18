@@ -56,7 +56,7 @@ inline void RegisterMaintenancePages(PageCatalog& catalog)
                              if constexpr (std::is_same_v<T, BooleanSetting*>)
                                return std::string(defaultValue ? "On" : "Off");
                              else if constexpr (std::is_same_v<T, ChoiceSetting*>)
-                               return value->labels().at(defaultValue);
+                               return value->SelectionLabel(defaultValue);
                              else
                                return std::to_string(defaultValue);
                            },

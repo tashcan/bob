@@ -75,7 +75,7 @@ bool ParseFactionFilter(std::string_view value, std::vector<std::string>& factio
   static constexpr std::array kKnownFactions{"federation", "klingon", "romulan"};
 
   factions.clear();
-  bool valid = true;
+  bool valid = true, none = false;
   for (const auto& token : StrSplit(std::string(value), ',')) {
     const auto stripped = StripAsciiWhitespace(token);
     if (stripped.empty())
@@ -83,6 +83,10 @@ bool ParseFactionFilter(std::string_view value, std::vector<std::string>& factio
 
     auto lowered = AsciiStrToLower(stripped);
 
+    if (lowered == "none") {
+      none = true;
+      continue;
+    }
     if (std::ranges::find(kKnownFactions, lowered) == kKnownFactions.end()) {
       valid = false;
       continue;
@@ -91,6 +95,12 @@ bool ParseFactionFilter(std::string_view value, std::vector<std::string>& factio
     if (std::ranges::find(factions, lowered) == factions.end()) {
       factions.emplace_back(std::move(lowered));
     }
+  }
+  if (none) {
+    // Keep a nonempty sentinel: an empty filter preserves native claiming.
+    // A contradictory manual list fails closed for the three main factions.
+    valid    = valid && factions.empty();
+    factions = {"none"};
   }
   return valid;
 }

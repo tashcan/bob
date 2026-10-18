@@ -5,6 +5,7 @@
 #include "file.h"
 #include "patches/runtime_config.h"
 #include "settings/mod_pages.h"
+#include "settings/native_view_state.h"
 #include "settings/settings_search.h"
 #include "settings/text_entry.h"
 #include "settings/upstream_settings.h"
@@ -240,19 +241,19 @@ struct Model {
   mod_settings::ActionSetting*                                   exact = nullptr;
 };
 
-template <typename T> Model Typed(mod_settings::ValueSetting<T>& state, int choices = 0)
+template <typename T> Model Typed(mod_settings::ValueSetting<T>& state, int choices = 0, bool multiple = false)
 {
   Require(state.default_value().has_value(), "typed definition missing default: " + state.id());
   return {&state.metadata(), [&state] { state.Reset(state.Observe()); },
           [&state] { return state.Observe().state.known(); },
-          [&state, choices](const Json&, const std::filesystem::path&) {
+          [&state, choices, multiple](const Json&, const std::filesystem::path&) {
             const auto before = state.Observe();
             Require(before.state.known(), "unavailable model: " + state.id());
             T desired;
             if constexpr (std::is_same_v<T, bool>)
               desired = !*before.state.value;
             else if constexpr (std::is_same_v<T, int>)
-              desired = (*before.state.value + 1) % choices;
+              desired = multiple ? (*before.state.value ^ 1) : (*before.state.value + 1) % choices;
             else
               desired = *before.state.value + static_cast<T>(.01f);
             const auto result = state.SetFromUser(desired, before).outcome;
@@ -633,7 +634,7 @@ int main(int argc, char** argv)
               } else if constexpr (std::is_same_v<P, ChoiceSetting*>) {
                 value->state().Observe();
                 models.try_emplace(value->state().metadata().TomlKey(),
-                                   Typed(value->state(), static_cast<int>(value->labels().size())));
+                                   Typed(value->state(), static_cast<int>(value->labels().size()), value->multiple()));
               } else if constexpr (std::is_same_v<P, SliderSetting*>) {
                 value->state().Observe();
                 models.try_emplace(value->state().metadata().TomlKey(), Typed(value->state()));
@@ -757,10 +758,62 @@ int main(int argc, char** argv)
       Require(modal && modal->validate(text).empty() && modal->commit(text), "production parser rejected " + text);
       modal.reset();
     };
-    edit("ui.daily_bulk_claim_factions", " federation ,klingon ,romulan ");
-    Require(Config::Get().daily_bulk_claim_factions == std::vector<std::string>({"federation", "klingon", "romulan"}),
+    std::vector<std::string> parsedFactions;
+    Require(ParseFactionFilter(" federation ,klingon ,romulan ", parsedFactions)
+                && parsedFactions == std::vector<std::string>({"federation", "klingon", "romulan"}),
             "faction whitespace normalization failed");
+    Require(ParseFactionFilter(" NoNe , ", parsedFactions) && parsedFactions == std::vector<std::string>{"none"},
+            "explicit no-factions setting was not retained");
+    Require(!ParseFactionFilter("none,federation", parsedFactions)
+                && parsedFactions == std::vector<std::string>{"none"},
+            "contradictory none filter did not fail closed");
+    Require(!ParseFactionFilter("not-a-faction", parsedFactions), "unknown faction accepted");
+    Require(ParseFactionFilter("", parsedFactions) && parsedFactions.empty(), "blank faction default changed");
+    ChoiceSetting* factionChoice = nullptr;
+    for (const auto& page : pages)
+      for (auto* choice : page.Controls<ChoiceSetting>())
+        if (choice->state().metadata().TomlKey() == "ui.daily_bulk_claim_factions")
+          factionChoice = choice;
+    Require(factionChoice && factionChoice->multiple(), "daily factions are not a multi-select");
+    NativeViewState federation(*factionChoice, 0), klingon(*factionChoice, 1), romulan(*factionChoice, 2);
+    federation.Bind();
+    klingon.Bind();
+    romulan.Bind();
+    Require(federation.value() == true && klingon.value() == true && romulan.value() == true,
+            "blank default did not select all factions");
+    for (int mask = 0; mask < 8; ++mask) {
+      const auto before  = factionChoice->state().Observe();
+      const auto outcome = factionChoice->state().SetFromUser(mask, before).outcome;
+      Require(outcome == Outcome::AppliedVerified || outcome == Outcome::Unchanged,
+              "valid faction combination rejected");
+      const auto persisted = std::get<std::string>(writes.back().value);
+      Require(persisted
+                  == (mask == 0   ? "none"
+                      : mask == 7 ? ""
+                                  : Join(Config::Get().daily_bulk_claim_factions)),
+              "faction combination saved incorrectly");
+      Require(ParseFactionFilter(persisted, parsedFactions)
+                  && parsedFactions == Config::Get().daily_bulk_claim_factions,
+              "faction combination did not survive startup parsing");
+      federation.Bind();
+      klingon.Bind();
+      romulan.Bind();
+      Require(federation.value() == static_cast<bool>(mask & 1) && klingon.value() == static_cast<bool>(mask & 2)
+                  && romulan.value() == static_cast<bool>(mask & 4),
+              "faction checkbox readback mismatch");
+      Require(federation.selected() == (mask & 1 ? 0 : -1) && klingon.selected() == (mask & 2 ? 1 : -1)
+                  && romulan.selected() == (mask & 4 ? 2 : -1),
+              "native multi-select indices became exclusive");
+    }
+    Require(federation.Request(false) == Outcome::AppliedVerified, "federation did not uncheck");
+    klingon.Bind();
+    Require(klingon.Request(false) == Outcome::AppliedVerified, "klingon did not uncheck");
+    romulan.Bind();
+    Require(romulan.Request(false) == Outcome::AppliedVerified
+                && Config::Get().daily_bulk_claim_factions == std::vector<std::string>{"none"},
+            "unchecking last faction restored all instead of none");
     models.at("ui.daily_bulk_claim_factions").reset();
+    Require(Config::Get().daily_bulk_claim_factions.empty(), "faction Defaults did not restore blank/all");
     edit("ui.disabled_banner_types", "VICTORY ,DEFEAT ");
     Require(FormatBannerFilter(Config::Get().disabled_banner_types) == "Victory, Defeat", "banner parsing failed");
     models.at("ui.disabled_banner_types").reset();
@@ -808,7 +861,6 @@ int main(int argc, char** argv)
     invalid("control.select_timer", "2147483648");
     invalid("ui.cargo_significant_decimals", "7");
     invalid("ui.pinned_ships", "*");
-    invalid("ui.daily_bulk_claim_factions", "not-a-faction");
     invalid("ui.disabled_banner_types", "not-a-banner");
     invalid("graphics.loader_image", (directory / "missing.png").string());
 

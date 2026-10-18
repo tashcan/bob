@@ -20,7 +20,9 @@ Open a page's **Defaults & Help** to read setting details, restore one default, 
 
 Single-choice checkbox groups show their setting title above the options. Use **Edit** to the right of a slider for an exact numeric value; numeric controls without a slider retain an Edit button. Convenience sliders have useful ranges; an existing custom value outside that range remains visible in the exact editor and is preserved until explicitly changed. Numeric entries reject invalid syntax, non-finite numbers, and values outside a setting's valid domain. Integer controls require whole numbers. Units and setting-specific limits appear with the control.
 
-Ship filter lists accept comma-separated names using the same matching rules as TOML. Instant warp filters accept `*`; pinned ships require names. Faction and banner lists validate names against the startup parser rather than silently discarding unknown entries. Clear a list explicitly to remove its entries.
+Ship filter lists accept comma-separated names using the same matching rules as TOML. Instant warp filters accept `*`; pinned ships require names. Banner lists validate names against the startup parser rather than silently discarding unknown entries. Clear a list explicitly to remove its entries.
+
+**Daily bulk-claim factions** provides independent Federation, Klingon and Romulan checkboxes. Select any combination; uncheck all to skip those faction dailies while keeping other dailies eligible. All three checked is the default. TOML retains its comma-separated string: blank means all factions and `none` means none. Reopen Daily Goals after changing the selection.
 
 Use **Choose file** on the loading image control to select a PNG or JPEG. Cancel leaves the current path unchanged. Reset its default in **Defaults & Help** to use the embedded fallback. Selecting a path does not copy, move, or modify the image file, and the loading asset changes require restart.
 
@@ -70,7 +72,7 @@ Use reversible preferences for these player checks; no claim or purchase is requ
 3. Enter an exact number, an invalid number, and a valid value outside its convenience slider range. Cancel an edit and verify no change or save occurred. Check interface scale at the smallest supported window size.
 4. Change a restart preference and verify it shows pending restart while the active behavior stays unchanged. Restore it afterward.
 5. Review a single default and a page reset. Cancel each once, then confirm with reversible preferences. Check a conditional slider and its exact editor reset only once.
-6. Edit a ship list, faction list, banner list, and optional loading-image path. Check empty values, invalid entries, and a path containing spaces or non-ASCII characters.
+6. Edit a ship list, banner list, and optional loading-image path. Check empty values, invalid entries, and a path containing spaces or non-ASCII characters. For Daily bulk-claim factions, verify independent combinations, all unchecked, save/reopen, Defaults restoring all three, and that bulk claim skips unchecked main factions but keeps other dailies eligible.
 7. Record, cancel, replace and remove a shortcut; restore its default and undo. Include an initially `NONE` action and a modifier combination. Verify no gameplay hotkey fires while typing, recording, or releasing held keys. Use Command combinations on Mac.
 8. Switch HUD buttons through Auto, Always and Never and restore Auto. Switch fleet labels through Native and overrides, change thresholds, then change system/scene and reopen Settings.
 9. With a copy of the config, exercise a read-only file and an external edit to the same key. Check the failure stays visible after saving another key. Resolve the conflict, retry that key, and verify unrelated comments and values survive. Quit immediately after an edit and check it survives the next launch.
