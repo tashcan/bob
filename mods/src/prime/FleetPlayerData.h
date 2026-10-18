@@ -1,5 +1,7 @@
 #pragma once
 
+#include "errormsg.h"
+
 #include "BattleTargetData.h"
 #include "HullSpec.h"
 #include "RecallRequirement.h"
@@ -41,6 +43,7 @@ public:
   __declspec(property(get = __get_CurrentState)) FleetState CurrentState;
   __declspec(property(get = __get_PreviousState)) FleetState PreviousState;
   __declspec(property(get = __get_Id)) uint64_t Id;
+  __declspec(property(get = __get_Index)) int Index;
   __declspec(property(get = __get_Hull)) HullSpec* Hull;
   __declspec(property(get = __get_Address)) void* Address;
   __declspec(property(get = __get_Level)) int64_t Level;
@@ -55,6 +58,13 @@ private:
   }
 
 public:
+  int __get_Index()
+  {
+    static auto property = get_class_helper().GetProperty("Index");
+    auto* value = property.Get<int>(this);
+    return value ? *value : -1;
+  }
+
   HullSpec* __get_Hull()
   {
     static auto field = get_class_helper().GetProperty("Hull");
@@ -96,5 +106,21 @@ public:
     static auto field = get_class_helper().GetProperty("HasShip");
     auto*      value  = field.Get<bool>(this);
     return value ? *value : false;
+  }
+
+  int64_t GetLocaId()
+  {
+    static auto GetLocaIdWarn = true;
+    static auto GetLocaIdMethod = get_class_helper().GetMethod<int64_t(FleetPlayerData*)>("GetLocaId");
+
+    if (GetLocaIdMethod) {
+      return GetLocaIdMethod(this);
+    }
+    if (GetLocaIdWarn) {
+      GetLocaIdWarn = false;
+      ErrorMsg::MissingMethod("FleetPlayerData", "GetLocaId");
+    }
+
+    return 0;
   }
 };

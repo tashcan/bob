@@ -1,65 +1,80 @@
-#  +--------------------------------------------------------------+ 
-#  |                                                              | 
-#  |     #***  #****  #****   #***         #   *             #    | 
-#  |    #        #    #      #        #    #* **   #**       #    | 
-#  |     #**     #    #***   #             # * *  #   *   #***    | 
-#  |        #    #    #      #        #    #   *  #   *  #   *    | 
-#  |    #***     #    #       #***         #   *   #**    #***    | 
-#  |                                                              | 
-#  +--------------------------------------------------------------+ 
-#   Oprettet den 2026-09-17T11:10:54.288Z
-#   
+#  +--------------------------------------------------------------+
+#  |                                                              |
+#  |     #***  #****  #****   #***         #   *             #    |
+#  |    #        #    #      #        #    #* **   #**       #    |
+#  |     #**     #    #***   #             # * *  #   *   #***    |
+#  |        #    #    #      #        #    #   *  #   *  #   *    |
+#  |    #***     #    #       #***         #   *   #**    #***    |
+#  |                                                              |
+#  +--------------------------------------------------------------+
+#   Oprettet den 2026-10-17T14:08:05.827Z
+#
 #   Denne konfigurationsfil blev oprettet af https://modconfig.pages.dev
 #   og leveres, som den er. Hvis der er problemer med STFC Community Mod
 #   konfigurationen eller konfigurationsværktøjet på webstedet, bedes du overveje at rapportere
 #   dem til:
-#   
+#
 #       Discord : https://discord.gg/PrpHgs7Vjs
 #       GitHub  : https://github.com/netniV/stfc-mod
-#   
-#   Dagens konfigurationsfil præsenteres af bogstavet I og tallet 6
-#   
+#
+#   Dagens konfigurationsfil præsenteres af bogstavet C og tallet 7
+#
 
-#  <[=======================================]> 
-#                                              
-#         *               *    *               
-#        * *   *   *      *          ***       
-#       *****  *   *   ****    *    *   *      
-#       *   *  *  **  *   *    *    *   *      
-#       *   *   ****   ****    *     ***       
-#                                              
-#  <[=======================================]> 
+#  <[=======================================]>
+#
+#         *               *    *
+#        * *   *   *      *          ***
+#       *****  *   *   ****    *    *   *
+#       *   *  *  **  *   *    *    *   *
+#       *   *   ****   ****    *     ***
+#
+#  <[=======================================]>
 
 [audio]
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_armada_battle_lost = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_armada_battle_won = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_armada_created = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_defeat = "none"
+
+# Optional notification sound; none disables the alert. Requires Toast Banner Hooks.
+alert_victory = "none"
+
 # Comma-separated audio event names to suppress; leave blank to allow all audio events
 disabled_events = ""
 
 # Write audio event names to the trace log for troubleshooting
 trace_events = false
 
-#  <[======================================================================================================]> 
-#                                                                                                             
-#       *****                        *                   *               *                                    
-#       *       ***   ***     ****  ***           ***    *  *   ***           ***     ****   ***   ***        
-#       ****   *   *  *   *  **      *            *   *  ***    *  *     *    *  *   *   *  * **   *   *      
-#       *      *   *  *        **    *            *      *  *   *  *     *    *  *    ****  *      *          
-#       *       ***   *      ***     **           *      *   *  *  *     *    *  *    ***    ****  *          
-#                                                                                                             
-#  <[======================================================================================================]> 
+#  <[======================================================================================================]>
+#
+#       *****                        *                   *               *
+#       *       ***   ***     ****  ***           ***    *  *   ***           ***     ****   ***   ***
+#       ****   *   *  *   *  **      *            *   *  ***    *  *     *    *  *   *   *  * **   *   *
+#       *      *   *  *        **    *            *      *  *   *  *     *    *  *    ****  *      *
+#       *       ***   *      ***     **           *      *   *  *  *     *    *  *    ***    ****  *
+#
+#  <[======================================================================================================]>
 
 [buffs]
 # Vis altid skibes effekt uden for dok, når de ligger i dok. Standardværdien er falsk
 use_out_of_dock_power = true
 
-#  <[===============================================================================================]> 
-#                                                                                                      
-#       *   *                  **     *                                 *       *                      
-#       *  *    ***   ***     *             ****  *   *  ***     ***   ***            ***   ***        
-#       ***    *   *  *  *   ***      *    *   *  *   *  *   *      *   *       *    *   *  *  *       
-#       *  *   *   *  *  *    *       *     ****  *  **  *       ****   *       *    *   *  *  *       
-#       *   *   ***   *  *    *       *     ***    ****  *       ****   **      *     ***   *  *       
-#                                                                                                      
-#  <[===============================================================================================]> 
+#  <[===============================================================================================]>
+#
+#       *   *                  **     *                                 *       *
+#       *  *    ***   ***     *             ****  *   *  ***     ***   ***            ***   ***
+#       ***    *   *  *  *   ***      *    *   *  *   *  *   *      *   *       *    *   *  *  *
+#       *  *   *   *  *  *    *       *     ****  *  **  *       ****   *       *    *   *  *  *
+#       *   *   ***   *  *    *       *     ***    ****  *       ****   **      *     ***   *  *
+#
+#  <[===============================================================================================]>
 
 [config]
 # Ignorer dette afsnit; det er kun til udviklere
@@ -68,17 +83,23 @@ assets_url_override = ""
 # Ignorer dette afsnit; det er kun til udviklere
 settings_url = ""
 
-#  <[========================================================================================]> 
-#                                                                                               
-#       *   *                 *                     *                                  *        
-#       *  *    ***   ***    ***    ***     ***     *    ****    ***   ***     ***     *        
-#       ***    *   *  *  *    *     *   *  *   *    *    *   *      *  *  *   * **     *        
-#       *  *   *   *  *  *    *     *      *   *    *    ****    ****  *  *   *        *        
-#       *   *   ***   *  *    **    *       ***     *    *       ****  *  *    ****    *        
-#                                                                                               
-#  <[========================================================================================]> 
+#  <[========================================================================================]>
+#
+#       *   *                 *                     *                                  *
+#       *  *    ***   ***    ***    ***     ***     *    ****    ***   ***     ***     *
+#       ***    *   *  *  *    *     *   *  *   *    *    *   *      *  *  *   * **     *
+#       *  *   *   *  *  *    *     *      *   *    *    ****    ****  *  *   *        *
+#       *   *   ***   *  *    **    *       ***     *    *       ****  *  *    ****    *
+#
+#  <[========================================================================================]>
 
 [control]
+# Protect and recover Kir’Shara queues after target or address changes.
+kirshara_fixes = true
+
+# Only allow the primary action when the selected target is visible in the current view.
+primary_requires_visible_target = false
+
 # Tidsrum i ms for dobbelttryk ved valg/lokalisering af skib 1-8. Lavere = hurtigere, højere = langsommere. Standard er 500
 select_timer = 500
 
@@ -103,15 +124,15 @@ use_scopely_hotkeys = false
 # Aktivér eksperimentelle funktioner
 enable_experimental = false
 
-#  <[=========================================================================================================================================]> 
-#                                                                                                                                                
-#        ****                  **     *    *        *               *          *       *      *      *      *                                    
-#       *      ***     ***    *            *  *          ***        *   ****  ***             *      *           ***     ****   ***   ***        
-#       *  **  *   *      *  ***      *    ***      *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *      
-#       *   *  *       ****   *       *    *  *     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *          
-#        ****  *       ****   *       *    *   *    *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *          
-#                                                                                                                                                
-#  <[=========================================================================================================================================]> 
+#  <[=========================================================================================================================================]>
+#
+#        ****                  **     *    *        *               *          *       *      *      *      *
+#       *      ***     ***    *            *  *          ***        *   ****  ***             *      *           ***     ****   ***   ***
+#       *  **  *   *      *  ***      *    ***      *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *
+#       *   *  *       ****   *       *    *  *     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *
+#        ****  *       ****   *       *    *   *    *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *
+#
+#  <[=========================================================================================================================================]>
 
 [graphics]
 
@@ -127,11 +148,11 @@ transition_time = 0.01
 # Angiver, hvor meget brugerfladen skal skaleres; standard er 1,0
 ui_scale = 0.6
 
-# Angiver, hvor meget skaleringen justeres med; standard er 0,05
-ui_scale_adjust = 0.05
-
 # Angiver skaleringen af skibsmodeller i systemvisningen; standard er 1,0
 ui_scale_ship = 1.0
+
+# This specifies the amount to adjust the scale by, 0.05 being default
+ui_scale_step = 0.05
 
 # Angiver skaleringen af objektvisninger i brugerfladen; standard er 1,0
 ui_scale_viewer = 1.2
@@ -171,6 +192,9 @@ system_pan_momentum = 0.4
 # Styrer, hvor hurtigt momentummet aftager, når musen slippes. Lavere = hurtigere stop. Standard er 0,8
 system_pan_momentum_falloff = 0.8
 
+# Prevent selecting a target from locking the system camera onto it, while retaining manual pan/zoom. Defaults to false
+disable_target_camera_lock = false
+
 # Subgroup: Loader
 # ----------------
 
@@ -204,6 +228,9 @@ borderless_fullscreen = true
 # Tillad fri størrelsesændring; sæt til falsk for at deaktivere
 free_resize = true
 
+# Show the remaining Galactic Anomaly time below Help All, Engage, and Claim
+galactic_anomaly_timer = false
+
 # Når et zoomforvalg bruges, indstilles det som standardzoom
 use_presets_as_default = true
 
@@ -212,6 +239,12 @@ use_presets_as_default = true
 
 # Sæt til 0,0 for at deaktivere brugerdefineret zoom; ellers åbnes systemet med den angivne zoom
 default_system_zoom = 1750.0
+
+# Maximum zoom-out distance in Haven; 0 preserves native behavior.
+haven_zoom = 4000.0
+
+# Station-interior zoom-out multiplier; 1 preserves native behavior. Default 2.
+interior_zoom_scale = 2.0
 
 # F1-zoomforvalg til systemvisningen
 system_zoom_preset_1 = 50.0
@@ -231,58 +264,94 @@ system_zoom_preset_5 = 5000.0
 # Styrer den maksimale zoomafstand i systemvisningen. Standard er 2500. Højere værdier øger etiketafstanden
 zoom = 5000.0
 
-#  <[===================================================================]> 
-#                                                                          
-#       ****           *      *              *                             
-#       *   *   ***   ***    ***     ***     *     ****   ***   ***        
-#       ****   * **    *      *     * **     *    **     * **   *   *      
-#       *  *   *       *      *     *        *      **   *      *          
-#       *   *   ****   **     **     ****    *    ***     ****  *          
-#                                                                          
-#  <[===================================================================]> 
+#  <[===================================================================]>
+#
+#       ****           *      *              *
+#       *   *   ***   ***    ***     ***     *     ****   ***   ***
+#       ****   * **    *      *     * **     *    **     * **   *   *
+#       *  *   *       *      *     *        *      **   *      *
+#       *   *   ****   **     **     ****    *    ***     ****  *
+#
+#  <[===================================================================]>
 
 [patches]
 
 # Subgroup: Leave Well Alone
 # --------------------------
 
+# Enable recovery of interrupted action queues.
+actionqueuerecoveryhooks = true
+artifactexchangehooks = true
+audioeventhooks = true
+
 # Aktivér rettelserne til forstærkninger
 bufffixhooks = true
 cargoformathooks = true
 chatpatches = true
 
+# Enable chat player-title visibility hooks.
+chattitledisplayhooks = true
+
 # Aktivér massekrav pr. fraktion for daglige mål
 dailyfactionbulkclaimhooks = true
-focussearch = true
+doubleclickassignshiphooks = true
+forbiddentechconfirmhooks = true
 freeresizehooks = true
+galacticanomalytimerhooks = true
 game_version = true
 giftsbulkclaimhooks = true
+
+# Enable Haven help-history ordering hooks.
+havenhistoryhooks = true
+
+# Enable Haven zoom hooks.
+havenzoomhooks = true
 hotkeyhooks = true
+
+# Show cargo totals immediately instead of counting up
+instantcargocounterhooks = true
+
+# Enable station-interior zoom hooks.
+interiorzoomhooks = true
 loadingscreenhooks = true
+loadingtiphooks = true
 miscpatches = true
+missionhudtweakshooks = true
 objecttracker = true
 officersorthooks = true
 panhooks = true
 
+# SHIFT+click a fleet dock ship tile to pin or unpin it; updates pinned ships.
+pinnedshipclicktoggle = true
+
 # Fastgør konfigurerede skibe forrest i flådestyringsdokken
 pinnedshiphooks = true
+
+# Enable queue protection after address changes.
+queueaddressguardhooks = true
+
+# Enable automatic confirmation of the Excelsior Decloaking Deflector when configured.
+revealconfirmhooks = true
 syncpatches = true
 tempcrashfixes = true
 testpatches = true
+
+# Enable protection for thin action queues.
+thinqueueprotectionhooks = true
 toastbannerhooks = true
 transitionscreenhooks = true
 uiscalehooks = true
 zoomhooks = true
 
-#  <[=============================================================================================================]> 
-#                                                                                                                    
-#       *****                 *             *                                                         *              
-#         *     ***    ****  ***     ***   ***    *   *  ***     ****   ***   ***    *   *   ***           ***       
-#         *        *  **      *         *   *     *   *  *   *  *   *  * **   *  *   *   *  * **      *   * **       
-#         *     ****    **    *      ****   *     *  **  *       ****  *      *  *    * *   *         *   *          
-#         *     ****  ***     **     ****   **     ****  *       ***    ****  *  *     *     ****   **     ****      
-#                                                                                                                    
-#  <[=============================================================================================================]> 
+#  <[=============================================================================================================]>
+#
+#       *****                 *             *                                                         *
+#         *     ***    ****  ***     ***   ***    *   *  ***     ****   ***   ***    *   *   ***           ***
+#         *        *  **      *         *   *     *   *  *   *  *   *  * **   *  *   *   *  * **      *   * **
+#         *     ****    **    *      ****   *     *  **  *       ****  *      *  *    * *   *         *   *
+#         *     ****  ***     **     ****   **     ****  *       ***    ****  *  *     *     ****   **     ****
+#
+#  <[=============================================================================================================]>
 
 [shortcuts]
 
@@ -356,16 +425,16 @@ select_ship8 = "8"
 # ----------------------
 
 # ⚠️ EKSPERIMENTELT: Flytter ned på skærmen
-move_down = "S"
+move_down = "S|DOWN"
 
 # ⚠️ EKSPERIMENTELT: Flytter til venstre på skærmen
-move_left = "LEFT"
+move_left = "A|LEFT"
 
 # ⚠️ EKSPERIMENTELT: Flytter til højre på skærmen
-move_right = "RIGHT"
+move_right = "D|RIGHT"
 
 # ⚠️ EKSPERIMENTELT: Flytter op på skærmen
-move_up = "W"
+move_up = "W|UP"
 
 # ⚠️ EKSPERIMENTELT: Viser skærmen bogmærke->opslag
 show_lookup = "L"
@@ -511,8 +580,14 @@ show_inventory = "I"
 # Gå til missioner
 show_missions = "M"
 
+# Go directly to Officer Presets
+show_officerpresets = "CTRL-O"
+
 # Gå til officerer
 show_officers = "SHIFT-O"
+
+# Go directly to Officer Swap
+show_officerswap = "ALT-O"
 
 # Gå til Q-prøver
 show_qtrials = "SHIFT-Q"
@@ -537,6 +612,9 @@ show_shipconstruction = "SHIFT-N"
 
 # Gå til administration af skibe
 show_ships = "N"
+
+# Go directly to Ship Swap
+show_shipswap = "ALT-N"
 
 # Stationens ydre
 show_stationexterior = "SHIFT-G"
@@ -619,15 +697,15 @@ zoom_preset5 = "F5"
 # =
 zoom_reset = "="
 
-#  <[=================================================================================]> 
-#                                                                                        
-#       ****                                        **     *               *             
-#       *   *  ***    *   *   ****   ***   ***     *       *     ***       *   ***       
-#       ****   *   *  *   *  *   *  * **   *   *  ***      *        *   ****  * **       
-#       *   *  *      *  **   ****  *      *       *       *     ****  *   *  *          
-#       ****   *       ****   ***    ****  *       *       *     ****   ****   ****      
-#                                                                                        
-#  <[=================================================================================]> 
+#  <[=================================================================================]>
+#
+#       ****                                        **     *               *
+#       *   *  ***    *   *   ****   ***   ***     *       *     ***       *   ***
+#       ****   *   *  *   *  *   *  * **   *   *  ***      *        *   ****  * **
+#       *   *  *      *  **   ****  *      *       *       *     ****  *   *  *
+#       ****   *       ****   ***    ****  *       *       *     ****   ****   ****
+#
+#  <[=================================================================================]>
 
 [ui]
 # Spring animationen ved åbning af kasser over, og åbn blot kasserne
@@ -652,6 +730,12 @@ disable_move_keys = false
 # ⚠️ EKSPERIMENTELT: Forhindr standardmeddelelsesbannerne i at virke
 disable_toast_banners = false
 
+# Show only the first popup advert and suppress subsequent popup adverts.
+only_show_first_popup = false
+
+# Show the newest Haven help-history entries first.
+reverse_haven_history = true
+
 # Subgroup: Auto Confirm
 # ----------------------
 
@@ -663,6 +747,9 @@ auto_confirm_ft_upgrade = false
 #   "warp" - Automatically choose regular warp
 #   "jump" - Automatically choose instant jump
 auto_confirm_instant_warp = "none"
+
+# Skip the Excelsior Decloaking Deflector confirmation popup.
+auto_confirm_reveal_ability = false
 
 # Comma-separated ship hull names for which the instant-warp popup is always shown, overriding all automatic actions
 instant_warp_always_ask = ""
@@ -690,6 +777,9 @@ disable_galaxy_chat = false
 
 # Skift til sand for at fjerne slørchat fra spillet
 disable_veil_chat = false
+
+# Show player title rows in chat messages.
+show_player_title = true
 
 # Subgroup: Chest Purchases
 # -------------------------
@@ -720,6 +810,9 @@ extend_donation_slider = true
 
 # Brug venstre og højre piletast til at vælge det forrige eller næste skib i flådestyringsdokken
 arrow_keys_to_select_ship = true
+
+# Keep the dock selection in sync with Manage Ships.
+dock_syncmanagement = true
 
 # Dobbeltklik på et skib i flådestyringsdokken for at tildele det i stedet for at vælge det og derefter klikke på Tildel
 double_click_to_assign_ship = false
@@ -760,6 +853,21 @@ hud_outposts = "auto"
 #   "hide" - Always hide this HUD item
 hud_q_trials = "auto"
 
+# Subgroup: Options
+# -----------------
+
+# Hide the Exchange All button in the Artifact Gallery
+disable_exchange_all = false
+
+# Enable the shortcut that focuses the search box on supported screens
+focus_search = true
+
+# Format abbreviated cargo values using Cargo Significant Decimals
+format_cargo_values = true
+
+# Restore the Below Deck Ability officer sort option
+officer_sort = true
+
 # Subgroup: Previews
 # ------------------
 
@@ -771,6 +879,9 @@ disable_preview_locate = false
 
 # Stop tilbagekaldelse, når forhåndsvisninger af skibe eller knudepunkter vises
 disable_preview_recall = false
+
+# Show cargo used and capacity immediately instead of counting up. Restart after changing. Windows client 263 only; other builds keep native behavior
+instant_cargo_counter = true
 
 # Sæt til sand for altid at vise belønningerne for valgte skibe/stationer
 show_armada_cargo = true
@@ -787,29 +898,35 @@ show_player_cargo = true
 # Sæt til sand for altid at vise belønningerne for valgte skibe/stationer
 show_station_cargo = true
 
-#  <[========================================================================================================================================================================================================]> 
-#                                                                                                                                                                                                               
-#        ****                *                             *                           *                           *               *          *       *      *      *      *                                    
-#       *      *   *  ***    *  *   ***     ***   ***            ****   ***   ***           ***     ****   ****         ***        *   ****  ***             *      *           ***     ****   ***   ***        
-#        ***    ****  *  *   ***    *   *  *   *  *  *     *    **     * **   *   *    *    *  *   *   *  **       *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *      
-#           *      *  *  *   *  *   *      *   *  *  *     *      **   *      *        *    *  *    ****    **     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *          
-#       ****    ***   *  *   *   *  *       ***   *  *     *    ***     ****  *        *    *  *    ***   ***      *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *          
-#                                                                                                                                                                                                               
-#  <[========================================================================================================================================================================================================]> 
+#  <[========================================================================================================================================================================================================]>
+#
+#        ****                *                             *                           *                           *               *          *       *      *      *      *
+#       *      *   *  ***    *  *   ***     ***   ***            ****   ***   ***           ***     ****   ****         ***        *   ****  ***             *      *           ***     ****   ***   ***
+#        ***    ****  *  *   ***    *   *  *   *  *  *     *    **     * **   *   *    *    *  *   *   *  **       *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *
+#           *      *  *  *   *  *   *      *   *  *  *     *      **   *      *        *    *  *    ****    **     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *
+#       ****    ***   *  *   *   *  *       ***   *  *     *    ***     ****  *        *    *  *    ***   ***      *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *
+#
+#  <[========================================================================================================================================================================================================]>
 
 [sync]
 
 # Subgroup: Data
 # --------------
 
+# Do you want to sync away team assignment data?
+away_assignments = true
+
 # Vil du synkronisere kamplogge?
-battlelogs = true
+battlelogs = false
 
 # Vil du synkronisere data om forstærkninger?
 buffs = true
 
 # Vil du synkronisere bygningsdata?
 buildings = true
+
+# Do you want to sync Haven data?
+haven = true
 
 # Vil du synkronisere beholdningsdata?
 inventory = true
@@ -820,8 +937,8 @@ jobs = true
 # Vil du synkronisere missionsdata?
 missions = true
 
-# Vil du synkronisere data om ejede officerer?
-officer = true
+# Do you want to sync owned officer data?
+officers = true
 
 # Vil du synkronisere forskningsdata?
 research = true
@@ -856,12 +973,6 @@ logging = false
 # URL'en til den server, som forbindelsen skal føres igennem
 proxy = ""
 
-# Tokenet, der bruges til godkendelse
-token = ""
-
-# URL'en til den server, som data skal sendes til
-url = ""
-
 # Subgroup: Network
 # -----------------
 
@@ -871,26 +982,44 @@ resolver_cache_ttl = 300
 # Skal SSL-certifikater kontrolleres?
 verify_ssl = true
 
-#  <[========================================================================================================================================================================================================]> 
-#                                                                                                                                                                                                               
-#        ****                *                             *                           *                           *               *          *       *      *      *      *                                    
-#       *      *   *  ***    *  *   ***     ***   ***            ****   ***   ***           ***     ****   ****         ***        *   ****  ***             *      *           ***     ****   ***   ***        
-#        ***    ****  *  *   ***    *   *  *   *  *  *     *    **     * **   *   *    *    *  *   *   *  **       *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *      
-#           *      *  *  *   *  *   *      *   *  *  *     *      **   *      *        *    *  *    ****    **     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *          
-#       ****    ***   *  *   *   *  *       ***   *  *     *    ***     ****  *        *    *  *    ***   ***      *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *          
-#                                                                                                                                                                                                               
-#  <[========================================================================================================================================================================================================]> 
+#  <[========================================================================================================================================================================================================]>
+#
+#        ****                *                             *                           *                           *               *          *       *      *      *      *
+#       *      *   *  ***    *  *   ***     ***   ***            ****   ***   ***           ***     ****   ****         ***        *   ****  ***             *      *           ***     ****   ***   ***
+#        ***    ****  *  *   ***    *   *  *   *  *  *     *    **     * **   *   *    *    *  *   *   *  **       *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *
+#           *      *  *  *   *  *   *      *   *  *  *     *      **   *      *        *    *  *    ****    **     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *
+#       ****    ***   *  *   *   *  *       ***   *  *     *    ***     ****  *        *    *  *    ***   ***      *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *
+#
+#  <[========================================================================================================================================================================================================]>
+
+[sync.targets.stfcdata]
+token = ""
+url = "https://sync.stfcdata.de"
+
+#  <[========================================================================================================================================================================================================]>
+#
+#        ****                *                             *                           *                           *               *          *       *      *      *      *
+#       *      *   *  ***    *  *   ***     ***   ***            ****   ***   ***           ***     ****   ****         ***        *   ****  ***             *      *           ***     ****   ***   ***
+#        ***    ****  *  *   ***    *   *  *   *  *  *     *    **     * **   *   *    *    *  *   *   *  **       *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *
+#           *      *  *  *   *  *   *      *   *  *  *     *      **   *      *        *    *  *    ****    **     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *
+#       ****    ***   *  *   *   *  *       ***   *  *     *    ***     ****  *        *    *  *    ***   ***      *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *
+#
+#  <[========================================================================================================================================================================================================]>
 
 [sync.targets.nextspocksclub]
+token = ""
+url = "https://next.spocks.club/sync/ingress/"
 
-#  <[========================================================================================================================================================================================================]> 
-#                                                                                                                                                                                                               
-#        ****                *                             *                           *                           *               *          *       *      *      *      *                                    
-#       *      *   *  ***    *  *   ***     ***   ***            ****   ***   ***           ***     ****   ****         ***        *   ****  ***             *      *           ***     ****   ***   ***        
-#        ***    ****  *  *   ***    *   *  *   *  *  *     *    **     * **   *   *    *    *  *   *   *  **       *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *      
-#           *      *  *  *   *  *   *      *   *  *  *     *      **   *      *        *    *  *    ****    **     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *          
-#       ****    ***   *  *   *   *  *       ***   *  *     *    ***     ****  *        *    *  *    ***   ***      *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *          
-#                                                                                                                                                                                                               
-#  <[========================================================================================================================================================================================================]> 
+#  <[========================================================================================================================================================================================================]>
+#
+#        ****                *                             *                           *                           *               *          *       *      *      *      *
+#       *      *   *  ***    *  *   ***     ***   ***            ****   ***   ***           ***     ****   ****         ***        *   ****  ***             *      *           ***     ****   ***   ***
+#        ***    ****  *  *   ***    *   *  *   *  *  *     *    **     * **   *   *    *    *  *   *   *  **       *    *  *    ****  **      *       *      *      *      *    *  *   *   *  * **   *   *
+#           *      *  *  *   *  *   *      *   *  *  *     *      **   *      *        *    *  *    ****    **     *    *  *   *   *    **    *       *      *      *      *    *  *    ****  *      *
+#       ****    ***   *  *   *   *  *       ***   *  *     *    ***     ****  *        *    *  *    ***   ***      *    *  *    ****  ***     **      *      *      *      *    *  *    ***    ****  *
+#
+#  <[========================================================================================================================================================================================================]>
 
 [sync.targets.spocksclub]
+token = ""
+url = "https://spocks.club/sync/ingress/"

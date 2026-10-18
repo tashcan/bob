@@ -1,5 +1,6 @@
 #include "patches.h"
 #include "file.h"
+#include "log_history.h"
 #include "version.h"
 
 #include <il2cpp/il2cpp-functions.h>
@@ -20,6 +21,8 @@
 
 void InstallUiScaleHooks();
 void InstallZoomHooks();
+void InstallHavenZoomHooks();
+void InstallInteriorZoomHooks();
 void InstallBuffFixHooks();
 #if _WIN32
 void InstallFreeResizeHooks();
@@ -33,21 +36,30 @@ void InstallDailyFactionBulkClaimHooks();
 void InstallTestPatches();
 void InstallMiscPatches();
 void InstallMissionHudTweaksHooks();
+void InstallArtifactExchangeHooks();
 void InstallChatPatches();
+void InstallChatTitleDisplayHooks();
 void InstallTempCrashFixes();
 void InstallSyncPatches();
 void InstallObjectTrackers();
 void InstallLoadingScreenHooks();
 void InstallTransitionScreenHooks();
+void InstallGalacticAnomalyTimer();
 void InstallLoadingTipHooks();
-void InstallFocusSearchHooks();
 void InstallCargoFormatHooks();
+void InstallInstantCargoCounterHooks();
 void InstallOfficerSortHooks();
 void InstallPinnedShipSortHooks();
+void InstallPinnedShipClickHooks();
 void InstallDoubleClickAssignShipHooks();
 void InstallInstantWarpConfirmationHooks();
 void InstallForbiddenTechConfirmationHooks();
+void InstallRevealConfirmationHooks();
 void InstallAudioEventHooks();
+void InstallActionQueueRecovery();
+void InstallThinQueueProtection();
+void InstallQueueAddressGuard();
+void InstallHavenHistoryHooks();
 
 __int64 il2cpp_init_hook(auto original, const char* domain_name)
 {
@@ -66,7 +78,15 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
 
   File::Init();
 
-  auto file_logger = spdlog::basic_logger_mt("default", File::Log(), true);
+  std::string rotation_error;
+  try {
+    RotateLogHistory(File::Log());
+  } catch (const std::filesystem::filesystem_error& error) {
+    rotation_error = error.what();
+  }
+
+  // Append if rotation failed so an existing log is never truncated.
+  auto file_logger = spdlog::basic_logger_mt("default", File::Log(), false);
   auto sink        = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
   file_logger->sinks().push_back(sink);
   spdlog::set_default_logger(file_logger);
@@ -76,6 +96,9 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
 
   spdlog::set_level(log_level);
   spdlog::flush_on(log_level);
+  if (!rotation_error.empty()) {
+    spdlog::warn("Failed to rotate log history; preserving existing log: {}", rotation_error);
+  }
 
 #if VERSION_PATCH
   if constexpr (sizeof(VERSION_COMMIT_HASH) > 1) {
@@ -123,13 +146,14 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
   const PatchEntry patches[] = {
       {"UiScaleHooks", {InstallUiScaleHooks, &cfg.installUiScaleHooks}},
       {"ZoomHooks", {InstallZoomHooks, &cfg.installZoomHooks}},
+      {"HavenZoomHooks", {InstallHavenZoomHooks, &cfg.installHavenZoomHooks}},
+      {"InteriorZoomHooks", {InstallInteriorZoomHooks, &cfg.installInteriorZoomHooks}},
       {"BuffFixHooks", {InstallBuffFixHooks, &cfg.installBuffFixHooks}},
       {"ToastBannerHooks", {InstallToastBannerHooks, &cfg.installToastBannerHooks}},
       {"PanHooks", {InstallPanHooks, &cfg.installPanHooks}},
       {"HotkeyHooks", {InstallHotkeyHooks, &cfg.installHotkeyHooks}},
       {"GiftsBulkClaimHooks", {InstallGiftsBulkClaimHooks, &cfg.installGiftsBulkClaimHooks}},
-      {"DailyFactionBulkClaimHooks",
-       {InstallDailyFactionBulkClaimHooks, &cfg.installDailyFactionBulkClaimHooks}},
+      {"DailyFactionBulkClaimHooks", {InstallDailyFactionBulkClaimHooks, &cfg.installDailyFactionBulkClaimHooks}},
 #if _WIN32
       {"FreeResizeHooks", {InstallFreeResizeHooks, &cfg.installFreeResizeHooks}},
 #endif
@@ -137,20 +161,29 @@ __int64 il2cpp_init_hook(auto original, const char* domain_name)
       {"TestPatches", {InstallTestPatches, &cfg.installTestPatches}},
       {"MiscPatches", {InstallMiscPatches, &cfg.installMiscPatches}},
       {"MissionHudTweaksHooks", {InstallMissionHudTweaksHooks, &cfg.installMissionHudTweaksHooks}},
+      {"ArtifactExchangeHooks", {InstallArtifactExchangeHooks, &cfg.installArtifactExchangeHooks}},
       {"ChatPatches", {InstallChatPatches, &cfg.installChatPatches}},
+      {"ChatTitleDisplay", {InstallChatTitleDisplayHooks, &cfg.installPlayerTitleDisplayHooks}},
       {"SyncPatches", {InstallSyncPatches, &cfg.installSyncPatches}},
       {"ObjectTracker", {InstallObjectTrackers, &cfg.installObjectTracker}},
-      {"LoadingScreen",        {InstallLoadingScreenHooks,   &cfg.installLoadingScreenHooks}},
-      {"TransitionScreen",     {InstallTransitionScreenHooks, &cfg.installTransitionScreenHooks}},
-      {"LoadingTip",           {InstallLoadingTipHooks,       &cfg.loader_tip_enabled}},
-      {"FocusSearch",          {InstallFocusSearchHooks,      &cfg.installFocusSearchHooks}},
-      {"CargoFormat",          {InstallCargoFormatHooks,      &cfg.installCargoFormatHooks}},
-      {"OfficerSortHooks",     {InstallOfficerSortHooks,      &cfg.installOfficerSortHooks}},
-      {"PinnedShipSort",       {InstallPinnedShipSortHooks,   &cfg.installPinnedShipSortHooks}},
-      {"DoubleClickAssignShip", {InstallDoubleClickAssignShipHooks, &cfg.double_click_to_assign_ship}},
-      {"InstantWarpConfirm",   {InstallInstantWarpConfirmationHooks, &cfg.installInstantWarpConfirmationHooks}},
-      {"ForbiddenTechConfirm", {InstallForbiddenTechConfirmationHooks, &cfg.auto_confirm_ft_upgrade}},
-      {"AudioEvents",          {InstallAudioEventHooks,                 &cfg.installAudioEventHooks}},
+      {"LoadingScreen", {InstallLoadingScreenHooks, &cfg.installLoadingScreenHooks}},
+      {"TransitionScreen", {InstallTransitionScreenHooks, &cfg.installTransitionScreenHooks}},
+      {"GalacticAnomalyTimer", {InstallGalacticAnomalyTimer, &cfg.installGalacticAnomalyTimerHooks}},
+      {"LoadingTip", {InstallLoadingTipHooks, &cfg.installLoadingTipHooks}},
+      {"InstantCargoCounter", {InstallInstantCargoCounterHooks, &cfg.installInstantCargoCounterHooks}},
+      {"CargoFormat", {InstallCargoFormatHooks, &cfg.installCargoFormatHooks}},
+      {"OfficerSortHooks", {InstallOfficerSortHooks, &cfg.installOfficerSortHooks}},
+      {"PinnedShipSort", {InstallPinnedShipSortHooks, &cfg.installPinnedShipSortHooks}},
+      {"PinnedShipClick", {InstallPinnedShipClickHooks, &cfg.installPinnedShipClickToggle}},
+      {"DoubleClickAssignShip", {InstallDoubleClickAssignShipHooks, &cfg.installDoubleClickAssignShipHooks}},
+      {"InstantWarpConfirm", {InstallInstantWarpConfirmationHooks, &cfg.installInstantWarpConfirmationHooks}},
+      {"ForbiddenTechConfirm", {InstallForbiddenTechConfirmationHooks, &cfg.installForbiddenTechConfirmationHooks}},
+      {"RevealConfirm", {InstallRevealConfirmationHooks, &cfg.installRevealConfirmationHooks}},
+      {"AudioEvents", {InstallAudioEventHooks, &cfg.installAudioEventHooks}},
+      {"ActionQueueRecovery", {InstallActionQueueRecovery, &cfg.installActionQueueRecoveryHooks}},
+      {"QueueAddressGuard", {InstallQueueAddressGuard, &cfg.installQueueAddressGuardHooks}},
+      {"ThinQueueProtection", {InstallThinQueueProtection, &cfg.installThinQueueProtectionHooks}},
+      {"HavenHistory", {InstallHavenHistoryHooks, &cfg.installHavenHistoryHooks}},
   };
   printf("il2cpp_init_hook(%s)\n", domain_name);
 
