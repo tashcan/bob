@@ -15,6 +15,7 @@
 #include "text_entry.h"
 #include "warp_mode.h"
 
+#include <algorithm>
 #include <charconv>
 #include <cmath>
 #include <filesystem>
@@ -68,8 +69,18 @@ namespace
     if constexpr (std::is_same_v<T, std::string>)
       return value;
     else {
-      char       text[128];
-      const auto result = std::to_chars(text, text + sizeof(text), value);
+      char text[128];
+      auto displayed = value;
+      if constexpr (std::is_floating_point_v<T>) {
+        // Match the slider's two-decimal presentation only for floating-point
+        // residue. Keep meaningful custom precision, including tiny values.
+        const auto rounded = static_cast<T>(std::round(static_cast<double>(value) * 100.0) / 100.0);
+        if (std::isfinite(rounded) && rounded != 0
+            && std::abs(rounded - value)
+                   <= 4 * std::numeric_limits<T>::epsilon() * std::max(std::abs(value), std::abs(rounded)))
+          displayed = rounded;
+      }
+      const auto result = std::to_chars(text, text + sizeof(text), displayed);
       return result.ec == std::errc{} ? std::string(text, result.ptr) : std::string{};
     }
   }
@@ -224,19 +235,23 @@ namespace
         const auto text = Format(*value);
         help += "\nDefault: " + (text.empty() ? std::string("(empty)") : text);
       }
+      const auto initial = Format(*observed.state.value);
       OpenTextEntry({.title = setting->label(),
-                     .value = Format(*observed.state.value),
+                     .value = initial,
                      .help  = std::move(help),
                      .validate =
                          [parse](std::string_view text) {
                            return parse(text) ? std::string{} : std::string("Enter a valid value.");
                          },
                      .commit =
-                         [setting, observed, parse](std::string_view text) {
+                         [setting, observed, parse, initial](std::string_view text) {
                            const auto value = parse(text);
                            if (!value)
                              return false;
-                           const auto result = setting->SetFromUser(*value, observed).outcome;
+                           // Accepting unchanged presentation must not round the
+                           // canonical value, and must still reject stale edits.
+                           const auto result =
+                               setting->SetFromUser(text == initial ? *observed.state.value : *value, observed).outcome;
                            return result == Outcome::AppliedVerified || result == Outcome::Unchanged;
                          }});
     };

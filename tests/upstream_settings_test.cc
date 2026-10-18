@@ -830,6 +830,40 @@ int main(int argc, char** argv)
     std::locale::global(previousLocale);
     Require(ReadAll(reads) == defaults, "numeric locale test did not restore the baseline");
 
+    // Slider arithmetic can leave a float just below a displayed decimal.
+    // Edit should show the same decimal without rewriting it on unchanged Apply.
+    auto*      scaleStep    = models.at("graphics.ui_scale_step").exact;
+    const auto stepBaseline = Config::Get().ui_scale_step;
+    for (const auto [stored, shown] : {std::pair{.19999999f, "0.2"}, std::pair{1.999999f, "2"}}) {
+      Config::Get().ui_scale_step = stored;
+      writes.clear();
+      scaleStep->invoke(0);
+      Require(modal && modal->value == shown, "Edit exposed slider floating-point residue");
+      Require(modal->validate(modal->value).empty() && modal->commit(modal->value), "unchanged Apply failed");
+      Require(Config::Get().ui_scale_step == stored && writes.size() == 1
+                  && writes.back().key == "graphics.ui_scale_step"
+                  && std::get<double>(writes.back().value) == static_cast<double>(stored),
+              "unchanged Apply rounded the native or saved float");
+      writes.clear();
+      Config::Get().ui_scale_step = .3f;
+      Require(!modal->commit(modal->value) && writes.empty(), "unchanged presentation bypassed stale guard");
+      modal.reset();
+    }
+    for (const auto stored : {1.234567f, .00000123f}) {
+      Config::Get().ui_scale_step = stored;
+      scaleStep->invoke(0);
+      Require(modal && std::stof(modal->value) == stored, "custom precision was lost in Edit");
+      Require(modal->commit(modal->value) && Config::Get().ui_scale_step == stored,
+              "unchanged custom precision was lost on Apply");
+      modal.reset();
+    }
+    Config::Get().ui_scale_step = .19999999f;
+    scaleStep->invoke(0);
+    Require(modal && modal->commit("0.25") && Config::Get().ui_scale_step == .25f,
+            "changed precise entry did not apply");
+    modal.reset();
+    Config::Get().ui_scale_step = stepBaseline;
+
     // A stale exact editor and a stale prepared reset cannot overwrite a later
     // native shortcut mutation. No worker/config-file behavior is simulated.
     auto* speed = models.at("graphics.keyboard_zoom_speed").exact;
