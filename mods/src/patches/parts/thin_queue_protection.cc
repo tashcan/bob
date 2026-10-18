@@ -2,8 +2,8 @@
 #include <config.h>
 
 // Port of the active v2.1.0-guffa.10 guard, not the dormant completion repair.
-// Windows x64 callback ABI is validated against running metadata; current native fit is recorded separately.
-#if defined(_WIN32) && defined(_M_X64)
+// Shared 64-bit managed layout; incompatible runtime contracts leave the feature unavailable.
+#if (defined(_WIN32) && defined(_M_X64)) || (defined(__APPLE__) && (defined(__arm64__) || defined(__x86_64__)))
 #include <algorithm>
 #include <atomic>
 #include <array>
