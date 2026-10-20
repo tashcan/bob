@@ -595,15 +595,21 @@ void parse_faction_filter(std::string_view value, std::vector<std::string>& fact
   static constexpr std::array kKnownFactions{"federation", "klingon", "romulan"};
 
   factions.clear();
+  bool none = false;
   for (const auto& token : StrSplit(std::string(value), ',')) {
     const auto stripped = StripAsciiWhitespace(token);
-    if (stripped.empty()) continue;
+    if (stripped.empty())
+      continue;
 
-    auto lowered = AsciiStrToLower(stripped);
+    auto lowered = AsciiStrToLower(std::string(stripped));
 
+    if (lowered == "none") {
+      none = true;
+      continue;
+    }
     if (std::ranges::find(kKnownFactions, lowered) == kKnownFactions.end()) {
       spdlog::warn("Unrecognised faction '{}' in daily_bulk_claim_factions; expected one of: federation, klingon, "
-                   "romulan. Ignoring.",
+                   "romulan, or none by itself. Ignoring.",
                    stripped);
       continue;
     }
@@ -612,13 +618,21 @@ void parse_faction_filter(std::string_view value, std::vector<std::string>& fact
       factions.emplace_back(std::move(lowered));
     }
   }
+  if (none) {
+    if (!factions.empty())
+      spdlog::warn("daily_bulk_claim_factions: none overrides named factions; use none by itself.");
+    factions = {"none"};
+  }
 }
 
 void read_daily_bulk_claim_factions(toml::table& config, toml::table& new_config, std::vector<std::string>& factions,
                                     std::string_view default_value, bool write_log)
 {
-  const auto value =
-      config["ui"]["daily_bulk_claim_factions"].value<std::string>().value_or(std::string(default_value));
+  auto value = config["ui"]["daily_bulk_claim_factions"].value<std::string>().value_or(std::string(default_value));
+  // Blank has the same meaning as an omitted setting. Materialize the default
+  // for both gameplay and generated config values; none is the explicit opt-out.
+  if (StripAsciiWhitespace(value).empty())
+    value = std::string(default_value);
   parse_faction_filter(value, factions);
 
   new_config.emplace<toml::table>("ui", toml::table());
