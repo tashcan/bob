@@ -2,6 +2,7 @@
 // MapKey parsing, ModifierKey parsing, binding detection, and hint caching are production code.
 #include "patches/mapkey.h"
 #include "defaultconfig.h"
+#include "patches/ship_shortcut_hint.h"
 #include <array>
 
 #include <cstdlib>
@@ -41,6 +42,39 @@ void Check(bool condition, const char* message)
 
 int main()
 {
+  // A locked dock F leaves native G at the sixth selectable position (the reported 1,2,3,4,5,7 layout).
+  const std::array gapped_fleets{0, 1, 2, 3, 4, 6};
+  auto ship_hint = [&](GameFunction action) {
+    return ShipShortcutHintAction(action, gapped_fleets.size(), [&](std::size_t i) { return gapped_fleets[i]; });
+  };
+  Check(ship_hint(GameFunction::SelectShip7) == GameFunction::SelectShip6,
+        "Native ship G must advertise the sixth mod shortcut when dock F is locked");
+  Check(ship_hint(GameFunction::SelectShip5) == GameFunction::SelectShip5, "Earlier ship hints must stay unchanged");
+  Check(ship_hint(GameFunction::SelectShip6) == GameFunction::Max, "Missing dock must not advertise a shortcut");
+  Check(ship_hint(GameFunction::ShowGalaxy) == GameFunction::ShowGalaxy, "Non-ship hint mapping changed");
+  Check(ShipShortcutHintAction(GameFunction::SelectShip1, 0, [](std::size_t) { return 0; }) == GameFunction::Max,
+        "Unavailable fleet context must not advertise a guessed ship shortcut");
+  for (int index = 0; index < 8; ++index) {
+    auto action = static_cast<GameFunction>(GameFunction::SelectShip1 + index);
+    Check(ShipShortcutHintAction(action, 8, [](std::size_t i) { return static_cast<int>(i); }) == action,
+          "Contiguous eight-dock hints must keep their original shortcuts");
+  }
+  const std::array reordered_fleets{7, 0, 2, -1, 6, 4, 1, 3, 5};
+  auto reordered_hint = [&](GameFunction action) {
+    return ShipShortcutHintAction(action, reordered_fleets.size(), [&](std::size_t i) { return reordered_fleets[i]; });
+  };
+  Check(reordered_hint(GameFunction::SelectShip8) == GameFunction::SelectShip1, "Ship hints must follow bar order");
+  Check(reordered_hint(GameFunction::SelectShip7) == GameFunction::SelectShip5,
+        "Null fleet entries must preserve the positions passed to RequestSelect");
+  Check(reordered_hint(GameFunction::SelectShip6) == GameFunction::Max,
+        "Fleet beyond the eight supported mod shortcuts must not advertise a shortcut");
+  Check(MapKey::GetShortcutHint(ship_hint(GameFunction::SelectShip7)).empty(),
+        "Unbound ship selection must not advertise a working shortcut");
+  MapKey::AddMappedKey(GameFunction::SelectShip6, MapKey::Parse("CTRL-F8"));
+  MapKey::CacheShortcutHints();
+  Check(MapKey::GetShortcutHint(ship_hint(GameFunction::SelectShip7)) == "^F8",
+        "Gapped ship hint must use the actual custom binding, not a hardcoded number");
+
   constexpr auto toggle = GameFunction::ToggleShortcutHints;
   constexpr auto galaxy = GameFunction::ShowGalaxy;
   Check(!MapKey::HasBinding(toggle), "Absent binding must not enable hints");
