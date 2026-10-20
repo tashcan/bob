@@ -1,4 +1,5 @@
 #include "config.h"
+#include "patches/ship_shortcut_hint.h"
 
 #include <spud/detour.h>
 #include <il2cpp/method_contract.h>
@@ -266,7 +267,18 @@ void ShortcutKeybindHint_UpdateText_Hook(auto original, void* _this)
     return;
   }
 
-  auto shortcut = MapKey::GetShortcutHint(mapping->primary);
+  auto hint_action = mapping->primary;
+  if (hint_action >= GameFunction::SelectShip1 && hint_action <= GameFunction::SelectShip8) {
+    // Use the same context array as FleetBarViewController::RequestSelect(int, bool), not the native dock index.
+    auto* bar     = ObjectFinder<FleetBarViewController>::Get();
+    auto* context = bar ? bar->CanvasContext() : nullptr;
+    auto* fleets  = context ? context->FleetData() : nullptr;
+    hint_action   = ShipShortcutHintAction(hint_action, fleets ? fleets->max_length : 0, [fleets](std::size_t position) {
+      auto* fleet = reinterpret_cast<FleetPlayerData**>(fleets->vector)[position];
+      return fleet ? fleet->Index : -1;
+    });
+  }
+  auto shortcut = hint_action == GameFunction::Max ? std::string{} : MapKey::GetShortcutHint(hint_action);
   if (shortcut.empty() && mapping->fallback != GameFunction::Max) {
     shortcut = MapKey::GetShortcutHint(mapping->fallback);
   }
