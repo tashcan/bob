@@ -952,6 +952,9 @@ ships = true
 # Do you want to sync slots data?
 slots = true
 
+# Do you want to sync faction store offer data?
+store_offers = false
+
 # Do you want to sync owned forbidden tech data?
 tech = true
 

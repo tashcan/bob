@@ -253,7 +253,7 @@ message Cost {
 }
 
 message Resource {
-  uint32 amount = 1;
+  fixed32 amount = 1;
   uint32 amountOld = 2;
   string id = 3;
   string type = 4;
