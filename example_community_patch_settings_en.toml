@@ -940,6 +940,10 @@ missions = true
 # Do you want to sync owned officer data?
 officers = true
 
+# Do you want to sync your own player profile (level, XP, Power, Haven unlocked)?
+# Only your own record is sent, never other players'.
+profile = false
+
 # Do you want to sync research data?
 research = true
 
