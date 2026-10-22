@@ -157,6 +157,7 @@ std::map<std::string, std::function<Value()>> NativeReads()
       {"ui.always_skip_reveal_sequence", [&cfg] { return V(cfg.always_skip_reveal_sequence); }},
       {"ui.arrow_keys_to_select_ship", [&cfg] { return V(cfg.arrow_keys_to_select_ship); }},
       {"ui.auto_confirm_ft_upgrade", [&cfg] { return V(cfg.auto_confirm_ft_upgrade); }},
+      {"ui.auto_confirm_alliance_contribution", [&cfg] { return V(cfg.auto_confirm_alliance_contribution); }},
       {"ui.auto_confirm_instant_warp",
        [&cfg] {
          return V(std::string(std::array{"none", "warp", "jump"}.at(static_cast<int>(cfg.auto_confirm_instant_warp))));
@@ -418,6 +419,8 @@ Config::Config()
   arrow_keys_to_select_ship =
       static_cast<decltype(arrow_keys_to_select_ship)>(DefaultConfig::UI::arrow_keys_to_select_ship);
   auto_confirm_ft_upgrade = static_cast<decltype(auto_confirm_ft_upgrade)>(DefaultConfig::UI::auto_confirm_ft_upgrade);
+  auto_confirm_alliance_contribution =
+      static_cast<decltype(auto_confirm_alliance_contribution)>(DefaultConfig::UI::auto_confirm_alliance_contribution);
   auto_confirm_reveal_ability =
       static_cast<decltype(auto_confirm_reveal_ability)>(DefaultConfig::UI::auto_confirm_reveal_ability);
   extend_chest_purchase_max =
@@ -613,9 +616,9 @@ int main(int argc, char** argv)
       Require(expected.emplace(row.at("key").get<std::string>(), row).second, "duplicate inventory key");
     }
 #if _WIN32
-    Require(expected.size() == 88, "Windows catalog count changed without a coverage decision");
+    Require(expected.size() == 89, "Windows catalog count changed without a coverage decision");
 #else
-    Require(expected.size() == 83, "macOS catalog count changed without a coverage decision");
+    Require(expected.size() == 84, "macOS catalog count changed without a coverage decision");
 #endif
     const auto reads = NativeReads();
     Require(reads.size() == expected.size(), "native field map missing an inventory key");
@@ -804,17 +807,14 @@ int main(int argc, char** argv)
     klingon.Bind();
     romulan.Bind();
     Require(federation.value() == true && klingon.value() == true && romulan.value() == true,
-            "blank default did not select all factions");
+            "default did not select all factions");
     for (int mask = 0; mask < 8; ++mask) {
       const auto before  = factionChoice->state().Observe();
       const auto outcome = factionChoice->state().SetFromUser(mask, before).outcome;
       Require(outcome == Outcome::AppliedVerified || outcome == Outcome::Unchanged,
               "valid faction combination rejected");
       const auto persisted = std::get<std::string>(writes.back().value);
-      Require(persisted
-                  == (mask == 0   ? "none"
-                      : mask == 7 ? ""
-                                  : Join(Config::Get().daily_bulk_claim_factions)),
+      Require(persisted == (mask == 0 ? "none" : Join(Config::Get().daily_bulk_claim_factions)),
               "faction combination saved incorrectly");
       Require(ParseFactionFilter(persisted, parsedFactions)
                   && parsedFactions == Config::Get().daily_bulk_claim_factions,
@@ -837,7 +837,8 @@ int main(int argc, char** argv)
                 && Config::Get().daily_bulk_claim_factions == std::vector<std::string>{"none"},
             "unchecking last faction restored all instead of none");
     models.at("ui.daily_bulk_claim_factions").reset();
-    Require(Config::Get().daily_bulk_claim_factions.empty(), "faction Defaults did not restore blank/all");
+    Require(Config::Get().daily_bulk_claim_factions == std::vector<std::string>({"federation", "klingon", "romulan"}),
+            "faction Defaults did not restore the explicit all-factions default");
     edit("ui.disabled_banner_types", "VICTORY ,DEFEAT ");
     Require(FormatBannerFilter(Config::Get().disabled_banner_types) == "Victory, Defeat", "banner parsing failed");
     models.at("ui.disabled_banner_types").reset();

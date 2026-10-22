@@ -419,8 +419,6 @@ namespace
     const auto factionText = [](int mask) {
       if (mask == 0)
         return std::string("none");
-      if (mask == 7)
-        return std::string{};
       std::vector<std::string> values;
       for (int i = 0; i < 3; ++i)
         if (mask & (1 << i))
@@ -668,6 +666,9 @@ void RegisterUpstreamSettings(PageCatalog& catalog)
        U::always_skip_reveal_sequence, Hook(&Config::installTempCrashFixes), Live,
        "Skip the animated reward reveal and show the summary directly.");
   catalog.AddBoolean("community_mod.claims", ForbiddenTechConfirmationSetting());
+  BOOL("claims", "ui", "auto_confirm_alliance_contribution", "Automatically confirm max-level alliance contributions",
+       auto_confirm_alliance_contribution, U::auto_confirm_alliance_contribution, ForbiddenTechControlsAvailable, Live,
+       "Skip the max-level warning when making an alliance contribution.");
   BOOL("claims", "ui", "auto_confirm_reveal_ability", "Automatically confirm Excelsior reveal",
        auto_confirm_reveal_ability, U::auto_confirm_reveal_ability, Hook(&Config::installRevealConfirmationHooks), Live,
        "Skip confirmation for the Excelsior's Decloaking Deflector ability.");

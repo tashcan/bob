@@ -745,6 +745,9 @@ reverse_haven_history = true
 # Confirm Forbidden Tech level and tier upgrades automatically
 auto_confirm_ft_upgrade = false
 
+# Automatically confirm the max-level warning shown when contributing to an alliance that has reached level 60
+auto_confirm_alliance_contribution = false
+
 # Instant-warp action to confirm automatically: none, warp, or jump
 #   "none" - Do not choose an action automatically; show the confirmation dialog
 #   "warp" - Automatically choose regular warp
@@ -794,8 +797,8 @@ extend_chest_purchase_max = 160
 # Subgroup: Daily Goals
 # ---------------------
 
-# Comma-separated factions (federation, klingon, romulan) for Daily Goals bulk claim. Blank includes all factions; "none" skips all three. Non-faction dailies remain eligible.
-daily_bulk_claim_factions = ""
+# Comma-separated factions for Daily Goals bulk claim. Missing or blank uses the default below; "none" skips all three main-faction dailies. Other dailies remain eligible.
+daily_bulk_claim_factions = "federation,klingon,romulan"
 
 # Force the Daily Goals Claim All toggle back on the first time the screen is shown each session
 daily_bulk_claim_toggle_default_on = false
@@ -955,6 +958,9 @@ ships = true
 
 # Do you want to sync slots data?
 slots = true
+
+# Do you want to sync faction store offer data?
+store_offers = false
 
 # Do you want to sync owned forbidden tech data?
 tech = true

@@ -541,8 +541,10 @@ void read_instant_warp_filter(toml::table& config, toml::table& new_config, std:
 void read_daily_bulk_claim_factions(toml::table& config, toml::table& new_config, std::vector<std::string>& factions,
                                     std::string_view default_value, bool write_log)
 {
-  const auto value =
-      config["ui"]["daily_bulk_claim_factions"].value<std::string>().value_or(std::string(default_value));
+  auto value = config["ui"]["daily_bulk_claim_factions"].value<std::string>().value_or(std::string(default_value));
+  // Blank has the same meaning as an omitted setting; none is the explicit opt-out.
+  if (StripAsciiWhitespace(value).empty())
+    value = std::string(default_value);
   if (!ParseFactionFilter(value, factions))
     spdlog::warn("Unrecognised faction in daily_bulk_claim_factions; expected federation, klingon, romulan, or none by "
                  "itself. Ignoring "
@@ -1136,6 +1138,9 @@ void Config::Load()
   this->auto_confirm_reveal_ability =
       get_config_or_default(config, parsed, "ui", "auto_confirm_reveal_ability",
                                                         DCU::auto_confirm_reveal_ability, write_config);
+  this->auto_confirm_alliance_contribution =
+      get_config_or_default(config, parsed, "ui", "auto_confirm_alliance_contribution",
+                                                        DCU::auto_confirm_alliance_contribution, write_config);
 
   this->extend_chest_purchase_max = get_config_or_default(config, parsed, "ui", "extend_chest_purchase_max",
                                                           DCU::extend_chest_purchase_max, write_config);
