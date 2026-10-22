@@ -207,7 +207,7 @@ Il2CppObject* ExistingAnomalyManager(Il2CppClass* managerClass)
     return nullptr;
   Il2CppObject* value = nullptr;
   il2cpp_field_static_get_value(instance, &value);
-  return value && il2cpp_class_is_assignable_from(managerClass, value->klass) ? value : nullptr;
+  return value && il2cpp_class_is_assignable_from(managerClass, value->klass) && Alive(value) ? value : nullptr;
 }
 
 Il2CppObject* Component(Il2CppObject* object, Il2CppClass* type)
