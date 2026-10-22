@@ -3,6 +3,8 @@
 #include "file.h"
 #include "str_utils.h"
 
+#include <Digit.Platform.Models.pb.h>
+#include <Digit.PrimePlatform.Content.pb.h>
 #include <Digit.PrimeServer.Models.pb.h>
 #include <il2cpp-api-types.h>
 #include <il2cpp/il2cpp_helper.h>
@@ -31,14 +33,18 @@
 #include <curl/curl.h>
 #include <nlohmann/json.hpp>
 
+#include <algorithm>
 #include <atomic>
+#include <charconv>
 #include <chrono>
 #include <condition_variable>
+#include <cstring>
 #include <filesystem>
 #include <format>
 #include <fstream>
 #include <mutex>
 #include <queue>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -2227,6 +2233,115 @@ static void active_officer_traits(std::unique_ptr<std::string>&& bytes)
   }
 }
 
+// Store offers arrive in Platform responses. Prices are in Resource.amount; amountUlong is the fallback.
+static int64_t store_offer_amount(const Digit::PrimePlatform::Content::Resource& resource)
+{ return static_cast<int64_t>(resource.amount() != 0 ? resource.amount() : resource.amountulong()); }
+
+// Platform ids are strings; emit numeric ids as numbers like the rest of the sync data.
+static nlohmann::json store_offer_id(const std::string& id)
+{
+  int64_t     value = 0;
+  const auto* end   = id.data() + id.size();
+  if (const auto [ptr, ec] = std::from_chars(id.data(), end, value); !id.empty() && ec == std::errc{} && ptr == end) {
+    return value;
+  }
+
+  return id;
+}
+
+static const Digit::PrimePlatform::Content::ContentItem*
+store_offer_consumable(const Digit::PrimePlatform::Content::BundleContent& content)
+{
+  for (const auto* list : {&content.static_(), &content.showcase(), &content.gifts()}) {
+    for (const auto& item : list->items()) {
+      if (item.type() == "consumable") {
+        return &item;
+      }
+    }
+  }
+
+  return nullptr;
+}
+
+// Emits one snapshot of the faction store's consumable offers (favor levels) whenever its content changes.
+static void store_offers(std::unique_ptr<std::string>&& bytes)
+{
+  using json = nlohmann::json;
+
+  static constexpr std::string_view category           = "factions";
+  static size_t                     store_offers_state = 0;
+  static std::mutex                 store_offers_mtx;
+
+  if (auto response = Digit::PrimePlatform::Content::Bundles(); response.ParseFromString(*bytes)) {
+
+    http::logging::trace("PROCESS", "store offers", STR_FORMAT("Processing {} store offers", response.bundles__size()));
+
+    // A store offers group carries whole categories; skip groups without the faction store.
+    struct Offer {
+      const Digit::PrimePlatform::Content::Bundle*      bundle;
+      const Digit::PrimePlatform::Content::ContentItem* consumable;
+    };
+    std::vector<Offer> bundles;
+    bool               has_category = false;
+    for (const auto& bundle : response.bundles_()) {
+      if (bundle.category() == category) {
+        has_category = true;
+        if (const auto* consumable = store_offer_consumable(bundle.content()); consumable != nullptr) {
+          bundles.push_back({&bundle, consumable});
+        }
+      }
+    }
+    if (!has_category) {
+      return;
+    }
+
+    // Sort by bundle id, then consumable id, so the snapshot (and therefore the de-dup hash) does not depend on server
+    // order.
+    std::ranges::sort(bundles, [](const Offer& a, const Offer& b) {
+      return std::pair{a.bundle->bundleid(), std::string_view{a.consumable->id()}}
+             < std::pair{b.bundle->bundleid(), std::string_view{b.consumable->id()}};
+    });
+
+    auto offers = json::array();
+    for (const auto& [bundle, consumable] : bundles) {
+      auto cost = json::array();
+      for (const auto& entry : bundle->cost()) {
+        for (const auto& resource : entry.cost_()) {
+          cost.push_back({{"rid", store_offer_id(resource.id())}, {"amount", store_offer_amount(resource)}});
+        }
+      }
+
+      // For faction_standing requirements the amount is a zero-based tier index.
+      auto req = json::array();
+      for (const auto& resource : bundle->requirements()) {
+        req.push_back({{"type", resource.type()},
+                       {"id", store_offer_id(resource.id())},
+                       {"amount", store_offer_amount(resource)}});
+      }
+
+      const auto& details = bundle->offerdetails();
+      offers.push_back({{"bid", bundle->bundleid()},
+                        {"cid", store_offer_id(consumable->id())},
+                        {"cost", cost},
+                        {"req", req},
+                        {"valid_count", details.validcount()},
+                        {"same_remaining_count", details.sameremainingcount()}});
+    }
+
+    json event = {{"type", SyncConfig::Type::StoreOffers}, {"category", category}, {"offers", offers}};
+
+    // Queue under the lock so the remembered snapshot and the queue order agree.
+    const auto       state_value = std::hash<json>{}(event);
+    std::scoped_lock lk(store_offers_mtx);
+    if (store_offers_state != state_value) {
+      store_offers_state = state_value;
+      workers::queue_data(SyncConfig::Type::StoreOffers, json::array({event}));
+    }
+  } else {
+    spdlog::error("Failed to parse store offers");
+  }
+}
+
 namespace json
 {
   static void battle_result_headers(const nlohmann::json& section)
@@ -2697,6 +2812,89 @@ static void HandleEntityGroup(EntityGroup* entity_group)
   }
 }
 
+// Platform responses (store offers among them) reach the same ProcessResultInternal detour as game server responses:
+// both model registries share one compiled method. Their entity group types use the Platform enum, so they must not
+// go through HandleEntityGroup.
+static bool IsPlatformResponse(ServiceResponse* service_response)
+{
+  static const Il2CppClass* platform_class = nullptr;
+
+  const auto* const response = reinterpret_cast<Il2CppObject*>(service_response);
+  if (response == nullptr || response->klass == nullptr) {
+    return false;
+  }
+  if (response->klass == platform_class) {
+    return true;
+  }
+
+  const char* const name_space = il2cpp_class_get_namespace(response->klass);
+  const char* const name       = il2cpp_class_get_name(response->klass);
+  if (name_space != nullptr && name != nullptr && std::strcmp(name_space, "Digit.Platform.Models") == 0
+      && std::strcmp(name, "ServiceResponse") == 0) {
+    platform_class = response->klass;
+    return true;
+  }
+
+  return false;
+}
+
+static void HandlePlatformResponse(ServiceResponse* service_response)
+{
+  auto* const        response       = reinterpret_cast<Il2CppObject*>(service_response);
+  static auto* const response_class = response->klass;
+  static auto        entity_groups  = IL2CppClassHelper{response_class}.GetProperty("EntityGroups");
+  if (response->klass != response_class) {
+    return;
+  }
+
+  auto* const groups = entity_groups.GetRaw<RepeatedField_EntityGroup>(response);
+  if (groups == nullptr) {
+    return;
+  }
+
+  for (int i = 0; i < groups->Count; ++i) {
+    auto* const group = reinterpret_cast<Il2CppObject*>(groups->get_Item(i));
+    if (group == nullptr || group->klass == nullptr) {
+      continue;
+    }
+
+    static auto* const group_class = group->klass;
+    static auto        group_type  = IL2CppClassHelper{group_class}.GetProperty("Type");
+    static auto        group_bytes = IL2CppClassHelper{group_class}.GetProperty("Group");
+    if (group->klass != group_class) {
+      continue;
+    }
+
+    const auto* const type = group_type.Get<int32_t>(group);
+    if (type == nullptr || *type != Digit::Platform::Models::EntityGroup::TYPE_STOREOFFERS) {
+      continue;
+    }
+
+    auto* const bytes = group_bytes.GetRaw<ByteString>(group);
+    if (bytes == nullptr || bytes->bytes == nullptr || bytes->Length <= 0) {
+      continue;
+    }
+
+    auto payload = std::make_unique<std::string>(reinterpret_cast<const char*>(bytes->bytes->m_Items),
+                                                 static_cast<size_t>(bytes->Length));
+    try {
+      std::thread([p = std::move(payload)]() mutable {
+        try {
+          processors::store_offers(std::move(p));
+        } catch (const std::exception& e) {
+          spdlog::error("Exception in HandlePlatformResponse: {}", e.what());
+        } catch (...) {
+          spdlog::error("Unknown exception in HandlePlatformResponse");
+        }
+      }).detach();
+    } catch (const std::exception& e) {
+      spdlog::error("Failed to spawn async task: {}", e.what());
+    } catch (...) {
+      spdlog::error("Failed to spawn async task: unknown exception");
+    }
+  }
+}
+
 namespace hooks
 {
 // IL2CPP value type: keep this parameter by value so following arguments retain their platform ABI positions.
@@ -2737,6 +2935,12 @@ static void* RtcParser_ParseFinalPayload(auto original, void* _this, CentrifugoI
 static void GameServerModelRegistry_ProcessResultInternal(auto original, void* _this, void* parsing_context,
                                                           ServiceResponse* service_response, MethodInfo* method)
 {
+  // Only the store offers option looks at Platform responses; everyone else keeps the unchanged path below.
+  if (Config::Get().sync_options.store_offers && IsPlatformResponse(service_response)) {
+    HandlePlatformResponse(service_response);
+    return original(_this, parsing_context, service_response, method);
+  }
+
   auto* const entity_groups = service_response->EntityGroups;
   for (int i = 0; i < entity_groups->Count; ++i) {
     auto* const entity_group = entity_groups->get_Item(i);

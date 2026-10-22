@@ -250,6 +250,7 @@ namespace Sync
   constexpr bool        resources          = true;
   constexpr bool        ships              = true;
   constexpr bool        slots              = true;
+  constexpr bool        store_offers       = false;
   constexpr bool        tech               = true;
   constexpr bool        traits             = true;
   constexpr const char* token              = "";

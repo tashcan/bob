@@ -32,6 +32,7 @@ public:
     Resources,
     Ships,
     Slots,
+    StoreOffers,
     Tech,
     Traits
   };
@@ -59,6 +60,7 @@ public:
   bool resources        = false;
   bool ships            = false;
   bool slots            = false;
+  bool store_offers     = false;
   bool tech             = false;
   bool traits           = false;
 
@@ -81,6 +83,7 @@ constexpr std::array SyncOptions{
     SyncConfig::Option{SyncConfig::Type::Resources, "resource", "resources", &SyncConfig::resources},
     SyncConfig::Option{SyncConfig::Type::Ships, "ship", "ships", &SyncConfig::ships},
     SyncConfig::Option{SyncConfig::Type::Slots, "slot", "slots", &SyncConfig::slots},
+    SyncConfig::Option{SyncConfig::Type::StoreOffers, "store_offer", "store_offers", &SyncConfig::store_offers},
     SyncConfig::Option{SyncConfig::Type::Tech, "ft", "tech", &SyncConfig::tech},
     SyncConfig::Option{SyncConfig::Type::Traits, "trait", "traits", &SyncConfig::traits},
 };
