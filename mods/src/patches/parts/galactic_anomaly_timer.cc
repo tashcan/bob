@@ -1,4 +1,5 @@
 #include "config.h"
+#include "errormsg.h"
 #include "patches/screen_update_hook.h"
 #include "prime/Color.h"
 #include "prime/Hub.h"
