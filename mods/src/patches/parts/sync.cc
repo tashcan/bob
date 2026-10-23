@@ -3157,7 +3157,7 @@ template <typename T> static void put(nlohmann::json& out, const char* key, cons
 }
 
 // Game thread only. Missing members are left out.
-static void add_live_state(nlohmann::json& out, FleetPlayerData* fleet)
+static void add_live_state(nlohmann::json& out, FleetPlayerData* fleet, FleetState state)
 {
   const auto is_mining    = fleet->IsMining();
   const auto is_repairing = fleet->IsRepairing();
@@ -3212,6 +3212,12 @@ static void add_live_state(nlohmann::json& out, FleetPlayerData* fleet)
       put(out, "repair_due", ManagedRead::DateTimeToUnix(timer->DueTime()));
     }
   }
+
+  if (state == FleetState::WarpCharging || state == FleetState::Warping || state == FleetState::Impulsing) {
+    if (auto* timer = fleet->Timer()) {
+      put(out, "travel_due", ManagedRead::DateTimeToUnix(timer->DueTime()));
+    }
+  }
 }
 
 // Game thread only. The values the client fills in late, as last sent per fleet; a re-read is only sent when they
@@ -3222,7 +3228,8 @@ static size_t late_fields(const nlohmann::json& record)
 {
   auto fields = nlohmann::json::object();
   for (const auto* key :
-       {"is_damaged", "is_destroyed", "is_repairing", "repair_due", "hull_damage", "mining_due", "node_id", "cargo_max"}) {
+       {"is_damaged", "is_destroyed", "is_repairing", "repair_due", "travel_due", "hull_damage", "mining_due", "node_id",
+        "cargo_max"}) {
     if (const auto it = record.find(key); it != record.end()) {
       fields[key] = *it;
     }
@@ -3253,7 +3260,7 @@ static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state,
                         {"t", unix_seconds()},
                         {"src", "client"}};
   try {
-    add_live_state(out, fleet);
+    add_live_state(out, fleet, state);
   } catch (const std::exception& e) {
     spdlog::warn("Sync: fleet live state read failed for {}: {}", fleet->Id, e.what());
   }
