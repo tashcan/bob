@@ -46,6 +46,7 @@
 #include <format>
 #include <fstream>
 #include <mutex>
+#include <optional>
 #include <queue>
 #include <ranges>
 #include <string>
@@ -2951,6 +2952,62 @@ static int64_t unix_seconds()
   return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
+template <typename T> static void put(nlohmann::json& out, const char* key, const std::optional<T>& value)
+{
+  if (value) {
+    out[key] = *value;
+  }
+}
+
+// Game thread only. Missing members are left out.
+static void add_live_state(nlohmann::json& out, FleetPlayerData* fleet)
+{
+  const auto is_mining    = fleet->IsMining();
+  const auto is_repairing = fleet->IsRepairing();
+
+  put(out, "is_home", fleet->IsHome());
+  put(out, "is_deployed", fleet->IsDeployed());
+  put(out, "is_mining", is_mining);
+  put(out, "is_repairing", is_repairing);
+  put(out, "is_damaged", fleet->IsDamaged());
+  put(out, "is_destroyed", fleet->IsDestroyed());
+  put(out, "drydock", fleet->DrydockID());
+  put(out, "cargo_fill", fleet->CargoResourceFillLevel());
+
+  if (auto* hold = fleet->GetCargoHoldData()) {
+    if (auto* current = hold->CurrentCargo()) {
+      put(out, "cargo", current->CurrentValue());
+      put(out, "cargo_max", current->MaxValue());
+    }
+    if (auto* protected_cargo = hold->ProtectedCargoProgress()) {
+      put(out, "protected_cargo", protected_cargo->CurrentValue());
+    }
+  }
+
+  if (is_mining.value_or(false)) {
+    if (auto* slot = fleet->MiningData()) {
+      put(out, "node_id", slot->ParentId());
+      put(out, "node_resource", slot->ResourceId());
+      put(out, "amount_mined", slot->AmountMined());
+      put(out, "occupied_since", ManagedRead::DateTimeToUnix(slot->OccupyTimeUtc()));
+      if (auto* node = slot->PointData()) {
+        put(out, "node_amount", node->Amount());
+      }
+    }
+    put(out, "mining_rate", fleet->GetMiningRate());
+
+    if (auto* timer = fleet->MiningSlotTimer()) {
+      put(out, "mining_due", ManagedRead::DateTimeToUnix(timer->DueTime()));
+    }
+  }
+
+  if (is_repairing.value_or(false)) {
+    if (auto* timer = fleet->Timer()) {
+      put(out, "repair_due", ManagedRead::DateTimeToUnix(timer->DueTime()));
+    }
+  }
+}
+
 // Game thread only: reads IL2CPP properties of a FleetPlayerData that is valid for the current frame.
 static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state, FleetState previous)
 {
@@ -2959,16 +3016,23 @@ static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state,
   // the value as unsigned before widening or those come out negative in the record.
   const int64_t hull_id = hull ? static_cast<int64_t>(static_cast<uint32_t>(hull->Id)) : 0;
 
-  return {{"type", SyncConfig::Type::Fleets},
-          {"fid", fleet->Id},
-          {"slot", slot},
-          {"hull_id", hull_id},
-          {"level", fleet->Level},
-          {"state", static_cast<int>(state)},
-          {"state_name", state_name(state)},
-          {"prev_state", static_cast<int>(previous)},
-          {"prev_state_name", state_name(previous)},
-          {"t", unix_seconds()}};
+  nlohmann::json out = {{"type", SyncConfig::Type::Fleets},
+                        {"fid", fleet->Id},
+                        {"slot", slot},
+                        {"hull_id", hull_id},
+                        {"level", fleet->Level},
+                        {"state", static_cast<int>(state)},
+                        {"state_name", state_name(state)},
+                        {"prev_state", static_cast<int>(previous)},
+                        {"prev_state_name", state_name(previous)},
+                        {"t", unix_seconds()},
+                        {"src", "client"}};
+  try {
+    add_live_state(out, fleet);
+  } catch (const std::exception& e) {
+    spdlog::warn("Sync: fleet live state read failed for {}: {}", fleet->Id, e.what());
+  }
+  return out;
 }
 
 // Game thread only. A snapshot is the complete list of occupied slots, so it is sent as a first sync.
