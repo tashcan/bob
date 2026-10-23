@@ -928,7 +928,10 @@ buildings = true
 # Do you want to sync Haven data?
 haven = true
 
-# Do you want to sync live fleet state (mining, docked, warping...)? Opt-in, off by default
+# Do you want to sync live fleet state? Opt-in, off by default. Sends "fleet" records keyed by fid:
+# src=client on each state change of a docked or deployed fleet (slot, state, cargo, mining node and due time),
+# src=server when the server's deployed-fleet data changes (system, hull/shield, strength, battle status).
+# Also adds repair jobs (with the fleet id) to the jobs feed when jobs is on.
 fleets = false
 
 # Do you want to sync inventory data?

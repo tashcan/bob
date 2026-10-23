@@ -1728,6 +1728,13 @@ static void jobs(std::unique_ptr<std::string>&& bytes)
           const auto& away_assignment = job.awayassignmentparams();
           job_params                  = {{"aid", away_assignment.awayassignmentinstanceid()}};
         } break;
+        case Digit::PrimeServer::Models::JOBTYPE_REPAIRFLEET: {
+          // part of fleet sync
+          if (!Config::Get().sync_options.fleets) {
+            continue;
+          }
+          job_params = {{"fid", job.repairfleetparams().fleetid()}};
+        } break;
         default:
           continue;
       }
