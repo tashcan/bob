@@ -2967,6 +2967,7 @@ static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state,
           {"state", static_cast<int>(state)},
           {"state_name", state_name(state)},
           {"prev_state", static_cast<int>(previous)},
+          {"prev_state_name", state_name(previous)},
           {"t", unix_seconds()}};
 }
 
