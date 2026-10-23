@@ -8,6 +8,7 @@
 #include <Digit.Platform.Models.pb.h>
 #include <Digit.PrimePlatform.Content.pb.h>
 #include <Digit.PrimeServer.Models.pb.h>
+#include <stfc.sync.pb.h>
 #include <il2cpp-api-types.h>
 #include <il2cpp/il2cpp_helper.h>
 #include <prime/EntityGroup.h>
@@ -40,6 +41,7 @@
 #include <atomic>
 #include <charconv>
 #include <chrono>
+#include <cmath>
 #include <condition_variable>
 #include <cstring>
 #include <filesystem>
@@ -2356,6 +2358,168 @@ static void store_offers(std::unique_ptr<std::string>&& bytes)
   }
 }
 
+namespace deployed_fleets
+{
+  using Digit::PrimeServer::Models::ClientModifierType;
+  using Digit::PrimeServer::Models::DeployedFleetState;
+
+  static const char* state_name(DeployedFleetState state)
+  {
+    switch (state) {
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_IDLE:
+        return "Idle";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_MOVING:
+        return "Moving";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_WARPING:
+        return "Warping";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_BATTLING:
+        return "Battling";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_RECALL:
+        return "Recall";
+      // docked at a mining node, not the station
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_DOCKED:
+        return "OnNode";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_PREBATTLE:
+        return "PreBattle";
+      default:
+        return "Unknown";
+    }
+  }
+
+  // 1234 not 1234.0, and 14.364 not 14.36400032043457
+  static nlohmann::json number(float value)
+  {
+    if (std::trunc(value) == value && std::abs(value) < 9.0e15f) {
+      return static_cast<int64_t>(value);
+    }
+
+    char   buffer[32];
+    double widened = value;
+    if (const auto [end, ec] = std::to_chars(std::begin(buffer), std::end(buffer), value); ec == std::errc{}) {
+      std::from_chars(std::begin(buffer), end, widened);
+    }
+    return widened;
+  }
+
+  using FloatMap = google::protobuf::Map<int32_t, float>;
+
+  static std::optional<float> lookup(const FloatMap& map, ClientModifierType key)
+  {
+    if (const auto it = map.find(key); it != map.end()) {
+      return it->second;
+    }
+    return std::nullopt;
+  }
+
+  // leave missing stats out instead of sending 0
+  static void put(nlohmann::json& record, const char* name, const FloatMap& map, ClientModifierType key)
+  {
+    if (const auto value = lookup(map, key); value && std::isfinite(*value)) {
+      record[name] = number(*value);
+    }
+  }
+
+  // summed over the fleet's ships: shipStats has the max, shipAttributes the damage taken
+  static void put_points(nlohmann::json& record, const char* current_name, const char* max_name,
+                         const Digit::PrimeServer::Models::DeployedFleet& fleet, ClientModifierType max_key,
+                         ClientModifierType damage_key)
+  {
+    double total_max    = 0;
+    double total_damage = 0;
+    bool   found        = false;
+
+    for (const auto& [ship_id, stats] : fleet.shipstats()) {
+      const auto max = lookup(stats.shipattributes_(), max_key);
+      if (!max) {
+        continue;
+      }
+
+      found = true;
+      total_max += *max;
+      if (const auto it = fleet.shipattributes().find(ship_id); it != fleet.shipattributes().end()) {
+        total_damage += lookup(it->second.shipattributes_(), damage_key).value_or(0.0f);
+      }
+    }
+
+    if (found) {
+      record[current_name] = std::llround(std::max(0.0, total_max - total_damage));
+      record[max_name]     = std::llround(total_max);
+    }
+  }
+} // namespace deployed_fleets
+
+static void my_deployed_fleets(std::unique_ptr<std::string>&& bytes)
+{
+  using json = nlohmann::json;
+  using namespace Digit::PrimeServer::Models;
+  using deployed_fleets::put;
+
+  auto response = MyDeployedFleetsResponse();
+  if (!response.ParseFromString(*bytes)) {
+    spdlog::error("Failed to parse deployed fleets");
+    return;
+  }
+
+  http::logging::trace("PROCESS", "deployed fleets", STR_FORMAT("Processing {} fleets", response.fleets_size()));
+
+  // the server resends every fleet on each update, so only send the ones that changed
+  static std::unordered_map<int64_t, size_t> last_sent;
+  static std::mutex                          last_sent_mtx;
+
+  const int64_t now =
+      std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+  auto fleet_array = json::array();
+
+  for (const auto& [fleet_id, fleet] : response.fleets()) {
+    json record = {{"type", SyncConfig::Type::Fleets},
+                   {"fid", fleet_id},
+                   {"src", "server"},
+                   {"server_state", static_cast<int>(fleet.state())},
+                   {"server_state_name", deployed_fleets::state_name(fleet.state())},
+                   {"node_id", fleet.nodeid()}};
+
+    if (fleet.hullids_size() > 0) {
+      // widen through uint32 like the client records
+      record["hull_id"] = static_cast<int64_t>(static_cast<uint32_t>(fleet.hullids(0)));
+    }
+
+    if (fleet.has_nodeaddress()) {
+      record["system_id"] = fleet.nodeaddress().system();
+    }
+
+    deployed_fleets::put_points(record, "hull_hp", "hull_max", fleet, CLIENTMODIFIERTYPE_MODHULLHPMAX,
+                                CLIENTMODIFIERTYPE_SHIPHULLDAMAGE);
+    deployed_fleets::put_points(record, "shield_hp", "shield_max", fleet, CLIENTMODIFIERTYPE_MODSHIELDHPMAX,
+                                CLIENTMODIFIERTYPE_SHIPSHIELDDAMAGE);
+
+    const auto& stats = fleet.stats();
+    put(record, "cargo_cap", stats, CLIENTMODIFIERTYPE_MODCARGOCAPACITY);
+    put(record, "warp_range", stats, CLIENTMODIFIERTYPE_MODWARPDISTANCE);
+    put(record, "strength", fleet.attributes(), CLIENTMODIFIERTYPE_FLEETSTRENGTH);
+
+    // a count only, no other players' ids
+    record["pursued_by"] = fleet.pursuedbynum();
+
+    const auto       state_value = std::hash<json>{}(record);
+    std::scoped_lock lk(last_sent_mtx);
+    if (auto& last = last_sent[fleet_id]; last != state_value) {
+      last = state_value;
+      record["t"] = now;
+      fleet_array.push_back(std::move(record));
+    }
+  }
+
+  // forget fleets that left, so they're sent again when they're back
+  {
+    std::scoped_lock lk(last_sent_mtx);
+    std::erase_if(last_sent, [&](const auto& entry) { return !response.fleets().contains(entry.first); });
+  }
+
+  if (!fleet_array.empty()) {
+    workers::queue_data(SyncConfig::Type::Fleets, fleet_array, /*is_first_sync=*/false);
+  }
+}
+
 namespace json
 {
   static void battle_result_headers(const nlohmann::json& section)
@@ -2813,6 +2977,13 @@ static void HandleEntityGroup(EntityGroup* entity_group)
     case EntityGroup::Type::ActiveOfficerTraits:
       if (sync_options.traits) {
         submit_async(processors::active_officer_traits);
+      }
+      break;
+
+    // fleets
+    case EntityGroup::Type::MyDeployedFleets:
+      if (sync_options.fleets) {
+        submit_async(processors::my_deployed_fleets);
       }
       break;
 
