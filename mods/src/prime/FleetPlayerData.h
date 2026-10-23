@@ -188,12 +188,39 @@ public:
     static auto field = get_class_helper().GetField("_miningSlotTimer");
     return (ITimerData*)ManagedRead::FieldObject(this, field.get_info());
   }
+  // damage on the fleet's ship (BaseShip), so a docked ship's hull is known without the server
+  std::optional<float> HullDamage()
+  {
+    static ShipGetter getter{"HullDamage"};
+    return getter.Read(this->Ship);
+  }
   std::optional<float> GetMiningRate()
   {
     static auto method = get_class_helper().GetMethodInfo("GetMiningRate", 0);
     return ManagedRead::Value<float>(method, this);
   }
 
+private:
+  // the ship's concrete class is only known at runtime; look the getter up once per class
+  struct ShipGetter {
+    const char*       property;
+    Il2CppClass*      cls    = nullptr;
+    const MethodInfo* getter = nullptr;
+
+    std::optional<float> Read(void* ship)
+    {
+      if (!ship) {
+        return std::nullopt;
+      }
+      if (auto* klass = ((Il2CppObject*)ship)->klass; klass != cls) {
+        cls    = klass;
+        getter = ManagedRead::Getter(klass, property);
+      }
+      return ManagedRead::Value<float>(getter, ship);
+    }
+  };
+
+public:
   int64_t GetLocaId()
   {
     static auto GetLocaIdWarn = true;

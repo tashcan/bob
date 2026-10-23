@@ -901,6 +901,17 @@ namespace fleets
 {
 // Set from any thread when another category's first sync is queued; the game thread answers with a full fleet snapshot.
 static std::atomic_bool snapshot_requested{false};
+
+// Fleets the server just sent new data for. The client fills in some values (mining and travel timers, damage) from
+// that data, so the game thread re-reads these fleets shortly after.
+static std::mutex                                                          reread_mtx;
+static std::unordered_map<uint64_t, std::chrono::steady_clock::time_point> reread_at;
+
+static void request_reread(uint64_t fid)
+{
+  std::scoped_lock lk(reread_mtx);
+  reread_at.try_emplace(fid, std::chrono::steady_clock::now() + std::chrono::seconds(1));
+}
 } // namespace fleets
 
 namespace workers
@@ -1734,6 +1745,7 @@ static void jobs(std::unique_ptr<std::string>&& bytes)
             continue;
           }
           job_params = {{"fid", job.repairfleetparams().fleetid()}};
+          fleets::request_reread(job.repairfleetparams().fleetid());
         } break;
         default:
           continue;
@@ -2513,13 +2525,20 @@ static void my_deployed_fleets(std::unique_ptr<std::string>&& bytes)
       last = state_value;
       record["t"] = now;
       fleet_array.push_back(std::move(record));
+      fleets::request_reread(fleet_id);
     }
   }
 
-  // forget fleets that left, so they're sent again when they're back
+  // forget fleets that left (docked, destroyed), so they're sent again when they're back
   {
     std::scoped_lock lk(last_sent_mtx);
-    std::erase_if(last_sent, [&](const auto& entry) { return !response.fleets().contains(entry.first); });
+    std::erase_if(last_sent, [&](const auto& entry) {
+      if (response.fleets().contains(entry.first)) {
+        return false;
+      }
+      fleets::request_reread(entry.first);
+      return true;
+    });
   }
 
   if (!fleet_array.empty()) {
@@ -3143,13 +3162,22 @@ static void add_live_state(nlohmann::json& out, FleetPlayerData* fleet)
   const auto is_mining    = fleet->IsMining();
   const auto is_repairing = fleet->IsRepairing();
 
-  put(out, "is_home", fleet->IsHome());
+  const auto is_home      = fleet->IsHome();
+  const auto is_destroyed = fleet->IsDestroyed();
+
+  put(out, "is_home", is_home);
   put(out, "is_deployed", fleet->IsDeployed());
   put(out, "is_mining", is_mining);
   put(out, "is_repairing", is_repairing);
   put(out, "is_damaged", fleet->IsDamaged());
-  put(out, "is_destroyed", fleet->IsDestroyed());
+  put(out, "is_destroyed", is_destroyed);
   put(out, "drydock", fleet->DrydockID());
+  // the client only updates this at the station; in space the server's hull points are the live value
+  if (is_home.value_or(false) || is_destroyed.value_or(false)) {
+    if (const auto damage = fleet->HullDamage()) {
+      out["hull_damage"] = std::llround(*damage);
+    }
+  }
   put(out, "cargo_fill", fleet->CargoResourceFillLevel());
 
   if (auto* hold = fleet->GetCargoHoldData()) {
@@ -3186,6 +3214,25 @@ static void add_live_state(nlohmann::json& out, FleetPlayerData* fleet)
   }
 }
 
+// Game thread only. The values the client fills in late, as last sent per fleet; a re-read is only sent when they
+// changed. Values that move on their own are left out: cargo while mining, hull while repairing.
+static std::unordered_map<uint64_t, size_t> sent_late;
+
+static size_t late_fields(const nlohmann::json& record)
+{
+  auto fields = nlohmann::json::object();
+  for (const auto* key :
+       {"is_damaged", "is_destroyed", "is_repairing", "repair_due", "hull_damage", "mining_due", "node_id", "cargo_max"}) {
+    if (const auto it = record.find(key); it != record.end()) {
+      fields[key] = *it;
+    }
+  }
+  if (record.value("is_repairing", false)) {
+    fields.erase("hull_damage");
+  }
+  return std::hash<nlohmann::json>{}(fields);
+}
+
 // Game thread only: reads IL2CPP properties of a FleetPlayerData that is valid for the current frame.
 static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state, FleetState previous)
 {
@@ -3210,6 +3257,8 @@ static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state,
   } catch (const std::exception& e) {
     spdlog::warn("Sync: fleet live state read failed for {}: {}", fleet->Id, e.what());
   }
+
+  sent_late[fleet->Id] = late_fields(out);
   return out;
 }
 
@@ -3252,8 +3301,59 @@ static void on_baseline()
   queue_snapshot("baseline");
 }
 
+// Game thread only.
+static void reread_requested()
+{
+  std::vector<uint64_t> due;
+  {
+    std::scoped_lock lk(reread_mtx);
+    if (reread_at.empty()) {
+      return;
+    }
+    const auto now = std::chrono::steady_clock::now();
+    std::erase_if(reread_at, [&](const auto& entry) {
+      if (entry.second > now) {
+        return false;
+      }
+      due.push_back(entry.first);
+      return true;
+    });
+  }
+  if (due.empty()) {
+    return;
+  }
+
+  auto* manager = FleetsManager::Instance();
+  if (!manager || !manager->HasFleetService()) {
+    return;
+  }
+
+  auto fleet_array = nlohmann::json::array();
+  for (int slot = 0; slot < kFleetSlotCount; ++slot) {
+    try {
+      auto* fleet = manager->GetFleetPlayerData(slot);
+      if (!fleet || std::ranges::find(due, fleet->Id) == due.end()) {
+        continue;
+      }
+      const auto before = sent_late[fleet->Id];
+      auto       entry  = record(slot, fleet, fleet->CurrentState, fleet->PreviousState);
+      if (late_fields(entry) != before) {
+        fleet_array.push_back(std::move(entry));
+      }
+    } catch (const std::exception& e) {
+      spdlog::warn("Sync: fleet re-read failed for slot {}: {}", slot, e.what());
+    }
+  }
+
+  if (!fleet_array.empty()) {
+    workers::queue_data(SyncConfig::Type::Fleets, fleet_array);
+  }
+}
+
 static void tick()
 {
+  reread_requested();
+
   if (!snapshot_requested.load(std::memory_order_relaxed)
       || !snapshot_requested.exchange(false, std::memory_order_acq_rel)) {
     return;
