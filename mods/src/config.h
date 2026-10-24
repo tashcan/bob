@@ -188,6 +188,7 @@ public:
   bool  use_out_of_dock_power;
   float system_pan_momentum;
   float system_pan_momentum_falloff;
+  bool disable_target_camera_lock;
 
   float keyboard_zoom_speed;
   int   select_timer;
