@@ -73,11 +73,8 @@ inline bool EndsWithWords(const std::vector<std::string>& candidate, const std::
   return true;
 }
 
-inline std::string GameDisplayName(FleetPlayerData* ship)
+inline std::string LocalizedShipName(int64_t loca_id)
 {
-  if (!ship || !ship->Hull) return {};
-
-  const auto loca_id = ship->GetLocaId();
   if (loca_id <= 0) return {};
 
   struct Resolved {
@@ -124,6 +121,11 @@ inline std::string GameDisplayName(FleetPlayerData* ship)
     return to_string(str);
   }
   return {};
+}
+
+inline std::string GameDisplayName(FleetPlayerData* ship)
+{
+  return ship && ship->Hull ? LocalizedShipName(ship->GetLocaId()) : std::string{};
 }
 
 inline std::vector<std::string> DisplayWords(FleetPlayerData* ship)
