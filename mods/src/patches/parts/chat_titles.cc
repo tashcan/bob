@@ -85,7 +85,7 @@ void UserProfileWidget_UpdatePlayerTitle_Hook(auto original, void* _this)
   } catch (...) {
   }
 }
-void PlayerTitleWidget_BindPath_Hook(auto original, void* _this)
+void PlayerTitleWidget_SetIdentifiers_Hook(auto original, void* _this)
 {
   original(_this);
   try {
@@ -146,75 +146,44 @@ void InstallChatTitleDisplayHooks()
     ErrorMsg::MissingMethod("UserProfileWidget", "UpdatePlayerTitle");
   }
 
-  void* set_widget_data     = nullptr;
-  void* on_did_bind_context = nullptr;
+  void* set_identifiers = nullptr;
   if (auto title_widget = il2cpp_get_class_helper("Assembly-CSharp", "Digit.Prime.PlayerAvatars", "PlayerTitleWidget");
       !title_widget.isValidHelper()) {
     ErrorMsg::MissingHelper("Digit.Prime.PlayerAvatars", "PlayerTitleWidget");
-  } else {
-    set_widget_data     = title_widget.GetMethod("SetWidgetData", 0);
-    on_did_bind_context = title_widget.GetMethod("OnDidBindContext", 0);
-    if (!set_widget_data || !on_did_bind_context) {
-      ErrorMsg::MissingMethod("PlayerTitleWidget", set_widget_data ? "OnDidBindContext" : "SetWidgetData");
-      set_widget_data     = nullptr;
-      on_did_bind_context = nullptr;
-    }
+  } else if ((set_identifiers = title_widget.GetMethod("SetIdentifiers", 0)) == nullptr) {
+    ErrorMsg::MissingMethod("PlayerTitleWidget", "SetIdentifiers");
   }
 
-#if _WIN32
-  // These small IL2CPP bind wrappers crash independently on the Windows
-  // client when detoured. Keep the verified-safe UpdatePlayerTitle hook and
-  // preserve the native bind paths.
-  if (set_widget_data || on_did_bind_context) {
-    spdlog::warn("[ChatTitleDisplay] skipping unsafe PlayerTitleWidget bind wrappers on Windows");
-    set_widget_data     = nullptr;
-    on_did_bind_context = nullptr;
-  }
-#endif
-
-  if (!update_player_title && !set_widget_data && !on_did_bind_context) {
+  if (!update_player_title && !set_identifiers) {
     return;
   }
 
   if (update_player_title) {
     update_player_title = ValidateDetourTarget(update_player_title, "UpdatePlayerTitle");
   }
-  if (set_widget_data) {
-    set_widget_data = ValidateDetourTarget(set_widget_data, "SetWidgetData");
-  }
-  if (on_did_bind_context) {
-    on_did_bind_context = ValidateDetourTarget(on_did_bind_context, "OnDidBindContext");
+  if (set_identifiers) {
+    set_identifiers = ValidateDetourTarget(set_identifiers, "SetIdentifiers");
   }
 
-  if (!update_player_title && !set_widget_data && !on_did_bind_context) {
+  if (!update_player_title && !set_identifiers) {
     spdlog::warn("Skipping ChatTitleDisplayHooks: no detour target fits; no hooks installed.");
     return;
   }
 
-  // The PlayerTitleWidget callbacks can resolve through thunks to one shared
-  // native implementation. A second detour on the same address would rebuild
-  // the first detour's jump into a broken trampoline, so keep one hook per
-  // target; the shared body funnels both method entries into the same hook.
-  if (set_widget_data && set_widget_data == update_player_title) {
-    spdlog::info("[ChatTitleDisplay] SetWidgetData shares its native implementation with UpdatePlayerTitle; "
-                 "keeping one detour");
-    set_widget_data = nullptr;
-  }
-  if (on_did_bind_context
-      && (on_did_bind_context == update_player_title || on_did_bind_context == set_widget_data)) {
-    spdlog::info("[ChatTitleDisplay] OnDidBindContext shares its native implementation with another target; "
-                 "keeping one detour");
-    on_did_bind_context = nullptr;
+  // Both title-bind callbacks tail-call SetIdentifiers. On Windows client 272
+  // their shared wrapper is only 16 bytes, less than SPUD's 24-byte overwrite,
+  // so detouring it also corrupts the adjacent title-clear callback. Hook the
+  // substantive implementation once instead.
+  if (set_identifiers && set_identifiers == update_player_title) {
+    spdlog::warn("[ChatTitleDisplay] SetIdentifiers shares its target with UpdatePlayerTitle; keeping one detour");
+    set_identifiers = nullptr;
   }
 
   if (update_player_title) {
     SPUD_STATIC_DETOUR(update_player_title, UserProfileWidget_UpdatePlayerTitle_Hook);
   }
-  if (set_widget_data) {
-    SPUD_STATIC_DETOUR(set_widget_data, PlayerTitleWidget_BindPath_Hook);
-  }
-  if (on_did_bind_context) {
-    SPUD_STATIC_DETOUR(on_did_bind_context, PlayerTitleWidget_BindPath_Hook);
+  if (set_identifiers) {
+    SPUD_STATIC_DETOUR(set_identifiers, PlayerTitleWidget_SetIdentifiers_Hook);
   }
 
   spdlog::info("Chat title display: chat player title rows {}", Config::Get().show_player_title ? "shown" : "hidden");
