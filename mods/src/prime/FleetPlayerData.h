@@ -6,8 +6,11 @@
 #include "HullSpec.h"
 #include "RecallRequirement.h"
 #include "CanRepairRequirement.h"
+#include "FleetLiveData.h"
+#include "ManagedRead.h"
 
 #include <cstdint>
+#include <optional>
 
 struct Ship;
 
@@ -123,6 +126,101 @@ public:
     return property.GetRaw<struct Ship>(this);
   }
 
+  // live state, empty when missing
+  std::optional<bool> IsHome()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "IsHome");
+    return ManagedRead::Value<bool>(getter, this);
+  }
+  std::optional<bool> IsDeployed()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "IsDeployed");
+    return ManagedRead::Value<bool>(getter, this);
+  }
+  std::optional<bool> IsMining()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "IsMining");
+    return ManagedRead::Value<bool>(getter, this);
+  }
+  std::optional<bool> IsRepairing()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "IsRepairing");
+    return ManagedRead::Value<bool>(getter, this);
+  }
+  std::optional<bool> IsDamaged()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "IsDamaged");
+    return ManagedRead::Value<bool>(getter, this);
+  }
+  std::optional<bool> IsDestroyed()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "IsDestroyed");
+    return ManagedRead::Value<bool>(getter, this);
+  }
+  std::optional<int32_t> DrydockID()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "DrydockID");
+    return ManagedRead::Value<int32_t>(getter, this);
+  }
+  std::optional<float> CargoResourceFillLevel()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "CargoResourceFillLevel");
+    return ManagedRead::Value<float>(getter, this);
+  }
+  CargoHoldData* GetCargoHoldData()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "CargoHoldData");
+    return (CargoHoldData*)ManagedRead::Object(getter, this);
+  }
+  IMiningSlot* MiningData()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "MiningData");
+    return (IMiningSlot*)ManagedRead::Object(getter, this);
+  }
+  ITimerData* Timer()
+  {
+    static auto getter = ManagedRead::Getter(get_class_helper().get_cls(), "Timer");
+    return (ITimerData*)ManagedRead::Object(getter, this);
+  }
+  // no property for the mining timer, so read the private field
+  ITimerData* MiningSlotTimer()
+  {
+    static auto field = get_class_helper().GetField("_miningSlotTimer");
+    return (ITimerData*)ManagedRead::FieldObject(this, field.get_info());
+  }
+  // damage on the fleet's ship (BaseShip), so a docked ship's hull is known without the server
+  std::optional<float> HullDamage()
+  {
+    static ShipGetter getter{"HullDamage"};
+    return getter.Read(this->Ship);
+  }
+  std::optional<float> GetMiningRate()
+  {
+    static auto method = get_class_helper().GetMethodInfo("GetMiningRate", 0);
+    return ManagedRead::Value<float>(method, this);
+  }
+
+private:
+  // the ship's concrete class is only known at runtime; look the getter up once per class
+  struct ShipGetter {
+    const char*       property;
+    Il2CppClass*      cls    = nullptr;
+    const MethodInfo* getter = nullptr;
+
+    std::optional<float> Read(void* ship)
+    {
+      if (!ship) {
+        return std::nullopt;
+      }
+      if (auto* klass = ((Il2CppObject*)ship)->klass; klass != cls) {
+        cls    = klass;
+        getter = ManagedRead::Getter(klass, property);
+      }
+      return ManagedRead::Value<float>(getter, ship);
+    }
+  };
+
+public:
   int64_t GetLocaId()
   {
     static auto GetLocaIdWarn = true;

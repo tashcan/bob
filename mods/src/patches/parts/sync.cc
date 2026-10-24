@@ -1,14 +1,18 @@
 #include "config.h"
 #include "errormsg.h"
 #include "file.h"
+#include "patches/fleet_watch.h"
+#include "patches/screen_update_hook.h"
 #include "str_utils.h"
 
 #include <Digit.Platform.Models.pb.h>
 #include <Digit.PrimePlatform.Content.pb.h>
 #include <Digit.PrimeServer.Models.pb.h>
+#include <stfc.sync.pb.h>
 #include <il2cpp-api-types.h>
 #include <il2cpp/il2cpp_helper.h>
 #include <prime/EntityGroup.h>
+#include <prime/FleetsManager.h>
 #include <prime/RealtimeDataPayload.h>
 #include <prime/ServiceResponse.h>
 #include <prime/UserProfileManager.h>
@@ -37,12 +41,14 @@
 #include <atomic>
 #include <charconv>
 #include <chrono>
+#include <cmath>
 #include <condition_variable>
 #include <cstring>
 #include <filesystem>
 #include <format>
 #include <fstream>
 #include <mutex>
+#include <optional>
 #include <queue>
 #include <ranges>
 #include <string>
@@ -891,6 +897,23 @@ static void save_previously_sent_logs()
 }
 } // namespace trackers
 
+namespace fleets
+{
+// Set from any thread when another category's first sync is queued; the game thread answers with a full fleet snapshot.
+static std::atomic_bool snapshot_requested{false};
+
+// Fleets the server just sent new data for. The client fills in some values (mining and travel timers, damage) from
+// that data, so the game thread re-reads these fleets shortly after.
+static std::mutex                                                          reread_mtx;
+static std::unordered_map<uint64_t, std::chrono::steady_clock::time_point> reread_at;
+
+static void request_reread(uint64_t fid)
+{
+  std::scoped_lock lk(reread_mtx);
+  reread_at.try_emplace(fid, std::chrono::steady_clock::now() + std::chrono::seconds(1));
+}
+} // namespace fleets
+
 namespace workers
 {
 
@@ -915,6 +938,10 @@ static void queue_data(SyncConfig::Type type, const std::string& data, bool is_f
 
 static void queue_data(SyncConfig::Type type, const nlohmann::json& data, bool is_first_sync = false)
 {
+  if (is_first_sync && type != SyncConfig::Type::Fleets) {
+    fleets::snapshot_requested.store(true, std::memory_order_release);
+  }
+
   {
     std::scoped_lock lk(sync_data_mtx);
     sync_data_queue.emplace(type, data.dump(), is_first_sync);
@@ -1712,6 +1739,14 @@ static void jobs(std::unique_ptr<std::string>&& bytes)
           const auto& away_assignment = job.awayassignmentparams();
           job_params                  = {{"aid", away_assignment.awayassignmentinstanceid()}};
         } break;
+        case Digit::PrimeServer::Models::JOBTYPE_REPAIRFLEET: {
+          // part of fleet sync
+          if (!Config::Get().sync_options.fleets) {
+            continue;
+          }
+          job_params = {{"fid", job.repairfleetparams().fleetid()}};
+          fleets::request_reread(job.repairfleetparams().fleetid());
+        } break;
         default:
           continue;
       }
@@ -2342,6 +2377,175 @@ static void store_offers(std::unique_ptr<std::string>&& bytes)
   }
 }
 
+namespace deployed_fleets
+{
+  using Digit::PrimeServer::Models::ClientModifierType;
+  using Digit::PrimeServer::Models::DeployedFleetState;
+
+  static const char* state_name(DeployedFleetState state)
+  {
+    switch (state) {
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_IDLE:
+        return "Idle";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_MOVING:
+        return "Moving";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_WARPING:
+        return "Warping";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_BATTLING:
+        return "Battling";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_RECALL:
+        return "Recall";
+      // docked at a mining node, not the station
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_DOCKED:
+        return "OnNode";
+      case Digit::PrimeServer::Models::DEPLOYEDFLEETSTATE_PREBATTLE:
+        return "PreBattle";
+      default:
+        return "Unknown";
+    }
+  }
+
+  // 1234 not 1234.0, and 14.364 not 14.36400032043457
+  static nlohmann::json number(float value)
+  {
+    if (std::trunc(value) == value && std::abs(value) < 9.0e15f) {
+      return static_cast<int64_t>(value);
+    }
+
+    char   buffer[32];
+    double widened = value;
+    if (const auto [end, ec] = std::to_chars(std::begin(buffer), std::end(buffer), value); ec == std::errc{}) {
+      std::from_chars(std::begin(buffer), end, widened);
+    }
+    return widened;
+  }
+
+  using FloatMap = google::protobuf::Map<int32_t, float>;
+
+  static std::optional<float> lookup(const FloatMap& map, ClientModifierType key)
+  {
+    if (const auto it = map.find(key); it != map.end()) {
+      return it->second;
+    }
+    return std::nullopt;
+  }
+
+  // leave missing stats out instead of sending 0
+  static void put(nlohmann::json& record, const char* name, const FloatMap& map, ClientModifierType key)
+  {
+    if (const auto value = lookup(map, key); value && std::isfinite(*value)) {
+      record[name] = number(*value);
+    }
+  }
+
+  // summed over the fleet's ships: shipStats has the max, shipAttributes the damage taken
+  static void put_points(nlohmann::json& record, const char* current_name, const char* max_name,
+                         const Digit::PrimeServer::Models::DeployedFleet& fleet, ClientModifierType max_key,
+                         ClientModifierType damage_key)
+  {
+    double total_max    = 0;
+    double total_damage = 0;
+    bool   found        = false;
+
+    for (const auto& [ship_id, stats] : fleet.shipstats()) {
+      const auto max = lookup(stats.shipattributes_(), max_key);
+      if (!max) {
+        continue;
+      }
+
+      found = true;
+      total_max += *max;
+      if (const auto it = fleet.shipattributes().find(ship_id); it != fleet.shipattributes().end()) {
+        total_damage += lookup(it->second.shipattributes_(), damage_key).value_or(0.0f);
+      }
+    }
+
+    if (found) {
+      record[current_name] = std::llround(std::max(0.0, total_max - total_damage));
+      record[max_name]     = std::llround(total_max);
+    }
+  }
+} // namespace deployed_fleets
+
+static void my_deployed_fleets(std::unique_ptr<std::string>&& bytes)
+{
+  using json = nlohmann::json;
+  using namespace Digit::PrimeServer::Models;
+  using deployed_fleets::put;
+
+  auto response = MyDeployedFleetsResponse();
+  if (!response.ParseFromString(*bytes)) {
+    spdlog::error("Failed to parse deployed fleets");
+    return;
+  }
+
+  http::logging::trace("PROCESS", "deployed fleets", STR_FORMAT("Processing {} fleets", response.fleets_size()));
+
+  // the server resends every fleet on each update, so only send the ones that changed
+  static std::unordered_map<int64_t, size_t> last_sent;
+  static std::mutex                          last_sent_mtx;
+
+  const int64_t now =
+      std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+  auto fleet_array = json::array();
+
+  for (const auto& [fleet_id, fleet] : response.fleets()) {
+    json record = {{"type", SyncConfig::Type::Fleets},
+                   {"fid", fleet_id},
+                   {"src", "server"},
+                   {"server_state", static_cast<int>(fleet.state())},
+                   {"server_state_name", deployed_fleets::state_name(fleet.state())},
+                   {"node_id", fleet.nodeid()}};
+
+    if (fleet.hullids_size() > 0) {
+      // widen through uint32 like the client records
+      record["hull_id"] = static_cast<int64_t>(static_cast<uint32_t>(fleet.hullids(0)));
+    }
+
+    if (fleet.has_nodeaddress()) {
+      record["system_id"] = fleet.nodeaddress().system();
+    }
+
+    deployed_fleets::put_points(record, "hull_hp", "hull_max", fleet, CLIENTMODIFIERTYPE_MODHULLHPMAX,
+                                CLIENTMODIFIERTYPE_SHIPHULLDAMAGE);
+    deployed_fleets::put_points(record, "shield_hp", "shield_max", fleet, CLIENTMODIFIERTYPE_MODSHIELDHPMAX,
+                                CLIENTMODIFIERTYPE_SHIPSHIELDDAMAGE);
+
+    const auto& stats = fleet.stats();
+    put(record, "cargo_cap", stats, CLIENTMODIFIERTYPE_MODCARGOCAPACITY);
+    put(record, "warp_range", stats, CLIENTMODIFIERTYPE_MODWARPDISTANCE);
+    put(record, "strength", fleet.attributes(), CLIENTMODIFIERTYPE_FLEETSTRENGTH);
+
+    // a count only, no other players' ids
+    record["pursued_by"] = fleet.pursuedbynum();
+
+    const auto       state_value = std::hash<json>{}(record);
+    std::scoped_lock lk(last_sent_mtx);
+    if (auto& last = last_sent[fleet_id]; last != state_value) {
+      last = state_value;
+      record["t"] = now;
+      fleet_array.push_back(std::move(record));
+      fleets::request_reread(fleet_id);
+    }
+  }
+
+  // forget fleets that left (docked, destroyed), so they're sent again when they're back
+  {
+    std::scoped_lock lk(last_sent_mtx);
+    std::erase_if(last_sent, [&](const auto& entry) {
+      if (response.fleets().contains(entry.first)) {
+        return false;
+      }
+      fleets::request_reread(entry.first);
+      return true;
+    });
+  }
+
+  if (!fleet_array.empty()) {
+    workers::queue_data(SyncConfig::Type::Fleets, fleet_array, /*is_first_sync=*/false);
+  }
+}
+
 namespace json
 {
   static void battle_result_headers(const nlohmann::json& section)
@@ -2802,6 +3006,13 @@ static void HandleEntityGroup(EntityGroup* entity_group)
       }
       break;
 
+    // fleets
+    case EntityGroup::Type::MyDeployedFleets:
+      if (sync_options.fleets) {
+        submit_async(processors::my_deployed_fleets);
+      }
+      break;
+
     // misc
     case EntityGroup::Type::Json:
       submit_async(processors::json::parse);
@@ -2894,6 +3105,284 @@ static void HandlePlatformResponse(ServiceResponse* service_response)
     }
   }
 }
+
+namespace fleets
+{
+constexpr int kFleetSlotCount = 10;
+
+static const char* state_name(FleetState state)
+{
+  switch (state) {
+    case FleetState::IdleInSpace:
+      return "IdleInSpace";
+    case FleetState::Docked:
+      return "Docked";
+    case FleetState::Mining:
+      return "Mining";
+    case FleetState::Destroyed:
+      return "Destroyed";
+    case FleetState::TieringUp:
+      return "TieringUp";
+    case FleetState::Repairing:
+      return "Repairing";
+    case FleetState::Battling:
+      return "Battling";
+    case FleetState::WarpCharging:
+      return "WarpCharging";
+    case FleetState::Warping:
+      return "Warping";
+    case FleetState::Impulsing:
+      return "Impulsing";
+    case FleetState::Capturing:
+      return "Capturing";
+    case FleetState::AutoHunting:
+      return "AutoHunting";
+    case FleetState::Outposting:
+      return "Outposting";
+    default:
+      return "Unknown";
+  }
+}
+
+static int64_t unix_seconds()
+{
+  return std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+}
+
+template <typename T> static void put(nlohmann::json& out, const char* key, const std::optional<T>& value)
+{
+  if (value) {
+    out[key] = *value;
+  }
+}
+
+// Game thread only. Missing members are left out.
+static void add_live_state(nlohmann::json& out, FleetPlayerData* fleet, FleetState state)
+{
+  const auto is_mining    = fleet->IsMining();
+  const auto is_repairing = fleet->IsRepairing();
+
+  const auto is_home      = fleet->IsHome();
+  const auto is_destroyed = fleet->IsDestroyed();
+
+  put(out, "is_home", is_home);
+  put(out, "is_deployed", fleet->IsDeployed());
+  put(out, "is_mining", is_mining);
+  put(out, "is_repairing", is_repairing);
+  put(out, "is_damaged", fleet->IsDamaged());
+  put(out, "is_destroyed", is_destroyed);
+  put(out, "drydock", fleet->DrydockID());
+  // the client only updates this at the station; in space the server's hull points are the live value
+  if (is_home.value_or(false) || is_destroyed.value_or(false)) {
+    if (const auto damage = fleet->HullDamage()) {
+      out["hull_damage"] = std::llround(*damage);
+    }
+  }
+  put(out, "cargo_fill", fleet->CargoResourceFillLevel());
+
+  if (auto* hold = fleet->GetCargoHoldData()) {
+    if (auto* current = hold->CurrentCargo()) {
+      put(out, "cargo", current->CurrentValue());
+      put(out, "cargo_max", current->MaxValue());
+    }
+    if (auto* protected_cargo = hold->ProtectedCargoProgress()) {
+      put(out, "protected_cargo", protected_cargo->CurrentValue());
+    }
+  }
+
+  if (is_mining.value_or(false)) {
+    if (auto* slot = fleet->MiningData()) {
+      put(out, "node_id", slot->ParentId());
+      put(out, "node_resource", slot->ResourceId());
+      put(out, "amount_mined", slot->AmountMined());
+      put(out, "occupied_since", ManagedRead::DateTimeToUnix(slot->OccupyTimeUtc()));
+      if (auto* node = slot->PointData()) {
+        put(out, "node_amount", node->Amount());
+      }
+    }
+    put(out, "mining_rate", fleet->GetMiningRate());
+
+    if (auto* timer = fleet->MiningSlotTimer()) {
+      put(out, "mining_due", ManagedRead::DateTimeToUnix(timer->DueTime()));
+    }
+  }
+
+  if (is_repairing.value_or(false)) {
+    if (auto* timer = fleet->Timer()) {
+      put(out, "repair_due", ManagedRead::DateTimeToUnix(timer->DueTime()));
+    }
+  }
+
+  if (state == FleetState::WarpCharging || state == FleetState::Warping || state == FleetState::Impulsing) {
+    if (auto* timer = fleet->Timer()) {
+      put(out, "travel_due", ManagedRead::DateTimeToUnix(timer->DueTime()));
+    }
+  }
+}
+
+// Game thread only. The values the client fills in late, as last sent per fleet; a re-read is only sent when they
+// changed. Values that move on their own are left out: cargo while mining, hull while repairing.
+static std::unordered_map<uint64_t, size_t> sent_late;
+
+static size_t late_fields(const nlohmann::json& record)
+{
+  auto fields = nlohmann::json::object();
+  for (const auto* key :
+       {"is_damaged", "is_destroyed", "is_repairing", "repair_due", "travel_due", "hull_damage", "mining_due", "node_id",
+        "cargo_max"}) {
+    if (const auto it = record.find(key); it != record.end()) {
+      fields[key] = *it;
+    }
+  }
+  if (record.value("is_repairing", false)) {
+    fields.erase("hull_damage");
+  }
+  return std::hash<nlohmann::json>{}(fields);
+}
+
+// Game thread only: reads IL2CPP properties of a FleetPlayerData that is valid for the current frame.
+static nlohmann::json record(int slot, FleetPlayerData* fleet, FleetState state, FleetState previous)
+{
+  auto*         hull    = fleet->Hull;
+  // HullSpec::Id is read as a 32-bit long; hull ids run past 2^31 (e.g. Kumari 3005922948), so take
+  // the value as unsigned before widening or those come out negative in the record.
+  const int64_t hull_id = hull ? static_cast<int64_t>(static_cast<uint32_t>(hull->Id)) : 0;
+
+  nlohmann::json out = {{"type", SyncConfig::Type::Fleets},
+                        {"fid", fleet->Id},
+                        {"slot", slot},
+                        {"hull_id", hull_id},
+                        {"level", fleet->Level},
+                        {"state", static_cast<int>(state)},
+                        {"state_name", state_name(state)},
+                        {"prev_state", static_cast<int>(previous)},
+                        {"prev_state_name", state_name(previous)},
+                        {"t", unix_seconds()},
+                        {"src", "client"}};
+  try {
+    add_live_state(out, fleet, state);
+  } catch (const std::exception& e) {
+    spdlog::warn("Sync: fleet live state read failed for {}: {}", fleet->Id, e.what());
+  }
+
+  sent_late[fleet->Id] = late_fields(out);
+  return out;
+}
+
+// Game thread only. A snapshot is the complete list of occupied slots, so it is sent as a first sync.
+static void queue_snapshot(const char* reason)
+{
+  auto* manager = FleetsManager::Instance();
+  if (!manager || !manager->HasFleetService()) {
+    return;
+  }
+
+  auto fleet_array = nlohmann::json::array();
+  for (int slot = 0; slot < kFleetSlotCount; ++slot) {
+    if (auto* fleet = manager->GetFleetPlayerData(slot); fleet) {
+      fleet_array.push_back(record(slot, fleet, fleet->CurrentState, fleet->PreviousState));
+    }
+  }
+
+  if (!fleet_array.empty()) {
+    http::logging::debug("PROCESS", "fleets", STR_FORMAT("Fleet snapshot ({}): {} fleets", reason, fleet_array.size()));
+    workers::queue_data(SyncConfig::Type::Fleets, fleet_array, true);
+  }
+}
+
+static void on_transition(const fleet_watch::Transition& transition)
+{
+  if (!transition.fleet) {
+    return;
+  }
+
+  auto fleet_array = nlohmann::json::array();
+  fleet_array.push_back(
+      record(transition.after.slot, transition.fleet, transition.after.state, transition.before.state));
+  workers::queue_data(SyncConfig::Type::Fleets, fleet_array);
+}
+
+static void on_baseline()
+{
+  snapshot_requested.store(false, std::memory_order_relaxed);
+  queue_snapshot("baseline");
+}
+
+// Game thread only.
+static void reread_requested()
+{
+  std::vector<uint64_t> due;
+  {
+    std::scoped_lock lk(reread_mtx);
+    if (reread_at.empty()) {
+      return;
+    }
+    const auto now = std::chrono::steady_clock::now();
+    std::erase_if(reread_at, [&](const auto& entry) {
+      if (entry.second > now) {
+        return false;
+      }
+      due.push_back(entry.first);
+      return true;
+    });
+  }
+  if (due.empty()) {
+    return;
+  }
+
+  auto* manager = FleetsManager::Instance();
+  if (!manager || !manager->HasFleetService()) {
+    return;
+  }
+
+  auto fleet_array = nlohmann::json::array();
+  for (int slot = 0; slot < kFleetSlotCount; ++slot) {
+    try {
+      auto* fleet = manager->GetFleetPlayerData(slot);
+      if (!fleet || std::ranges::find(due, fleet->Id) == due.end()) {
+        continue;
+      }
+      const auto before = sent_late[fleet->Id];
+      auto       entry  = record(slot, fleet, fleet->CurrentState, fleet->PreviousState);
+      if (late_fields(entry) != before) {
+        fleet_array.push_back(std::move(entry));
+      }
+    } catch (const std::exception& e) {
+      spdlog::warn("Sync: fleet re-read failed for slot {}: {}", slot, e.what());
+    }
+  }
+
+  if (!fleet_array.empty()) {
+    workers::queue_data(SyncConfig::Type::Fleets, fleet_array);
+  }
+}
+
+static void tick()
+{
+  reread_requested();
+
+  if (!snapshot_requested.load(std::memory_order_relaxed)
+      || !snapshot_requested.exchange(false, std::memory_order_acq_rel)) {
+    return;
+  }
+  queue_snapshot("first sync");
+}
+
+static void install()
+{
+  if (!Config::Get().sync_options.fleets) {
+    return;
+  }
+
+  if (!fleet_watch::Subscribe({.on_transition = on_transition, .on_baseline = on_baseline})) {
+    spdlog::warn("Sync: fleet state subscriber could not be installed; fleet sync disabled");
+    return;
+  }
+
+  register_screen_manager_update_callback(tick);
+  spdlog::info("Sync: fleet state sync enabled");
+}
+} // namespace fleets
 
 namespace hooks
 {
@@ -3046,6 +3535,8 @@ void InstallSyncPatches()
         SPUD_STATIC_DETOUR(ptr, hooks::RtcParser_ParseFinalPayload);
       }
     }
+
+  fleets::install();
 
   std::thread(workers::ship_sync_data).detach();
   std::thread(workers::ship_combat_log_data).detach();
