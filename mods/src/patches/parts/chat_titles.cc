@@ -18,42 +18,122 @@ Il2CppObject* InvokeSelf(Il2CppObject* object, const char* method_name)
 {
   auto* method = il2cpp_class_get_method_from_name(object ? il2cpp_object_get_class(object) : nullptr, method_name, 0);
   if (!method) {
+    static int missing_reports = 0;
+    if (missing_reports++ < 8) {
+      spdlog::warn("[ChatTitleDisplay] Cannot resolve {} on {}", method_name,
+                   object ? il2cpp_class_get_name(il2cpp_object_get_class(object)) : "null");
+    }
     return nullptr;
   }
   Il2CppException* exception = nullptr;
-  return (Il2CppObject*)il2cpp_runtime_invoke(method, object, nullptr, &exception);
+  auto* result = (Il2CppObject*)il2cpp_runtime_invoke(method, object, nullptr, &exception);
+  if (exception) {
+    static int exception_reports = 0;
+    if (exception_reports++ < 8) {
+      spdlog::warn("[ChatTitleDisplay] Managed invocation failed: {}", method_name);
+    }
+    return nullptr;
+  }
+  return result;
 }
-bool IsChatRow(void* profile_widget)
+Il2CppObject* FindChatRowTransform(void* profile_widget)
 {
   auto* mb = (Il2CppObject*)profile_widget;
   if (!mb) {
-    return false;
+    return nullptr;
   }
 
   auto* transform = InvokeSelf(mb, "get_transform");
   if (!transform) {
-    return false;
+    return nullptr;
   }
 
   for (int hops = 0; hops < 32 && transform; ++hops) {
     auto* gameObject = InvokeSelf(transform, "get_gameObject");
     if (!gameObject) {
-      return false;
+      return nullptr;
     }
     if (reinterpret_cast<GameObject*>(gameObject)->GetComponentFastPath2<ChatMessageWidget>()) {
-      return true;
+      return transform;
     }
     transform = InvokeSelf(transform, "get_parent");
   }
-  return false;
+  return nullptr;
 }
-void HideTitleRow(void* title)
+struct TitleLayoutElement {
+  static IL2CppClassHelper& get_class_helper()
+  {
+    static auto helper = il2cpp_get_class_helper("UnityEngine.UI", "UnityEngine.UI", "LayoutElement");
+    return helper;
+  }
+};
+
+void HideTitleRow(void* title, Il2CppObject* row_transform)
 {
   auto* game_object = reinterpret_cast<GameObject*>(InvokeSelf(static_cast<Il2CppObject*>(title), "get_gameObject"));
   if (!game_object) {
     return;
   }
   game_object->SetActive(false);
+
+  // In the chat prefab, _container is the enclosing PlayerTitleContainer, whose
+  // LayoutElement reserves 24 units even when the title widget child is hidden.
+  // Resolve the serialized reference rather than assuming a particular parent.
+  static auto* container_field =
+      il2cpp_class_get_field_from_name(il2cpp_object_get_class(static_cast<Il2CppObject*>(title)), "_container");
+  GameObject* container = nullptr;
+  if (container_field) {
+    il2cpp_field_get_value(static_cast<Il2CppObject*>(title), container_field, &container);
+  }
+  if (container) {
+    static int container_reports = 0;
+    if (container_reports++ < 8) {
+      spdlog::info("[ChatTitleDisplay] Hiding title '{}' and container '{}' (active={})", game_object->Name(),
+                   container->Name(), container->activeInHierarchy);
+    }
+    // The native bind path may reactivate the container after a nested title
+    // callback. Excluding its LayoutElement keeps that empty row out of layout.
+    if (auto* element = container->GetComponentFastPath2<TitleLayoutElement>()) {
+      static auto ignore_layout = TitleLayoutElement::get_class_helper().GetMethodInfo("set_ignoreLayout", 1);
+      if (ignore_layout) {
+        bool             ignore    = true;
+        void*            args[]    = {&ignore};
+        Il2CppException* exception = nullptr;
+        il2cpp_runtime_invoke(ignore_layout, element, args, &exception);
+        if (exception) {
+          spdlog::warn("[ChatTitleDisplay] Cannot exclude title container from layout");
+        }
+      }
+    }
+    container->SetActive(false);
+  } else {
+    static bool reported = false;
+    if (!reported) {
+      reported = true;
+      spdlog::warn("[ChatTitleDisplay] Title '{}' has no container (field found={})", game_object->Name(),
+                   container_field != nullptr);
+    }
+  }
+
+  // Rebuild the complete message row before the virtualized list measures it;
+  // marking only the inner text layout leaves the enclosing row size cached.
+  static auto layout  = il2cpp_get_class_helper("UnityEngine.UI", "UnityEngine.UI", "LayoutRebuilder");
+  static auto rebuild = layout.GetMethodInfo("ForceRebuildLayoutImmediate", 1);
+  static auto mark    = layout.GetMethodInfo("MarkLayoutForRebuild", 1);
+  for (auto* method : {rebuild, mark}) {
+    if (method) {
+      void*            args[]    = {row_transform};
+      Il2CppException* exception = nullptr;
+      il2cpp_runtime_invoke(method, nullptr, args, &exception);
+      if (exception) {
+        static bool reported = false;
+        if (!reported) {
+          reported = true;
+          spdlog::warn("[ChatTitleDisplay] Chat row layout rebuild failed");
+        }
+      }
+    }
+  }
 }
 
 void ApplyTitleDisplay(void* profile_widget)
@@ -65,15 +145,26 @@ void ApplyTitleDisplay(void* profile_widget)
 
   const auto show  = Config::Get().show_player_title;
   auto*      title = widget->_playerTitleWidget;
+  static bool reported_callback = false;
+  if (!reported_callback) {
+    reported_callback = true;
+    spdlog::info("[ChatTitleDisplay] Profile callback reached (show={}, title present={})", show, title != nullptr);
+  }
   if (show || title == nullptr) {
     return;
   }
 
-  if (!IsChatRow(widget)) {
+  auto* row_transform = FindChatRowTransform(widget);
+  if (!row_transform) {
+    static bool reported = false;
+    if (!reported) {
+      reported = true;
+      spdlog::info("[ChatTitleDisplay] Profile callback excluded: no ChatMessageWidget ancestor");
+    }
     return;
   }
 
-  HideTitleRow(title);
+  HideTitleRow(title, row_transform);
 }
 } // namespace
 
@@ -186,5 +277,6 @@ void InstallChatTitleDisplayHooks()
     SPUD_STATIC_DETOUR(set_identifiers, PlayerTitleWidget_SetIdentifiers_Hook);
   }
 
-  spdlog::info("Chat title display: chat player title rows {}", Config::Get().show_player_title ? "shown" : "hidden");
+  spdlog::info("Chat title display: chat player title rows {} (immediate row layout rebuild enabled)",
+               Config::Get().show_player_title ? "shown" : "hidden");
 }
