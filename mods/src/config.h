@@ -28,6 +28,7 @@ public:
     Jobs,
     Missions,
     Officer,
+    Profile,
     Research,
     Resources,
     Ships,
@@ -56,6 +57,7 @@ public:
   bool jobs             = false;
   bool missions         = false;
   bool officers         = false;
+  bool profile          = false;
   bool research         = true;
   bool resources        = false;
   bool ships            = false;
@@ -79,6 +81,7 @@ constexpr std::array SyncOptions{
     SyncConfig::Option{SyncConfig::Type::Jobs, "job", "jobs", &SyncConfig::jobs},
     SyncConfig::Option{SyncConfig::Type::Missions, "mission", "missions", &SyncConfig::missions},
     SyncConfig::Option{SyncConfig::Type::Officer, "officer", "officers", &SyncConfig::officers},
+    SyncConfig::Option{SyncConfig::Type::Profile, "profile", "profile", &SyncConfig::profile},
     SyncConfig::Option{SyncConfig::Type::Research, "research", "research", &SyncConfig::research},
     SyncConfig::Option{SyncConfig::Type::Resources, "resource", "resources", &SyncConfig::resources},
     SyncConfig::Option{SyncConfig::Type::Ships, "ship", "ships", &SyncConfig::ships},

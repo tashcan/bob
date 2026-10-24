@@ -7,6 +7,7 @@ public:
   __declspec(property(get = __get_LocaId)) long LocaId;
   __declspec(property(get = __get_Name)) Il2CppString* Name;
   __declspec(property(get = __get_UserId)) Il2CppString* UserId;
+  __declspec(property(get = __get_Level)) int32_t Level;
 
 private:
   static IL2CppClassHelper& get_class_helper()
@@ -33,5 +34,11 @@ public:
   {
     static auto prop = get_class_helper().GetProperty("UserId");
     return prop.GetRaw<Il2CppString>(this);
+  }
+
+  int32_t __get_Level()
+  {
+    static auto prop = get_class_helper().GetProperty("Level");
+    return *prop.Get<int32_t>(this);
   }
 };

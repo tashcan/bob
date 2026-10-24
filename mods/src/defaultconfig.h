@@ -247,6 +247,7 @@ namespace Sync
   constexpr bool        jobs               = true;
   constexpr bool        missions           = true;
   constexpr bool        officers           = true;
+  constexpr bool        profile            = false;
   constexpr const char* proxy              = "";
   constexpr bool        research           = true;
   constexpr bool        resources          = true;

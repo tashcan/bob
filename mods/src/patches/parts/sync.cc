@@ -48,6 +48,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
@@ -1562,6 +1563,24 @@ static void planetary_map_prosperity(std::unique_ptr<std::string>&& bytes)
   }
 }
 
+// The game's record of the local player, or nullptr. Calls into IL2CPP: game thread only.
+static UserProfile* local_user_profile()
+{
+  auto* const manager = UserProfileManager::Instance();
+  if (manager == nullptr) {
+    return nullptr;
+  }
+
+  static auto fn = UserProfileManager::get_class_helper().GetMethodInfo("GetLocalUserProfile");
+  if (fn == nullptr) {
+    return nullptr;
+  }
+
+  Il2CppException* exception = nullptr;
+  auto* const      profile   = reinterpret_cast<UserProfile*>(il2cpp_runtime_invoke(fn, manager, nullptr, &exception));
+  return exception == nullptr ? profile : nullptr;
+}
+
 static void planetary_map(std::unique_ptr<std::string>&& bytes)
 {
   if (auto response = Digit::PrimeServer::Models::PlanetaryMapResponse(); response.ParseFromString(*bytes)) {
@@ -1569,23 +1588,8 @@ static void planetary_map(std::unique_ptr<std::string>&& bytes)
 
     const auto& owner = response.owneruserid();
     if (!owner.empty()) {
-      auto profileManager = UserProfileManager::Instance();
-      if (profileManager == nullptr) {
-        spdlog::error("Failed to get UserProfileManager instance");
-        return;
-      }
-
-      static auto& class_helper = profileManager->get_class_helper();
-      static auto fn = class_helper.GetMethodInfo("GetLocalUserProfile");
-
-      if (fn == nullptr ) {
-        spdlog::error("Failed to get method info for GetLocalUserProfile");
-        return;
-      }
-
-      Il2CppException* exception = nullptr;
-      auto localProfile = reinterpret_cast<UserProfile*>(il2cpp_runtime_invoke(fn, profileManager, nullptr, &exception));
-      if (exception != nullptr || localProfile == nullptr) {
+      auto localProfile = local_user_profile();
+      if (localProfile == nullptr) {
         spdlog::error("Failed to get local user profile");
         return;
       }
@@ -1606,6 +1610,70 @@ static void planetary_map(std::unique_ptr<std::string>&& bytes)
   } else {
     spdlog::error("Failed to parse planetary map");
   }
+}
+
+// The local player's user id, or "" if the profile is not available. Game thread only.
+static std::string local_user_id(UserProfile* profile)
+{
+  if (profile == nullptr) {
+    return {};
+  }
+
+  const auto* const user_id = profile->UserId;
+  return user_id == nullptr ? std::string{} : to_string(user_id);
+}
+
+// Sends the local player's own profile; `self` and `level` come from the game thread. Only the record whose user id
+// is `self` is read. The server record carries level 0, so the in-memory Level is used: it lags one own-record
+// response after a level-up.
+static void own_profile(std::unique_ptr<std::string>&& bytes, const std::string& self, int32_t level)
+{
+  using json = nlohmann::json;
+
+  static std::tuple<int32_t, uint64_t, bool> last_sent;
+  static bool                                has_sent = false;
+  static std::mutex                          last_sent_mtx;
+
+  auto response = Digit::PrimeServer::Models::UserProfilesResponse();
+  if (!response.ParseFromString(*bytes)) {
+    spdlog::error("Failed to parse own user profile");
+    return;
+  }
+
+  const Digit::PrimeServer::Models::UserProfile* own = nullptr;
+  for (const auto& profile : response.userprofiles()) {
+    if (profile.userid() == self) {
+      own = &profile;
+      break;
+    }
+  }
+
+  if (own == nullptr) {
+    return;
+  }
+
+  // XP rides along but is not part of the key: an XP-only change waits for the next keyed change.
+  const auto key = std::make_tuple(level, own->militarymight(), own->planetarybaseunlocked());
+  bool       first_sync;
+  {
+    std::scoped_lock lk(last_sent_mtx);
+    first_sync = !has_sent;
+    if (!first_sync && last_sent == key) {
+      return;
+    }
+    last_sent = key;
+    has_sent  = true;
+  }
+
+  auto profile_array = json::array();
+  profile_array.push_back({{"type", SyncConfig::Type::Profile},
+                           {"uid", self},
+                           {"level", level},
+                           {"xp", own->xp()},
+                           {"military_might", own->militarymight()},
+                           {"planetary_base_unlocked", own->planetarybaseunlocked()}});
+
+  workers::queue_data(SyncConfig::Type::Profile, profile_array, first_sync);
 }
 
 static void player_inventories(std::unique_ptr<std::string>&& bytes)
@@ -2646,6 +2714,15 @@ static void HandleEntityGroup(EntityGroup* entity_group)
     case EntityGroup::Type::UserProfiles:
       if (sync_options.battlelogs) {
         submit_async(trackers::names::cache_player_names);
+      }
+      if (sync_options.profile) {
+        // Skipped if the local profile is not ready; a later response retries.
+        auto* const local = processors::local_user_profile();
+        if (auto self = processors::local_user_id(local); !self.empty()) {
+          submit_async([self = std::move(self), level = local->Level](std::unique_ptr<std::string>&& bytes) {
+            processors::own_profile(std::move(bytes), self, level);
+          });
+        }
       }
       break;
     case EntityGroup::Type::AllianceProfiles:
