@@ -1,9 +1,9 @@
 #include "action_queue.h"
 #include <config.h>
 
-// The callback ABI below is Windows x64. Validate its contract against the running client.
-#if defined(_WIN32) && defined(_M_X64)
-#include <Windows.h>
+// Use the host ABI for the 24-byte value-type callback on Windows and both Mac architectures.
+// Validate the managed layout before installing.
+#if (defined(_WIN32) && defined(_M_X64)) || (defined(__APPLE__) && (defined(__arm64__) || defined(__x86_64__)))
 #include <atomic>
 #include <array>
 #include <utility>
