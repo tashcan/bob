@@ -1109,6 +1109,8 @@ void Config::Load()
 
   this->system_pan_momentum_falloff = get_config_or_default(config, parsed, "graphics", "system_pan_momentum_falloff",
                                                             DCG::system_pan_momentum_falloff, write_log);
+  this->disable_target_camera_lock = get_config_or_default(config, parsed, "graphics", "disable_target_camera_lock",
+                                                         DCG::disable_target_camera_lock, write_log);
   this->borderless_fullscreen =
       get_config_or_default(config, parsed, "graphics", "borderless_fullscreen", DCG::borderless_fullscreen, write_log);
   this->transition_time =

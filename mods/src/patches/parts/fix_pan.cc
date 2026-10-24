@@ -42,11 +42,15 @@ bool KeyboardPanAllowed()
 bool NavigationPan_LateUpdate_Hook(auto original, NavigationPan* _this)
 {
   auto d = _this->_lastDelta;
+  const auto& config = Config::Get();
+  const bool disable_target_camera_lock = config.disable_target_camera_lock;
 
+  if (disable_target_camera_lock && _this->_trackingPOI) {
+    _this->_trackingPOI = nullptr;
+  }
   static auto GetMouseButton = il2cpp_resolve_icall_typed<bool(int)>("UnityEngine.Input::GetMouseButton(System.Int32)");
   static auto GetTouchCount  = il2cpp_resolve_icall_typed<int()>("UnityEngine.Input::get_touchCount()");
 
-  const auto& config = Config::Get();
   if (!config.disable_move_keys && config.hotkeys_enabled && !Key::IsDirectionalInputClaimed()) {
     if (config.use_scopely_hotkeys || !config.installHotkeyHooks) {
       original(_this);
@@ -64,7 +68,7 @@ bool NavigationPan_LateUpdate_Hook(auto original, NavigationPan* _this)
     }
   }
 
-  if (_this->BlockPan() || _this->_trackingPOI) {
+  if (_this->BlockPan() || (_this->_trackingPOI && !disable_target_camera_lock)) {
     d->x = 0.0f;
     d->y = 0.0f;
   } else if (GetMouseButton(0) || GetTouchCount() > 0) {
