@@ -105,6 +105,7 @@ namespace Patches
   constexpr bool loadingtiphooks            = true;
   constexpr bool doubleclickassignshiphooks = true;
   constexpr bool forbiddentechconfirmhooks  = true;
+  constexpr bool forbiddentechshipnamehooks = true;
   constexpr bool audioeventhooks            = true;
   constexpr bool actionqueuerecoveryhooks   = true;
   constexpr bool queueaddressguardhooks     = true;
@@ -268,6 +269,7 @@ namespace UI
   constexpr bool        dock_syncmanagement                = true;
   constexpr bool        auto_confirm_discovery             = true;
   constexpr bool        auto_confirm_ft_upgrade            = false;
+  constexpr bool        forbidden_tech_ship_name           = true;
   constexpr bool        auto_confirm_reveal_ability        = false;
   constexpr bool        auto_confirm_alliance_contribution = false;
   constexpr bool        auto_open_bulk_claim_flyout        = false;

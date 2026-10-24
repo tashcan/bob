@@ -236,6 +236,7 @@ public:
   NotificationSound alert_armada_battle_lost = NotificationSound::None;
   bool                     auto_open_bulk_claim_flyout;
   bool                     auto_confirm_ft_upgrade;
+  bool                     forbidden_tech_ship_name;
   bool                     auto_confirm_reveal_ability;
   bool                     auto_confirm_alliance_contribution;
 
@@ -307,6 +308,7 @@ public:
   bool installLoadingTipHooks;
   bool installDoubleClickAssignShipHooks;
   bool installForbiddenTechConfirmationHooks;
+  bool installForbiddenTechShipNameHooks;
   bool installRevealConfirmationHooks;
   bool installInstantWarpConfirmationHooks;
   bool installAudioEventHooks;

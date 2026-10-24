@@ -293,6 +293,7 @@ chattitledisplayhooks = true
 dailyfactionbulkclaimhooks = true
 doubleclickassignshiphooks = true
 forbiddentechconfirmhooks = true
+forbiddentechshipnamehooks = true
 freeresizehooks = true
 galacticanomalytimerhooks = true
 game_version = true
@@ -732,6 +733,9 @@ only_show_first_popup = false
 
 # Show the newest Haven help-history entries first.
 reverse_haven_history = true
+
+# Show the equipped ship below the Forbidden Tech header, including ships without a dock.
+forbidden_tech_ship_name = true
 
 # Subgroup: Auto Confirm
 # ----------------------
